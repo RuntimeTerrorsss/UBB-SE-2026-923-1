@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BookingBoardGames (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "BookingBoardGames (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

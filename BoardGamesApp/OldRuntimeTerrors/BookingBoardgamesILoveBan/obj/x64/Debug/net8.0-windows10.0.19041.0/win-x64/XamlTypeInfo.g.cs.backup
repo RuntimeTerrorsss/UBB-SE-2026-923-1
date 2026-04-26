@@ -754,7 +754,7 @@ namespace BookingBoardgamesILoveBan.BookingBoardgamesILoveBan_XamlTypeInfo
                 userType = new global::BookingBoardgamesILoveBan.BookingBoardgamesILoveBan_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.Controls.Page"));
                 userType.Activator = Activate_42_CashPaymentPage;
                 userType.StaticInitializer = StaticInitializer_42_CashPaymentPage;
-                userType.AddMemberName("ViewModel");
+                userType.AddMemberName("PaymentViewModel");
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
@@ -1245,15 +1245,15 @@ namespace BookingBoardgamesILoveBan.BookingBoardgamesILoveBan_XamlTypeInfo
             var that = (global::BookingBoardgamesILoveBan.Src.PaymentCard.View.CardPaymentPage)instance;
             that.PaymentViewModel = (global::BookingBoardgamesILoveBan.Src.PaymentCard.ViewModel.CardPaymentViewModel)Value;
         }
-        private object get_39_CashPaymentPage_ViewModel(object instance)
+        private object get_39_CashPaymentPage_PaymentViewModel(object instance)
         {
             var that = (global::BookingBoardgamesILoveBan.Src.PaymentCash.View.CashPaymentPage)instance;
-            return that.ViewModel;
+            return that.PaymentViewModel;
         }
-        private void set_39_CashPaymentPage_ViewModel(object instance, object Value)
+        private void set_39_CashPaymentPage_PaymentViewModel(object instance, object Value)
         {
             var that = (global::BookingBoardgamesILoveBan.Src.PaymentCash.View.CashPaymentPage)instance;
-            that.ViewModel = (global::BookingBoardgamesILoveBan.Src.PaymentCash.ViewModel.CashPaymentViewModel)Value;
+            that.PaymentViewModel = (global::BookingBoardgamesILoveBan.Src.PaymentCash.ViewModel.CashPaymentViewModel)Value;
         }
         private object get_40_PaymentHistoryView_ViewModel(object instance)
         {
@@ -1578,11 +1578,11 @@ namespace BookingBoardgamesILoveBan.BookingBoardgamesILoveBan_XamlTypeInfo
                 xamlMember.Getter = get_38_CardPaymentPage_PaymentViewModel;
                 xamlMember.Setter = set_38_CardPaymentPage_PaymentViewModel;
                 break;
-            case "BookingBoardgamesILoveBan.Src.PaymentCash.View.CashPaymentPage.ViewModel":
+            case "BookingBoardgamesILoveBan.Src.PaymentCash.View.CashPaymentPage.PaymentViewModel":
                 userType = (global::BookingBoardgamesILoveBan.BookingBoardgamesILoveBan_XamlTypeInfo.XamlUserType)GetXamlTypeByName("BookingBoardgamesILoveBan.Src.PaymentCash.View.CashPaymentPage");
-                xamlMember = new global::BookingBoardgamesILoveBan.BookingBoardgamesILoveBan_XamlTypeInfo.XamlMember(this, "ViewModel", "BookingBoardgamesILoveBan.Src.PaymentCash.ViewModel.CashPaymentViewModel");
-                xamlMember.Getter = get_39_CashPaymentPage_ViewModel;
-                xamlMember.Setter = set_39_CashPaymentPage_ViewModel;
+                xamlMember = new global::BookingBoardgamesILoveBan.BookingBoardgamesILoveBan_XamlTypeInfo.XamlMember(this, "PaymentViewModel", "BookingBoardgamesILoveBan.Src.PaymentCash.ViewModel.CashPaymentViewModel");
+                xamlMember.Getter = get_39_CashPaymentPage_PaymentViewModel;
+                xamlMember.Setter = set_39_CashPaymentPage_PaymentViewModel;
                 break;
             case "BookingBoardgamesILoveBan.Src.PaymentHistory.View.PaymentHistoryView.ViewModel":
                 userType = (global::BookingBoardgamesILoveBan.BookingBoardgamesILoveBan_XamlTypeInfo.XamlUserType)GetXamlTypeByName("BookingBoardgamesILoveBan.Src.PaymentHistory.View.PaymentHistoryView");
