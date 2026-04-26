@@ -12,7 +12,7 @@ namespace BookingBoardGames.Src.Repositories
         public User? GetById(int id)
         {
             using var context = contextFactory.CreateDbContext([]);
-            return context.Users.FirstOrDefault(user => user.Id == id);
+            return context.Users.FirstOrDefault(user => user.UserId == id);
         }
 
         public User? GetGameById(int id)
@@ -29,7 +29,7 @@ namespace BookingBoardGames.Src.Repositories
         public void SaveAddress(int id, Address address)
         {
             using var context = contextFactory.CreateDbContext([]);
-            var foundUser = context.Users.FirstOrDefault(user => user.Id == id);
+            var foundUser = context.Users.FirstOrDefault(user => user.UserId == id);
 
             if (foundUser is null)
             {
@@ -47,7 +47,7 @@ namespace BookingBoardGames.Src.Repositories
         {
             using var context = contextFactory.CreateDbContext([]);
             return context.Users
-                .Where(user => user.Id == userId)
+                .Where(user => user.UserId == userId)
                 .Select(user => (decimal?)user.Balance)
                 .FirstOrDefault() ?? 0m;
         }
@@ -55,7 +55,7 @@ namespace BookingBoardGames.Src.Repositories
         public void UpdateBalance(int userId, decimal newBalance)
         {
             using var context = contextFactory.CreateDbContext([]);
-            var foundUser = context.Users.FirstOrDefault(user => user.Id == userId);
+            var foundUser = context.Users.FirstOrDefault(user => user.UserId == userId);
 
             if (foundUser is null)
             {

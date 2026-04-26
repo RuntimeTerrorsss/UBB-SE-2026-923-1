@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using BookingBoardGames.Src.Models;
 public class ConversationParticipant
 {
     public int ConversationId { get; set; }

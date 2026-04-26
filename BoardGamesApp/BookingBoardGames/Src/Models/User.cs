@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="User.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 
 using System.Collections.Generic;
 
@@ -6,7 +10,7 @@ namespace BookingBoardGames.Src.Models;
 
 public class User
 {
-    public int Id { get; set; }
+    public int UserId { get; set; }
 
     public string Username { get; set; } = string.Empty;
 
