@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BookingBoardgamesLoveBan.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c7d0decc40d272d8f5fda75432eaf8073808ab91")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f7f3fead3cbb997274df4174ba9455bbcafccb77")]
 [assembly: System.Reflection.AssemblyProductAttribute("BookingBoardgamesLoveBan.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BookingBoardgamesLoveBan.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
