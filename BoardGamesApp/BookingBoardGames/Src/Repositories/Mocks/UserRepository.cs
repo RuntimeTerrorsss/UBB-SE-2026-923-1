@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using BookingBoardgamesILoveBan.Src.Delivery.Model;
+using BookingBoardgames.Src.Delivery.Model;
 
 namespace BookingBoardGames.Src.Repositories
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.NetworkInformation;
-
-using System;
+namespace BookingBoardGames.Src.Models;
 
 public abstract class Message
 {

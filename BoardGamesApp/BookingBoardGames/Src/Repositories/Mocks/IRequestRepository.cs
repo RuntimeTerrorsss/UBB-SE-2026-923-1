@@ -1,4 +1,4 @@
-﻿namespace BookingBoardGames.Src.Repositories
+﻿namespace BookingBoardGames.Src.Repositories.Mocks
 {
     public interface IRequestRepository
     {

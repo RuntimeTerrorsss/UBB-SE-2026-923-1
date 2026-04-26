@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Model;
+using BookingBoardgames.Src.PaymentCommon.Model;
+using BookingBoardgames.Src.PaymentHistory.Model;
 using BookingBoardGames.Src.Constants;
 using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Src.Repositories;

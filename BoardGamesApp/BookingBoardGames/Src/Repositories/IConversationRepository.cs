@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using BookingBoardGames.Src.Services;
-using BookingBoardgamesILoveBan.Src.Chat.Model;
-using BookingBoardgamesILoveBan.Src.Model;
+using BookingBoardgames.Src.Chat.Model;
+using BookingBoardgames.Src.Model;
 
 namespace BookingBoardGames.Src.Repositories
 {

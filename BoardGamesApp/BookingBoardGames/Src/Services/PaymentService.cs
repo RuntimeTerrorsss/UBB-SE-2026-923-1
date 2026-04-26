@@ -1,5 +1,5 @@
 using BookingBoardGames.Src.Repositories;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
+using BookingBoardgames.Src.PaymentCommon.Model;
 
 namespace BookingBoardGames.Src.Services
 {

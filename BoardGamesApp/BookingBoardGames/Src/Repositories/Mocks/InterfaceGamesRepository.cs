@@ -1,4 +1,4 @@
-﻿namespace SearchAndBook.Repositories
+﻿namespace BookingBoardGames.Src.Repositories.Mocks
 {
     using System.Collections.Generic;
     using SearchAndBook.Domain;

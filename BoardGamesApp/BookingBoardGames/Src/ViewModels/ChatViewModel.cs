@@ -5,11 +5,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using BookingBoardgamesILoveBan.Src.DTO;
-using BookingBoardgamesILoveBan.Src.Chat.Model;
-using BookingBoardgamesILoveBan.Src.Enum;
-using BookingBoardgamesILoveBan.Src.Model;
-using BookingBoardgamesILoveBan.Src.PaymentCard.View;
+using BookingBoardgames.Src.DTO;
+using BookingBoardgames.Src.Chat.Model;
+using BookingBoardgames.Src.Enum;
+using BookingBoardgames.Src.Model;
+using BookingBoardgames.Src.PaymentCard.View;
 using Microsoft.UI.Xaml.Controls;
 
 namespace BookingBoardGames.Src.ViewModels;

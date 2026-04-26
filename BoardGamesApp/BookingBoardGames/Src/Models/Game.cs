@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+namespace BookingBoardGames.Src.Models;
 
 public class Game
 {

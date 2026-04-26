@@ -1,11 +1,11 @@
-using BookingBoardgamesILoveBan.Src.Chat.View;
+using BookingBoardgames.Src.Chat.View;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using BookingBoardGames.Src.ViewModels;
 using BookingBoardGames.Src.Navigation;
 
-namespace BookingBoardgamesILoveBan.Src.PaymentCash.View
+namespace BookingBoardgames.Src.PaymentCash.View
 {
     public sealed partial class CashPaymentPage : Page
     {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Model;
+using BookingBoardgames.Src.PaymentHistory.Model;
 
 namespace BookingBoardGames.Src.Repositories
 {

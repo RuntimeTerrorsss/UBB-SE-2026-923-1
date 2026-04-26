@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using BookingBoardgamesILoveBan.Src.DTO;
-using BookingBoardgamesILoveBan.Src.Enum;
+using BookingBoardgames.Src.DTO;
+using BookingBoardgames.Src.Enum;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 

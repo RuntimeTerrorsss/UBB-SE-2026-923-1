@@ -6,9 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using BookingBoardGames.Src.ViewModels;
-using BookingBoardgamesILoveBan.Src.DTO;
-using BookingBoardgamesILoveBan.Src.Enum;
-using BookingBoardgamesILoveBan.Src.PaymentCard.View;
+using BookingBoardgames.Src.DTO;
+using BookingBoardgames.Src.Enum;
+using BookingBoardgames.Src.PaymentCard.View;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-namespace BookingBoardgamesILoveBan.Src.Chat.View
+namespace BookingBoardgames.Src.Chat.View
 {
     public sealed partial class ChatView : UserControl
     {

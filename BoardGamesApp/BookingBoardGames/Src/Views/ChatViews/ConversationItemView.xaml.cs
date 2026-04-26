@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.UI;
 
-namespace BookingBoardgamesILoveBan.Src.Chat.View
+namespace BookingBoardgames.Src.Chat.View
 {
     public sealed partial class ConversationItemView : UserControl
     {

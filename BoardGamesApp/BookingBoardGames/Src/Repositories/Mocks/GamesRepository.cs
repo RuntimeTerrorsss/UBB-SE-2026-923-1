@@ -1,4 +1,4 @@
-﻿namespace SearchAndBook.Repositories;
+﻿namespace BookingBoardGames.Src.Repositories.Mocks;
 using System;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
@@ -65,7 +65,7 @@ public class GamesRepository : InterfaceGamesRepository
         {
             try
             {
-                return this.GetAllActiveGames(AnonymousUserId);
+                return GetAllActiveGames(AnonymousUserId);
             }
             catch (Exception)
             {

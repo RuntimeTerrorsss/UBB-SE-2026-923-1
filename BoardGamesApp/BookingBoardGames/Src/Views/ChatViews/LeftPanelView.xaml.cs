@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using BookingBoardGames.Src.ViewModels;
-using BookingBoardgamesILoveBan.Src.DTO;
-using BookingBoardgamesILoveBan.Src.Enum;
+using BookingBoardgames.Src.DTO;
+using BookingBoardgames.Src.Enum;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -17,7 +17,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
 
-namespace BookingBoardgamesILoveBan.Src.Chat.View
+namespace BookingBoardgames.Src.Chat.View
 {
     public sealed partial class LeftPanelView : UserControl
     {

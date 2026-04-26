@@ -1,10 +1,10 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.View;
-using BookingBoardgamesILoveBan.Src.Chat.View;
-using BookingBoardgamesILoveBan.Src.Interface.View;
+using BookingBoardgames.Src.PaymentHistory.View;
+using BookingBoardgames.Src.Chat.View;
+using BookingBoardgames.Src.Interface.View;
 
-namespace BookingBoardgamesILoveBan.Src.View
+namespace BookingBoardgames.Src.View
 {
     public sealed partial class DashboardView : Page
     {

@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.ViewModels;
 
-namespace BookingBoardgamesILoveBan.Src.PaymentHistory.View
+namespace BookingBoardgames.Src.PaymentHistory.View
 {
     public sealed partial class PaymentHistoryView : Page
     {
@@ -49,7 +49,7 @@ namespace BookingBoardgamesILoveBan.Src.PaymentHistory.View
             }
             if (currentParentElement is Frame navigationFrame)
             {
-                navigationFrame.Navigate(typeof(BookingBoardgamesILoveBan.Src.View.DashboardView));
+                navigationFrame.Navigate(typeof(BookingBoardgames.Src.View.DashboardView));
             }
         }
     }

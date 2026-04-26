@@ -1,6 +1,6 @@
 ﻿using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Src.Services.Payments
 {
 	public interface ICashPaymentService
 	{

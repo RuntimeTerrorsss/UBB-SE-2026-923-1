@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Data.SqlClient;
-using BookingBoardgamesILoveBan.Src.Mocks.GameMock;
+using BookingBoardgames.Src.Mocks.GameMock;
 
 namespace BookingBoardGames.Src.Repositories
 {

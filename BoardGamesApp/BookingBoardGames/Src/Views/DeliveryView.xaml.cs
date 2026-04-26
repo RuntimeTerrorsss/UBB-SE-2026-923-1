@@ -4,13 +4,13 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.ViewModels;
-using BookingBoardgamesILoveBan.Src.PaymentCard.View;
+using BookingBoardgames.Src.PaymentCard.View;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Web.WebView2.Core;
 
-namespace BookingBoardgamesILoveBan.Src.Delivery.View
+namespace BookingBoardgames.Src.Delivery.View
 {
     public sealed partial class DeliveryView : Page
     {

@@ -3,11 +3,12 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Constants;
 using BookingBoardGames.Src.Commands;
 using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Repositories.Mocks;
+using BookingBoardGames.Src.Services.Payments;
 
 namespace BookingBoardGames.Src.ViewModels
 {

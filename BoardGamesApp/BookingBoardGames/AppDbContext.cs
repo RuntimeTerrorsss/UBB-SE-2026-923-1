@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
+using BookingBoardGames.Src.Models;
 namespace BookingBoardGames
 {
     public class AppDbContext : DbContext

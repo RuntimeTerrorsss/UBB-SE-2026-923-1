@@ -1,14 +1,14 @@
 using System;
 using BookingBoardGames.Src.Navigation;
 using BookingBoardGames.Src.ViewModels;
-using BookingBoardgamesILoveBan.Src.View;
+using BookingBoardgames.Src.View;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardgamesILoveBan.Src.PaymentCard.View
+namespace BookingBoardgames.Src.PaymentCard.View
 {
     public sealed partial class CardPaymentPage : Page
     {

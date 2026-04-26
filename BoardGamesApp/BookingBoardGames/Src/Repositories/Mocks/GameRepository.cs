@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Src.Repositories.Mocks
 {
     public class GameRepository : IGameRepository
     {

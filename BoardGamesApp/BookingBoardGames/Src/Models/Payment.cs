@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+namespace BookingBoardGames.Src.Models;
 
 public class Payment
 {

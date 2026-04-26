@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-namespace BookingBoardgamesILoveBan.Src.Chat.View
+namespace BookingBoardgames.Src.Chat.View
 {
     public sealed partial class RightPanelView : UserControl
     {

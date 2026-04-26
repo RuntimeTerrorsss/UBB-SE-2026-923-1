@@ -2,7 +2,7 @@
 using System.IO;
 using BookingBoardGames.Src.Constants;
 using BookingBoardGames.Src.Repositories;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
+using BookingBoardgames.Src.PaymentCommon.Model;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 

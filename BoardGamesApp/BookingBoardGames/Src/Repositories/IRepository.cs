@@ -1,4 +1,4 @@
-﻿namespace SearchAndBook.Repositories;
+﻿namespace BookingBoardGames.Repositories;
 using System.Collections.Generic;
 
 /// <summary>

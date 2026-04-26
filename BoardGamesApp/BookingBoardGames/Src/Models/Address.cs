@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+namespace BookingBoardGames.Src.Models;
 
 [Owned]
 public class Address

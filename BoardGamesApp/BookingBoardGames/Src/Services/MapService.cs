@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using BookingBoardgamesILoveBan.Src.Delivery.Model;
+using BookingBoardgames.Src.Delivery.Model;
 
 namespace BookingBoardGames.Src.Services
 {
