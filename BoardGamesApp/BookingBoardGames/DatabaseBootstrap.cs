@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGames.Data
+namespace BookingBoardGames
 {
     public static class DatabaseBootstrap
     {
