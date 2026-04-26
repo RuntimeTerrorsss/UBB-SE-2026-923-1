@@ -1,99 +1,69 @@
-﻿using Microsoft.Data.SqlClient;
-using BookingBoardgames.Src.Delivery.Model;
+﻿using System.Collections.Generic;
+using System.Linq;
+using BookingBoardGames.Src.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingBoardGames.Src.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly string connectionString = DatabaseBootstrap.GetAppConnection();
+        private readonly AppDbContextFactory contextFactory = new();
 
-        public User GetById(int id)
+        public User? GetById(int id)
         {
-            const string Query = @"SELECT uid, UserName, Country, City, Street, StreetNumber, DisplayName, AvatarUrl, Balance 
-                                   FROM [User] WHERE uid = @id";
-            User foundUser = null;
+            using var context = contextFactory.CreateDbContext([]);
+            return context.Users.FirstOrDefault(user => user.Id == id);
+        }
 
-            using (var connection = new SqlConnection(connectionString))
-            using (var command = new SqlCommand(Query, connection))
-            {
-                command.Parameters.AddWithValue("@id", id);
-                connection.Open();
+        public User? GetGameById(int id)
+        {
+            return GetById(id);
+        }
 
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        foundUser = new User(
-                            reader.GetInt32(reader.GetOrdinal("uid")),
-                            reader.GetString(reader.GetOrdinal("UserName")),
-                            reader.GetString(reader.GetOrdinal("DisplayName")),
-                            reader.GetString(reader.GetOrdinal("Country")),
-                            reader.GetString(reader.GetOrdinal("City")),
-                            reader.GetString(reader.GetOrdinal("Street")),
-                            reader.GetString(reader.GetOrdinal("StreetNumber")),
-                            reader.GetString(reader.GetOrdinal("AvatarUrl")),
-                            reader.GetDecimal(reader.GetOrdinal("Balance")));
-                    }
-                }
-            }
-            return foundUser;
+        public List<User> GetAll()
+        {
+            using var context = contextFactory.CreateDbContext([]);
+            return context.Users.ToList();
         }
 
         public void SaveAddress(int id, Address address)
         {
-            const string Query = @"UPDATE [User] SET Country = @country, City = @city, 
-                                   Street = @street, StreetNumber = @streetNumber WHERE uid = @id";
+            using var context = contextFactory.CreateDbContext([]);
+            var foundUser = context.Users.FirstOrDefault(user => user.Id == id);
 
-            using (var connection = new SqlConnection(connectionString))
-            using (var command = new SqlCommand(Query, connection))
+            if (foundUser is null)
             {
-                command.Parameters.AddWithValue("@id", id);
-                command.Parameters.AddWithValue("@country", address.Country);
-                command.Parameters.AddWithValue("@city", address.City);
-                command.Parameters.AddWithValue("@street", address.Street);
-                command.Parameters.AddWithValue("@streetNumber", address.StreetNumber);
-
-                connection.Open();
-                int rowsAffected = command.ExecuteNonQuery();
-
-                if (rowsAffected == 0)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Warning: No user found with ID {id}");
-                }
+                return;
             }
+
+            foundUser.Country = address.Country;
+            foundUser.City = address.City;
+            foundUser.Street = address.Street;
+            foundUser.StreetNumber = address.StreetNumber;
+            context.SaveChanges();
         }
 
-        public virtual decimal GetUserBalance(int userId)
+        public decimal GetUserBalance(int userId)
         {
-            using (var connection = new SqlConnection(connectionString))
-            using (var command = new SqlCommand("SELECT Balance FROM [User] WHERE uid = @userId", connection))
-            {
-                command.Parameters.AddWithValue("@userId", userId);
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (!reader.Read())
-                    {
-                        return 0m;
-                    }
-
-                    return (decimal)reader["Balance"];
-                }
-            }
+            using var context = contextFactory.CreateDbContext([]);
+            return context.Users
+                .Where(user => user.Id == userId)
+                .Select(user => (decimal?)user.Balance)
+                .FirstOrDefault() ?? 0m;
         }
 
-        public virtual void UpdateBalance(int userId, decimal newBalance)
+        public void UpdateBalance(int userId, decimal newBalance)
         {
-            using (var connection = new SqlConnection(connectionString))
-            using (var command = new SqlCommand("UPDATE [User] SET Balance = @balance WHERE uid = @userId", connection))
-            {
-                command.Parameters.AddWithValue("@balance", newBalance);
-                command.Parameters.AddWithValue("@userId", userId);
+            using var context = contextFactory.CreateDbContext([]);
+            var foundUser = context.Users.FirstOrDefault(user => user.Id == userId);
 
-                connection.Open();
-                command.ExecuteNonQuery();
+            if (foundUser is null)
+            {
+                return;
             }
+
+            foundUser.Balance = newBalance;
+            context.SaveChanges();
         }
     }
 }

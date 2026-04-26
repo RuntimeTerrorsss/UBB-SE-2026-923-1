@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookingBoardgames.Src.Models;
+﻿using BookingBoardGames.Repositories;
+using BookingBoardGames.Src.Models;
 
 namespace BookingBoardGames.Src.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User>
     {
-        public User GetById(int id);
+        public User? GetById(int id);
         public void SaveAddress(int id, Address address);
         public decimal GetUserBalance(int userId);
         public void UpdateBalance(int userId, decimal newBalance);
