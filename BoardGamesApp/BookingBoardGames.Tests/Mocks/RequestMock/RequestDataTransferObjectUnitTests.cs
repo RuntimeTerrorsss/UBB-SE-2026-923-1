@@ -1,8 +1,8 @@
 using System;
-using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
+using BookingBoardGames.Src.Mocks.RequestMock;
 using Xunit;
 
-namespace BookingBoardgamesLoveBan.Tests.Mocks.RequestMock
+namespace BookingBoardGames.Tests.Mocks.RequestMock
 {
     public class RequestDataTransferObjectUnitTests
     {

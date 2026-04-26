@@ -213,7 +213,7 @@ namespace BookingBoardGames.Src.ViewModels
             RequestIdentifier = requestId;
             DeliveryAddress = deliveryAddress;
             BookingMessageIdentifier = bookingMessageIdentifier;
-            RequestDataTransferObject requestDataTransferObject = this.cardPaymentService.GetRequestDataTransferObject(requestId);
+            RentalDataTransferObject requestDataTransferObject = this.cardPaymentService.GetRequestDataTransferObject(requestId);
             ConversationService = conversationService;
 
             ClientIdentifier = requestDataTransferObject.ClientId;

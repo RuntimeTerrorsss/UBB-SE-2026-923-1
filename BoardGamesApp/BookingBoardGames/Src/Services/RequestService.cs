@@ -9,10 +9,10 @@ namespace BookingBoardGames.Src.Services
 {
     public class RequestService : IRequestService
     {
-        private readonly IRequestRepository requestRepository;
+        private readonly IRentalRepository requestRepository;
         private readonly IGameRepository gameRepository;
 
-        public RequestService(IRequestRepository requestRepository, IGameRepository gameRepository)
+        public RequestService(IRentalRepository requestRepository, IGameRepository gameRepository)
         {
             this.requestRepository = requestRepository;
             this.gameRepository = gameRepository;

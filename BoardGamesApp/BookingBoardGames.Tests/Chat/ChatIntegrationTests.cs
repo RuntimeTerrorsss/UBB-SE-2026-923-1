@@ -1,9 +1,9 @@
-﻿using BookingBoardgamesILoveBan.Src.Chat.DTO;
-using BookingBoardgamesILoveBan.Src.Chat.Repository;
-using BookingBoardgamesILoveBan.Src.Chat.Service;
-using BookingBoardgamesILoveBan.Src.Enum;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Repository;
+﻿using BookingBoardgames.Src.Chat.DTO;
+using BookingBoardgames.Src.Chat.Repository;
+using BookingBoardgames.Src.Chat.Service;
+using BookingBoardgames.Src.Enum;
+using BookingBoardgames.Src.Mocks.UserMock;
+using BookingBoardgames.Src.PaymentCommon.Repository;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Linq;
