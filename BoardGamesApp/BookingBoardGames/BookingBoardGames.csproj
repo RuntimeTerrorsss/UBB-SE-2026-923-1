@@ -54,10 +54,12 @@
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Src\Repositories\" />
     <Folder Include="Src\Services\" />
     <Folder Include="Src\ViewModels\ChatViewModels\" />
     <Folder Include="Src\Views\ChatViews\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BookingBoardGames.Data\BookingBoardGames.Data.csproj" />
   </ItemGroup>
 
   <!--

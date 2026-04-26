@@ -3,9 +3,11 @@ using System.Collections.Generic;
 
 namespace BookingBoardGames.Src.Repositories
 {
-    public interface IRequestRepository
+    public interface IRentalRepository
     {
         public Rental GetById(int id);
+
+        public TimeRange? GetRentalTimeRange(int id);
 
         public List<TimeRange> GetAllOccupiedPeriods();
 

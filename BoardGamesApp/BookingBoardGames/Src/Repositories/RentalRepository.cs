@@ -5,7 +5,7 @@ using BookingBoardGames.Data;
 
 namespace BookingBoardGames.Src.Repositories
 {
-    public class RentalRepository : IRequestRepository
+    public class RentalRepository : IRentalRepository
     {
         private readonly AppDbContext _context;
 
