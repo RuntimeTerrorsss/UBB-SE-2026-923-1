@@ -2,7 +2,7 @@
 using Xunit;
 using BookingBoardgamesILoveBan.Src.PaymentCard.Commands;
 
-namespace BookingBoardgamesILoveBan.Tests.PaymentCard.Commands
+namespace BookingBoardGames.Tests.PaymentCard
 {
     public class RelayCommandTests
     {

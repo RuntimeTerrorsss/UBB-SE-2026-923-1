@@ -4,7 +4,7 @@ using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
 using Microsoft.Data.SqlClient;
 using Xunit;
 
-namespace BookingBoardgamesLoveBan.Tests.Mocks.RequestMock
+namespace BookingBoardGames.Tests.Mocks.RequestMock
 {
     public class RequestRepositoryIntegrationTests
     {

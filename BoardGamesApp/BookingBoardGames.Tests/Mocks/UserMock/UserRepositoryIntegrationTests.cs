@@ -3,7 +3,7 @@ using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
 using Microsoft.Data.SqlClient;
 using Xunit;
 
-namespace BookingBoardgamesLoveBan.Tests.Mocks.UserMock
+namespace BookingBoardGames.Tests.Mocks.UserMock
 {
     public class UserRepositoryIntegrationTests
     {

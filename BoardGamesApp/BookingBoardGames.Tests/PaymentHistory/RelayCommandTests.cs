@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BookingBoardgamesILoveBan.Src.PaymentHistory.ViewModel;
 
-namespace BookingBoardgamesLoveBan.Tests.PaymentHistory
+namespace BookingBoardGames.Tests.PaymentHistory
 {
     public class RelayCommandTests
     {

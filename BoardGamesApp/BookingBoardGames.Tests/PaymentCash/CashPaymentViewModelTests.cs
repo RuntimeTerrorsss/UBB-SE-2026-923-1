@@ -8,7 +8,7 @@ using BookingBoardgamesILoveBan.Src.PaymentCash.Service;
 using BookingBoardgamesILoveBan.Src.PaymentCash.ViewModel;
 using Moq;
 
-namespace BookingBoardgamesLoveBan.Tests.PaymentCash
+namespace BookingBoardGames.Tests.PaymentCash
 {
     public class CashPaymentViewModelTests
     {

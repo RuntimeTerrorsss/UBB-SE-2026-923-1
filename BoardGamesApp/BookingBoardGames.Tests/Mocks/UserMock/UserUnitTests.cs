@@ -1,7 +1,7 @@
 using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
 using Xunit;
 
-namespace BookingBoardgamesLoveBan.Tests.Mocks.UserMock
+namespace BookingBoardGames.Tests.Mocks.UserMock
 {
     public class UserUnitTests
     {

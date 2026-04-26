@@ -10,7 +10,7 @@ using BookingBoardgamesILoveBan.Src.Delivery.ViewModel;
 using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
 using Xunit;
 
-namespace BookingBoardgamesLoveBan.Tests.Delivery
+namespace BookingBoardGames.Tests.Delivery
 {
     public class DeliveryViewModelTests
     {

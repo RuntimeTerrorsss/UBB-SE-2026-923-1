@@ -4,7 +4,7 @@ using SearchAndBook.Services;
 using SearchAndBook.Shared;
 using SearchAndBook.ViewModels;
 
-namespace SearchAndBook.Tests.ViewModels;
+namespace BookingBoardGames.Tests.SearchAndBook.ViewModels;
 
 public class GameDetailsViewModelTests
 {

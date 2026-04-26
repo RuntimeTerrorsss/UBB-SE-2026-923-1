@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BookingBoardgamesILoveBan.Src.Delivery.Service.MapServices;
 using Xunit;
 
-namespace BookingBoardgamesLoveBan.Tests.Delivery
+namespace BookingBoardGames.Tests.Delivery
 {
     public class MapServiceTests
     {

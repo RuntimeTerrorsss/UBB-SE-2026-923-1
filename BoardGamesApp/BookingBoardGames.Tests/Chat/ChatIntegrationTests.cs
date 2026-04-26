@@ -9,7 +9,7 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace BookingBoardgamesLoveBan.Tests.Chat
+namespace BookingBoardGames.Tests.Chat
 {
     public class ChatIntegrationTests
     {

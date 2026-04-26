@@ -8,7 +8,7 @@ using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
 using Moq;
 using Xunit;
 
-namespace BookingBoardgamesILoveBan.Tests.Chat
+namespace BookingBoardGames.Tests.Chat
 {
     public class LeftPanelViewModelTests
     {

@@ -2,7 +2,7 @@ using SearchAndBook.Domain;
 using SearchAndBook.Services;
 using System.Reflection;
 
-namespace SearchAndBook.Tests.Services;
+namespace BookingBoardGames.Tests.SearchAndBook.Services;
 
 public class GeographicalServiceTests
 {
