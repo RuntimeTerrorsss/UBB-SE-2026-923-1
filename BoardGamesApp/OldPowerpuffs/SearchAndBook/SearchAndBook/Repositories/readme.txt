@@ -1,0 +1,9 @@
+IRepository
+
+IGamesRepository
+IRentalsRepository	
+IUsersRepository
+
+GamesRepository
+RentalsRepository	
+UsersRepository

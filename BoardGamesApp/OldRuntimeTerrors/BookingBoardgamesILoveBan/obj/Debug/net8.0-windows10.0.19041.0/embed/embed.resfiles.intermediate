@@ -1,0 +1,13 @@
+App.xbf
+MainWindow.xbf
+Src\Chat\View\ChatPageView.xbf
+Src\Chat\View\ChatView.xbf
+Src\Chat\View\ConversationItemView.xbf
+Src\Chat\View\LeftPanelView.xbf
+Src\Chat\View\MessageItemView.xbf
+Src\Chat\View\RightPanelView.xbf
+Src\Delivery\View\DeliveryView.xbf
+Src\PaymentCard\View\CardPaymentPage.xbf
+Src\PaymentCash\View\CashPaymentPage.xbf
+Src\PaymentHistory\View\PaymentHistoryView.xbf
+Src\View\DashboardView.xbf

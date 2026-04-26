@@ -1,0 +1,4 @@
+DiscoveryViewModel
+FilteredSearchViewModel
+GameDetailsViewModel
+ConfirmBookingViewModel

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SearchAndBook (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "SearchAndBook (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
