@@ -7,10 +7,9 @@
             Id = id;
             Username = name;
             Country = country;
-            City = city;
             Street = street;
             StreetNumber = streetNumber;
-            DisplayName = name;
+            City = city;
         }
 
         public User(int id, string username, string displayName, string country, string city, string street, string streetNumber, string avatarUrl, decimal balance)
@@ -18,8 +17,8 @@
             Id = id;
             Username = username;
             DisplayName = displayName;
-            Country = country;
             City = city;
+            Country = country;
             Street = street;
             StreetNumber = streetNumber;
             AvatarUrl = avatarUrl;
@@ -42,6 +41,6 @@
 
         public string AvatarUrl { get; set; } = string.Empty;
 
-        public decimal Balance { get; set; } = 0m;
+        public decimal Balance { get; set; } = 0;
     }
 }

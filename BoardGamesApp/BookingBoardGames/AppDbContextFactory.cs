@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace BookingBoardGames.Data
+namespace BookingBoardGames
 {
     public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {

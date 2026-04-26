@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGames.Data
+namespace BookingBoardGames
 {
     public class AppDbContext : DbContext
     {
