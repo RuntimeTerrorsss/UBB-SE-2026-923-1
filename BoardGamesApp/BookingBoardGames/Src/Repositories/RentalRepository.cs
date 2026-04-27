@@ -52,5 +52,11 @@ namespace BookingBoardGames.Src.Repositories
 
             return !hasOverlap;
         }
+
+        public void AddRental(Rental rental)
+        {
+            this._context.Rentals.Add(rental);
+            this._context.SaveChanges();
+        }
     }
 }

@@ -54,7 +54,6 @@
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Src\Services\" />
     <Folder Include="Src\ViewModels\ChatViewModels\" />
     <Folder Include="Src\Views\ChatViews\" />
   </ItemGroup>
