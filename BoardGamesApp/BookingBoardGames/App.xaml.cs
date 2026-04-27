@@ -16,8 +16,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
-using SearchAndBook.Repositories;
-using SearchAndBook.Services;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -46,7 +44,7 @@ namespace BookingBoardGames
 
         public static UserRepository UserRepository { get; private set; } = new UserRepository();
 
-        public static IGameRepository GameRepository { get; private set; } = new GameRepository();
+        public static InterfaceGamesRepository GameRepository { get; private set; } = new GamesRepository();
 
         public static IRequestRepository RequestRepository { get; private set; } = new RequestRepository();
 
@@ -95,9 +93,6 @@ namespace BookingBoardGames
             {
                 Debug.WriteLine($"GeographicalService initialization failed: {ex.Message}");
             }
-
-            //var usersRepository = new UsersRepository();
-            //var user = usersRepository.GetGameById(1);
 
             this.window = new MainWindow();
             this.window.Activate();
