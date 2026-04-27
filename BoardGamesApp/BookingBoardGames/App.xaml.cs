@@ -83,26 +83,18 @@ namespace BookingBoardGames
         /// Invoked when the application is launched.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            // powerpuff part; needs rethinking
-            //try
-            //{
-            //    DatabaseSeeder.SeedGameImages();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine($"Seeder failed: {ex.Message}");
-            //}
+            DatabaseBootstrap.Initialize();
 
-            //try
-            //{
-            //    GlobalGeoService = await GeographicalService.LoadFromFileAsync();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine($"GeographicalService initialization failed: {ex.Message}");
-            //}
+            try
+            {
+                GlobalGeoService = await GeographicalService.LoadFromFileAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"GeographicalService initialization failed: {ex.Message}");
+            }
 
             //var usersRepository = new UsersRepository();
             //var user = usersRepository.GetGameById(1);

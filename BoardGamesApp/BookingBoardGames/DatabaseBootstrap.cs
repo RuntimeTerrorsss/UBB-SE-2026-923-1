@@ -1,11 +1,9 @@
-﻿// <copyright file="DatabaseBootstrap.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Models;
 
 namespace BookingBoardGames
 {
@@ -94,6 +92,78 @@ namespace BookingBoardGames
                     context.SaveChanges();
 
                     System.Diagnostics.Debug.WriteLine("Mock Data successfully injected via EF Core!");
+
+                    System.Diagnostics.Debug.WriteLine("Injecting game images from local Assets folder...");
+
+                    string basePath = AppContext.BaseDirectory;
+                    string projectRoot = FindProjectRoot(basePath);
+                    string imageFolder = Path.Combine(projectRoot, "Assets", "SeedImages");
+
+                    var imageMap = new Dictionary<int, string>
+                    {
+                        { 1, "catan.png" },
+                        { 2, "monopoly.jpg" },
+                        { 3, "carcassonne.jpg" },
+                        { 4, "terraforming_mars.png" },
+                        { 5, "TicketToRide.jpg" },
+                        { 6, "Pandemic.jpg" },
+                        { 7, "7Wonders.png" },
+                        { 8, "Azul.jpg" },
+                        { 9, "Dixit.jpg" },
+                        { 10, "Splendor.jpg" },
+                        { 11, "Codenames.jpg" },
+                        { 12, "Risk.jpg" },
+                        { 13, "Dominion.jpg" },
+                        { 14, "LoveLetter.jpg" },
+                        { 15, "Scythe.jpg" },
+                        { 16, "Wingspan.jpg" },
+                        { 17, "Gloomhaven.jpg" },
+                        { 18, "BrassBirmingham.jpg" },
+                        { 19, "Root.jpg" },
+                        { 20, "terraforming_mars.png" },
+                        { 21, "ArkNova.jpg" },
+                        { 22, "Everdell.jpg" },
+                        { 23, "TheCrew.jpg" },
+                        { 24, "Hanabi.jpg" },
+                        { 25, "Agricola.jpg" },
+                        { 26, "Patchwork.jpg" },
+                        { 27, "carcassonne.jpg" },
+                        { 28, "Uno.jpg" },
+                        { 29, "ExplodingKittens.png" },
+                        { 30, "Bang!.png" },
+                        { 31, "KingOfTokyo.jpg" },
+                        { 32, "SheriffOfNottingham.jpg" },
+                        { 33, "Mysterium.jpg" },
+                        { 34, "Clank!.jpg" }
+                    };
+
+                    bool hasChanges = false;
+
+                    foreach (var pair in imageMap)
+                    {
+                        int gameId = pair.Key;
+                        string filePath = Path.Combine(imageFolder, pair.Value);
+
+                        if (!File.Exists(filePath))
+                        {
+                            continue;
+                        }
+
+                        var game = context.Games.FirstOrDefault(g => g.GameId == gameId);
+
+                        if (game != null && game.Image == null)
+                        {
+                            game.Image = File.ReadAllBytes(filePath);
+                            hasChanges = true;
+                        }
+                    }
+
+                    if (hasChanges)
+                    {
+                        context.SaveChanges();
+                    }
+
+                    System.Diagnostics.Debug.WriteLine("Game images successfully seeded!");
                 }
                 else
                 {
@@ -105,6 +175,24 @@ namespace BookingBoardGames
                 System.Diagnostics.Debug.WriteLine($"Database initialization failed: {exception.Message}");
                 System.Diagnostics.Debug.WriteLine(exception.StackTrace);
             }
+        }
+
+        private static string FindProjectRoot(string startPath)
+        {
+            DirectoryInfo? dir = new DirectoryInfo(startPath);
+
+            while (dir != null)
+            {
+                bool hasCsproj = dir.GetFiles("*.csproj").Length > 0;
+                if (hasCsproj)
+                {
+                    return dir.FullName;
+                }
+
+                dir = dir.Parent;
+            }
+
+            throw new DirectoryNotFoundException("Could not locate project root.");
         }
     }
 }
