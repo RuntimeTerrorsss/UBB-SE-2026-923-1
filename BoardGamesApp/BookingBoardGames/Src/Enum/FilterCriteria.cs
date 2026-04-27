@@ -1,5 +1,4 @@
-﻿namespace SearchAndBook.Shared;
-using SearchAndBook.Domain;
+﻿namespace BookingBoardGames.Src.Enum;
 
 /// <summary>
 /// Represents the criteria used for searching and filtering games.
