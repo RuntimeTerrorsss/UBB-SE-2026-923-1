@@ -149,7 +149,7 @@ namespace BookingBoardGames
                             continue;
                         }
 
-                        var game = context.Games.FirstOrDefault(g => g.GameId == gameId);
+                        var game = context.Games.FirstOrDefault(game => game.Id == gameId);
 
                         if (game != null && game.Image == null)
                         {
