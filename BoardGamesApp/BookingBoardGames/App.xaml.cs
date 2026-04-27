@@ -27,15 +27,16 @@ namespace BookingBoardGames
     /// </summary>
     public partial class App : Application
     {
-        private Window? _window;
+        private Window? window;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="App"/> class.
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>
@@ -44,8 +45,8 @@ namespace BookingBoardGames
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            _window = new MainWindow();
-            _window.Activate();
+            this.window = new MainWindow();
+            this.window.Activate();
         }
     }
 }
