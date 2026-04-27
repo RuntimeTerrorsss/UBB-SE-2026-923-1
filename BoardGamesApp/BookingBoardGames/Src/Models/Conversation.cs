@@ -1,11 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace BookingBoardGames.Src.Models;
+using System.Linq;
 
-public class Conversation
+namespace BookingBoardGames.Src.Models
 {
-    public int ConversationId { get; set; }
+    public class Conversation
+    {
+        public int ConversationId { get; set; }
 
-    public ICollection<ConversationParticipant> Participants { get; set; } = new List<ConversationParticipant>();
-    public ICollection<Message> Messages { get; set; } = new List<Message>();
+        public ICollection<ConversationParticipant> Participants { get; set; } = new List<ConversationParticipant>();
+
+        public ICollection<Message> Messages { get; set; } = new List<Message>();
+
+        public int[] ConversationParticipantIds =>
+            this.Participants.Select(p => p.UserId).ToArray();
+
+        public Dictionary<int, DateTime> LastReadByUser =>
+            this.Participants.ToDictionary(p => p.UserId, p => p.LastRead);
+    }
 }

@@ -1,145 +1,97 @@
-using System;
+// <copyright file="PaymentRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using System.Collections.Generic;
-using BookingBoardgames.Src.PaymentCommon.Model;
-using Microsoft.Data.SqlClient;
+using System.Linq;
+using BookingBoardGames.Src.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingBoardGames.Src.Repositories
 {
-	public class PaymentRepository : IPaymentRepository
-	{
-        private const string SelectAllPaymentsQuery = "SELECT * FROM [Payment]";
-        private const string SelectPaymentByIdentifierQuery = "SELECT * FROM [Payment] WHERE tid = @PaymentId";
-        private const string DeletePaymentByIdentifierQuery = "DELETE FROM [Payment] WHERE tid = @PaymentId";
-        private const string PaymentIdParameterName = "@PaymentId";
-        private const string PaymentIdColumnName = "tid";
-        private static readonly string ConnectionString = DatabaseBootstrap.GetAppConnection();
+    public class PaymentRepository : IPaymentRepository
+    {
+        private readonly AppDbContextFactory contextFactory = new();
 
         public IReadOnlyList<Payment> GetAllPayments()
         {
-            var payments = new List<Payment>();
-
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-                var command = new SqlCommand(SelectAllPaymentsQuery, connection);
-
-                using var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    payments.Add(new Payment
-                    {
-                        TransactionIdentifier = (int)reader[PaymentIdColumnName],
-                        RequestId = (int)reader["RequestId"],
-                        ClientId = (int)reader["ClientId"],
-                        OwnerId = (int)reader["OwnerId"],
-                        PaidAmount = (decimal)reader["Amount"],
-                        PaymentMethod = (string)reader["PaymentMethod"],
-                    });
-                }
-            }
-
-            return payments;
+            using var context = this.contextFactory.CreateDbContext([]);
+            return context.Payments.ToList();
         }
 
         public virtual Payment GetPaymentByIdentifier(int paymentId)
         {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-                var getCommand = connection.CreateCommand();
-                getCommand.CommandText = SelectPaymentByIdentifierQuery;
-                getCommand.Parameters.AddWithValue(PaymentIdParameterName, paymentId);
-                using var reader = getCommand.ExecuteReader();
-                if (!reader.Read())
-                {
-                    return null;
-                }
-                return new Payment
-                {
-                    TransactionIdentifier = (int)reader[PaymentIdColumnName],
-                    RequestId = (int)reader["RequestId"],
-                    ClientId = (int)reader["ClientId"],
-                    OwnerId = (int)reader["OwnerId"],
-                    PaidAmount = (decimal)reader["Amount"],
-                    DateOfTransaction = reader["DateOfTransaction"] == DBNull.Value ? null : (global::System.DateTime)reader["DateOfTransaction"],
-                    PaymentMethod = reader["PaymentMethod"].ToString(),
-
-                    DateConfirmedBuyer = reader["DateConfirmedBuyer"] == DBNull.Value ? null : (global::System.DateTime)reader["DateConfirmedBuyer"],
-                    DateConfirmedSeller = reader["DateConfirmedSeller"] == DBNull.Value ? null : (global::System.DateTime)reader["DateConfirmedSeller"],
-
-                    PaymentState = (int)reader["state"],
-                    ReceiptFilePath = reader["FilePath"] == DBNull.Value ? null : reader["FilePath"].ToString()
-                };
-            }
+            using var context = this.contextFactory.CreateDbContext([]);
+            return context.Payments.FirstOrDefault(p => p.TransactionIdentifier == paymentId);
         }
 
         public virtual int AddPayment(Payment payment)
         {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-                var createCommand = connection.CreateCommand();
-                createCommand.CommandText = @"
-                INSERT INTO [Payment] (RequestId, ClientId, OwnerId, Amount,
-                    DateOfTransaction, DateConfirmedBuyer, DateConfirmedSeller, PaymentMethod, State, FilePath)
-                OUTPUT INSERTED.Tid
-                VALUES
-                    (@RequestId, @ClientId, @OwnerId, @Amount,
-                     @DateOfTransaction, @DateConfirmedBuyer, @DateConfirmedSeller, @PaymentMethod, @State, @FilePath)";
-                createCommand.Parameters.AddWithValue("@RequestId", payment.RequestId);
-                createCommand.Parameters.AddWithValue("@ClientId", payment.ClientId);
-                createCommand.Parameters.AddWithValue("@OwnerId", payment.OwnerId);
-                createCommand.Parameters.AddWithValue("@Amount", payment.PaidAmount);
-                createCommand.Parameters.AddWithValue("@PaymentMethod", payment.PaymentMethod);
-                createCommand.Parameters.AddWithValue("@State", payment.PaymentState);
-                createCommand.Parameters.AddWithValue("@DateOfTransaction",
-                    (object?)payment.DateOfTransaction ?? DateTime.Now);
-				createCommand.Parameters.AddWithValue("@DateConfirmedBuyer",
-                    (object?)payment.DateConfirmedBuyer ?? DBNull.Value);
-				createCommand.Parameters.AddWithValue("@DateConfirmedSeller",
-                    (object?)payment.DateConfirmedSeller ?? DBNull.Value);
-				createCommand.Parameters.AddWithValue("@FilePath",
-                    (object?)payment.ReceiptFilePath ?? string.Empty);
-                var result = createCommand.ExecuteScalar();
-                return (int)result;
-            }
+            using var context = this.contextFactory.CreateDbContext([]);
+            context.Payments.Add(payment);
+            context.SaveChanges();
+            return payment.TransactionIdentifier;
         }
+
         public bool DeletePayment(Payment payment)
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            using var context = this.contextFactory.CreateDbContext([]);
+            var found = context.Payments.FirstOrDefault(p => p.TransactionIdentifier == payment.TransactionIdentifier);
+
+            if (found is null)
             {
-                connection.Open();
-                var command = new SqlCommand(DeletePaymentByIdentifierQuery, connection);
-                command.Parameters.AddWithValue(PaymentIdParameterName, payment.TransactionIdentifier);
-                int rowsAffected = command.ExecuteNonQuery();
-                return rowsAffected > 0;
+                return false;
             }
+
+            context.Payments.Remove(found);
+            context.SaveChanges();
+            return true;
         }
+
         public virtual Payment UpdatePayment(Payment payment)
         {
-            Payment previousPayment = GetPaymentByIdentifier(payment.TransactionIdentifier);
+            using var context = this.contextFactory.CreateDbContext([]);
+            var existing = context.Payments.FirstOrDefault(p => p.TransactionIdentifier == payment.TransactionIdentifier);
 
-            using (var connection = new SqlConnection(DatabaseBootstrap.GetAppConnection()))
+            if (existing is null)
             {
-                connection.Open();
-                var command = new SqlCommand(@"
-                        UPDATE [Payment]
-                        SET FilePath = @FilePath,  DateOfTransaction = @DateOfTransaction, DateConfirmedBuyer=@DateConfirmedBuyer, DateConfirmedSeller=@DateConfirmedSeller
-                        WHERE tid = @PaymentId", connection);
-
-                command.Parameters.AddWithValue("@FilePath",
-                    (object?)payment.ReceiptFilePath ?? string.Empty);
-                command.Parameters.AddWithValue("@DateOfTransaction",
-                    (object?)payment.DateOfTransaction ?? DateTime.Now);
-                command.Parameters.AddWithValue("@DateConfirmedBuyer",
-                    (object?)payment.DateConfirmedBuyer ?? DBNull.Value);
-                command.Parameters.AddWithValue("@DateConfirmedSeller",
-                    (object?)payment.DateConfirmedSeller ?? DBNull.Value);
-                command.Parameters.AddWithValue(PaymentIdParameterName, payment.TransactionIdentifier);
-                command.ExecuteNonQuery();
+                return null;
             }
 
+            // Capture previous state to return
+            var previousPayment = new Payment
+            {
+                TransactionIdentifier = existing.TransactionIdentifier,
+                RequestId = existing.RequestId,
+                ClientId = existing.ClientId,
+                OwnerId = existing.OwnerId,
+                PaidAmount = existing.PaidAmount,
+                PaymentMethod = existing.PaymentMethod,
+                DateOfTransaction = existing.DateOfTransaction,
+                DateConfirmedBuyer = existing.DateConfirmedBuyer,
+                DateConfirmedSeller = existing.DateConfirmedSeller,
+                PaymentState = existing.PaymentState,
+                ReceiptFilePath = existing.ReceiptFilePath,
+            };
+
+            existing.ReceiptFilePath = payment.ReceiptFilePath;
+            existing.DateOfTransaction = payment.DateOfTransaction;
+            existing.DateConfirmedBuyer = payment.DateConfirmedBuyer;
+            existing.DateConfirmedSeller = payment.DateConfirmedSeller;
+
+            context.SaveChanges();
+
             return previousPayment;
+        }
+
+        public Payment? GetGameById(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public List<Payment> GetAll()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -1,14 +1,19 @@
 using System.Collections.Generic;
-using BookingBoardgames.Src.PaymentCommon.Model;
+using BookingBoardGames.Repositories;
+using BookingBoardGames.Src.Models;
 
 namespace BookingBoardGames.Src.Repositories
 {
-	public interface IPaymentRepository
-	{
-		public IReadOnlyList<Model.Payment> GetAllPayments();
-		public Model.Payment GetPaymentByIdentifier(int paymentId);
-		public int AddPayment(Model.Payment payment);
-		public bool DeletePayment(Model.Payment payment);
-		public Model.Payment UpdatePayment(Model.Payment payment);
-	}
+    public interface IPaymentRepository : IRepository<Payment>
+    {
+        IReadOnlyList<Payment> GetAllPayments();
+
+        Payment GetPaymentByIdentifier(int paymentId);
+
+        int AddPayment(Payment payment);
+
+        bool DeletePayment(Payment payment);
+
+        Payment UpdatePayment(Payment payment);
+    }
 }

@@ -109,5 +109,10 @@ namespace BookingBoardGames
                 System.Diagnostics.Debug.WriteLine(exception.StackTrace);
             }
         }
+
+        internal static string GetAppConnection()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

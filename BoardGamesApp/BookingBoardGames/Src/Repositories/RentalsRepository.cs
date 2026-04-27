@@ -1,148 +1,80 @@
-﻿namespace SearchAndBook.Repositories;
-using System;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using SearchAndBook.Domain;
-using SearchAndBook.Repositories.Sql;
+﻿using System.Collections.Generic;
+using System.Linq;
+using BookingBoardGames;
+using BookingBoardGames.Repositories;
+using BookingBoardGames.Src.Models;
 using SearchAndBook.Shared;
 
-// How ADO.NET handles connections :
-// - When you write using var connection = new SqlConnection(...) and call .Open(), Microsoft
-// checks the pool, so the pool of connections is handled by .net
-// - If there is a free connection, it gives it to you.
-// - When your "using" block finishes, it calls .Close().
-// - Microsoft intercepts your .Close() command. It doesn't actually destroy the connection
-// to the database. It just wipes the data clean and parks it back in the hidden pool for
-// the next person to use.
-
-/// <summary>
-/// Repository for managing rental data.
-/// </summary>
-public class RentalsRepository : InterfaceRentalsRepository
+namespace SearchAndBook.Repositories
 {
     /// <summary>
-    /// Retrieves a rental time range by its unique identifier.
+    /// Repository for managing rental data using Entity Framework Core.
     /// </summary>
-    /// <param name="id">The rental identifier.</param>
-    /// <returns>The rental time range if isfound; otherwise, null.</returns>
-    public TimeRange? GetGameById(int id)
+    public class RentalsRepository : IRentalsRepository
     {
-        try
+        private readonly AppDbContextFactory contextFactory = new();
+
+        /// <summary>
+        /// Retrieves a rental time range by its unique identifier.
+        /// </summary>
+        public TimeRange? GetGameById(int id)
         {
-            using var connection = new SqlConnection(DatabaseConfig.ConnectionString);
-            connection.Open();
+            using var context = this.contextFactory.CreateDbContext([]);
+            var rental = context.Rentals.FirstOrDefault(r => r.RentalId == id);
 
-            using var command = new SqlCommand(RentalQueries.GetRentalRangeById, connection);
-            command.Parameters.AddWithValue("@RentalId", id);
-
-            using var reader = command.ExecuteReader();
-
-            if (!reader.Read())
+            if (rental is null)
             {
                 return null;
             }
 
-            return new TimeRange(
-                Convert.ToDateTime(reader["start_date"]),
-                Convert.ToDateTime(reader["end_date"]));
+            return new TimeRange(rental.StartDate, rental.EndDate);
         }
-        catch (Exception)
+
+        /// <summary>
+        /// Retrieves all rental time ranges.
+        /// </summary>
+        public List<TimeRange> GetAll()
         {
-            throw;
+            using var context = this.contextFactory.CreateDbContext([]);
+            return context.Rentals
+                .Select(r => new TimeRange(r.StartDate, r.EndDate))
+                .ToList();
         }
-    }
 
-    /// <summary>
-    /// Retrieves all rental time rentaltimeranges.
-    /// </summary>
-    /// <returns>A list of all rental time rentaltimeranges.</returns>
-    public List<TimeRange> GetAll()
-    {
-        try
+        /// <summary>
+        /// Retrieves unavailable rental time ranges for a specific game.
+        /// </summary>
+        public List<TimeRange> GetUnavailableTimeRanges(int gameId)
         {
-            var rentalTimeRanges = new List<TimeRange>();
-
-            using var connection = new SqlConnection(DatabaseConfig.ConnectionString);
-            connection.Open();
-
-            using var command = new SqlCommand(RentalQueries.GetAllRentalRanges, connection);
-            using var reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                rentalTimeRanges.Add(new TimeRange(
-                    Convert.ToDateTime(reader["start_date"]),
-                    Convert.ToDateTime(reader["end_date"])));
-            }
-
-            return rentalTimeRanges;
+            using var context = this.contextFactory.CreateDbContext([]);
+            return context.Rentals
+                .Where(r => r.GameId == gameId)
+                .Select(r => new TimeRange(r.StartDate, r.EndDate))
+                .ToList();
         }
-        catch (Exception)
+
+        /// <summary>
+        /// Checks if a game is available for a specified time range.
+        /// </summary>
+        public bool CheckGameAvailability(TimeRange range, int gameId)
         {
-            throw;
+            using var context = this.contextFactory.CreateDbContext([]);
+            bool hasOverlap = context.Rentals.Any(r =>
+                r.GameId == gameId &&
+                r.StartDate < range.EndTime &&
+                r.EndDate > range.StartTime);
+
+            return !hasOverlap;
         }
-    }
 
-    /// <summary>
-    /// Retrieves unavailable rental time rentaltimeranges for a specific game.
-    /// </summary>
-    /// <param name="gameId">The game identifier.</param>
-    /// <returns>A list of time rentaltimeranges when the game is unavailable.</returns>
-    public List<TimeRange> GetUnavailableTimeRanges(int gameId)
-    {
-        try
+        Rental? IRepository<Rental>.GetGameById(int id)
         {
-            var rentalTimeRanges = new List<TimeRange>();
-
-            using var connection = new SqlConnection(DatabaseConfig.ConnectionString);
-            connection.Open();
-
-            using var command = new SqlCommand(RentalQueries.GetUnavailablePeriodsByGameId, connection);
-            command.Parameters.AddWithValue("@GameId", gameId);
-
-            using var reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                var start = Convert.ToDateTime(reader["start_date"]);
-                var end = Convert.ToDateTime(reader["end_date"]);
-
-                rentalTimeRanges.Add(new TimeRange(start, end));
-            }
-
-            return rentalTimeRanges;
+            throw new System.NotImplementedException();
         }
-        catch (Exception)
+
+        List<Rental> IRepository<Rental>.GetAll()
         {
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Checks if a game is available for a specified time range.
-    /// </summary>
-    /// <param name="range">The requested rental time range.</param>
-    /// <param name="gameId">The game identifier.</param>
-    /// <returns>True if the game is available; otherwise, false.</returns>
-    public bool CheckGameAvailability(TimeRange range, int gameId)
-    {
-        try
-        {
-            using var connection = new SqlConnection(DatabaseConfig.ConnectionString);
-            connection.Open();
-
-            using var command = new SqlCommand(RentalQueries.HasOverlappingRental, connection);
-            command.Parameters.AddWithValue("@GameId", gameId);
-            command.Parameters.AddWithValue("@RequestedStartDate", range.StartTime);
-            command.Parameters.AddWithValue("@RequestedEndDate", range.EndTime);
-
-            var result = command.ExecuteScalar();
-
-            return result == null;
-        }
-        catch (Exception)
-        {
-            throw;
+            throw new System.NotImplementedException();
         }
     }
 }

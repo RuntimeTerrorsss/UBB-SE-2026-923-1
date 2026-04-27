@@ -1,18 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// <copyright file="AppDbContext.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using BookingBoardGames.Src.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace BookingBoardGames
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+        }
 
         public DbSet<User> Users { get; set; }
+
         public DbSet<Game> Games { get; set; }
+
         public DbSet<Rental> Rentals { get; set; }
+
         public DbSet<Payment> Payments { get; set; }
+
         public DbSet<Conversation> Conversations { get; set; }
+
         public DbSet<Message> Messages { get; set; }
+
         public DbSet<ConversationParticipant> ConversationParticipants { get; set; }
+
+        // Alias used by ConversationRepository — points to the same table
+        public DbSet<ConversationParticipant> ConversationUsers => this.ConversationParticipants;
+
         public DbSet<City> Cities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
