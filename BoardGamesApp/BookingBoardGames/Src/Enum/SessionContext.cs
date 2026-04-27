@@ -1,5 +1,6 @@
-﻿namespace BookingBoardGames.Src.Enum
+﻿namespace BookingBoardGames.Src.Shared
 {
+    using BookingBoardGames.Src.Models;
 
     /// <summary>
     /// Provides a context for managing the current user's session state, including authentication status and user

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using BookingBoardgames.Src.PaymentCommon.Model;
+using BookingBoardGames.Src.Models;
 using Microsoft.Data.SqlClient;
 
 namespace BookingBoardGames.Src.Repositories

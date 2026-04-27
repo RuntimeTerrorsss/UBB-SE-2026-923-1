@@ -1,4 +1,5 @@
-﻿namespace BookingBoardGames.Src.Enum;
+﻿namespace BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.Models;
 
 /// <summary>
 /// Represents the criteria used for searching and filtering games.

@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="DatabaseBootstrap.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +25,6 @@ namespace BookingBoardGames
                 {
                     System.Diagnostics.Debug.WriteLine("Database is empty. Injecting Mock Data...");
 
-
                     var systemUser = new User { Username = "System", DisplayName = "System", Email = "sys@sys.com", CreatedAt = DateTime.UtcNow };
                     var alice = new User { Username = "alice99", DisplayName = "Alice", Email = "alice@example.com", PasswordHash = "hash1", PhoneNumber = "0711111111", AvatarUrl = "https://i.pravatar.cc/150?u=alice", Balance = 150.00m, Street = "Aleea Godeanu", StreetNumber = "23-25", City = "Cluj-Napoca", Country = "Romania", CreatedAt = DateTime.UtcNow };
                     var bob = new User { Username = "bobby_b", DisplayName = "Bob", Email = "bob@example.com", PasswordHash = "hash2", PhoneNumber = "0722222222", AvatarUrl = "hamster.jpg", Balance = 75.50m, Street = "Dorobantilor", StreetNumber = "27", City = "Oradea", Country = "Romania", CreatedAt = DateTime.UtcNow };
@@ -31,7 +34,6 @@ namespace BookingBoardGames
 
                     context.Users.AddRange(systemUser, alice, bob, carol, david, emma);
                     context.SaveChanges();
-
 
                     var catan = new Game { Name = "Catan", Price = 15.00m, PricePerDay = 1.99m, MinimumPlayerNumber = 3, MaximumPlayerNumber = 4, Description = "Trade and build on the island of Catan.", IsActive = true, Owner = alice };
                     var monopoly = new Game { Name = "Monopoly", Price = 10.00m, PricePerDay = 1.50m, MinimumPlayerNumber = 2, MaximumPlayerNumber = 6, Description = "Classic property trading game.", IsActive = true, Owner = bob };
@@ -50,21 +52,19 @@ namespace BookingBoardGames
                     context.Rentals.AddRange(rental1, rental2, rental3);
                     context.SaveChanges();
 
-
                     var payment1 = new Payment { Request = rental1, Client = bob, Owner = alice, PaidAmount = 11.94m, PaymentMethod = "CARD", PaymentState = 1, DateOfTransaction = new DateTime(2026, 3, 1, 10, 0, 0), DateConfirmedBuyer = new DateTime(2026, 3, 1, 10, 0, 0) };
                     var payment2 = new Payment { Request = rental2, Client = bob, Owner = carol, PaidAmount = 2.50m, PaymentMethod = "CASH", PaymentState = 1, DateOfTransaction = new DateTime(2026, 3, 11, 14, 30, 0) };
                     var payment3 = new Payment { Request = rental3, Client = david, Owner = carol, PaidAmount = 5.16m, PaymentMethod = "CARD", PaymentState = 0, DateOfTransaction = new DateTime(2026, 3, 20, 9, 0, 0), DateConfirmedBuyer = new DateTime(2026, 3, 20, 9, 0, 0) };
 
                     context.Payments.AddRange(payment1, payment2, payment3);
 
-
                     var conversation1 = new Conversation
                     {
                         Participants = new List<ConversationParticipant>
                         {
                             new ConversationParticipant { User = alice, LastMessageReadTime = new DateTime(2026, 3, 5, 12, 0, 0) },
-                            new ConversationParticipant { User = bob, LastMessageReadTime = new DateTime(2026, 3, 5, 11, 45, 0) }
-                        }
+                            new ConversationParticipant { User = bob, LastMessageReadTime = new DateTime(2026, 3, 5, 11, 45, 0) },
+                        },
                     };
 
                     var conversation2 = new Conversation
@@ -72,8 +72,8 @@ namespace BookingBoardGames
                         Participants = new List<ConversationParticipant>
                         {
                             new ConversationParticipant { User = bob, LastMessageReadTime = new DateTime(2026, 3, 12, 9, 0, 0) },
-                            new ConversationParticipant { User = carol, LastMessageReadTime = new DateTime(2026, 3, 12, 8, 50, 0) }
-                        }
+                            new ConversationParticipant { User = carol, LastMessageReadTime = new DateTime(2026, 3, 12, 8, 50, 0) },
+                        },
                     };
 
                     context.Conversations.AddRange(conversation1, conversation2);
@@ -85,10 +85,9 @@ namespace BookingBoardGames
                         new RentalRequestMessage { Conversation = conversation1, Sender = bob, Receiver = alice, MessageSentTime = new DateTime(2026, 3, 1, 9, 0, 0), RequestContent = "Hey, is Catan available March 1–7?", IsRequestResolved = false, IsRequestAccepted = false, RentalRequest = rental1, MessageContentAsString = "Rental Request" },
                         new TextMessage { Conversation = conversation1, Sender = alice, Receiver = bob, MessageSentTime = new DateTime(2026, 3, 1, 9, 5, 0), TextMessageContent = "Yes, it's free — it's all yours!", MessageContentAsString = "Yes, it's free — it's all yours!" },
                         new ImageMessage { Conversation = conversation1, Sender = bob, Receiver = alice, MessageSentTime = new DateTime(2026, 3, 1, 9, 8, 0), MessageImageUrl = "hamster.jpg", MessageContentAsString = "[Image]" },
-                        
                         new SystemMessage { Conversation = conversation2, Sender = systemUser, Receiver = systemUser, MessageSentTime = new DateTime(2026, 3, 10, 9, 55, 0), MessageContent = "New conversation", MessageContentAsString = "New conversation" },
                         new RentalRequestMessage { Conversation = conversation2, Sender = bob, Receiver = carol, MessageSentTime = new DateTime(2026, 3, 10, 10, 0, 0), RequestContent = "Can I borrow Activity March 10–15?", IsRequestResolved = false, IsRequestAccepted = false, RentalRequest = rental2, MessageContentAsString = "Rental Request" },
-                        new TextMessage { Conversation = conversation2, Sender = carol, Receiver = bob, MessageSentTime = new DateTime(2026, 3, 10, 10, 10, 0), TextMessageContent = "Perfect, thanks a lot!", MessageContentAsString = "Perfect, thanks a lot!" }
+                        new TextMessage { Conversation = conversation2, Sender = carol, Receiver = bob, MessageSentTime = new DateTime(2026, 3, 10, 10, 10, 0), TextMessageContent = "Perfect, thanks a lot!", MessageContentAsString = "Perfect, thanks a lot!" },
                     };
 
                     context.Messages.AddRange(msgs);
