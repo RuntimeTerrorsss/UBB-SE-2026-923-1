@@ -1,7 +1,6 @@
-﻿namespace SearchAndBook.Repositories
+﻿namespace BookingBoardGames.Src.Repositories
 {
     using System.Collections.Generic;
-    using SearchAndBook.Domain;
 
     /// <summary>
     /// Defines methods for querying and managing rental time ranges for games, including checking availability and

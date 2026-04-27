@@ -1,14 +1,13 @@
-﻿namespace SearchAndBook.ViewModels
+﻿namespace BookingBoardGames.Src.ViewModels
 {
     using System;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices.WindowsRuntime;
     using Microsoft.UI.Xaml.Media.Imaging;
-    using SearchAndBook.Domain;
-    using SearchAndBook.Services;
-    using SearchAndBook.Shared;
     using Windows.Storage.Streams;
+    using BookingBoardGames.Src.DTO;
+    using BookingBoardGames.Src.Services;
 
     /// <summary>
     /// Represents the view model for confirming a booking, providing booking details, availability checks, and commands

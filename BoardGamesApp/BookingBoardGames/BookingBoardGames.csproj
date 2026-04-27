@@ -59,6 +59,9 @@
     <Folder Include="Src\ViewModels\ChatViewModels\" />
     <Folder Include="Src\Views\ChatViews\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BookingBoardGames.Data\BookingBoardGames.Data.csproj" />
+  </ItemGroup>
 
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution

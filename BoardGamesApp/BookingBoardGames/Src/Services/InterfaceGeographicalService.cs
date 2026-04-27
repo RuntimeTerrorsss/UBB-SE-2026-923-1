@@ -1,4 +1,4 @@
-﻿namespace SearchAndBook.Services
+﻿namespace BookingBoardGames.Src.Services
 {
     using System;
     using System.Collections.Generic;

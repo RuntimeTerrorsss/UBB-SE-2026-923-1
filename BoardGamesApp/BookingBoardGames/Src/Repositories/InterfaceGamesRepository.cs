@@ -1,8 +1,7 @@
-﻿namespace SearchAndBook.Repositories
+﻿namespace BookingBoardGames.Src.Repositories
 {
     using System.Collections.Generic;
-    using SearchAndBook.Domain;
-    using SearchAndBook.Shared;
+    using BookingBoardGames.Src.Enum;
 
     /// <summary>
     /// Defines the repository operations for managing Game entities.
@@ -29,5 +28,7 @@
         /// <param name="userId">The unique identifier of the user.</param>
         /// <returns>A list of other games for the user's feed.</returns>
         List<Game> GetRemainingGamesForFeed(int userId);
+
+        public decimal GetPriceGameById(int gameId);
     }
 }

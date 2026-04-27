@@ -4,12 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using BookingBoardGames.Src.ViewModels;
-using BookingBoardgamesILoveBan.Src.DTO;
+using BookingBoardGames.Src.DTO;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using BookingBoardGames.Src.Enum;
 
 namespace BookingBoardgamesILoveBan.Src.Chat.View
 {
@@ -59,23 +60,23 @@ namespace BookingBoardgamesILoveBan.Src.Chat.View
         {
             switch (message.Type)
             {
-                case Enum.MessageType.MessageSystem:
+                case MessageType.MessageSystem:
                     RenderSystemMessage(message);
                     break;
 
-                case Enum.MessageType.MessageText:
+                case MessageType.MessageText:
                     RenderTextMessage(message, currentUserId);
                     break;
 
-                case Enum.MessageType.MessageImage:
+                case MessageType.MessageImage:
                     RenderImageMessage(message, currentUserId);
                     break;
 
-                case Enum.MessageType.MessageRentalRequest:
+                case MessageType.MessageRentalRequest:
                     RenderBookingRequest(message, currentUserId);
                     break;
 
-                case Enum.MessageType.MessageCashAgreement:
+                case MessageType.MessageCashAgreement:
                     RenderCashAgreement(message, currentUserId);
                     break;
             }

@@ -1,12 +1,12 @@
-﻿namespace SearchAndBook.Services
+﻿namespace BookingBoardGames.Src.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using SearchAndBook.Domain;
-    using SearchAndBook.Repositories;
-    using SearchAndBook.Shared;
-    using SearchAndBook.Utils;
+    using BookingBoardGames.Src.Repositories;
+    using BookingBoardGames.Src.DTO;
+    using BookingBoardGames.Src.Enum;
+
 
     /// <summary>
     /// Service responsible for searching, filtering, and retrieving game feeds.
@@ -73,10 +73,10 @@
 
                     var gameDto = new GameDTO
                     {
-                        GameId = filteredGame.GameId,
+                        GameId = filteredGame.Id,
                         Name = filteredGame.Name,
                         Image = filteredGame.Image,
-                        Price = filteredGame.Price,
+                        Price = filteredGame.PricePerDay,
                         City = gameOwner != null ? gameOwner.City : string.Empty,
                         MaximumPlayerNumber = filteredGame.MaximumPlayerNumber,
                         MinimumPlayerNumber = filteredGame.MinimumPlayerNumber,
@@ -388,10 +388,10 @@
         {
             return new GameDTO
             {
-                GameId = gameEntity.GameId,
+                GameId = gameEntity.Id,
                 Name = gameEntity.Name,
                 Image = gameEntity.Image,
-                Price = gameEntity.Price,
+                Price = gameEntity.PricePerDay,
                 City = gameOwnerEntity?.City ?? string.Empty,
                 MaximumPlayerNumber = gameEntity.MaximumPlayerNumber,
                 MinimumPlayerNumber = gameEntity.MinimumPlayerNumber,

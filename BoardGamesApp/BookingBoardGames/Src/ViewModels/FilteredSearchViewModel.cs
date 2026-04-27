@@ -1,4 +1,4 @@
-﻿namespace SearchAndBook.ViewModels
+﻿namespace BookingBoardGames.Src.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -8,11 +8,10 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Microsoft.UI.Xaml.Media.Imaging;
-    using SearchAndBook.CommandHandler;
-    using SearchAndBook.Domain;
-    using SearchAndBook.Services;
-    using SearchAndBook.Shared;
-    using SearchAndBook.Utils;
+    using BookingBoardGames.Src.Services;
+    using BookingBoardGames.Src.DTO;
+    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.Commands;
 
     /// <summary>
     /// ViewModel for the filtered search page.

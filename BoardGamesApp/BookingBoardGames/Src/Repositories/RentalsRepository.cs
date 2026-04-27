@@ -1,10 +1,7 @@
-﻿namespace SearchAndBook.Repositories;
+﻿namespace BookingBoardGames.Src.Repositories;
 using System;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
-using SearchAndBook.Domain;
-using SearchAndBook.Repositories.Sql;
-using SearchAndBook.Shared;
 
 // How ADO.NET handles connections :
 // - When you write using var connection = new SqlConnection(...) and call .Open(), Microsoft

@@ -1,13 +1,12 @@
-﻿namespace SearchAndBook.Services
+﻿namespace BookingBoardGames.Src.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
-    using SearchAndBook.Domain;
-    using SearchAndBook.Utils;
     using Windows.Storage;
+    using BookingBoardGames.Src.Enum;
 
     /// <summary>
     /// GeographicalService is responsible for loading city data from a text file, providing details about cities, calculating distances between cities, and offering city name suggestions based on partial input. It processes the city data to create a lookup for efficient retrieval of city information and handles normalization of city names to improve search accuracy.
