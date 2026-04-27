@@ -1,4 +1,4 @@
-﻿namespace SearchAndBook.ViewModels
+﻿namespace BookingBoardGames.Src.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -7,11 +7,10 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using SearchAndBook.CommandHandler;
-    using SearchAndBook.Domain;
-    using SearchAndBook.Services;
-    using SearchAndBook.Shared;
-    using SearchAndBook.Utils;
+    using BookingBoardGames.Src.Services;
+    using BookingBoardGames.Src.Commands;
+    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.DTO;
 
     /// <summary>
     /// Provides the logic for discovering and filtering games, including pagination and search capabilities.

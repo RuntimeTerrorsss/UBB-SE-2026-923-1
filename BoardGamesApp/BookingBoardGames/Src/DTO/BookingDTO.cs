@@ -1,4 +1,4 @@
-﻿namespace SearchAndBook.Shared;
+﻿namespace BookingBoardGames.Src.DTO;
 using System;
 
 /// <summary>

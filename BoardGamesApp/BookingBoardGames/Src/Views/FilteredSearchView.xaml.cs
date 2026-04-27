@@ -16,10 +16,10 @@ namespace SearchAndBook.Views
     using Microsoft.UI.Xaml.Media;
     using Microsoft.UI.Xaml.Media.Imaging;
     using Microsoft.UI.Xaml.Navigation;
-    using SearchAndBook.Repositories;
-    using SearchAndBook.Services;
-    using SearchAndBook.Shared;
-    using SearchAndBook.ViewModels;
+    using BookingBoardGames.Src.Repositories;
+    using BookingBoardGames.Src.Services;
+    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.ViewModels;
     using Windows.Foundation;
     using Windows.Foundation.Collections;
     using Windows.UI.Notifications;

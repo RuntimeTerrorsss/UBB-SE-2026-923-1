@@ -6,11 +6,10 @@ namespace SearchAndBook.Views
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
-    using SearchAndBook.Domain;
-    using SearchAndBook.Repositories;
-    using SearchAndBook.Services;
-    using SearchAndBook.Shared;
-    using SearchAndBook.ViewModels;
+    using BookingBoardGames.Src.Repositories;
+    using BookingBoardGames.Src.Services;
+    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.ViewModels;
 
     /// <summary>
     /// Provides the user interface for viewing detailed information about a game and selecting rental dates.

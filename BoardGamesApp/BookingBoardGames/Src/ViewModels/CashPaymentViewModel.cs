@@ -12,7 +12,7 @@ namespace BookingBoardGames.Src.ViewModels
 		private readonly ICashPaymentService cashPaymentService;
 		private readonly IUserRepository userRepository;
 		private readonly IRequestService rentalRequestService;
-		private readonly IGameRepository gameRepository;
+		private readonly InterfaceGamesRepository gameRepository;
 		private readonly ConversationService conversationService;
 
 		public string OwnerName { get; set; }
@@ -27,7 +27,7 @@ namespace BookingBoardGames.Src.ViewModels
             ICashPaymentService cashPaymentService,
 			IUserRepository userRepository,
 			IRequestService rentalRequestService,
-			IGameRepository gameRepository,
+            InterfaceGamesRepository gameRepository,
 			int rentalRequestId,
 			string deliveryAddress,
 			int rentalRequestMessageIdentifier,
@@ -41,7 +41,7 @@ namespace BookingBoardGames.Src.ViewModels
 			this.rentalRequestMessageIdentifier = rentalRequestMessageIdentifier;
 
 			Request rentalRequest = this.rentalRequestService.GetRequestById(rentalRequestId);
-			Game game = this.gameRepository.GetById(rentalRequest.GameId);
+			Game game = this.gameRepository.GetGameById(rentalRequest.GameId);
 			User clientUser = this.userRepository.GetById(rentalRequest.ClientId);
 			User ownerUser = this.userRepository.GetById(rentalRequest.OwnerId);
 

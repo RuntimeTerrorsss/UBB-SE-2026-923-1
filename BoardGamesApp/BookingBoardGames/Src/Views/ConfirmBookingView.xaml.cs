@@ -5,11 +5,11 @@ using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using SearchAndBook.Domain;
-using SearchAndBook.Repositories;
-using SearchAndBook.Services;
-using SearchAndBook.Shared;
-using SearchAndBook.ViewModels;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.ViewModels;
 
 /// <summary>
 /// Provides the user interface for confirming a booking, allowing date modification and final submission.

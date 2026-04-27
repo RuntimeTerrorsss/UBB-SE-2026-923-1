@@ -1,8 +1,9 @@
-﻿namespace SearchAndBook.Services
+﻿namespace BookingBoardGames.Src.Services
 {
     using System;
     using System.Collections.Generic;
-    using SearchAndBook.Shared;
+    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.DTO;
 
     /// <summary>
     /// Provides search and filtering capabilities for games.

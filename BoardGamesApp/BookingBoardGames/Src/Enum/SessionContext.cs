@@ -1,6 +1,5 @@
-﻿namespace SearchAndBook.Shared
+﻿namespace BookingBoardGames.Src.Enum
 {
-    using SearchAndBook.Domain;
 
     /// <summary>
     /// Provides a context for managing the current user's session state, including authentication status and user

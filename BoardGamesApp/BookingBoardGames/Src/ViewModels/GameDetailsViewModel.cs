@@ -1,4 +1,4 @@
-﻿namespace SearchAndBook.ViewModels
+﻿namespace BookingBoardGames.Src.ViewModels
 {
     using System;
     using System.ComponentModel;
@@ -6,11 +6,11 @@
     using System.Runtime.InteropServices.WindowsRuntime;
     using System.Windows.Input;
     using Microsoft.UI.Xaml.Media.Imaging;
-    using SearchAndBook.CommandHandler;
-    using SearchAndBook.Domain;
-    using SearchAndBook.Services;
-    using SearchAndBook.Shared;
     using Windows.Storage.Streams;
+    using BookingBoardGames.Src.Services;
+    using BookingBoardGames.Src.DTO;
+    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.Commands;
 
     /// <summary>
     /// Provides details for a specific game, including pricing, availability, and booking commands.

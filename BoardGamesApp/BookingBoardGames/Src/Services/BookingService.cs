@@ -1,9 +1,7 @@
-﻿namespace SearchAndBook.Services;
+﻿namespace BookingBoardGames.Src.Services;
 using System;
-using SearchAndBook.Domain;
-using SearchAndBook.Repositories;
-using SearchAndBook.Shared;
-
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.DTO;
 /// <summary>
 /// Service responsible for handling booking operations, including retrieving game details,
 /// checking availability, and managing rental time rentaltimeranges.
@@ -55,15 +53,15 @@ public class BookingService : InterfaceBookingService
 
             return new BookingDTO
             {
-                GameId = bookedGame.GameId,
+                GameId = bookedGame.Id,
                 Name = bookedGame.Name,
                 Image = bookedGame.Image,
-                Price = bookedGame.Price,
+                Price = bookedGame.PricePerDay,
                 City = gameOwner.City,
                 MinimumNrPlayers = bookedGame.MinimumPlayerNumber,
                 MaximumNumberPlayers = bookedGame.MaximumPlayerNumber,
                 Description = bookedGame.Description,
-                UserId = gameOwner.UserId,
+                UserId = gameOwner.Id,
                 DisplayName = gameOwner.DisplayName,
                 IsSuspended = gameOwner.IsSuspended,
                 AvatarUrl = gameOwner.AvatarUrl,

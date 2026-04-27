@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BookingBoardGames.Src.Repositories;
-using BookingBoardgamesILoveBan.Src.DTO;
+using BookingBoardGames.Src.DTO;
 using Microsoft.UI.Xaml;
 
 namespace BookingBoardGames.Src.ViewModels

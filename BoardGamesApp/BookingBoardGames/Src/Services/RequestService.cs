@@ -10,9 +10,9 @@ namespace BookingBoardGames.Src.Services
     public class RequestService : IRequestService
     {
         private readonly IRequestRepository requestRepository;
-        private readonly IGameRepository gameRepository;
+        private readonly InterfaceGamesRepository gameRepository;
 
-        public RequestService(IRequestRepository requestRepository, IGameRepository gameRepository)
+        public RequestService(IRequestRepository requestRepository, InterfaceGamesRepository gameRepository)
         {
             this.requestRepository = requestRepository;
             this.gameRepository = gameRepository;
@@ -48,7 +48,7 @@ namespace BookingBoardGames.Src.Services
                 return "Unknown Request";
             }
 
-            var game = gameRepository.GetById(request.GameId);
+            var game = gameRepository.GetGameById(request.GameId);
             if (game == null)
             {
                 return "Unknown Game";
