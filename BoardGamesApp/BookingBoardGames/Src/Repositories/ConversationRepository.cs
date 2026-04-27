@@ -14,6 +14,7 @@ namespace BookingBoardGames.Src.Repositories
     public class ConversationRepository : IConversationRepository
     {
         private Dictionary<int, IConversationService> Subscribers { get; set; }
+
         private static string appConnectionString;
 
         public ConversationRepository()
@@ -52,8 +53,8 @@ namespace BookingBoardGames.Src.Repositories
 
         public void HandleReadReceipt(ReadReceipt readReceipt)
         {
-            UpdateLastReadInDB(readReceipt);
-            NotifySubscribersAboutReadReceipt(readReceipt);
+            this.UpdateLastReadInDB(readReceipt);
+            this.NotifySubscribersAboutReadReceipt(readReceipt);
         }
 
         public void HandleMessageUpdate(Message message)
@@ -63,11 +64,12 @@ namespace BookingBoardGames.Src.Repositories
                 if (cashAgreementMessage.IsCashAgreementAcceptedByBuyer &&
                     cashAgreementMessage.IsCashAgreementAcceptedBySeller)
                 {
-                    UpdateCashPaymentFromMessageUpdate(cashAgreementMessage);
+                    this.UpdateCashPaymentFromMessageUpdate(cashAgreementMessage);
                 }
             }
-            UpdateMessageToDB(message);
-            NotifySubscribersAboutMessageUpdate(message);
+
+            this.UpdateMessageToDB(message);
+            this.NotifySubscribersAboutMessageUpdate(message);
         }
 
         public int CreateConversation(int senderId, int receiverId)
