@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -15,6 +16,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using SearchAndBook.Repositories;
 using SearchAndBook.Services;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -82,6 +84,28 @@ namespace BookingBoardGames
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            // powerpuff part; needs rethinking
+            //try
+            //{
+            //    DatabaseSeeder.SeedGameImages();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine($"Seeder failed: {ex.Message}");
+            //}
+
+            //try
+            //{
+            //    GlobalGeoService = await GeographicalService.LoadFromFileAsync();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine($"GeographicalService initialization failed: {ex.Message}");
+            //}
+
+            //var usersRepository = new UsersRepository();
+            //var user = usersRepository.GetGameById(1);
+
             this.window = new MainWindow();
             this.window.Activate();
         }
