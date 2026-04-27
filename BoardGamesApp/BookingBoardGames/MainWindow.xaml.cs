@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using BookingBoardgamesILoveBan.Src.Chat.View;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -10,6 +6,11 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -27,6 +28,21 @@ namespace BookingBoardGames
             this.InitializeComponent();
 
             this.RootFrame.Navigate(typeof(Src.Views.DiscoveryView));
+
+            var window1 = new Window();
+            var frame1 = new Frame();
+            window1.Content = frame1;
+            frame1.Navigate(typeof(ChatPageView), 1);// user id 1
+            window1.Title = "Alice";
+            window1.Activate();
+
+            var window2 = new Window();
+            var frame2 = new Frame();
+            window2.Content = frame2;
+            frame2.Navigate(typeof(ChatPageView), 2); // user id 2
+            window2.Title = "Bob";
+            window2.Activate();
+
             this.Closed += this.MainWindow_Closed;
         }
 
