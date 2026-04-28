@@ -19,6 +19,9 @@ namespace BookingBoardGames.Src.DTO
         int requestId,
         int paymentId)
     {
+        private Models.MessageType type1;
+
+
         public string GetChatMessagePreview()
         {
             int maximumPreviewLength = 50;

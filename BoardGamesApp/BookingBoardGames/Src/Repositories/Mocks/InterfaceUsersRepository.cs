@@ -1,6 +1,7 @@
 ﻿namespace SearchAndBook.Repositories;
-using SearchAndBook.Domain;
 
+using BookingBoardGames.Repositories;
+using BookingBoardGames.Src.Models;
 /// <summary>
 /// Defines the repository operations for managing User entities.
 /// </summary>

@@ -5,11 +5,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using BookingBoardgames.Src.DTO;
-using BookingBoardgames.Src.Chat.Model;
-using BookingBoardgames.Src.Enum;
-using BookingBoardgames.Src.Model;
-using BookingBoardgames.Src.PaymentCard.View;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Models;
 using Microsoft.UI.Xaml.Controls;
 
 namespace BookingBoardGames.Src.ViewModels;

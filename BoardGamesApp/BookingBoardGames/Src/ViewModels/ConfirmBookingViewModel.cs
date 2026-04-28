@@ -5,7 +5,7 @@
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices.WindowsRuntime;
     using Microsoft.UI.Xaml.Media.Imaging;
-    using SearchAndBook.Domain;
+    using BookingBoardGames.Src.Models;
     using SearchAndBook.Services;
     using SearchAndBook.Shared;
     using Windows.Storage.Streams;

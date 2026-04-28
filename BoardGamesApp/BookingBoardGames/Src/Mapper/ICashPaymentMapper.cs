@@ -1,5 +1,5 @@
 ﻿using BookingBoardGames.Src.DTO;
-
+using BookingBoardGames.Src.Models;
 namespace BookingBoardGames.Src.Mapper
 {
 	public interface ICashPaymentMapper

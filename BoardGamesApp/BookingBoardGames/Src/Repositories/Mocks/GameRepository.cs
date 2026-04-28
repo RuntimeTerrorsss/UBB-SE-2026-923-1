@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-
+using BookingBoardGames.Src.Models;
 namespace BookingBoardGames.Src.Repositories.Mocks
 {
     public class GameRepository : IGameRepository
@@ -9,7 +9,7 @@ namespace BookingBoardGames.Src.Repositories.Mocks
         private const string GetGameByIdQuery = "SELECT gid, Name, PricePerDay FROM Game WHERE gid = @id";
         private const string GetPriceByIdQuery = "SELECT PricePerDay FROM Game WHERE gid = @id";
 
-        public Game GetById(int id)
+        public Game GetGameById(int id)
         {
             Game foundGame = null;
 

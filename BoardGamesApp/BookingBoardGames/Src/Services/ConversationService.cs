@@ -5,6 +5,8 @@ using System.Linq;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories.Mocks;
+using BookingBoardGames.Src.Models;
+using BookingBoardGames.Src.Enum;
 
 namespace BookingBoardGames.Src.Services
 {
@@ -151,10 +153,10 @@ namespace BookingBoardGames.Src.Services
                     isResolved: messageDto.isResolved,
                     isAccepted: messageDto.isAccepted),
                 MessageType.MessageCashAgreement => new CashAgreementMessage(
-                    id: messageDto.id,
+                    messageId: messageDto.id,
                     conversationId: messageDto.conversationId,
-                    sellerId: messageDto.senderId,
-                    buyerId: messageDto.receiverId,
+                    senderId: messageDto.senderId,
+                    receiverId: messageDto.receiverId,
                     paymentId: messageDto.paymentId,
                     sentAt: messageDto.sentAt,
                     content: messageDto.content,
@@ -162,7 +164,7 @@ namespace BookingBoardGames.Src.Services
                     isAcceptedByBuyer: messageDto.isAcceptedByBuyer,
                     isAcceptedBySeller: messageDto.isAcceptedBySeller),
                 MessageType.MessageSystem => new SystemMessage(
-                    id: messageDto.id,
+                    messageId: messageDto.id,
                     conversationId: messageDto.conversationId,
                     sentAt: messageDto.sentAt,
                     content: messageDto.content),
@@ -196,12 +198,12 @@ namespace BookingBoardGames.Src.Services
 
         public ConversationDataTransferObject ConversationToConversationDTO(Conversation conversation)
         {
-            var messageDTOs = conversation.ConversationMessageList.Select(messageItem => MessageToMessageDTO(messageItem)).ToList();
+            var messageDTOs = conversation.Messages.Select(messageItem => MessageToMessageDTO(messageItem)).ToList();
             return new ConversationDataTransferObject(
                 conversationId: conversation.ConversationId,
                 participants: conversation.ConversationParticipantIds,
                 messages: messageDTOs,
-                lastRead: conversation.LastMessageReadTime);
+                lastRead: conversation.LastReadByUser);
         }
 
         public ReadReceiptDataTransferObject ReadReceiptToReadReceiptDTO(ReadReceipt readReceipt)

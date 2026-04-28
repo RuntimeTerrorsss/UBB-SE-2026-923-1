@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using BookingBoardGames.Src.Repositories.Mocks;
-    using SearchAndBook.Domain;
+    using BookingBoardGames.Src.Models;
     using SearchAndBook.Repositories;
     using SearchAndBook.Shared;
     using SearchAndBook.Utils;

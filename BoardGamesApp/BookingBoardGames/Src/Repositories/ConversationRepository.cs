@@ -9,7 +9,7 @@ using System.Linq;
 using BookingBoardGames.Src.Models;
 using BookingBoardGames.Src.Services;
 using Microsoft.EntityFrameworkCore;
-using MessageType = BookingBoardGames.Src.Models.MessageType;
+using MessageType = BookingBoardGames.Src.Models;
 
 namespace BookingBoardGames.Src.Repositories
 {

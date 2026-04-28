@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using BookingBoardGames.Src.ViewModels;
-using BookingBoardgames.Src.DTO;
+using BookingBoardGames.Src.DTO;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;

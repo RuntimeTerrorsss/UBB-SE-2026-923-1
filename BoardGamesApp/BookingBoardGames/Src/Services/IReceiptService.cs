@@ -1,10 +1,10 @@
-﻿using BookingBoardgames.Src.PaymentCommon.Model;
+﻿using BookingBoardGames.Src.Models;
 
 namespace BookingBoardGames.Src.Services
 {
 	public interface IReceiptService
 	{
 		public string GenerateReceiptRelativePath(int rentalId);
-		public string GetReceiptDocument(PaymentCommon.Model.Payment payment);
+		public string GetReceiptDocument(Payment payment);
 	}
 }

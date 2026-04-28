@@ -11,15 +11,18 @@ namespace BookingBoardGames.Src.Models
         public int messageReaderId { get; init; }
         public DateTime timeStamp { get; init; }
 
-        public ReadReceipt(int conversationId, int messageReaderId, DateTime timeStamp)
+        public int messageReceiverId { get; init; }
+
+        public ReadReceipt(int conversationId, int messageReaderId, int messageReceiverId,DateTime timeStamp)
         {
             this.conversationId = conversationId;
             this.messageReaderId = messageReaderId;
+            this.messageReceiverId = messageReaderId;
             this.timeStamp = timeStamp;
         }
 
         // Factory — convert from the DTO the network layer sends
         public static ReadReceipt FromDto(ReadReceiptDataTransferObject dto)
-            => new(dto.conversationId, dto.readerId, dto.receiptTimeStamp);
+            => new(dto.conversationId, dto.readerId, dto.receiverId, dto.receiptTimeStamp);
     }
 }

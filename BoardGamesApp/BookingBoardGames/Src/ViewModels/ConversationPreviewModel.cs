@@ -1,6 +1,6 @@
 ﻿namespace BookingBoardGames.Src.ViewModels;
 
-using BookingBoardgames.Src.DTO;
+using BookingBoardGames.Src.DTO;
 using System;
 using System.ComponentModel;
 using System.Linq;

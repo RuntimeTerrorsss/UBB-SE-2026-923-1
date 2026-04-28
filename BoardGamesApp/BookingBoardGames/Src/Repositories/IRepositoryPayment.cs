@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using BookingBoardgames.Src.PaymentHistory.Model;
-
+using BookingBoardGames.Src.Models;
 namespace BookingBoardGames.Src.Repositories
 {
     public interface IRepositoryPayment

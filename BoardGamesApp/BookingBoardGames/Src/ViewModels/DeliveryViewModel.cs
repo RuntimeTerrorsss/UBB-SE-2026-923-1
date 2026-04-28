@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Validators;
-using BookingBoardgames.Src.Delivery.Model;
+using BookingBoardGames.Src.Models;
 
 namespace BookingBoardGames.Src.ViewModels
 {

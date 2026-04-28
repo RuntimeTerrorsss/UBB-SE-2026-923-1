@@ -8,7 +8,7 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using SearchAndBook.CommandHandler;
-    using SearchAndBook.Domain;
+
     using SearchAndBook.Services;
     using SearchAndBook.Shared;
     using SearchAndBook.Utils;

@@ -1,7 +1,7 @@
 ﻿namespace BookingBoardGames.Src.Repositories.Mocks
 {
     using System.Collections.Generic;
-    using SearchAndBook.Domain;
+    using BookingBoardGames.Src.Models;
     using SearchAndBook.Shared;
 
     /// <summary>

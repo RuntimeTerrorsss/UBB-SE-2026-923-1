@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
-using BookingBoardgames.Src.PaymentHistory.Model;
+using BookingBoardGames.Src.Models;
 using BookingBoardGames.Src.Constants;
 
 namespace BookingBoardGames.Src.Repositories

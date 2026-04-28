@@ -1,6 +1,9 @@
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
-using BookingBoardgames.Src.PaymentCash.Model;
+using BookingBoardGames.Src.Models;
+using BookingBoardGames.Src.Services.Payments;
+using BookingBoardGames.Src.Repositories.Mocks;
+using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Src.ViewModels
 {
@@ -54,7 +57,7 @@ namespace BookingBoardGames.Src.ViewModels
             PaidAmount = rentalPrice.ToString();
 
 			int createdPaymentIdentifier = this.cashPaymentService.AddCashPayment(
-                new CashPaymentDataTransferObject(NewPaymentPlaceholderId, rentalRequestId, clientUser.Id, ownerUser.Id, rentalPrice));
+                new CashPaymentDataTransferObject(NewPaymentPlaceholderId, rentalRequestId, clientUser.UserId, ownerUser.UserId, rentalPrice));
 			this.conversationService.OnCashPaymentSelected(this.rentalRequestMessageIdentifier, createdPaymentIdentifier);
 		}
 	}

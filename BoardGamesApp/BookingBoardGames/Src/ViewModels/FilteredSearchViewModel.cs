@@ -8,8 +8,8 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Microsoft.UI.Xaml.Media.Imaging;
-    using SearchAndBook.CommandHandler;
-    using SearchAndBook.Domain;
+    using BookingBoardGames.Src.Commands;
+    using BookingBoardGames.Src.Models;
     using SearchAndBook.Services;
     using SearchAndBook.Shared;
     using SearchAndBook.Utils;

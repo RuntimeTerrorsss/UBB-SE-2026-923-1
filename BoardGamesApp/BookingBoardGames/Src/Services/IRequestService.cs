@@ -1,4 +1,6 @@
-﻿namespace BookingBoardGames.Src.Services
+﻿using BookingBoardGames.Src.Models;
+
+namespace BookingBoardGames.Src.Services
 {
     public interface IRequestService
     {

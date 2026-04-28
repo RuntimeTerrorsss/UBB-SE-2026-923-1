@@ -1,15 +1,7 @@
 ﻿using System;
+using BookingBoardGames.Src.Enum;
 
 namespace BookingBoardGames.Src.Models;
-
-public enum MessageType
-{
-    MessageText,
-    MessageImage,
-    MessageCashAgreement,
-    MessageRentalRequest,
-    MessageSystem,
-}
 
 public abstract class Message
 {
@@ -114,7 +106,7 @@ public class CashAgreementMessage : Message
     public override MessageType TypeOfMessage => MessageType.MessageCashAgreement;
 
     public CashAgreementMessage() { }
-
+   
     public CashAgreementMessage(
         int messageId, int conversationId, int senderId, int receiverId,
         int paymentId, DateTime sentAt, string content)
