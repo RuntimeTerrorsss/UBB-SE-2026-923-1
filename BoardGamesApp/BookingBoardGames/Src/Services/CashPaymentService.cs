@@ -42,8 +42,8 @@ namespace BookingBoardGames.Src.Services
 
 			if (IsAllConfirmed(paymentIdentifier))
 			{
-                receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
-			}
+                paymentToConfirm.ReceiptFilePath = receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
+            }
 
             paymentRepository.UpdatePayment(paymentToConfirm);
 		}
@@ -55,8 +55,8 @@ namespace BookingBoardGames.Src.Services
 
 			if (IsAllConfirmed(paymentIdentifier))
 			{
-                receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
-			}
+                paymentToConfirm.ReceiptFilePath = receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
+            }
 
             paymentRepository.UpdatePayment(paymentToConfirm);
 		}

@@ -225,7 +225,8 @@ namespace BookingBoardGames.Src.ViewModels
 
             TotalPages = pagedResult.TotalPages == PaymentHistoryViewModelConstants.NoPages ? MinimumPageCount : pagedResult.TotalPages;
 
-            TotalAmount = paymentService.CalculateTotalAmount(pagedResult.Items);
+            var allFilteredPayments = paymentService.GetFilteredPayments(selectedFilterOption.Type, selectedPaymentMethod, searchText, 1, int.MaxValue);
+            TotalAmount = paymentService.CalculateTotalAmount(allFilteredPayments.Items);
         }
     }
 }

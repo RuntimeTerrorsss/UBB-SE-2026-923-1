@@ -79,6 +79,8 @@ namespace BookingBoardGames
         public int DashboardUser = 3;
         public int NoChatsUser = 8;
 
+        public Window? Window => window;
+
         public App()
         {
             this.InitializeComponent();
