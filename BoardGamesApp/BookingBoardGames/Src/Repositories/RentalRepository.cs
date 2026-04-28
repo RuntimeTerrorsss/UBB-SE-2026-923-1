@@ -16,8 +16,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public Rental GetById(int id)
         {
-            return _context.Rentals
-                .FirstOrDefault(r => r.RentalId == id);
+            return _context.Rentals.FirstOrDefault(r => r.RentalId == id);
         }
 
         public TimeRange? GetRentalTimeRange(int id)
