@@ -6,41 +6,49 @@ using System.Threading.Tasks;
 
 namespace BookingBoardGames.Src.DTO
 {
-    public class RequestDataTransferObject
+    public class RentalDataTransferObject
     {
-        public RequestDataTransferObject(
+        public RentalDataTransferObject(
             int id,
+            int gameId,
             string gameName,
             int clientId,
+            string clientName,
             int ownerId,
             string ownerName,
-            string clientName,
             DateTime startDate,
             DateTime endDate,
             decimal price)
         {
             Id = id;
+            GameId = gameId;
             GameName = gameName;
             ClientId = clientId;
+            ClientName = clientName;
             OwnerId = ownerId;
             OwnerName = ownerName;
-            ClientName = clientName;
             StartDate = startDate;
             EndDate = endDate;
             Price = price;
         }
 
+        public RentalDataTransferObject()
+        {
+        }
+
         public int Id { get; set; }
+
+        public int GameId { get; set; }
 
         public string GameName { get; set; }
 
         public int ClientId { get; set; }
 
+        public string ClientName { get; set; }
+
         public int OwnerId { get; set; }
 
         public string OwnerName { get; set; }
-
-        public string ClientName { get; set; }
 
         public DateTime StartDate { get; set; }
 

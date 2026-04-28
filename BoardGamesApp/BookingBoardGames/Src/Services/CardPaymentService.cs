@@ -8,7 +8,7 @@ namespace BookingBoardGames.Src.Services
     public class CardPaymentService : PaymentService
     {
         private readonly IUserRepository userRepository;
-        private readonly IRequestService requestService;
+        private readonly IRequestService rentalService;
 
         public CardPaymentService(
             PaymentRepository paymentRepository,
@@ -17,7 +17,7 @@ namespace BookingBoardGames.Src.Services
             IRequestService requestService) : base(paymentRepository, receiptService)
         {
             this.userRepository = userRepository;
-            this.requestService = requestService;
+            this.rentalService = requestService;
         }
 
         public virtual CardPaymentDataTransferObject AddCardPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier, decimal amount)
@@ -53,7 +53,7 @@ namespace BookingBoardGames.Src.Services
 
         public bool CheckBalanceSufficiency(int requestIdentifier, int clientIdentifier)
         {
-            return requestService.GetRequestPrice(requestIdentifier) <= userRepository.GetUserBalance(clientIdentifier);
+            return rentalService.GetRequestPrice(requestIdentifier) <= userRepository.GetUserBalance(clientIdentifier);
         }
 
         public CardPaymentDataTransferObject GetCardPayment(int paymentIdentifier)
@@ -68,7 +68,7 @@ namespace BookingBoardGames.Src.Services
 
         public void ProcessPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier)
         {
-            decimal requestPrice = requestService.GetRequestPrice(requestIdentifier);
+            decimal requestPrice = rentalService.GetRequestPrice(requestIdentifier);
             decimal clientBalance = userRepository.GetUserBalance(clientIdentifier);
             decimal ownerBalance = userRepository.GetUserBalance(ownerIdentifier);
             decimal newClientBalance = clientBalance - requestPrice;
@@ -94,15 +94,15 @@ namespace BookingBoardGames.Src.Services
                     paymentMethod: cardPayment.PaymentMethod);
         }
 
-        public virtual RequestDataTransferObject GetRequestDataTransferObject(int requestIdentifier)
+        public virtual RentalDataTransferObject GetRequestDataTransferObject(int rentalIdentifier)
         {
-            Rental request = requestService.GetRequestById(requestIdentifier);
-            string gameName = requestService.GetGameName(request.Id);
-            string ownerName = userRepository.GetById(request.OwnerId).Username;
-            string clientName = userRepository.GetById(request.ClientId).Username;
-            decimal gamePrice = requestService.GetRequestPrice(request.Id);
+            Rental rental = rentalService.GetRequestById(rentalIdentifier);
+            string gameName = rentalService.GetGameName(rental.RentalId);
+            string ownerName = userRepository.GetById(rental.OwnerId).Username;
+            string clientName = userRepository.GetById(rental.ClientId).Username;
+            decimal gamePrice = rentalService.GetRequestPrice(rental.RentalId);
 
-            return new RequestDataTransferObject(request.Id, gameName, request.ClientId, request.OwnerId, ownerName, clientName, request.StartDate, request.EndDate, gamePrice);
+            return new RentalDataTransferObject(rental.RentalId, rental.GameId, gameName, rental.ClientId, clientName, rental.OwnerId, ownerName, rental.StartDate, rental.EndDate, gamePrice);
         }
     }
 }

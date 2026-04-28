@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookingBoardgamesLoveBan.Tests.PaymentHistory
+namespace BookingBoardGames.Tests.PaymentHistory
 {
     public class PaymentHistoryViewModelTests // unit tests
     {
