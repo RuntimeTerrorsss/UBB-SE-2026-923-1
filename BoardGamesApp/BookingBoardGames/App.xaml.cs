@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using BookingBoardGames.Src.Mapper;
-using BookingBoardGames.Src.Models;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using Microsoft.UI.Xaml;
@@ -68,6 +67,14 @@ namespace BookingBoardGames
             new CashPaymentMapper(), ReceiptService);
 
         public static ConversationRepository ConversationRepository { get; private set; } = new ConversationRepository();
+
+        // TODO add request repo instead of rental repo
+        public static InterfaceBookingService BookingService { get; private set; } = new BookingService(GameRepository);
+
+        public static GeographicalService GeographicalService { get; private set; } = new GeographicalService();
+
+        // TODO add request repo instead of rental repo
+        public static InterfaceSearchAndFilterService SearchAndFilterService { get; private set; } = new SearchAndFilterService(GameRepository, UserRepository, ..., GeographicalService);
 
         public int DashboardUser = 3;
         public int NoChatsUser = 8;

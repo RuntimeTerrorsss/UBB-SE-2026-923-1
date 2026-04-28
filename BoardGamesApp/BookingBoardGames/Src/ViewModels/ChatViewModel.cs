@@ -6,10 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Models;
 using BookingBoardGames.Src.Enum;
-using BookingBoardgamesILoveBan.Src.Model;
-using BookingBoardgamesILoveBan.Src.PaymentCard.View;
 using Microsoft.UI.Xaml.Controls;
 
 namespace BookingBoardGames.Src.ViewModels;

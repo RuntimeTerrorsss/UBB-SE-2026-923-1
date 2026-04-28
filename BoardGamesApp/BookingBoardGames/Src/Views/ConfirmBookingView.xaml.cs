@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.Models;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -41,11 +41,11 @@ public sealed partial class ConfirmBookingView : Page
             return;
         }
 
-        var gameRepository = new GamesRepository();
-        var rentalRepository = new RentalsRepository();
-        var userRepository = new UsersRepository();
-        var service = new BookingService(gameRepository, rentalRepository, userRepository);
-        var viewModel = new ConfirmBookingViewModel(service, bookingDTO, range);
+        //var gameRepository = new GamesRepository();
+        //var rentalRepository = new RentalsRepository();
+        //var userRepository = new UsersRepository();
+        //var service = new BookingService(gameRepository, rentalRepository, userRepository);
+        var viewModel = new ConfirmBookingViewModel(App.BookingService, bookingDTO, range);
 
         viewModel.OnGoBackRequested += () =>
         {

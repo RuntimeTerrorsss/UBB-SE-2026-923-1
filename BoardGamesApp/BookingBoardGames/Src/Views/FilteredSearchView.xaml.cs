@@ -45,12 +45,12 @@ namespace BookingBoardGames.Src.Views
             {
                 base.OnNavigatedTo(e);
                 var criteria = e.Parameter as FilterCriteria ?? new FilterCriteria();
-                var gamesRepository = new GamesRepository();
-                var usersRepository = new UsersRepository();
-                var rentalsRepository = new RentalsRepository();
-                var geographicalService = App.GlobalGeoService!;
-                var service = new SearchAndFilterService(gamesRepository, usersRepository, rentalsRepository, geographicalService);
-                var viewModel = new FilteredSearchViewModel(service, geographicalService);
+                //var gamesRepository = new GamesRepository();
+                //var usersRepository = new UsersRepository();
+                //var rentalsRepository = new RentalsRepository();
+                //var geographicalService = App.GlobalGeoService!;
+                //var service = new SearchAndFilterService(gamesRepository, usersRepository, rentalsRepository, geographicalService);
+                var viewModel = new FilteredSearchViewModel(App.SearchAndFilterService, App.GeographicalService);
                 viewModel.OnGameSelectedRequest += gameId =>
                 {
                     this.Frame.Navigate(typeof(GameDetailsView), gameId);
