@@ -11,7 +11,7 @@ public class BookingService : InterfaceBookingService
     private const int MinimumValidDayCount = 1;
     private readonly InterfaceGamesRepository gamesRepository;
     private readonly IRentalRepository rentalsRepository;
-    private readonly InterfaceUsersRepository usersRepository;
+    private readonly IUserRepository usersRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BookingService"/> class.
@@ -22,7 +22,7 @@ public class BookingService : InterfaceBookingService
     public BookingService(
         InterfaceGamesRepository gamesRepository,
         IRentalRepository rentalsRepository,
-        InterfaceUsersRepository usersRepository)
+        IUserRepository usersRepository)
     {
         this.gamesRepository = gamesRepository;
         this.rentalsRepository = rentalsRepository;
