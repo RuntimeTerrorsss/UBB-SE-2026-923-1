@@ -2,7 +2,7 @@
 using BookingBoardGames.Src.Repositories;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,26 +25,29 @@ public class GamesRepository : InterfaceGamesRepository
     /// </summary>
     public const int AnonymousUserId = -1;
 
-    private readonly AppDbContext _context;
+    private readonly AppDbContext appContext;
 
-    public GamesRepository(AppDbContext context) { _context = context; }
+    public GamesRepository(AppDbContext context)
+    {
+        this.appContext = context;
+    }
 
     /// <summary>
     /// Gets a single game by its database id.
     /// </summary>
-    /// <param name="id">The unique id of the game.</param>
+    /// <param name="gameId">The unique id of the game.</param>
     /// <returns>The game object if found; otherwise, null.</returns>
     /// <remarks>
     /// Use this when you already know the exact game id and need full game details.
     /// </remarks>
-    public Game? GetGameById(int id)
+    public Game? GetGameById(int gameId)
     {
-        return _context.Games.FirstOrDefault(g => g.Id == id);
+        return this.appContext.Games.FirstOrDefault(game => game.Id == gameId);
     }
 
     public decimal GetPriceGameById(int gameId)
     {
-        return _context.Games.Where(g => g.Id == gameId).Select(g => g.PricePerDay).FirstOrDefault();
+        return this.appContext.Games.Where(game => game.Id == gameId).Select(game => game.PricePerDay).FirstOrDefault();
     }
 
     /// <summary>
@@ -54,7 +57,6 @@ public class GamesRepository : InterfaceGamesRepository
     public List<Game> GetAll()
     {
         return GetAllActiveGames(AnonymousUserId);
-
     }
 
     /// <summary>
@@ -77,19 +79,37 @@ public class GamesRepository : InterfaceGamesRepository
     /// - if an availability range is provided, only games available in that range are returned.
     /// </remarks>
     public List<Game> GetGamesByFilter(FilterCriteria filter)
-        {
+    {
         var userId = filter.UserId ?? AnonymousUserId;
-        var query = _context.Games.Include(g => g.Owner).Where(g => g.IsActive && g.OwnerId != userId);
+        var query = this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId);
+
         if (!string.IsNullOrWhiteSpace(filter.Name))
-            query = query.Where(g => g.Name.Contains(filter.Name));
+        {
+            query = query.Where(game => game.Name.Contains(filter.Name));
+        }
+
         if (!string.IsNullOrWhiteSpace(filter.City))
-            query = query.Where(g => g.Owner!.City == filter.City);
+        {
+            query = query.Where(game => game.Owner!.City == filter.City);
+        }
+
         if (filter.MaximumPrice.HasValue)
-            query = query.Where(g => g.PricePerDay <= filter.MaximumPrice.Value);
+        {
+            query = query.Where(game => game.PricePerDay <= filter.MaximumPrice.Value);
+        }
+
         if (filter.PlayerCount.HasValue)
-            query = query.Where(g => g.MinimumPlayerNumber <= filter.PlayerCount.Value && g.MaximumPlayerNumber >= filter.PlayerCount.Value);
+        {
+            query = query.Where(game => game.MinimumPlayerNumber <= filter.PlayerCount.Value && game.MaximumPlayerNumber >= filter.PlayerCount.Value);
+        }
+
         if (filter.AvailabilityRange != null)
-        { var start = filter.AvailabilityRange.StartTime; var end = filter.AvailabilityRange.EndTime; query = query.Where(g => !g.Rentals.Any(r => r.StartDate < end && r.EndDate > start)); }
+        {
+            var startDateFilter = filter.AvailabilityRange.StartTime;
+            var endDateFilter = filter.AvailabilityRange.EndTime;
+            query = query.Where(game => !game.Rentals.Any(rental => rental.StartDate < endDateFilter && rental.EndDate > startDateFilter));
+        }
+
         return query.ToList();
     }
 
@@ -103,8 +123,10 @@ public class GamesRepository : InterfaceGamesRepository
     /// <returns>A list of games for the "Available Tonight" section.</returns>
     public List<Game> GetGamesForFeedAvailableTonight(int userId)
     {
-        var today = DateTime.Today; var tomorrow = today.AddDays(1);
-        return _context.Games.Include(g => g.Owner).Where(g => g.IsActive && g.OwnerId != userId && !g.Rentals.Any(r => r.StartDate < tomorrow && r.EndDate > today)).ToList();
+        var todayDate = DateTime.Today;
+        var tomorrowDate = todayDate.AddDays(1);
+
+        return this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId && !game.Rentals.Any(rental => rental.StartDate < tomorrowDate && rental.EndDate > todayDate)).ToList();
     }
 
         /// <summary>
@@ -117,8 +139,10 @@ public class GamesRepository : InterfaceGamesRepository
         /// <returns>A list of games for the "Available Tonight" section.</returns>
     public List<Game> GetRemainingGamesForFeed(int userId)
     {
-        var today = DateTime.Today; var tomorrow = today.AddDays(1);
-        return _context.Games.Where(g => g.IsActive && g.OwnerId != userId && g.Rentals.Any(r => r.StartDate < tomorrow && r.EndDate > today)).ToList();
+        var todayDate = DateTime.Today;
+        var tomorrowDate = todayDate.AddDays(1);
+
+        return this.appContext.Games.Where(game => game.IsActive && game.OwnerId != userId && game.Rentals.Any(rental => rental.StartDate < tomorrowDate && rental.EndDate > todayDate)).ToList();
     }
 
     // Used to convert game data to Game object
@@ -146,6 +170,6 @@ public class GamesRepository : InterfaceGamesRepository
     /// <returns>A list of all active games.</returns>
     private List<Game> GetAllActiveGames(int userId)
     {
-        return _context.Games.Include(g => g.Owner).Where(g => g.IsActive && g.OwnerId != userId).ToList();
+        return this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId).ToList();
     }
 }

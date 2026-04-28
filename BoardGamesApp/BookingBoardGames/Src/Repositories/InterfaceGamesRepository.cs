@@ -1,7 +1,7 @@
 ﻿namespace BookingBoardGames.Src.Repositories
 {
     using System.Collections.Generic;
-    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.Shared;
 
     /// <summary>
     /// Defines the repository operations for managing Game entities.
