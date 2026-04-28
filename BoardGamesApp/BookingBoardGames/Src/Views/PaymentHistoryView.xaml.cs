@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.ViewModels;
 
-namespace BookingBoardgamesILoveBan.Src.PaymentHistory.View
+namespace BookingBoardGames.Src.Views
 {
     public sealed partial class PaymentHistoryView : Page
     {

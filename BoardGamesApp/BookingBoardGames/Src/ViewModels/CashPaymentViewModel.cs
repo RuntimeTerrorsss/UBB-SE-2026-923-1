@@ -1,5 +1,6 @@
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Src.ViewModels
 {
@@ -10,7 +11,7 @@ namespace BookingBoardGames.Src.ViewModels
 
 		private readonly ICashPaymentService cashPaymentService;
 		private readonly IUserRepository userRepository;
-		private readonly IRequestService rentalRequestService;
+		private readonly IRentalService rentalRequestService;
 		private readonly InterfaceGamesRepository gameRepository;
 		private readonly ConversationService conversationService;
 
@@ -25,7 +26,7 @@ namespace BookingBoardGames.Src.ViewModels
 		public CashPaymentViewModel(
             ICashPaymentService cashPaymentService,
 			IUserRepository userRepository,
-			IRequestService rentalRequestService,
+			IRentalService rentalRequestService,
             InterfaceGamesRepository gameRepository,
 			int rentalRequestId,
 			string deliveryAddress,
@@ -39,7 +40,7 @@ namespace BookingBoardGames.Src.ViewModels
 			this.conversationService = conversationService;
 			this.rentalRequestMessageIdentifier = rentalRequestMessageIdentifier;
 
-			Request rentalRequest = this.rentalRequestService.GetRequestById(rentalRequestId);
+			Rental rentalRequest = this.rentalRequestService.GetRentalById(rentalRequestId);
 			Game game = this.gameRepository.GetGameById(rentalRequest.GameId);
 			User clientUser = this.userRepository.GetById(rentalRequest.ClientId);
 			User ownerUser = this.userRepository.GetById(rentalRequest.OwnerId);
@@ -49,7 +50,7 @@ namespace BookingBoardGames.Src.ViewModels
             DeliveryAddress = deliveryAddress;
             RequestDates = rentalRequest.StartDate.ToShortDateString() + DateRangeSeparator + rentalRequest.EndDate.ToShortDateString();
 
-			decimal rentalPrice = this.rentalRequestService.GetRequestPrice(rentalRequestId);
+			decimal rentalPrice = this.rentalRequestService.GetRentalPrice(rentalRequestId);
             PaidAmount = rentalPrice.ToString();
 
 			int createdPaymentIdentifier = this.cashPaymentService.AddCashPayment(
