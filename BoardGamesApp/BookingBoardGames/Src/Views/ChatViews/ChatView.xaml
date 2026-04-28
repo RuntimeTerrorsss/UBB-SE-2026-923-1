@@ -141,7 +141,7 @@
 					Height="40"
 					Padding="0"
 					Background="Transparent"
-                    Click="AttachImageButton_Click
+                    Click="AttachImageButton_Click"
 					ToolTipService.ToolTip="Attach image">
                     <FontIcon FontSize="18" Glyph="&#xE723;" />
                 </Button>
