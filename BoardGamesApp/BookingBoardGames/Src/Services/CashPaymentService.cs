@@ -1,5 +1,4 @@
 using System;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
 using BookingBoardGames.Src.Mapper;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;

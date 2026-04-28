@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Model;
 using BookingBoardGames.Src.Constants;
 using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Src.Repositories;
@@ -184,7 +182,7 @@ namespace BookingBoardGames.Src.Services
         /// <returns>The string file path to the Receipt PDF.</returns>
         public string GetReceiptDocumentPath(int paymentId)
         {
-            PaymentCommon.Model.Payment foundPayment = paymentRepository.GetPaymentById(paymentId);
+            Payment foundPayment = paymentRepository.GetPaymentById(paymentId);
 
             if (string.IsNullOrEmpty(foundPayment.ReceiptFilePath))
             {

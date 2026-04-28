@@ -9,7 +9,6 @@ public abstract class Message
     public DateTime MessageSentTime { get; set; }
     public string MessageContentAsString { get; set; }
 
-
     public int ConversationId { get; set; }
     public int MessageSenderId { get; set; }
     public int MessageReceiverId { get; set; }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
 
 namespace BookingBoardGames.Src.Services
 {
@@ -126,7 +127,7 @@ namespace BookingBoardGames.Src.Services
             Message toReturn = messageDto.type switch
             {
                 MessageType.MessageText => new TextMessage(
-                    id: messageDto.id,
+                    MessageId: messageDto.id,
                     conversationId: messageDto.conversationId,
                     senderId: messageDto.senderId,
                     receiverId: messageDto.receiverId,

@@ -2,7 +2,6 @@
 using System.IO;
 using BookingBoardGames.Src.Constants;
 using BookingBoardGames.Src.Repositories;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 
@@ -15,13 +14,13 @@ namespace BookingBoardGames.Src.Services
 			ReceiptServiceConstants.BaseFolderName);
 
 		private readonly IUserRepository userRepository;
-		private readonly IRequestService requestService;
-		private readonly IGameRepository gameRepository;
+		private readonly IRentalService rentalService;
+		private readonly InterfaceGamesRepository gameRepository;
 
-		public ReceiptService(IUserRepository userRepository, IRequestService requestService, IGameRepository gameRepository)
+		public ReceiptService(IUserRepository userRepository, IRentalService requestService, InterfaceGamesRepository gameRepository)
 		{
 			this.userRepository = userRepository;
-			this.requestService = requestService;
+			this.rentalService = requestService;
 			this.gameRepository = gameRepository;
 		}
 
@@ -49,7 +48,7 @@ namespace BookingBoardGames.Src.Services
 		/// <param name="selectedPayment">transaction for getting relative path to receipt</param>
 		/// <returns>full path to existing or newly created pdf</returns>
 		/// <exception cref="InvalidOperationException">receipt path of transaction is missing</exception>
-		public string GetReceiptDocument(PaymentCommon.Model.Payment selectedPayment)
+		public string GetReceiptDocument(Payment selectedPayment)
 		{
 			if (selectedPayment.ReceiptFilePath == null || selectedPayment.ReceiptFilePath == string.Empty)
 			{
@@ -66,7 +65,7 @@ namespace BookingBoardGames.Src.Services
 			return fullReceiptPath;
 		}
 
-        private string PrepareDocumentPath(PaymentCommon.Model.Payment selectedPayment)
+        private string PrepareDocumentPath(Payment selectedPayment)
         {
             if (string.IsNullOrWhiteSpace(selectedPayment.ReceiptFilePath))
             {
@@ -142,7 +141,7 @@ namespace BookingBoardGames.Src.Services
             XGraphics graphicsContext,
             PdfPage pdfPage,
             XFont font,
-            PaymentCommon.Model.Payment payment,
+            Payment payment,
             double currentXPosition,
             double currentYPosition)
         {
@@ -165,7 +164,7 @@ namespace BookingBoardGames.Src.Services
         private void DrawReceiptContent(
             PdfDocument pdfDocument,
             PdfPage pdfPage,
-            PaymentCommon.Model.Payment payment)
+            Payment payment)
         {
             var graphicsContext = XGraphics.FromPdfPage(pdfPage);
 
@@ -193,7 +192,7 @@ namespace BookingBoardGames.Src.Services
         /// <param name="payment">transaction for generating the content of pdf</param>
         /// <returns>full path to created pdf</returns>
         /// <exception cref="InvalidOperationException">receipt path of transaction is missing</exception>
-        private string CreateReceipt(PaymentCommon.Model.Payment payment)
+        private string CreateReceipt(Payment payment)
         {
             string documentPath = PrepareDocumentPath(payment);
 
@@ -217,7 +216,7 @@ namespace BookingBoardGames.Src.Services
 			return Path.Combine(baseFolderPath, relativePath.TrimStart('\\', '/'));
 		}
 
-        private string BuildHeader(PaymentCommon.Model.Payment payment)
+        private string BuildHeader(Payment payment)
         {
             string issuedDate = GetIssuedDateFromFilename(payment.ReceiptFilePath.Split("\\")[ReceiptServiceConstants.FileNameIndexInPath]);
 
@@ -226,9 +225,9 @@ namespace BookingBoardGames.Src.Services
                    $"Date Issued: {issuedDate}";
         }
 
-        private string BuildRequestInfo(PaymentCommon.Model.Payment payment, Rental request)
+        private string BuildRequestInfo(Payment payment, Rental request)
         {
-            var requestedGame = gameRepository.GetById(request.GameId);
+            var requestedGame = gameRepository.GetGameById(request.GameId);
             var client = userRepository.GetById(payment.ClientId);
             var owner = userRepository.GetById(payment.OwnerId);
 
@@ -241,14 +240,14 @@ namespace BookingBoardGames.Src.Services
             return requestInfo;
         }
 
-        private string BuildPaymentDetails(PaymentCommon.Model.Payment payment)
+        private string BuildPaymentDetails(Payment payment)
         {
             return $"Payment Details\n" +
                    $"- Payment Method: {payment.PaymentMethod}\n" +
                    $"- Amount Paid: {payment.PaidAmount} RON";
         }
 
-        private string BuildConfirmation(PaymentCommon.Model.Payment payment)
+        private string BuildConfirmation(Payment payment)
         {
             string confirmationText = "Confirmation\n";
 
@@ -277,9 +276,9 @@ namespace BookingBoardGames.Src.Services
         /// </summary>
         /// <param name="payment">transaction with relevant transaction data</param>
         /// <returns>pdf content text</returns>
-        private string[] GetReceiptContent(PaymentCommon.Model.Payment payment)
+        private string[] GetReceiptContent(Payment payment)
         {
-            var request = requestService.GetRequestById(payment.RequestId);
+            var request = rentalService.GetRentalById(payment.RequestId);
 
             return new[]
             {

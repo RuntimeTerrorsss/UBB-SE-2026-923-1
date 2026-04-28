@@ -18,7 +18,7 @@
         private const double MinimumFilterValue = 0;
         private readonly InterfaceGamesRepository gamesRepository;
         private readonly InterfaceUsersRepository usersRepository;
-        private readonly InterfaceRentalsRepository rentalsRepository;
+        private readonly IRentalRepository rentalsRepository;
         private readonly InterfaceGeographicalService geographicalService;
 
         /// <summary>
@@ -29,7 +29,7 @@
         /// <param name="usersRepository">The repository for user data operations.</param>
         /// <param name="rentalsRepository">The repository for rental data operations.</param>
         /// <param name="geographicalService">The service for geographical and location-based calculations.</param>
-        public SearchAndFilterService(InterfaceGamesRepository gamesRepository, InterfaceUsersRepository usersRepository, InterfaceRentalsRepository rentalsRepository, InterfaceGeographicalService geographicalService)
+        public SearchAndFilterService(InterfaceGamesRepository gamesRepository, InterfaceUsersRepository usersRepository, IRentalRepository rentalsRepository, InterfaceGeographicalService geographicalService)
         {
             this.gamesRepository = gamesRepository;
             this.usersRepository = usersRepository;
@@ -262,7 +262,7 @@
                 {
                     filteredGames = filteredGames.Where(game =>
                         this.rentalsRepository.CheckGameAvailability(
-                            activeFilter.AvailabilityRange,
+                            activeFilter.AvailabilityRange.StartTime, activeFilter.AvailabilityRange.EndTime,
                             game.GameId));
                 }
 
