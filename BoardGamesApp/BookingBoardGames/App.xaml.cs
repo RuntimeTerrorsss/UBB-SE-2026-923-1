@@ -45,16 +45,16 @@ namespace BookingBoardGames
 
         public static InterfaceGamesRepository GameRepository { get; private set; } = new GamesRepository();
 
-        public static IRequestRepository RequestRepository { get; private set; } = new RequestRepository();
+        public static IRentalRepository RentalRepository { get; private set; } = new RentalRepository();
 
-        public static IRequestService RequestService { get; private set; } = new RequestService(RequestRepository, GameRepository);
+        public static IRentalService RentalService { get; private set; } = new RentalService(RentalRepository, GameRepository);
 
         public static PaymentRepository PaymentRepository { get; private set; } = new PaymentRepository();
 
-        public static ReceiptService ReceiptService { get; private set; } = new ReceiptService(UserRepository, RequestService, GameRepository);
+        public static ReceiptService ReceiptService { get; private set; } = new ReceiptService(UserRepository, RentalService, GameRepository);
 
         public static CardPaymentService CardPaymentService { get; private set; } = new CardPaymentService(PaymentRepository,
-            UserRepository, ReceiptService, RequestService);
+            UserRepository, ReceiptService, RentalService);
 
         public static MapService MapService { get; private set; } = new MapService();
 
@@ -69,7 +69,7 @@ namespace BookingBoardGames
         public static ConversationRepository ConversationRepository { get; private set; } = new ConversationRepository();
 
         // TODO add request repo instead of rental repo
-        public static InterfaceBookingService BookingService { get; private set; } = new BookingService(GameRepository);
+        public static InterfaceBookingService BookingService { get; private set; } = new BookingService(GameRepository, RentalRepository, UserRepository);
 
         public static GeographicalService GeographicalService { get; private set; } = new GeographicalService();
 

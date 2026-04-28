@@ -26,7 +26,7 @@ namespace BookingBoardGames.Src.Views
                 PaymentViewModel = new CashPaymentViewModel(
                     App.CashPaymentService,
                     App.UserRepository,
-                    App.RequestService,
+                    App.RentalService,
                     App.GameRepository,
                     booking.RequestIdentifier,
                     booking.DeliveryAddress,
