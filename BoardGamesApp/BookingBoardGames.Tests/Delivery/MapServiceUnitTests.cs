@@ -8,7 +8,7 @@ using Moq;
 using Moq.Protected;
 using Xunit;
 
-namespace BookingBoardgamesLoveBan.Tests.Delivery
+namespace BookingBoardGames.Tests.Delivery
 {
     public class MapServiceUnitTests
     {

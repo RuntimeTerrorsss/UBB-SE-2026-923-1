@@ -3,7 +3,7 @@ using SearchAndBook.Repositories;
 using SearchAndBook.Services;
 using SearchAndBook.Shared;
 
-namespace SearchAndBook.Tests.Services;
+namespace BookingBoardGames.Tests.SearchAndBook.Services;
 
 [Trait("Category", "Integration")]
 public class SearchAndFilterServiceIntegrationTests

@@ -2,7 +2,7 @@
 using BookingBoardgamesILoveBan.Src.Chat.ViewModel;
 using Xunit;
 
-namespace BookingBoardgamesILoveBan.Tests.Chat
+namespace BookingBoardGames.Tests.Chat
 {
     public class ConversationPreviewModelTests
     {

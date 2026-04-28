@@ -5,7 +5,7 @@ using BookingBoardgamesILoveBan.Src.PaymentCommon.Repository;
 using BookingBoardgamesILoveBan.Src.Receipt.Service;
 using Moq;
 
-namespace BookingBoardgamesLoveBan.Tests.PaymentCommon
+namespace BookingBoardGames.Tests.PaymentCommon
 {
     public class PaymentServiceTests
     {

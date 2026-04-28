@@ -7,7 +7,7 @@ using BookingBoardgamesILoveBan.Src.Chat.ViewModel;
 using BookingBoardgamesILoveBan.Src.Enum;
 using Xunit;
 
-namespace BookingBoardgamesILoveBan.Tests.Chat
+namespace BookingBoardGames.Tests.Chat
 {
     public class ChatViewModelTests
     {

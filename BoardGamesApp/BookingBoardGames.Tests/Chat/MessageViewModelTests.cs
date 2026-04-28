@@ -5,7 +5,7 @@ using BookingBoardgamesILoveBan.Src.Chat.DTO;
 using BookingBoardgamesILoveBan.Src.Enum;
 using Microsoft.UI.Xaml;
 
-namespace BookingBoardgamesILoveBan.Tests.Chat
+namespace BookingBoardGames.Tests.Chat
 {
     public class MessageViewModelTests
     {

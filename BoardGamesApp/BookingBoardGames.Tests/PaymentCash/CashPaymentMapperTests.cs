@@ -3,7 +3,7 @@ using BookingBoardgamesILoveBan.Src.PaymentCash.Model;
 using BookingBoardgamesILoveBan.Src.PaymentCommon.Constants;
 using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
 
-namespace BookingBoardgamesLoveBan.Tests.PaymentCash
+namespace BookingBoardGames.Tests.PaymentCash
 {
     public class CashPaymentMapperTests
     {

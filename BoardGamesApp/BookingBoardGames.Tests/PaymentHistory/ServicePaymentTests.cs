@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit.Sdk;
 
-namespace BookingBoardgamesLoveBan.Tests.PaymentHistory
+namespace BookingBoardGames.Tests.PaymentHistory
 {
     public class ServicePaymentTests // unit tests
     {

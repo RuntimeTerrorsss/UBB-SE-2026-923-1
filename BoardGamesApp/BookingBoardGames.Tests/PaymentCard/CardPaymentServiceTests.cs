@@ -8,7 +8,7 @@ using BookingBoardgamesILoveBan.Src.PaymentCommon.Repository;
 using BookingBoardgamesILoveBan.Src.Receipt.Service;
 using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
 
-namespace BookingBoardgamesLoveBan.Tests.PaymentCard
+namespace BookingBoardGames.Tests.PaymentCard
 {
     public class CardPaymentServiceTests
     {

@@ -8,7 +8,7 @@ using BookingBoardgamesILoveBan.Src.PaymentCard.Service;
 using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
 using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
 
-namespace BookingBoardgamesILoveBan.Tests.PaymentCard.ViewModel
+namespace BookingBoardGames.Tests.PaymentCard
 {
     public class CardPaymentViewModelTests
     {

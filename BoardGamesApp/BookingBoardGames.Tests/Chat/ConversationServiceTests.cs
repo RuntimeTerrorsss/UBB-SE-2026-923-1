@@ -11,7 +11,7 @@ using BookingBoardgamesILoveBan.Src.Model;
 using Moq;
 using Xunit;
 
-namespace BookingBoardgamesILoveBan.Tests.Chat
+namespace BookingBoardGames.Tests.Chat
 {
     public class ConversationServiceTests
     {

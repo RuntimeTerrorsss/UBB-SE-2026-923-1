@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace BookingBoardgamesILoveBan.Tests.Chat
+namespace BookingBoardGames.Tests.Chat
 {
     public class ChatPageViewModelTests
     {

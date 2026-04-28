@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Payments;
 
-namespace BookingBoardgamesLoveBan.Tests.Receipt
+namespace BookingBoardGames.Tests.Receipt
 {
     public class ReceiptServiceTests
     {
@@ -49,7 +49,7 @@ namespace BookingBoardgamesLoveBan.Tests.Receipt
 
         private static string ToFullPath(string relativePath)
         {
-            return System.IO.Path.Combine(
+            return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 "BookingBoardgames",
                 relativePath.TrimStart('\\', '/'));
@@ -100,7 +100,7 @@ namespace BookingBoardgamesLoveBan.Tests.Receipt
         {
             InitializeService();
             var receiptPath = receiptService.GenerateReceiptRelativePath(1);
-            System.Threading.Thread.Sleep(1000);
+            Thread.Sleep(1000);
             var receiptPathAfter1Second = receiptService.GenerateReceiptRelativePath(1);
 
             Assert.NotEqual(receiptPath, receiptPathAfter1Second);
@@ -130,8 +130,8 @@ namespace BookingBoardgamesLoveBan.Tests.Receipt
             string relativePath = $"receipts\\receipt_1_{DateTime.Now:yyMMdd_HHmmss}.pdf";
             string fullPath = ToFullPath(relativePath);
 
-            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath));
-            System.IO.File.WriteAllBytes(fullPath, new byte[] { 0x25, 0x50, 0x44, 0x46 });
+            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+            File.WriteAllBytes(fullPath, new byte[] { 0x25, 0x50, 0x44, 0x46 });
 
             var payment = new Payment { ReceiptFilePath = relativePath };
             var returnedPath = receiptService.GetReceiptDocument(payment);
@@ -139,7 +139,7 @@ namespace BookingBoardgamesLoveBan.Tests.Receipt
             Assert.Equal(fullPath, returnedPath);
 
             // clean
-            System.IO.File.Delete(fullPath);
+            File.Delete(fullPath);
         }
 
         [Fact]
@@ -149,19 +149,19 @@ namespace BookingBoardgamesLoveBan.Tests.Receipt
             string relativePath = $"receipts\\receipt_1_{DateTime.Now:yyMMdd_HHmmss}.pdf";
             string fullPath = ToFullPath(relativePath);
 
-            if (System.IO.File.Exists(fullPath))
+            if (File.Exists(fullPath))
             {
-                System.IO.File.Delete(fullPath);
+                File.Delete(fullPath);
             }
 
             var payment = MakePayment(relativePath, "card");
             var returnedPath = receiptService.GetReceiptDocument(payment);
 
-            Assert.True(System.IO.File.Exists(returnedPath));
+            Assert.True(File.Exists(returnedPath));
             Assert.EndsWith(".pdf", returnedPath);
 
             // clean
-            System.IO.File.Delete(returnedPath);
+            File.Delete(returnedPath);
         }
 
         [Fact]
@@ -171,17 +171,17 @@ namespace BookingBoardgamesLoveBan.Tests.Receipt
             string relativePath = $"receipts\\receipt_1_{DateTime.Now:yyMMdd_HHmmss}.pdf";
             string fullPath = ToFullPath(relativePath);
 
-            if (System.IO.File.Exists(fullPath))
+            if (File.Exists(fullPath))
             {
-                System.IO.File.Delete(fullPath);
+                File.Delete(fullPath);
             }
 
             var payment = MakePayment(relativePath, "cash");
             var returnedPath = receiptService.GetReceiptDocument(payment);
-            Assert.True(System.IO.File.Exists(returnedPath));
+            Assert.True(File.Exists(returnedPath));
 
             // clean
-            System.IO.File.Delete(returnedPath);
+            File.Delete(returnedPath);
         }
 
         [Fact]
@@ -191,18 +191,18 @@ namespace BookingBoardgamesLoveBan.Tests.Receipt
             string relativePath = "receipts\\receipt_BADNAME.pdf";
             string fullPath = ToFullPath(relativePath);
 
-            if (System.IO.File.Exists(fullPath))
+            if (File.Exists(fullPath))
             {
-                System.IO.File.Delete(fullPath);
+                File.Delete(fullPath);
             }
 
             var payment = MakePayment(relativePath, "card");
             var returnedPath = receiptService.GetReceiptDocument(payment);
 
-            Assert.True(System.IO.File.Exists(returnedPath));
+            Assert.True(File.Exists(returnedPath));
 
             // clean
-            System.IO.File.Delete(returnedPath);
+            File.Delete(returnedPath);
         }
     }
 }

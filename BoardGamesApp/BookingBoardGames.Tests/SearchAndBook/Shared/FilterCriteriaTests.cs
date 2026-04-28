@@ -1,7 +1,7 @@
 using SearchAndBook.Domain;
 using SearchAndBook.Shared;
 
-namespace SearchAndBook.Tests.Shared;
+namespace BookingBoardGames.Tests.SearchAndBook.Shared;
 
 public class FilterCriteriaTests
 {

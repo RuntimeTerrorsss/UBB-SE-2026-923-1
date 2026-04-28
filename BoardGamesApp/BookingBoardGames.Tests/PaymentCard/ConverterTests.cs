@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml;
 using Xunit;
 using BookingBoardgamesILoveBan.Src.PaymentCard.Converters;
 
-namespace BookingBoardgamesILoveBan.Tests.PaymentCard.Converters
+namespace BookingBoardGames.Tests.PaymentCard
 {
     public class ConverterTests
     {

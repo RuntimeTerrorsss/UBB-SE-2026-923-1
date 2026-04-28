@@ -2,7 +2,7 @@ using System;
 using BookingBoardgamesILoveBan.Src.Delivery.Model;
 using Xunit;
 
-namespace BookingBoardgamesLoveBan.Tests.Delivery
+namespace BookingBoardGames.Tests.Delivery
 {
     public class AddressTests
     {

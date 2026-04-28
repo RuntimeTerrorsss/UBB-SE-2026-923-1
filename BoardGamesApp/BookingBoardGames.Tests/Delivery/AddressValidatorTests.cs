@@ -1,7 +1,7 @@
 using BookingBoardgamesILoveBan.Src.Delivery.Model;
 using BookingBoardgamesILoveBan.Src.Delivery.Model.Validators;
 
-namespace BookingBoardgamesLoveBan.Tests.Delivery
+namespace BookingBoardGames.Tests.Delivery
 {
     public class AddressValidatorTests
     {
