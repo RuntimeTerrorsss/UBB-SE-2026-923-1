@@ -17,7 +17,7 @@
         private const int MinimumAllowedPlayers = 0;
         private const double MinimumFilterValue = 0;
         private readonly InterfaceGamesRepository gamesRepository;
-        private readonly InterfaceUsersRepository usersRepository;
+        private readonly IUserRepository usersRepository;
         private readonly IRentalRepository rentalsRepository;
         private readonly InterfaceGeographicalService geographicalService;
 
@@ -29,7 +29,7 @@
         /// <param name="usersRepository">The repository for user data operations.</param>
         /// <param name="rentalsRepository">The repository for rental data operations.</param>
         /// <param name="geographicalService">The service for geographical and location-based calculations.</param>
-        public SearchAndFilterService(InterfaceGamesRepository gamesRepository, InterfaceUsersRepository usersRepository, IRentalRepository rentalsRepository, InterfaceGeographicalService geographicalService)
+        public SearchAndFilterService(InterfaceGamesRepository gamesRepository, IUserRepository usersRepository, IRentalRepository rentalsRepository, InterfaceGeographicalService geographicalService)
         {
             this.gamesRepository = gamesRepository;
             this.usersRepository = usersRepository;
