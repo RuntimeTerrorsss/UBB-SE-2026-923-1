@@ -9,7 +9,7 @@
     using Windows.Storage.Streams;
     using BookingBoardGames.Src.Services;
     using BookingBoardGames.Src.DTO;
-    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.Shared;
     using BookingBoardGames.Src.Commands;
 
     /// <summary>
