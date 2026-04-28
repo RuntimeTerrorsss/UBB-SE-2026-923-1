@@ -6,6 +6,7 @@
     using BookingBoardGames.Src.Repositories;
     using BookingBoardGames.Src.DTO;
     using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.Shared;
 
 
     /// <summary>
@@ -71,7 +72,7 @@
 
                     var gameOwner = cachedOwnersById[filteredGame.OwnerId];
 
-                    var gameDto = new GameDTO
+                    var gameDataTransferObject = new GameDTO
                     {
                         GameId = filteredGame.Id,
                         Name = filteredGame.Name,
@@ -82,7 +83,7 @@
                         MinimumPlayerNumber = filteredGame.MinimumPlayerNumber,
                     };
 
-                    filteredGamesResult.Add(gameDto);
+                    filteredGamesResult.Add(gameDataTransferObject);
                 }
 
                 GameDTO[] filteredGamesArray = filteredGamesResult.ToArray();
@@ -94,9 +95,9 @@
 
                 return this.ApplyFilters(filteredGamesArray, filter);
             }
-            catch (Exception ex)
+            catch (Exception thrownException)
             {
-                throw new InvalidOperationException("Failed to search for games.", ex);
+                throw new InvalidOperationException("Failed to search for games.", thrownException);
             }
         }
 
@@ -118,16 +119,16 @@
 
                     if (gameOwner != null)
                     {
-                        var dto = this.MapToGameDTO(availableTonightGame, gameOwner);
-                        availableTonightGamesResult.Add(dto);
+                        var gameDataTransferObject = this.MapToGameDTO(availableTonightGame, gameOwner);
+                        availableTonightGamesResult.Add(gameDataTransferObject);
                     }
                 }
 
                 return availableTonightGamesResult.ToArray();
             }
-            catch (Exception ex)
+            catch (Exception thrownException)
             {
-                throw new InvalidOperationException("Failed to retrieve <<Available tonight>> feed.", ex);
+                throw new InvalidOperationException("Failed to retrieve <<Available tonight>> feed.", thrownException);
             }
         }
 
@@ -151,15 +152,15 @@
                         continue;
                     }
 
-                    var dto = this.MapToGameDTO(otherFeedGame, gameOwner);
-                    otherFeedGamesResult.Add(dto);
+                    var gameDataTransferObject = this.MapToGameDTO(otherFeedGame, gameOwner);
+                    otherFeedGamesResult.Add(gameDataTransferObject);
                 }
 
                 return otherFeedGamesResult.ToArray();
             }
-            catch (Exception ex)
+            catch (Exception thrownException)
             {
-                throw new InvalidOperationException("Failed to retrieve <<Others>> feed.", ex);
+                throw new InvalidOperationException("Failed to retrieve <<Others>> feed.", thrownException);
             }
         }
 
@@ -267,9 +268,9 @@
 
                 return filteredGames.ToArray();
             }
-            catch (Exception ex)
+            catch (Exception thrownException)
             {
-                throw new InvalidOperationException("Failed to apply filters.", ex);
+                throw new InvalidOperationException("Failed to apply filters.", thrownException);
             }
         }
 

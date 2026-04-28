@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.Shared;
     using BookingBoardGames.Src.DTO;
 
     /// <summary>
