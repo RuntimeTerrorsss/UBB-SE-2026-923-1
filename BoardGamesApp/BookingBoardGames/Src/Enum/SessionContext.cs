@@ -1,6 +1,6 @@
-﻿namespace SearchAndBook.Shared
+﻿namespace BookingBoardGames.Src.Shared
 {
-    using SearchAndBook.Domain;
+    using BookingBoardGames.Src.Models;
 
     /// <summary>
     /// Provides a context for managing the current user's session state, including authentication status and user

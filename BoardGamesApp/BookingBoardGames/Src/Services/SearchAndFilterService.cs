@@ -1,12 +1,13 @@
-﻿namespace SearchAndBook.Services
+﻿namespace BookingBoardGames.Src.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using SearchAndBook.Domain;
-    using SearchAndBook.Repositories;
-    using SearchAndBook.Shared;
-    using SearchAndBook.Utils;
+    using BookingBoardGames.Src.Repositories;
+    using BookingBoardGames.Src.DTO;
+    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.Shared;
+
 
     /// <summary>
     /// Service responsible for searching, filtering, and retrieving game feeds.
@@ -71,18 +72,18 @@
 
                     var gameOwner = cachedOwnersById[filteredGame.OwnerId];
 
-                    var gameDto = new GameDTO
+                    var gameDataTransferObject = new GameDTO
                     {
-                        GameId = filteredGame.GameId,
+                        GameId = filteredGame.Id,
                         Name = filteredGame.Name,
                         Image = filteredGame.Image,
-                        Price = filteredGame.Price,
+                        Price = filteredGame.PricePerDay,
                         City = gameOwner != null ? gameOwner.City : string.Empty,
                         MaximumPlayerNumber = filteredGame.MaximumPlayerNumber,
                         MinimumPlayerNumber = filteredGame.MinimumPlayerNumber,
                     };
 
-                    filteredGamesResult.Add(gameDto);
+                    filteredGamesResult.Add(gameDataTransferObject);
                 }
 
                 GameDTO[] filteredGamesArray = filteredGamesResult.ToArray();
@@ -94,9 +95,9 @@
 
                 return this.ApplyFilters(filteredGamesArray, filter);
             }
-            catch (Exception ex)
+            catch (Exception thrownException)
             {
-                throw new InvalidOperationException("Failed to search for games.", ex);
+                throw new InvalidOperationException("Failed to search for games.", thrownException);
             }
         }
 
@@ -118,16 +119,16 @@
 
                     if (gameOwner != null)
                     {
-                        var dto = this.MapToGameDTO(availableTonightGame, gameOwner);
-                        availableTonightGamesResult.Add(dto);
+                        var gameDataTransferObject = this.MapToGameDTO(availableTonightGame, gameOwner);
+                        availableTonightGamesResult.Add(gameDataTransferObject);
                     }
                 }
 
                 return availableTonightGamesResult.ToArray();
             }
-            catch (Exception ex)
+            catch (Exception thrownException)
             {
-                throw new InvalidOperationException("Failed to retrieve <<Available tonight>> feed.", ex);
+                throw new InvalidOperationException("Failed to retrieve <<Available tonight>> feed.", thrownException);
             }
         }
 
@@ -151,15 +152,15 @@
                         continue;
                     }
 
-                    var dto = this.MapToGameDTO(otherFeedGame, gameOwner);
-                    otherFeedGamesResult.Add(dto);
+                    var gameDataTransferObject = this.MapToGameDTO(otherFeedGame, gameOwner);
+                    otherFeedGamesResult.Add(gameDataTransferObject);
                 }
 
                 return otherFeedGamesResult.ToArray();
             }
-            catch (Exception ex)
+            catch (Exception thrownException)
             {
-                throw new InvalidOperationException("Failed to retrieve <<Others>> feed.", ex);
+                throw new InvalidOperationException("Failed to retrieve <<Others>> feed.", thrownException);
             }
         }
 
@@ -267,9 +268,9 @@
 
                 return filteredGames.ToArray();
             }
-            catch (Exception ex)
+            catch (Exception thrownException)
             {
-                throw new InvalidOperationException("Failed to apply filters.", ex);
+                throw new InvalidOperationException("Failed to apply filters.", thrownException);
             }
         }
 
@@ -388,10 +389,10 @@
         {
             return new GameDTO
             {
-                GameId = gameEntity.GameId,
+                GameId = gameEntity.Id,
                 Name = gameEntity.Name,
                 Image = gameEntity.Image,
-                Price = gameEntity.Price,
+                Price = gameEntity.PricePerDay,
                 City = gameOwnerEntity?.City ?? string.Empty,
                 MaximumPlayerNumber = gameEntity.MaximumPlayerNumber,
                 MinimumPlayerNumber = gameEntity.MinimumPlayerNumber,

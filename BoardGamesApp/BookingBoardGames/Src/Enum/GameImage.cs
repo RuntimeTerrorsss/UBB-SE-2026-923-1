@@ -1,4 +1,4 @@
-﻿namespace SearchAndBook.Utils
+﻿namespace BookingBoardGames.Src.Enum
 {
     using System;
     using System.Runtime.InteropServices.WindowsRuntime;

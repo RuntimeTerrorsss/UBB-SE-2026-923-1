@@ -1,13 +1,13 @@
-namespace SearchAndBook.Views
-{
-    using System;
-    using Microsoft.UI.Xaml.Controls;
-    using Microsoft.UI.Xaml.Navigation;
-    using SearchAndBook.Repositories;
-    using SearchAndBook.Services;
-    using SearchAndBook.Shared;
-    using SearchAndBook.ViewModels;
+using System;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.ViewModels;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
+namespace BookingBoardGames.Src.Views
+{
     /// <summary>
     /// Provides the main discovery interface for browsing and filtering available games.
     /// </summary>

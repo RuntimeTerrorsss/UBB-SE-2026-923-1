@@ -1,8 +1,6 @@
-﻿namespace SearchAndBook.Services
+﻿namespace BookingBoardGames.Src.Services
 {
-    using SearchAndBook.Domain;
-    using SearchAndBook.Shared;
-
+    using BookingBoardGames.Src.DTO;
     /// <summary>
     /// Defines the operations for managing and querying game bookings.
     /// </summary>

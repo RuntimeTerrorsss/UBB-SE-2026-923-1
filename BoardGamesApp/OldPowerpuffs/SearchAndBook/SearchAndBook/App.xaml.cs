@@ -51,7 +51,6 @@ namespace SearchAndBook
 
         protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            
             try
             {
                 DatabaseSeeder.SeedGameImages();
@@ -70,10 +69,8 @@ namespace SearchAndBook
                 Debug.WriteLine($"GeographicalService initialization failed: {ex.Message}");
             }
 
-            
             var usersRepository = new UsersRepository();
             var user = usersRepository.GetGameById(1);
-            //SessionContext.GetInstance().Populate(user);
 
             _window = new MainWindow();
             _window.Activate();

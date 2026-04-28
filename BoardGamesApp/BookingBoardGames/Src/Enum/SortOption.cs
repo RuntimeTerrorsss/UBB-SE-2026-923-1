@@ -1,4 +1,4 @@
-﻿namespace SearchAndBook.Shared
+﻿namespace BookingBoardGames.Src.Enum
 {
     /// <summary>
     /// Specifies the sorting options available for game search results.

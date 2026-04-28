@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace BookingBoardgamesILoveBan.Src.Interface.View
+namespace BookingBoardGames.Src.Views
 {
     public sealed partial class BoolToVisibilityConverter : IValueConverter
     {
