@@ -9,9 +9,9 @@ namespace BookingBoardGames.Src.Services
         private const int MinimumValidDayCount = 1;
 
         private readonly IRentalRepository rentalRepository;
-        private readonly IGameRepository gameRepository;
+        private readonly InterfaceGamesRepository gameRepository;
 
-        public RentalService(IRentalRepository rentalRepository, IGameRepository gameRepository)
+        public RentalService(IRentalRepository rentalRepository, InterfaceGamesRepository gameRepository)
         {
             this.rentalRepository = rentalRepository;
             this.gameRepository = gameRepository;
@@ -46,7 +46,7 @@ namespace BookingBoardGames.Src.Services
                 return "Unknown Rental";
             }
 
-            var game = this.gameRepository.GetById(rental.GameId);
+            var game = this.gameRepository.GetGameById(rental.GameId);
 
             if (game == null)
             {
