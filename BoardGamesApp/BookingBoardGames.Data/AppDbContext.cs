@@ -20,12 +20,12 @@ namespace BookingBoardGames.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<ConversationParticipant>()
-                .HasKey(cp => new { cp.ConversationId, cp.UserId });
+                .HasKey(conversationParticipant => new { conversationParticipant.ConversationId, conversationParticipant.UserId });
 
-            modelBuilder.Entity<Rental>().HasOne(r => r.Client).WithMany(u => u.RentalsAsClient).HasForeignKey(r => r.ClientId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Rental>().HasOne(r => r.Owner).WithMany(u => u.RentalsAsOwner).HasForeignKey(r => r.OwnerId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Payment>().HasOne(p => p.Client).WithMany().HasForeignKey(p => p.ClientId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Payment>().HasOne(p => p.Owner).WithMany().HasForeignKey(p => p.OwnerId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Rental>().HasOne(rental => rental.Client).WithMany(user => user.RentalsAsClient).HasForeignKey(rental => rental.ClientId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Rental>().HasOne(rental => rental.Owner).WithMany(user => user.RentalsAsOwner).HasForeignKey(rental => rental.OwnerId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Payment>().HasOne(payment => payment.Client).WithMany().HasForeignKey(payment => payment.ClientId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Payment>().HasOne(payment => payment.Owner).WithMany().HasForeignKey(payment => payment.OwnerId).OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Message>()
                 .HasDiscriminator<string>("MessageCategory")

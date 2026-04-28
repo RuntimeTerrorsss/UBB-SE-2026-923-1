@@ -24,7 +24,7 @@ namespace BookingBoardGames.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cities", x => x.CityId);
+                    table.PrimaryKey("PK_Cities", column => column.CityId);
                 });
 
             migrationBuilder.CreateTable(
@@ -36,7 +36,7 @@ namespace BookingBoardGames.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Conversations", x => x.ConversationId);
+                    table.PrimaryKey("PK_Conversations", column => column.ConversationId);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,7 +62,7 @@ namespace BookingBoardGames.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Users", column => column.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,16 +76,16 @@ namespace BookingBoardGames.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ConversationParticipants", x => new { x.ConversationId, x.UserId });
+                    table.PrimaryKey("PK_ConversationParticipants", column => new { column.ConversationId, column.UserId });
                     table.ForeignKey(
                         name: "FK_ConversationParticipants_Conversations_ConversationId",
-                        column: x => x.ConversationId,
+                        column: columnTable => columnTable.ConversationId,
                         principalTable: "Conversations",
                         principalColumn: "ConversationId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ConversationParticipants_Users_UserId",
-                        column: x => x.UserId,
+                        column: columnTable => columnTable.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -109,10 +109,10 @@ namespace BookingBoardGames.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Games", x => x.Id);
+                    table.PrimaryKey("PK_Games", column => column.Id);
                     table.ForeignKey(
                         name: "FK_Games_Users_OwnerId",
-                        column: x => x.OwnerId,
+                        column: column => column.OwnerId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -133,22 +133,22 @@ namespace BookingBoardGames.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rentals", x => x.RentalId);
+                    table.PrimaryKey("PK_Rentals", column => column.RentalId);
                     table.ForeignKey(
                         name: "FK_Rentals_Games_GameId",
-                        column: x => x.GameId,
+                        column: columnTable => columnTable.GameId,
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Rentals_Users_ClientId",
-                        column: x => x.ClientId,
+                        column: columnTable => columnTable.ClientId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Rentals_Users_OwnerId",
-                        column: x => x.OwnerId,
+                        column: columnTable => columnTable.OwnerId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -176,22 +176,22 @@ namespace BookingBoardGames.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Payments", x => x.TransactionIdentifier);
+                    table.PrimaryKey("PK_Payments", columnTable => columnTable.TransactionIdentifier);
                     table.ForeignKey(
                         name: "FK_Payments_Rentals_RequestId",
-                        column: x => x.RequestId,
+                        column: columnTable => columnTable.RequestId,
                         principalTable: "Rentals",
                         principalColumn: "RentalId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Payments_Users_ClientId",
-                        column: x => x.ClientId,
+                        column: columnTable => columnTable.ClientId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Payments_Users_OwnerId",
-                        column: x => x.OwnerId,
+                        column: columnTable => columnTable.OwnerId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -228,31 +228,31 @@ namespace BookingBoardGames.Data.Migrations
                     table.PrimaryKey("PK_Messages", x => x.MessageId);
                     table.ForeignKey(
                         name: "FK_Messages_Conversations_ConversationId",
-                        column: x => x.ConversationId,
+                        column: columnTableConversation => columnTableConversation.ConversationId,
                         principalTable: "Conversations",
                         principalColumn: "ConversationId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Messages_Payments_CashPaymentId",
-                        column: x => x.CashPaymentId,
+                        column: columnTablePaymentCash => columnTablePaymentCash.CashPaymentId,
                         principalTable: "Payments",
                         principalColumn: "TransactionIdentifier",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Messages_Rentals_RentalRequestId",
-                        column: x => x.RentalRequestId,
+                        column: columnTableRental => columnTableRental.RentalRequestId,
                         principalTable: "Rentals",
                         principalColumn: "RentalId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Messages_Users_ReceiverId",
-                        column: x => x.ReceiverId,
+                        column: columnTable => columnTable.ReceiverId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Messages_Users_SenderId",
-                        column: x => x.SenderId,
+                        column: columnTable => columnTable.SenderId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
