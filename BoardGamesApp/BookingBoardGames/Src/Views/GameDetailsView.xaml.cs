@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.Models;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Shared;
@@ -40,11 +39,11 @@ namespace BookingBoardGames.Src.Views
                 return;
             }
 
-            var gameRepository = new GamesRepository();
-            var rentalRepository = new RentalsRepository();
-            var userRepository = new UsersRepository();
-            var service = new BookingService(gameRepository, rentalRepository, userRepository);
-            var viewModel = new GameDetailsViewModel(service, gameId);
+            //var gameRepository = new GamesRepository();
+            //var rentalRepository = new RentalsRepository();
+            //var userRepository = new UsersRepository();
+            //var service = new BookingService(gameRepository, rentalRepository, userRepository);
+            var viewModel = new GameDetailsViewModel(App.BookingService, gameId);
 
             viewModel.OnGoBackRequested += () =>
             {

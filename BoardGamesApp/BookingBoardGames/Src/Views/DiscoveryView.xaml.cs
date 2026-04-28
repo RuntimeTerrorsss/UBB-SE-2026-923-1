@@ -2,6 +2,7 @@ using System;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -34,18 +35,18 @@ namespace BookingBoardGames.Src.Views
         {
             base.OnNavigatedTo(e);
 
-            var gamesRepository = new GamesRepository();
-            var usersRepository = new UsersRepository();
-            var rentalsRepository = new RentalsRepository();
-            var geographicalService = App.GlobalGeoService!;
+            //var gamesRepository = new GamesRepository();
+            //var usersRepository = new UsersRepository();
+            //var rentalsRepository = new RentalsRepository();
+            //var geographicalService = App.GlobalGeoService!;
 
-            var service = new SearchAndFilterService(
-                gamesRepository,
-                usersRepository,
-                rentalsRepository,
-                geographicalService);
+            //var service = new SearchAndFilterService(
+            //    gamesRepository,
+            //    usersRepository,
+            //    rentalsRepository,
+            //    geographicalService);
 
-            this.ViewModel = new DiscoveryViewModel(service, geographicalService);
+            this.ViewModel = new DiscoveryViewModel(App.SearchAndFilterService, App.GeographicalService);
 
             this.ViewModel.OnSearchRequest += this.HandleSearchRequest;
             this.ViewModel.OnGameSelectedRequest += gameId =>
