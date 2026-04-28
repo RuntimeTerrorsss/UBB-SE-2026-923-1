@@ -11,6 +11,7 @@
     using BookingBoardGames.Src.Commands;
     using BookingBoardGames.Src.Enum;
     using BookingBoardGames.Src.DTO;
+    using BookingBoardGames.Src.Shared;
 
     /// <summary>
     /// Provides the logic for discovering and filtering games, including pagination and search capabilities.
