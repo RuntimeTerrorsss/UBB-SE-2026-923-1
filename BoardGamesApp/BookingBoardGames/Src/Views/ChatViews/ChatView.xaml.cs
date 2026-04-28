@@ -208,6 +208,39 @@ namespace BookingBoardgamesILoveBan.Src.Chat.View
             ClearPendingImage();
         }
 
+        private async void AttachImageButton_Click(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            picker.FileTypeFilter.Add(".jpg");
+            picker.FileTypeFilter.Add(".jpeg");
+            picker.FileTypeFilter.Add(".png");
+
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(
+                (Application.Current as BookingBoardGames.App)?.Window);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+
+            var file = await picker.PickSingleFileAsync();
+            if (file == null) return;
+
+            string generatedFileName = $"{Guid.NewGuid()}{file.FileType}";
+            string fullImagePath = Path.Combine(AppContext.BaseDirectory, "Images", generatedFileName);
+            Directory.CreateDirectory(Path.GetDirectoryName(fullImagePath));
+
+            using var rawStream = await file.OpenReadAsync();
+
+            var bitmapImage = new BitmapImage();
+            await bitmapImage.SetSourceAsync(rawStream);
+            ImagePreview.Source = bitmapImage;
+            ImagePreviewPanel.Visibility = Visibility.Visible;
+
+            rawStream.Seek(0);
+
+            using var fileStream = File.Create(fullImagePath);
+            await rawStream.AsStreamForRead().CopyToAsync(fileStream);
+
+            pendingImageFileName = generatedFileName;
+        }
+
         private void OnAcceptRequested(object? sender, int messageId)
         {
             ViewModel?.ResolveBookingRequest(messageId, true);

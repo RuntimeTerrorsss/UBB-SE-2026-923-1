@@ -71,6 +71,11 @@ public class ChatViewModel : INotifyPropertyChanged
         Initials = conversation.Initials;
         AvatarUrl = conversation.AvatarUrl;
 
+        // Rental Request fixed on top
+        var sortedMessages = messages
+            .OrderByDescending(m => m.type == MessageType.MessageRentalRequest)
+            .ToList();
+
         Messages.Clear();
         for (int i = 0; i < messages.Count; i++)
         {
