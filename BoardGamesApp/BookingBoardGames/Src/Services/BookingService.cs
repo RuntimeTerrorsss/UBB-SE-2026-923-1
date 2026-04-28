@@ -10,7 +10,7 @@ public class BookingService : InterfaceBookingService
 {
     private const int MinimumValidDayCount = 1;
     private readonly InterfaceGamesRepository gamesRepository;
-    private readonly InterfaceRentalsRepository rentalsRepository;
+    private readonly IRentalRepository rentalsRepository;
     private readonly InterfaceUsersRepository usersRepository;
 
     /// <summary>
@@ -21,7 +21,7 @@ public class BookingService : InterfaceBookingService
     /// <param name="usersRepository">The users repository.</param>
     public BookingService(
         InterfaceGamesRepository gamesRepository,
-        InterfaceRentalsRepository rentalsRepository,
+        IRentalRepository rentalsRepository,
         InterfaceUsersRepository usersRepository)
     {
         this.gamesRepository = gamesRepository;
@@ -103,7 +103,7 @@ public class BookingService : InterfaceBookingService
     {
         try
         {
-            return this.rentalsRepository.CheckGameAvailability(timeRange, gameId);
+            return this.rentalsRepository.CheckGameAvailability(timeRange.StartTime, timeRange.EndTime, gameId);
         }
         catch (Exception exception)
         {

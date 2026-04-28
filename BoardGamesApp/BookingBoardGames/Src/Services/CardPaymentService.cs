@@ -8,13 +8,13 @@ namespace BookingBoardGames.Src.Services
     public class CardPaymentService : PaymentService
     {
         private readonly IUserRepository userRepository;
-        private readonly IRequestService rentalService;
+        private readonly IRentalService rentalService;
 
         public CardPaymentService(
             PaymentRepository paymentRepository,
             IUserRepository userRepository,
             ReceiptService receiptService,
-            IRequestService requestService) : base(paymentRepository, receiptService)
+            IRentalService requestService) : base(paymentRepository, receiptService)
         {
             this.userRepository = userRepository;
             this.rentalService = requestService;
@@ -53,7 +53,7 @@ namespace BookingBoardGames.Src.Services
 
         public bool CheckBalanceSufficiency(int requestIdentifier, int clientIdentifier)
         {
-            return rentalService.GetRequestPrice(requestIdentifier) <= userRepository.GetUserBalance(clientIdentifier);
+            return rentalService.GetRentalPrice(requestIdentifier) <= userRepository.GetUserBalance(clientIdentifier);
         }
 
         public CardPaymentDataTransferObject GetCardPayment(int paymentIdentifier)
@@ -66,12 +66,12 @@ namespace BookingBoardGames.Src.Services
             return userRepository.GetUserBalance(clientIdentifier);
         }
 
-        public void ProcessPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier)
+        public void ProcessPayment(int rentalIdentifier, int clientIdentifier, int ownerIdentifier)
         {
-            decimal requestPrice = rentalService.GetRequestPrice(requestIdentifier);
+            decimal rentalPrice = rentalService.GetRentalPrice(rentalIdentifier);
             decimal clientBalance = userRepository.GetUserBalance(clientIdentifier);
             decimal ownerBalance = userRepository.GetUserBalance(ownerIdentifier);
-            decimal newClientBalance = clientBalance - requestPrice;
+            decimal newClientBalance = clientBalance - rentalPrice;
 
             if (newClientBalance < 0)
             {
@@ -79,10 +79,10 @@ namespace BookingBoardGames.Src.Services
             }
 
             userRepository.UpdateBalance(clientIdentifier, newClientBalance);
-            userRepository.UpdateBalance(ownerIdentifier, ownerBalance + requestPrice);
+            userRepository.UpdateBalance(ownerIdentifier, ownerBalance + rentalPrice);
         }
 
-        public CardPaymentDataTransferObject ConvertToDataTransferObject(PaymentCommon.Model.Payment cardPayment)
+        public CardPaymentDataTransferObject ConvertToDataTransferObject(Payment cardPayment)
         {
             return new CardPaymentDataTransferObject(
                     transactionIdentifier: cardPayment.TransactionIdentifier,
@@ -96,11 +96,11 @@ namespace BookingBoardGames.Src.Services
 
         public virtual RentalDataTransferObject GetRequestDataTransferObject(int rentalIdentifier)
         {
-            Rental rental = rentalService.GetRequestById(rentalIdentifier);
+            Rental rental = rentalService.GetRentalById(rentalIdentifier);
             string gameName = rentalService.GetGameName(rental.RentalId);
             string ownerName = userRepository.GetById(rental.OwnerId).Username;
             string clientName = userRepository.GetById(rental.ClientId).Username;
-            decimal gamePrice = rentalService.GetRequestPrice(rental.RentalId);
+            decimal gamePrice = rentalService.GetRentalPrice(rental.RentalId);
 
             return new RentalDataTransferObject(rental.RentalId, rental.GameId, gameName, rental.ClientId, clientName, rental.OwnerId, ownerName, rental.StartDate, rental.EndDate, gamePrice);
         }
