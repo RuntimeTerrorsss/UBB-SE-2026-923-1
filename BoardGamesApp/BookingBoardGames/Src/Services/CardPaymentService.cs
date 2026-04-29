@@ -5,7 +5,7 @@ using System;
 
 namespace BookingBoardGames.Src.Services
 {
-    public class CardPaymentService : PaymentService
+    public class CardPaymentService : PaymentService,ICardPaymentService
     {
         private readonly IUserRepository userRepository;
         private readonly IRentalService rentalService;

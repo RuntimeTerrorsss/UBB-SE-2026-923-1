@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Models;
 using Windows.Storage;
 
 namespace BookingBoardGames.Src.Services
