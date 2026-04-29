@@ -1,4 +1,0 @@
-DiscoveryView
-FilteredSearchView
-GameDetailsView
-ConfirmBookingView
