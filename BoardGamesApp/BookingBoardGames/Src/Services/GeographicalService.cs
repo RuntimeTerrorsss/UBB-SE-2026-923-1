@@ -28,7 +28,7 @@ namespace BookingBoardGames.Src.Services
         private const int ColumnIndexLongitude = 5;
         private const int ColumnIndexFeatureClass = 6;
         private const int ColumnIndexPopulation = 14;
-        private readonly Dictionary<string, City> cityLookupByNormalizedName = new ();
+        private readonly Dictionary<string, City> cityLookupByNormalizedName = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GeographicalService"/> class.
