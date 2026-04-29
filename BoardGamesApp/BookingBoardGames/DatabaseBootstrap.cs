@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data;
 
 namespace BookingBoardGames
 {
@@ -32,12 +33,12 @@ namespace BookingBoardGames
                     context.Users.AddRange(systemUser, alice, bob, carol, david, emma);
                     context.SaveChanges();
 
-                    var catan = new Game { Name = "Catan", Price = 15.00m, PricePerDay = 1.99m, MinimumPlayerNumber = 3, MaximumPlayerNumber = 4, Description = "Trade and build on the island of Catan.", IsActive = true, Owner = alice };
-                    var monopoly = new Game { Name = "Monopoly", Price = 10.00m, PricePerDay = 1.50m, MinimumPlayerNumber = 2, MaximumPlayerNumber = 6, Description = "Classic property trading game.", IsActive = true, Owner = bob };
-                    var carcassonne = new Game { Name = "Carcassonne", Price = 12.50m, PricePerDay = 1.20m, MinimumPlayerNumber = 2, MaximumPlayerNumber = 5, Description = "Tile placement game.", IsActive = true, Owner = alice };
-                    var terraformingMars = new Game { Name = "Terraforming Mars", Price = 20.00m, PricePerDay = 2.50m, MinimumPlayerNumber = 1, MaximumPlayerNumber = 5, Description = "Strategy game about developing Mars.", IsActive = false, Owner = carol };
-                    var activity = new Game { Name = "Activity", Price = 15.00m, PricePerDay = 0.50m, MinimumPlayerNumber = 3, MaximumPlayerNumber = 12, Description = "Party game.", IsActive = true, Owner = carol };
-                    var chess = new Game { Name = "Chess", Price = 5.00m, PricePerDay = 0.86m, MinimumPlayerNumber = 2, MaximumPlayerNumber = 2, Description = "Classic strategy.", IsActive = true, Owner = carol };
+                    var catan = new Game { Name = "Catan", PricePerDay = 1.99m, MinimumPlayerNumber = 3, MaximumPlayerNumber = 4, Description = "Trade and build on the island of Catan.", IsActive = true, Owner = alice };
+                    var monopoly = new Game { Name = "Monopoly", PricePerDay = 1.50m, MinimumPlayerNumber = 2, MaximumPlayerNumber = 6, Description = "Classic property trading game.", IsActive = true, Owner = bob };
+                    var carcassonne = new Game { Name = "Carcassonne", PricePerDay = 1.20m, MinimumPlayerNumber = 2, MaximumPlayerNumber = 5, Description = "Tile placement game.", IsActive = true, Owner = alice };
+                    var terraformingMars = new Game { Name = "Terraforming Mars", PricePerDay = 2.50m, MinimumPlayerNumber = 1, MaximumPlayerNumber = 5, Description = "Strategy game about developing Mars.", IsActive = false, Owner = carol };
+                    var activity = new Game { Name = "Activity", PricePerDay = 0.50m, MinimumPlayerNumber = 3, MaximumPlayerNumber = 12, Description = "Party game.", IsActive = true, Owner = carol };
+                    var chess = new Game { Name = "Chess", PricePerDay = 0.86m, MinimumPlayerNumber = 2, MaximumPlayerNumber = 2, Description = "Classic strategy.", IsActive = true, Owner = carol };
 
                     context.Games.AddRange(catan, monopoly, carcassonne, terraformingMars, activity, chess);
                     context.SaveChanges();
@@ -133,7 +134,7 @@ namespace BookingBoardGames
                         { 31, "KingOfTokyo.jpg" },
                         { 32, "SheriffOfNottingham.jpg" },
                         { 33, "Mysterium.jpg" },
-                        { 34, "Clank!.jpg" }
+                        { 34, "Clank!.jpg" },
                     };
 
                     bool hasChanges = false;

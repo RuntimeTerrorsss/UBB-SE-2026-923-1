@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using BookingBoardGames.Data.Models;
 
 namespace BookingBoardGames.Src.Repositories
 {

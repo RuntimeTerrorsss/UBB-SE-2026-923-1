@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data;
 
 using Microsoft.Data.SqlClient;
 
