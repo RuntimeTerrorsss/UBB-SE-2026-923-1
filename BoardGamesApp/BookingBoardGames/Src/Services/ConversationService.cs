@@ -2,21 +2,26 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Repositories;
 
 namespace BookingBoardGames.Src.Services
 {
     public class ConversationService : IConversationService
     {
         private IConversationRepository ConversationRepository { get; set; }
+
         private IUserRepository userRepository;
+
         private int UserId { get; set; }
 
         public event Action<MessageDataTransferObject, string> ActionMessageProcessed;
+
         public event Action<ConversationDataTransferObject, string> ActionConversationProcessed;
+
         public event Action<ReadReceiptDataTransferObject> ActionReadReceiptProcessed;
+
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
 
         public ConversationService(IConversationRepository conversationRepo, int userIdInput) : this(conversationRepo, userIdInput, App.UserRepository)
@@ -53,7 +58,7 @@ namespace BookingBoardGames.Src.Services
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
         {
-            return userRepository.GetById(message.senderId == UserId ? message.receiverId : message.senderId).Username ?? "Unknown User";
+            return userRepository.GetById(message.SenderId == UserId ? message.ReceiverId : message.SenderId).Username ?? "Unknown User";
         }
 
         public void SendMessage(MessageDataTransferObject message)
@@ -124,48 +129,48 @@ namespace BookingBoardGames.Src.Services
 
         public Message MessageDTOToMessage(MessageDataTransferObject messageDto)
         {
-            Message toReturn = messageDto.type switch
+            Message toReturn = messageDto.Type switch
             {
                 MessageType.MessageText => new TextMessage(
-                    MessageId: messageDto.id,
-                    conversationId: messageDto.conversationId,
-                    senderId: messageDto.senderId,
-                    receiverId: messageDto.receiverId,
-                    sentAt: messageDto.sentAt,
-                    content: messageDto.content),
+                    MessageId: messageDto.Id,
+                    conversationId: messageDto.ConversationId,
+                    senderId: messageDto.SenderId,
+                    receiverId: messageDto.ReceiverId,
+                    sentAt: messageDto.SentAt,
+                    content: messageDto.Content),
                 MessageType.MessageImage => new ImageMessage(
-                    id: messageDto.id,
-                    conversationId: messageDto.conversationId,
-                    senderId: messageDto.senderId,
-                    receiverId: messageDto.receiverId,
-                    sentAt: messageDto.sentAt,
-                    imageUrl: messageDto.imageUrl),
+                    id: messageDto.Id,
+                    conversationId: messageDto.ConversationId,
+                    senderId: messageDto.SenderId,
+                    receiverId: messageDto.ReceiverId,
+                    sentAt: messageDto.SentAt,
+                    imageUrl: messageDto.ImageUrl),
                 MessageType.MessageRentalRequest => new RentalRequestMessage(
-                    id: messageDto.id,
-                    conversationId: messageDto.conversationId,
-                    senderId: messageDto.senderId,
-                    receiverId: messageDto.receiverId,
-                    sentAt: messageDto.sentAt,
-                    content: messageDto.content,
-                    requestId: messageDto.requestId,
-                    isResolved: messageDto.isResolved,
-                    isAccepted: messageDto.isAccepted),
+                    id: messageDto.Id,
+                    conversationId: messageDto.ConversationId,
+                    senderId: messageDto.SenderId,
+                    receiverId: messageDto.ReceiverId,
+                    sentAt: messageDto.SentAt,
+                    content: messageDto.Content,
+                    requestId: messageDto.RequestId,
+                    isResolved: messageDto.IsResolved,
+                    isAccepted: messageDto.IsAccepted),
                 MessageType.MessageCashAgreement => new CashAgreementMessage(
-                    id: messageDto.id,
-                    conversationId: messageDto.conversationId,
-                    sellerId: messageDto.senderId,
-                    buyerId: messageDto.receiverId,
-                    paymentId: messageDto.paymentId,
-                    sentAt: messageDto.sentAt,
-                    content: messageDto.content,
-                    isResolved: messageDto.isResolved,
-                    isAcceptedByBuyer: messageDto.isAcceptedByBuyer,
-                    isAcceptedBySeller: messageDto.isAcceptedBySeller),
+                    id: messageDto.Id,
+                    conversationId: messageDto.ConversationId,
+                    sellerId: messageDto.SenderId,
+                    buyerId: messageDto.ReceiverId,
+                    paymentId: messageDto.PaymentId,
+                    sentAt: messageDto.SentAt,
+                    content: messageDto.Content,
+                    isResolved: messageDto.IsResolved,
+                    isAcceptedByBuyer: messageDto.IsAcceptedByBuyer,
+                    isAcceptedBySeller: messageDto.IsAcceptedBySeller),
                 MessageType.MessageSystem => new SystemMessage(
-                    id: messageDto.id,
-                    conversationId: messageDto.conversationId,
-                    sentAt: messageDto.sentAt,
-                    content: messageDto.content),
+                    id: messageDto.Id,
+                    conversationId: messageDto.ConversationId,
+                    sentAt: messageDto.SentAt,
+                    content: messageDto.Content),
             };
             return toReturn;
         }

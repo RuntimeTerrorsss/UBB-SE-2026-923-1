@@ -26,6 +26,7 @@ namespace BookingBoardGames.Src.Views
             frame1.Navigate(typeof(ChatPageView), 3);
             window1.Activate();
         }
+
         private void SeeEmptyChat_Click(object sender, RoutedEventArgs e)
         {
             var window1 = new Window();

@@ -1,4 +1,5 @@
 ﻿namespace BookingBoardGames.Src.DTO;
+
 using System;
 
 /// <summary>

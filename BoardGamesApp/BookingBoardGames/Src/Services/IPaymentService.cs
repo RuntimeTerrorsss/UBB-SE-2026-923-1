@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace BookingBoardGames.Src.Services
 {
-	public interface IPaymentService
-	{
-		public void GenerateReceipt(int paymentId);
-		public string GetReceipt(int paymentId);
-	}
+    public interface IPaymentService
+    {
+        public void GenerateReceipt(int paymentId);
+
+        public string GetReceipt(int paymentId);
+    }
 }

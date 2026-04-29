@@ -3,26 +3,31 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using BookingBoardGames.Src.ViewModels;
 using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using BookingBoardGames.Src.Enum;
 
-namespace BookingBoardgamesILoveBan.Src.Chat.View
+namespace BookingBoardGames.Src.Views.ChatViews
 {
     public sealed partial class MessageItemView : UserControl
     {
         private TextBlock statusIcon;
+
         public ChatViewModel ViewModel { get; set; }
 
         public event EventHandler<int>? AcceptRequested;
+
         public event EventHandler<int>? DeclineRequested;
+
         public event EventHandler<int>? CancelRequested;
+
         public event EventHandler<int>? AgreementAccepted;
+
         public event EventHandler<(int userId, int requestId, int messageId)>? ProceedToPaymentRequested;
 
         public MessageItemView()

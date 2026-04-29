@@ -7,9 +7,13 @@ namespace BookingBoardGames.Src.DTO
     public class ConversationDataTransferObject
     {
         public int Id { get; set; }
+
         public List<MessageDataTransferObject> MessageList { get; set; }
+
         public int[] Participants { get; set; }
+
         public Dictionary<int, DateTime> LastRead { get; set; }
+
         public Dictionary<int, int> UnreadCount { get; set; }
 
         public ConversationDataTransferObject(int conversationId, int[] participants, List<MessageDataTransferObject> messages, Dictionary<int, DateTime> lastRead)
@@ -40,14 +44,14 @@ namespace BookingBoardGames.Src.DTO
 
             foreach (var messageItem in MessageList)
             {
-                if (messageItem.receiverId == systemMessageSenderIdentifier)
+                if (messageItem.ReceiverId == systemMessageSenderIdentifier)
                 {
                     continue;
                 }
 
-                if (messageItem.sentAt >= LastRead[messageItem.receiverId])
+                if (messageItem.SentAt >= LastRead[messageItem.ReceiverId])
                 {
-                    UnreadCount[messageItem.receiverId]++;
+                    UnreadCount[messageItem.ReceiverId]++;
                 }
             }
         }

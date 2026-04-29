@@ -11,6 +11,7 @@ namespace BookingBoardGames.Src.ViewModels
     public class DeliveryViewModel
     {
         private const int DefaultUserId = 1;
+
         public DeliveryViewModel(
             int currentUserId,
             IMapService mapService,

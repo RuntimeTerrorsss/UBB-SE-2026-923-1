@@ -1,10 +1,13 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 
+namespace BookingBoardGames.Src.Models;
+
 [Owned]
 public class TimeRange
 {
     public DateTime StartTime { get; set; }
+
     public DateTime EndTime { get; set; }
 
     public TimeRange() { }

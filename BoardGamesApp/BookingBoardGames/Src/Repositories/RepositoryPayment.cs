@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Model;
+using BookingBoardGames.Data.Models;
 using BookingBoardGames.Src.Constants;
 
 namespace BookingBoardGames.Src.Repositories
@@ -80,7 +80,7 @@ namespace BookingBoardGames.Src.Repositories
         }
 
         public IReadOnlyList<HistoryPayment> GetAllPayments()
-    {
+        {
             List<HistoryPayment> allPayments = new List<HistoryPayment>();
 
             using (var connection = new SqlConnection(connectionString))

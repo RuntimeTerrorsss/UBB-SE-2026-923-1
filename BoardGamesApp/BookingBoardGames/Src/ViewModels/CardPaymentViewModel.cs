@@ -22,19 +22,31 @@ namespace BookingBoardGames.Src.ViewModels
         private readonly SynchronizationContext synchronizationContext;
 
         public int RequestIdentifier { get; init; }
+
         public int ClientIdentifier { get; init; }
+
         public int OwnerIdentifier { get; init; }
+
         public string GameName { get; init; }
+
         public string OwnerName { get; init; }
+
         public string ClientName { get; init; }
+
         public string DeliveryAddress { get; init; }
+
         public string DeliveryDate { get; init; }
+
         public string RequestDates { get; init; }
+
         public decimal Price { get; init; }
+
         public int BookingMessageIdentifier { get; init; }
+
         public ConversationService ConversationService { get; init; }
 
         private decimal balanceAmount;
+
         public decimal BalanceAmount
         {
             get => balanceAmount;
@@ -53,6 +65,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         private bool areTermsAccepted;
+
         public bool AreTermsAccepted
         {
             get => areTermsAccepted;
@@ -71,6 +84,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         private bool isCurrentlyLoading;
+
         public bool IsCurrentlyLoading
         {
             get => isCurrentlyLoading;
@@ -88,6 +102,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         private string currentStatusMessage = string.Empty;
+
         public string CurrentStatusMessage
         {
             get => currentStatusMessage;
@@ -99,6 +114,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         private bool isPaymentSuccessful;
+
         public bool IsPaymentSuccessful
         {
             get => isPaymentSuccessful;
@@ -110,6 +126,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         private string cardNumber = string.Empty;
+
         public string CardNumber
         {
             get => cardNumber;
@@ -128,6 +145,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         private string cardholderName = string.Empty;
+
         public string CardholderName
         {
             get => cardholderName;
@@ -146,6 +164,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         private string expiryDate = string.Empty;
+
         public string ExpiryDate
         {
             get => expiryDate;
@@ -164,6 +183,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         private string cardVerificationValue = string.Empty;
+
         public string CardVerificationValue
         {
             get => cardVerificationValue;
@@ -193,10 +213,13 @@ namespace BookingBoardGames.Src.ViewModels
         public bool IsWarningMessageVisible => BalanceAmount < Price;
 
         public RelayCommand FinishPaymentCommand { get; }
+
         public RelayCommand ExitCommand { get; }
+
         public RelayCommand ResetInactivityCommand { get; }
 
         public Action NavigateBackwardsAction { get; set; }
+
         public Action NavigateToExitAction { get; set; }
 
         public CardPaymentViewModel(
