@@ -12,7 +12,7 @@ namespace BookingBoardGames.Src.Enum
         MessageText,
         MessageImage,
         MessageRentalRequest,
-        MessageCashAgreement
+        MessageCashAgreement,
     }
 
     public static class MessageTypeExtensions

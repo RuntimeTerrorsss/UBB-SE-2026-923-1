@@ -44,14 +44,14 @@ namespace BookingBoardGames.Src.DTO
 
             foreach (var messageItem in MessageList)
             {
-                if (messageItem.receiverId == systemMessageSenderIdentifier)
+                if (messageItem.ReceiverId == systemMessageSenderIdentifier)
                 {
                     continue;
                 }
 
-                if (messageItem.sentAt >= LastRead[messageItem.receiverId])
+                if (messageItem.SentAt >= LastRead[messageItem.ReceiverId])
                 {
-                    UnreadCount[messageItem.receiverId]++;
+                    UnreadCount[messageItem.ReceiverId]++;
                 }
             }
         }

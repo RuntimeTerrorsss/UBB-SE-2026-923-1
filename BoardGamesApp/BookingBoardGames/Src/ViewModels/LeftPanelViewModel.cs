@@ -147,13 +147,13 @@ namespace BookingBoardGames.Src.ViewModels
             int noUnreadMessagesCount = 0;
             int singleUnreadMessageCount = 1;
 
-            var matchedConversation = allConversations.FirstOrDefault(conversationItem => conversationItem.ConversationId == message.conversationId);
+            var matchedConversation = allConversations.FirstOrDefault(conversationItem => conversationItem.ConversationId == message.ConversationId);
 
             if (matchedConversation != null)
             {
-                matchedConversation.LastMessageText = message.content;
+                matchedConversation.LastMessageText = message.Content;
                 matchedConversation.Timestamp = DateTime.Now;
-                matchedConversation.UnreadCount = message.conversationId == selectedConversationId ? noUnreadMessagesCount : matchedConversation.UnreadCount + singleUnreadMessageCount;
+                matchedConversation.UnreadCount = message.ConversationId == selectedConversationId ? noUnreadMessagesCount : matchedConversation.UnreadCount + singleUnreadMessageCount;
 
                 allConversations.Remove(matchedConversation);
                 allConversations.Insert(0, matchedConversation);
@@ -161,13 +161,13 @@ namespace BookingBoardGames.Src.ViewModels
             else
             {
                 var newConversationPreview = new ConversationPreviewModel(
-                    message.conversationId,
+                    message.ConversationId,
                     senderName,
                     senderName.Substring(firstCharacterIndex, singleCharacterLength).ToUpper(),
-                    message.content,
+                    message.Content,
                     DateTime.Now,
-                    unreadCountInput: message.conversationId == selectedConversationId ? noUnreadMessagesCount : singleUnreadMessageCount,
-                    userService.GetById(message.receiverId).AvatarUrl);
+                    unreadCountInput: message.ConversationId == selectedConversationId ? noUnreadMessagesCount : singleUnreadMessageCount,
+                    userService.GetById(message.ReceiverId).AvatarUrl);
                 allConversations.Insert(0, newConversationPreview);
             }
 
@@ -199,7 +199,7 @@ namespace BookingBoardGames.Src.ViewModels
                 displayName,
                 displayName.Substring(firstCharacterIndex, singleCharacterLength).ToUpper(),
                 conversation.MessageList.LastOrDefault()?.GetChatMessagePreview() ?? string.Empty,
-                conversation.MessageList.LastOrDefault()?.sentAt ?? DateTime.MinValue,
+                conversation.MessageList.LastOrDefault()?.SentAt ?? DateTime.MinValue,
                 unreadCountInput: conversation.UnreadCount[userId],
                 service.GetById(otherUserIdentifier).AvatarUrl);
 

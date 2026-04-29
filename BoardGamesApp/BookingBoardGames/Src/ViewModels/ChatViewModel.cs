@@ -80,7 +80,7 @@ public class ChatViewModel : INotifyPropertyChanged
 
         // Rental Request fixed on top
         var sortedMessages = messages
-            .OrderByDescending(m => m.type == MessageType.MessageRentalRequest)
+            .OrderByDescending(m => m.Type == MessageType.MessageRentalRequest)
             .ToList();
 
         Messages.Clear();
@@ -100,14 +100,14 @@ public class ChatViewModel : INotifyPropertyChanged
     {
         double oneSecondTolerance = 1;
 
-        if (message.conversationId != ConversationId)
+        if (message.ConversationId != ConversationId)
         {
             return;
         }
 
         bool messageExists = Messages.Any(messageItem =>
-            messageItem.Content == message.content &&
-            Math.Abs((messageItem.SentAt - message.sentAt).TotalSeconds) < oneSecondTolerance);
+            messageItem.Content == message.Content &&
+            Math.Abs((messageItem.SentAt - message.SentAt).TotalSeconds) < oneSecondTolerance);
 
         if (messageExists)
         {

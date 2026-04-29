@@ -91,8 +91,8 @@ public class ChatPageViewModel
         int firstParticipantIndex = 0;
         int secondParticipantIndex = 1;
 
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.conversationId);
-        message = message with { receiverId = matchedConversation.Participants[firstParticipantIndex] == message.senderId ? matchedConversation.Participants[secondParticipantIndex] : matchedConversation.Participants[firstParticipantIndex] };
+        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
+        message = message with { ReceiverId = matchedConversation.Participants[firstParticipantIndex] == message.SenderId ? matchedConversation.Participants[secondParticipantIndex] : matchedConversation.Participants[firstParticipantIndex] };
         conversationService.SendMessage(message);
     }
 
@@ -108,13 +108,13 @@ public class ChatPageViewModel
 
     private void OnMessageReceived(MessageDataTransferObject message, string senderName)
     {
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.conversationId);
+        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
 
         matchedConversation?.AddMessageToListDTO(message);
 
         LeftPanelModelView.HandleIncomingMessage(message, senderName);
         ChatModelView.HandleIncomingMessage(message);
-        if (ChatModelView.ConversationId == message.conversationId)
+        if (ChatModelView.ConversationId == message.ConversationId)
         {
             SendReadReceipt(matchedConversation);
         }
@@ -123,30 +123,30 @@ public class ChatPageViewModel
     private void UpdateBookingRequest(int messageId, int conversationId, bool accepted, bool resolved)
     {
         var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == conversationId);
-        var targetMessage = matchedConversation?.MessageList.FirstOrDefault(messageItem => messageItem.id == messageId);
+        var targetMessage = matchedConversation?.MessageList.FirstOrDefault(messageItem => messageItem.Id == messageId);
         if (targetMessage == null)
         {
             return;
         }
-        targetMessage = targetMessage with { isResolved = resolved, isAccepted = accepted };
+        targetMessage = targetMessage with { IsResolved = resolved, IsAccepted = accepted };
         OnSendMessageUpdate(targetMessage);
     }
 
     private void UpdateCashAgreement(int messageId, int conversationId)
     {
         var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == conversationId);
-        var targetMessage = matchedConversation?.MessageList.FirstOrDefault(messageItem => messageItem.id == messageId);
+        var targetMessage = matchedConversation?.MessageList.FirstOrDefault(messageItem => messageItem.Id == messageId);
         if (targetMessage == null)
         {
             return;
         }
-        if (currentUserId == targetMessage.senderId)
+        if (currentUserId == targetMessage.SenderId)
         {
-            targetMessage = targetMessage with { isAcceptedBySeller = true };
+            targetMessage = targetMessage with { IsAcceptedBySeller = true };
         }
-        if (currentUserId == targetMessage.receiverId)
+        if (currentUserId == targetMessage.ReceiverId)
         {
-            targetMessage = targetMessage with { isAcceptedByBuyer = true };
+            targetMessage = targetMessage with { IsAcceptedByBuyer = true };
         }
         OnSendMessageUpdate(targetMessage);
     }
@@ -171,17 +171,17 @@ public class ChatPageViewModel
     private void OnMessageUpdateReceived(MessageDataTransferObject updatedMessage, string senderName)
     {
         int noUnreadMessagesCount = 0;
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == updatedMessage.conversationId);
+        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == updatedMessage.ConversationId);
         if (matchedConversation == null)
         {
             return;
         }
         for (int i = 0; i < matchedConversation.MessageList.Count; i++)
         {
-            if (matchedConversation.MessageList[i].id == updatedMessage.id)
+            if (matchedConversation.MessageList[i].Id == updatedMessage.Id)
             {
                 matchedConversation.MessageList[i] = updatedMessage;
-                if (ChatModelView.ConversationId == updatedMessage.conversationId)
+                if (ChatModelView.ConversationId == updatedMessage.ConversationId)
                 {
                     ChatModelView.LoadConversation(LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, noUnreadMessagesCount);
                 }

@@ -82,18 +82,18 @@ public class MessageViewModel : INotifyPropertyChanged
     {
         int systemUserIdentifier = 0;
 
-        Id = message.id;
-        ConversationId = message.conversationId;
-        SenderId = message.senderId;
-        Type = message.type;
-        Content = message.content;
-        IsMine = message.senderId == currentUserId;
-        SentAt = message.sentAt;
-        ImageUrl = message.imageUrl;
-        RequestId = message.requestId;
-        IsAccepted = message.isAccepted;
-        isResolved = message.isResolved;
-        acceptedBy = new int[] { message.isAcceptedByBuyer ? message.receiverId : systemUserIdentifier, message.isAcceptedBySeller ? message.senderId : systemUserIdentifier };
+        Id = message.Id;
+        ConversationId = message.ConversationId;
+        SenderId = message.SenderId;
+        Type = message.Type;
+        Content = message.Content;
+        IsMine = message.SenderId == currentUserId;
+        SentAt = message.SentAt;
+        ImageUrl = message.ImageUrl;
+        RequestId = message.RequestId;
+        IsAccepted = message.IsAccepted;
+        isResolved = message.IsResolved;
+        acceptedBy = new int[] { message.IsAcceptedByBuyer ? message.ReceiverId : systemUserIdentifier, message.IsAcceptedBySeller ? message.SenderId : systemUserIdentifier };
         isRead = false;
     }
 

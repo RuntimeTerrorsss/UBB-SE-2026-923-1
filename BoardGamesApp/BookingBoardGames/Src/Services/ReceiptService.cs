@@ -7,63 +7,63 @@ using PdfSharpCore.Pdf;
 
 namespace BookingBoardGames.Src.Services
 {
-	public class ReceiptService : IReceiptService
-	{
-		private static string baseFolderPath = Path.Combine(
-			Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-			ReceiptServiceConstants.BaseFolderName);
+    public class ReceiptService : IReceiptService
+    {
+        private static string baseFolderPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            ReceiptServiceConstants.BaseFolderName);
 
-		private readonly IUserRepository userRepository;
-		private readonly IRentalService rentalService;
-		private readonly InterfaceGamesRepository gameRepository;
+        private readonly IUserRepository userRepository;
+        private readonly IRentalService rentalService;
+        private readonly InterfaceGamesRepository gameRepository;
 
-		public ReceiptService(IUserRepository userRepository, IRentalService requestService, InterfaceGamesRepository gameRepository)
-		{
-			this.userRepository = userRepository;
-			this.rentalService = requestService;
-			this.gameRepository = gameRepository;
-		}
+        public ReceiptService(IUserRepository userRepository, IRentalService requestService, InterfaceGamesRepository gameRepository)
+        {
+            this.userRepository = userRepository;
+            this.rentalService = requestService;
+            this.gameRepository = gameRepository;
+        }
 
-		/// <summary>
-		/// Get a new relative path for a receipt.
-		/// IMPORTANT: It does NOT create the receipt pdf.
-		/// Used for assigning a unique receipt file name to transaction so pdf file can be found or created when needed.
-		/// </summary>
-		/// <param name="requestId">id of request for generating a unique file name</param>
-		/// <returns>unique relative path allocated for the receipt</returns>
-		public virtual string GenerateReceiptRelativePath(int requestId)
-		{
-			string fileName = $"receipt_{requestId}_{DateTime.Now:yyMMdd_HHmmss}.pdf";
+        /// <summary>
+        /// Get a new relative path for a receipt.
+        /// IMPORTANT: It does NOT create the receipt pdf.
+        /// Used for assigning a unique receipt file name to transaction so pdf file can be found or created when needed.
+        /// </summary>
+        /// <param name="requestId">id of request for generating a unique file name</param>
+        /// <returns>unique relative path allocated for the receipt</returns>
+        public virtual string GenerateReceiptRelativePath(int requestId)
+        {
+            string fileName = $"receipt_{requestId}_{DateTime.Now:yyMMdd_HHmmss}.pdf";
 
-			return $"receipts\\{fileName}";
-		}
+            return $"receipts\\{fileName}";
+        }
 
-		/// <summary>
-		/// Get the full path to the receipt pdf.
-		/// Source: D:\Downloads\BookingBoardgames\receipts
-		///
-		/// If pdf for receipt does not exist at source, it is created and full path to it returned.
-		/// Otherwise, full path to existing pdf is returned.
-		/// </summary>
-		/// <param name="selectedPayment">transaction for getting relative path to receipt</param>
-		/// <returns>full path to existing or newly created pdf</returns>
-		/// <exception cref="InvalidOperationException">receipt path of transaction is missing</exception>
-		public string GetReceiptDocument(Payment selectedPayment)
-		{
-			if (selectedPayment.ReceiptFilePath == null || selectedPayment.ReceiptFilePath == string.Empty)
-			{
-				throw new InvalidOperationException("Receipt path is missing.");
-			}
+        /// <summary>
+        /// Get the full path to the receipt pdf.
+        /// Source: D:\Downloads\BookingBoardgames\receipts
+        ///
+        /// If pdf for receipt does not exist at source, it is created and full path to it returned.
+        /// Otherwise, full path to existing pdf is returned.
+        /// </summary>
+        /// <param name="selectedPayment">transaction for getting relative path to receipt</param>
+        /// <returns>full path to existing or newly created pdf</returns>
+        /// <exception cref="InvalidOperationException">receipt path of transaction is missing</exception>
+        public string GetReceiptDocument(Payment selectedPayment)
+        {
+            if (selectedPayment.ReceiptFilePath == null || selectedPayment.ReceiptFilePath == string.Empty)
+            {
+                throw new InvalidOperationException("Receipt path is missing.");
+            }
 
-			string fullReceiptPath = this.GetFullPath(selectedPayment.ReceiptFilePath);
+            string fullReceiptPath = this.GetFullPath(selectedPayment.ReceiptFilePath);
 
-			if (!File.Exists(fullReceiptPath))
-			{
-				return CreateReceipt(selectedPayment);
-			}
+            if (!File.Exists(fullReceiptPath))
+            {
+                return CreateReceipt(selectedPayment);
+            }
 
-			return fullReceiptPath;
-		}
+            return fullReceiptPath;
+        }
 
         private string PrepareDocumentPath(Payment selectedPayment)
         {
@@ -212,9 +212,9 @@ namespace BookingBoardGames.Src.Services
         /// <param name="relativePath">string</param>
         /// <returns>full path</returns>
         private string GetFullPath(string relativePath)
-		{
-			return Path.Combine(baseFolderPath, relativePath.TrimStart('\\', '/'));
-		}
+        {
+            return Path.Combine(baseFolderPath, relativePath.TrimStart('\\', '/'));
+        }
 
         private string BuildHeader(Payment payment)
         {
@@ -297,16 +297,16 @@ namespace BookingBoardGames.Src.Services
         /// <param name="fileName">from where to extract the date</param>
         /// <returns>reformated date (dd/MM/yyyy)</returns>
         private string GetIssuedDateFromFilename(string fileName)
-		{
-			try
-			{
-				DateTime exactDate = DateTime.ParseExact(fileName.Split(ReceiptServiceConstants.FileNameSeparator)[ReceiptServiceConstants.DatePartIndex], ReceiptServiceConstants.FileDateFormat, null);
-				return exactDate.ToString(ReceiptServiceConstants.DisplayDateFormat);
-			}
-			catch (Exception)
-			{
-				return DateTime.Now.ToString(ReceiptServiceConstants.DisplayDateFormat);
-			}
-		}
-	}
+        {
+            try
+            {
+                DateTime exactDate = DateTime.ParseExact(fileName.Split(ReceiptServiceConstants.FileNameSeparator)[ReceiptServiceConstants.DatePartIndex], ReceiptServiceConstants.FileDateFormat, null);
+                return exactDate.ToString(ReceiptServiceConstants.DisplayDateFormat);
+            }
+            catch (Exception)
+            {
+                return DateTime.Now.ToString(ReceiptServiceConstants.DisplayDateFormat);
+            }
+        }
+    }
 }

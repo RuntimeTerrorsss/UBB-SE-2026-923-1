@@ -9,6 +9,7 @@ using BookingBoardGames.Data;
 using BookingBoardGames.Src.Mapper;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -40,13 +41,15 @@ namespace BookingBoardGames
         /// </summary>
         ///
 
-        //public static AppDbContext Context = new AppDbContext();
+        private static readonly AppDbContextFactory _dbFactory = new AppDbContextFactory();
+
+        public static BookingBoardGames.Data.AppDbContext Context = _dbFactory.CreateDbContext(Array.Empty<string>());
 
         public static InterfaceGeographicalService? GlobalGeoService { get; private set; }
 
         public static IUserRepository UserRepository { get; private set; } = new UserRepository();
 
-        public static InterfaceGamesRepository GameRepository { get; private set; } = new GamesRepository();
+        public static InterfaceGamesRepository GameRepository { get; private set; } = new GamesRepository(Context);
 
         public static IRentalRepository RentalRepository { get; private set; } = new RentalRepository();
 
@@ -54,10 +57,10 @@ namespace BookingBoardGames
 
         public static IPaymentRepository PaymentRepository { get; private set; } = new PaymentRepository();
 
-        public static ReceiptService ReceiptService { get; private set; } = new ReceiptService(UserRepository, RentalService, GameRepository);
+        public static IReceiptService ReceiptService { get; private set; } = new ReceiptService(UserRepository, RentalService, GameRepository);
 
-        public static CardPaymentService CardPaymentService { get; private set; } = new CardPaymentService(PaymentRepository,
-            UserRepository, ReceiptService, RentalService);
+        public static CardPaymentService CardPaymentService { get; private set; } = new CardPaymentService(
+            PaymentRepository, UserRepository, ReceiptService, RentalService);
 
         public static MapService MapService { get; private set; } = new MapService();
 
@@ -69,15 +72,13 @@ namespace BookingBoardGames
         public static CashPaymentService CashPaymentService { get; private set; } = new CashPaymentService(PaymentRepository,
             new CashPaymentMapper(), ReceiptService);
 
-        public static ConversationRepository ConversationRepository { get; private set; } = new ConversationRepository();
+        public static IConversationRepository ConversationRepository { get; private set; } = new ConversationRepository();
 
-        // TODO add request repo instead of rental repo
         public static InterfaceBookingService BookingService { get; private set; } = new BookingService(GameRepository, RentalRepository, UserRepository);
 
-        public static GeographicalService GeographicalService { get; private set; } = new GeographicalService();
+        public static InterfaceGeographicalService GeographicalService { get; private set; } = new GeographicalService();
 
-        // TODO add request repo instead of rental repo
-        public static InterfaceSearchAndFilterService SearchAndFilterService { get; private set; } = new SearchAndFilterService(GameRepository, UserRepository, ..., GeographicalService);
+        public static InterfaceSearchAndFilterService SearchAndFilterService { get; private set; } = new SearchAndFilterService(GameRepository, UserRepository, RentalRepository, GeographicalService);
 
         public int DashboardUser = 3;
         public int NoChatsUser = 8;
