@@ -3,6 +3,8 @@ using System.Net.NetworkInformation;
 
 using System;
 
+namespace BookingBoardGames.Src.Models;
+
 public abstract class Message
 {
     public int MessageId { get; set; }

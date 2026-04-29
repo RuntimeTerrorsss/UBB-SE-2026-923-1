@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 
+namespace BookingBoardGames.Src.Models;
+
 [Owned]
 public class TimeRange
 {

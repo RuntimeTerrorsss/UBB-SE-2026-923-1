@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+namespace BookingBoardGames.Src.Models;
+
 public class City
 {
     public int CityId { get; set; }
