@@ -17,10 +17,10 @@ namespace BookingBoardGames.Src.Services
         private readonly IRentalService rentalService;
         private readonly InterfaceGamesRepository gameRepository;
 
-        public ReceiptService(IUserRepository userRepository, IRentalService requestService, InterfaceGamesRepository gameRepository)
+        public ReceiptService(IUserRepository userRepository, IRentalService rentalService, InterfaceGamesRepository gameRepository)
         {
             this.userRepository = userRepository;
-            this.rentalService = requestService;
+            this.rentalService = rentalService;
             this.gameRepository = gameRepository;
         }
 

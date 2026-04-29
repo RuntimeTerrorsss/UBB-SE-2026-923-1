@@ -14,10 +14,10 @@ namespace BookingBoardGames.Src.Services
             PaymentRepository paymentRepository,
             IUserRepository userRepository,
             ReceiptService receiptService,
-            IRentalService requestService) : base(paymentRepository, receiptService)
+            IRentalService rentalService) : base(paymentRepository, receiptService)
         {
             this.userRepository = userRepository;
-            this.rentalService = requestService;
+            this.rentalService = rentalService;
         }
 
         public virtual CardPaymentDataTransferObject AddCardPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier, decimal amount)

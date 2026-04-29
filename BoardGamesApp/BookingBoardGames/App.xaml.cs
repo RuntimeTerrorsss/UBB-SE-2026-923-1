@@ -101,7 +101,7 @@ namespace BookingBoardGames
             AppDbContext = new AppDbContext(options);
 
             // Repositories
-            UserRepository = new UserRepository(); // add context
+            UserRepository = new UserRepository(AppDbContext);
             GameRepository = new GamesRepository(AppDbContext);
             RentalRepository = new RentalRepository(AppDbContext);
             PaymentRepository = new PaymentRepository(AppDbContext);
@@ -111,13 +111,13 @@ namespace BookingBoardGames
             // Services
             GlobalGeoService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
-            ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository); // TODO: rename parameter (request => rental)
-            CardPaymentService = new CardPaymentService(PaymentRepository, UserRepository, ReceiptService, RentalService); // TODO: rename parameter
+            ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
+            CardPaymentService = new CardPaymentService(PaymentRepository, UserRepository, ReceiptService, RentalService);
             MapService = new MapService();
             ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
             CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);
-            BookingService = new BookingService(GameRepository, RentalRepository, UserRepository); // huh?
-            SearchAndFilterService = new SearchAndFilterService(GameRepository, UserRepository, RentalRepository, GlobalGeoService); // astept sa gate cipicu
+            BookingService = new BookingService(GameRepository, RentalRepository, UserRepository);
+            SearchAndFilterService = new SearchAndFilterService(GameRepository, UserRepository, RentalRepository, GlobalGeoService);
         }
 
         /// <summary>

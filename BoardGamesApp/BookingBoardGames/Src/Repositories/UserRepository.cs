@@ -8,6 +8,11 @@ namespace BookingBoardGames.Src.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
+
+        public UserRepository(AppDbContext context)
+        {
+            this._context = context;
+        }
         public User? GetById(int id)
         {
             return _context.Users.FirstOrDefault(user => user.Id == id);
