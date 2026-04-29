@@ -13,6 +13,7 @@ namespace BookingBoardGames.Src.Views
     public sealed partial class CardPaymentPage : Page
     {
         public CardPaymentViewModel PaymentViewModel { get; set; }
+
         private Window activeCurrentWindow;
 
         public CardPaymentPage()

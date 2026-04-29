@@ -14,8 +14,11 @@ namespace BookingBoardGames.Src.ViewModels;
 public class ChatViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
+
     public event Action<MessageDataTransferObject> MessageSent;
+
     public event Action<int, int, bool, bool> BookingRequestUpdate;
+
     public event Action<int, int> CashAgreementAccept;
 
     public ChatViewModel(int currentUser)
@@ -27,6 +30,7 @@ public class ChatViewModel : INotifyPropertyChanged
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     private string displayName;
+
     public string DisplayName
     {
         get => displayName;
@@ -38,6 +42,7 @@ public class ChatViewModel : INotifyPropertyChanged
     }
 
     private string initials;
+
     public string Initials
     {
         get => initials;
@@ -49,6 +54,7 @@ public class ChatViewModel : INotifyPropertyChanged
     }
 
     private string avatarUrl;
+
     public string AvatarUrl
     {
         get => avatarUrl;
@@ -60,9 +66,10 @@ public class ChatViewModel : INotifyPropertyChanged
     }
 
     public int CurrentUserId { get; private set; }
+
     public int ConversationId { get; private set; }
 
-    public ObservableCollection<MessageViewModel> Messages { get; } = new ();
+    public ObservableCollection<MessageViewModel> Messages { get; } = new();
 
     public void LoadConversation(ConversationPreviewModel conversation, List<MessageDataTransferObject> messages, int theirUnreadCount)
     {
@@ -110,6 +117,7 @@ public class ChatViewModel : INotifyPropertyChanged
     }
 
     private string inputText = string.Empty;
+
     public string InputText
     {
         get => inputText;

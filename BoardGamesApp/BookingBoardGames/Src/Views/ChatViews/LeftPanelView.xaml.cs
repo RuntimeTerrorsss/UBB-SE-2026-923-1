@@ -22,6 +22,7 @@ namespace BookingBoardgamesILoveBan.Src.Chat.View
     public sealed partial class LeftPanelView : UserControl
     {
         private LeftPanelViewModel viewModel;
+
         public LeftPanelViewModel ViewModel
         {
             get => viewModel;

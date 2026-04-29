@@ -10,6 +10,7 @@ namespace BookingBoardGames.Src.Views
     public sealed partial class CashPaymentPage : Page
     {
         public CashPaymentViewModel PaymentViewModel { get; set; }
+
         private Window currentApplicationWindow;
 
         public CashPaymentPage()
@@ -37,6 +38,7 @@ namespace BookingBoardGames.Src.Views
                 currentApplicationWindow = booking.CurrentWindow;
             }
         }
+
         private void NavigateToChatButton_Click(object sender, RoutedEventArgs e)
         {
             currentApplicationWindow.Close();

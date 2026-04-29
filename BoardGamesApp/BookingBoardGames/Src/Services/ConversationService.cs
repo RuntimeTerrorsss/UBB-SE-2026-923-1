@@ -11,12 +11,17 @@ namespace BookingBoardGames.Src.Services
     public class ConversationService : IConversationService
     {
         private IConversationRepository ConversationRepository { get; set; }
+
         private IUserRepository userRepository;
+
         private int UserId { get; set; }
 
         public event Action<MessageDataTransferObject, string> ActionMessageProcessed;
+
         public event Action<ConversationDataTransferObject, string> ActionConversationProcessed;
+
         public event Action<ReadReceiptDataTransferObject> ActionReadReceiptProcessed;
+
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
 
         public ConversationService(IConversationRepository conversationRepo, int userIdInput) : this(conversationRepo, userIdInput, App.UserRepository)

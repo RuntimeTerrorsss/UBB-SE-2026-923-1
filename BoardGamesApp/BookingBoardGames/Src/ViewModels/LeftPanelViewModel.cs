@@ -21,7 +21,9 @@ namespace BookingBoardGames.Src.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsEmptyStateVisible => allConversations.Count == 0;
+
         public bool IsNoMatchesVisible => allConversations.Count > 0 && Conversations.Count == 0;
+
         public bool IsListVisible => Conversations.Count > 0;
 
         private void RefreshUIStates()
@@ -31,7 +33,7 @@ namespace BookingBoardGames.Src.ViewModels
             OnPropertyChanged(nameof(IsListVisible));
         }
 
-        private List<ConversationPreviewModel> allConversations = new ();
+        private List<ConversationPreviewModel> allConversations = new();
 
         private ObservableCollection<ConversationPreviewModel> conversations;
 
@@ -46,6 +48,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         private string searchText = string.Empty;
+
         public string SearchText
         {
             get => searchText;
@@ -61,6 +64,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         private int? selectedConversationId;
+
         public ConversationPreviewModel SelectedConversation
         {
             get => Conversations.FirstOrDefault(conversationItem => conversationItem.ConversationId == selectedConversationId);

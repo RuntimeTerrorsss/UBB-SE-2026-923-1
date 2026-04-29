@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using BookingBoardGames;
+using BookingBoardGames.Data;
 using BookingBoardGames.Src.Mapper;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
@@ -19,7 +21,6 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using BookingBoardgamesILoveBan;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -39,9 +40,11 @@ namespace BookingBoardGames
         /// </summary>
         ///
 
+        //public static AppDbContext Context = new AppDbContext();
+
         public static InterfaceGeographicalService? GlobalGeoService { get; private set; }
 
-        public static UserRepository UserRepository { get; private set; } = new UserRepository();
+        public static IUserRepository UserRepository { get; private set; } = new UserRepository();
 
         public static InterfaceGamesRepository GameRepository { get; private set; } = new GamesRepository();
 
@@ -49,7 +52,7 @@ namespace BookingBoardGames
 
         public static IRentalService RentalService { get; private set; } = new RentalService(RentalRepository, GameRepository);
 
-        public static PaymentRepository PaymentRepository { get; private set; } = new PaymentRepository();
+        public static IPaymentRepository PaymentRepository { get; private set; } = new PaymentRepository();
 
         public static ReceiptService ReceiptService { get; private set; } = new ReceiptService(UserRepository, RentalService, GameRepository);
 

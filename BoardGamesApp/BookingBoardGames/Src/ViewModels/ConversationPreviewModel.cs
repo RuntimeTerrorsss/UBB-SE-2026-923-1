@@ -11,11 +11,15 @@ public class ConversationPreviewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 
     public int ConversationId { get; init; }
+
     public string DisplayName { get; init; }
+
     public string Initials { get; init; }
+
     public string AvatarUrl { get; init; }
 
     private string lastMessageText;
+
     public string LastMessageText
     {
         get => lastMessageText;
@@ -27,6 +31,7 @@ public class ConversationPreviewModel : INotifyPropertyChanged
     }
 
     private DateTime timestamp;
+
     public DateTime Timestamp
     {
         get => timestamp;
@@ -39,6 +44,7 @@ public class ConversationPreviewModel : INotifyPropertyChanged
     }
 
     private int unreadCount;
+
     public int UnreadCount
     {
         get => unreadCount;

@@ -5,8 +5,11 @@ namespace BookingBoardGames.Src.DTO
     public class PaymentDataTransferObject
     {
         public int PaymentId { get; set; }
+
         public string DateText { get; set; }
+
         public string ProductName { get; set; }
+
         public string ReceiverName { get; set; }
 
         /// <summary>
@@ -20,6 +23,7 @@ namespace BookingBoardGames.Src.DTO
         public string AmountText => $"{Amount:C}";
 
         public string PaymentMethod { get; set; }
+
         public string FilePath { get; set; }
     }
 }

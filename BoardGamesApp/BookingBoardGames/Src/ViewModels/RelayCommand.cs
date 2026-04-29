@@ -25,6 +25,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         public event EventHandler CanExecuteChanged;
+
         public void RaiseCanExecuteChanged()
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
@@ -53,6 +54,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         public event EventHandler CanExecuteChanged;
+
         public void RaiseCanExecuteChanged()
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);

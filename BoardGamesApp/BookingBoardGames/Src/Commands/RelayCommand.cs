@@ -17,6 +17,7 @@ namespace BookingBoardGames.Src.Commands
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter) => canExecuteFunction?.Invoke() ?? true;
+
         public void Execute(object parameter) => executeAction(parameter);
 
         public void NotifyCanExecuteChanged() =>

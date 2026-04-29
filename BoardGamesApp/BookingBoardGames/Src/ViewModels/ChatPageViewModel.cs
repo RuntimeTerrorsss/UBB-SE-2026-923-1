@@ -12,6 +12,7 @@ namespace BookingBoardGames.Src.ViewModels;
 public class ChatPageViewModel
 {
     public LeftPanelViewModel LeftPanelModelView { get; }
+
     public ChatViewModel ChatModelView { get; }
 
     private readonly int currentUserId;
@@ -22,7 +23,7 @@ public class ChatPageViewModel
         get => conversationService;
     }
 
-    private List<ConversationDataTransferObject> conversations = new ();
+    private List<ConversationDataTransferObject> conversations = new();
 
     public ChatPageViewModel(int currentUser)
     : this(currentUser, new ConversationService(App.ConversationRepository, currentUser))

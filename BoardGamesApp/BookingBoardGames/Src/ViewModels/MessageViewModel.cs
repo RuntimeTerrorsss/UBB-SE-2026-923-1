@@ -11,21 +11,32 @@ namespace BookingBoardGames.Src.ViewModels;
 public class MessageViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
+
     protected void OnPropertyChanged([CallerMemberName] string name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     public int Id { get; init; }
+
     public int ConversationId { get; init; }
+
     public int SenderId { get; init; }
+
     public MessageType Type { get; init; }
+
     public string Content { get; init; }
+
     public bool IsMine { get; init; }
+
     public DateTime SentAt { get; init; }
+
     public string ImageUrl { get; init; }
+
     public int RequestId { get; init; }
+
     public string TimestampString => SentAt.ToString("HH:mm");
 
     private bool isResolved;
+
     public bool IsResolved
     {
         get => isResolved;
@@ -35,9 +46,11 @@ public class MessageViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     public bool IsAccepted { get; set; }
 
     private int[] acceptedBy = Array.Empty<int>();
+
     public int[] AcceptedBy
     {
         get => acceptedBy;
@@ -50,9 +63,11 @@ public class MessageViewModel : INotifyPropertyChanged
     }
 
     private readonly int requiredAcceptanceCount = 2;
+
     public bool BothAccepted => acceptedBy?.Length == requiredAcceptanceCount;
 
     private bool isRead;
+
     public bool IsRead
     {
         get => isRead;

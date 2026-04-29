@@ -1,4 +1,5 @@
 ﻿namespace BookingBoardGames.Src.Shared;
+
 using BookingBoardGames.Src.Models;
 
 /// <summary>

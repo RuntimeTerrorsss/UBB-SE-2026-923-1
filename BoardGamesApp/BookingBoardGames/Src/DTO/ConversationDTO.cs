@@ -7,9 +7,13 @@ namespace BookingBoardGames.Src.DTO
     public class ConversationDataTransferObject
     {
         public int Id { get; set; }
+
         public List<MessageDataTransferObject> MessageList { get; set; }
+
         public int[] Participants { get; set; }
+
         public Dictionary<int, DateTime> LastRead { get; set; }
+
         public Dictionary<int, int> UnreadCount { get; set; }
 
         public ConversationDataTransferObject(int conversationId, int[] participants, List<MessageDataTransferObject> messages, Dictionary<int, DateTime> lastRead)

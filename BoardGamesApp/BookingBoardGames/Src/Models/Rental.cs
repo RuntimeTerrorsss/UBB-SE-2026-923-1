@@ -8,7 +8,7 @@ public class Rental
     public DateTime StartDate { get; set; }
 
     public DateTime EndDate { get; set; }
-    
+
     public decimal? TotalPrice { get; set; }
 
     public int GameId { get; set; }
@@ -22,7 +22,6 @@ public class Rental
     public User Client { get; set; }
 
     public User Owner { get; set; }
-
 
     public Payment Payment { get; set; }
 

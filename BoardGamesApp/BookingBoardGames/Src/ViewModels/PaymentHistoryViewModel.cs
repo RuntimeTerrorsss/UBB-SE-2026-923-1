@@ -14,6 +14,7 @@ namespace BookingBoardGames.Src.ViewModels
     public class FilterOption
     {
         public FilterType Type { get; set; }
+
         public string DisplayName { get; set; }
     }
 
@@ -35,7 +36,9 @@ namespace BookingBoardGames.Src.ViewModels
         public ObservableCollection<PaymentDataTransferObject> Payments { get; set; }
 
         public RelayCommand<PaymentDataTransferObject> OpenReceiptCommand { get; }
+
         public RelayCommandNoParam NextPageCommand { get; }
+
         public RelayCommandNoParam PreviousPageCommand { get; }
 
         public int CurrentPage
@@ -65,6 +68,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         public ObservableCollection<FilterOption> FilterOptions { get; }
+
         public IEnumerable<PaymentMethod> PaymentMethodOptions { get; } = System.Enum.GetValues(typeof(PaymentMethod)).Cast<PaymentMethod>();
 
         public string SearchText
