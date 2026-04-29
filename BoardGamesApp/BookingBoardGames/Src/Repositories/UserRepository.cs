@@ -7,12 +7,10 @@ namespace BookingBoardGames.Src.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly AppDbContextFactory contextFactory = new();
-
+        private readonly AppDbContext _context;
         public User? GetById(int id)
         {
-            using var context = contextFactory.CreateDbContext([]);
-            return context.Users.FirstOrDefault(user => user.Id == id);
+            return _context.Users.FirstOrDefault(user => user.Id == id);
         }
 
         public User? GetGameById(int id)
@@ -22,14 +20,12 @@ namespace BookingBoardGames.Src.Repositories
 
         public List<User> GetAll()
         {
-            using var context = contextFactory.CreateDbContext([]);
-            return context.Users.ToList();
+            return _context.Users.ToList();
         }
 
         public void SaveAddress(int id, Address address)
         {
-            using var context = contextFactory.CreateDbContext([]);
-            var foundUser = context.Users.FirstOrDefault(user => user.Id == id);
+            var foundUser = _context.Users.FirstOrDefault(user => user.Id == id);
 
             if (foundUser is null)
             {
@@ -40,13 +36,12 @@ namespace BookingBoardGames.Src.Repositories
             foundUser.City = address.City;
             foundUser.Street = address.Street;
             foundUser.StreetNumber = address.StreetNumber;
-            context.SaveChanges();
+            _context.SaveChanges();
         }
 
         public decimal GetUserBalance(int userId)
         {
-            using var context = contextFactory.CreateDbContext([]);
-            return context.Users
+            return _context.Users
                 .Where(user => user.Id == userId)
                 .Select(user => (decimal?)user.Balance)
                 .FirstOrDefault() ?? 0m;
@@ -54,8 +49,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public void UpdateBalance(int userId, decimal newBalance)
         {
-            using var context = contextFactory.CreateDbContext([]);
-            var foundUser = context.Users.FirstOrDefault(user => user.Id == userId);
+            var foundUser = _context.Users.FirstOrDefault(user => user.Id == userId);
 
             if (foundUser is null)
             {
@@ -63,7 +57,7 @@ namespace BookingBoardGames.Src.Repositories
             }
 
             foundUser.Balance = newBalance;
-            context.SaveChanges();
+            _context.SaveChanges();
         }
     }
 }
