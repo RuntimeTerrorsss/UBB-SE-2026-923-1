@@ -1,147 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
+﻿using BookingBoardGames.Data;
 using BookingBoardGames.Src.Constants;
+using BookingBoardGames.Src.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BookingBoardGames.Src.Repositories
 {
     public class RepositoryPayment : IRepositoryPayment
     {
-        private readonly string connectionString;
+        private readonly AppDbContext _context;
 
-        public RepositoryPayment()
+        public RepositoryPayment(AppDbContext context)
         {
-            connectionString = DatabaseBootstrap.GetAppConnection();
+            _context = context;
         }
 
-        private int GetIntOrDefaultValue(SqlDataReader reader, int index, int defaultValue)
+        private IQueryable<HistoryPayment> BuildPaymentQuery()
         {
-            return reader.IsDBNull(index) ? defaultValue : reader.GetInt32(index);
-        }
+            return _context.Payments
+                .Include(p => p.Request)
+                    .ThenInclude(r => r.Game)
+                .Include(p => p.Owner)
+                .Select(p => new HistoryPayment
+                {
+                    TransactionIdentifier = p.TransactionIdentifier,
+                    PaidAmount = p.PaidAmount,
+                    PaymentMethod = p.PaymentMethod,
+                    DateOfTransaction = p.DateOfTransaction,
+                    DateConfirmedBuyer = p.DateConfirmedBuyer,
+                    DateConfirmedSeller = p.DateConfirmedSeller,
+                    PaymentState = p.PaymentState,
+                    ReceiptFilePath = p.ReceiptFilePath,
+                    RequestId = p.RequestId,
+                    ClientId = p.ClientId,
+                    OwnerId = p.OwnerId,
 
-        private string GetStringOrDefaultValue(SqlDataReader reader, int index, string defaultValue)
-        {
-            return reader.IsDBNull(index) ? defaultValue : reader.GetString(index);
-        }
-
-        private decimal GetDecimalOrDefaultValue(SqlDataReader reader, int index, decimal defaultValue)
-        {
-            return reader.IsDBNull(index) ? defaultValue : reader.GetDecimal(index);
-        }
-
-        private HistoryPayment GetPaymentFromReader(SqlDataReader reader)
-        {
-            int tidIndex = reader.GetOrdinal("tid");
-            int requestIdIndex = reader.GetOrdinal("RequestId");
-            int renterIdIndex = reader.GetOrdinal("ClientId");
-            int ownerIdIndex = reader.GetOrdinal("OwnerId");
-            int methodIndex = reader.GetOrdinal("PaymentMethod");
-            int amountIndex = reader.GetOrdinal("Amount");
-            int dateOfTransactionIndex = reader.GetOrdinal("DateOfTransaction");
-            int dateConfirmedBuyerIndex = reader.GetOrdinal("DateConfirmedBuyer");
-            int dateConfirmedSellerIndex = reader.GetOrdinal("DateConfirmedSeller");
-            int filePathIndex = reader.GetOrdinal("FilePath");
-            int gameNameIndex = reader.GetOrdinal("GameName");
-            int ownerNameIndex = reader.GetOrdinal("OwnerName");
-
-            var returnedPayment = new HistoryPayment(
-                paymentId: reader.GetInt32(tidIndex),
-                requestId: GetIntOrDefaultValue(reader, requestIdIndex, PaymentHistoryConstants.NullIdDefaultValue),
-                renterId: GetIntOrDefaultValue(reader, renterIdIndex, PaymentHistoryConstants.NullIdDefaultValue),
-                ownerId: GetIntOrDefaultValue(reader, ownerIdIndex, PaymentHistoryConstants.NullIdDefaultValue),
-                method: GetStringOrDefaultValue(reader, methodIndex, PaymentHistoryConstants.NullMethodDefaultValue),
-                amount: GetDecimalOrDefaultValue(reader, amountIndex, PaymentHistoryConstants.NullAmountDefaultValue));
-
-            if (!reader.IsDBNull(dateOfTransactionIndex))
-            {
-                returnedPayment.DateOfTransaction = reader.GetDateTime(dateOfTransactionIndex);
-            }
-
-            if (!reader.IsDBNull(dateConfirmedBuyerIndex))
-            {
-                returnedPayment.DateConfirmedBuyer = reader.GetDateTime(dateConfirmedBuyerIndex);
-            }
-
-            if (!reader.IsDBNull(dateConfirmedSellerIndex))
-            {
-                returnedPayment.DateConfirmedSeller = reader.GetDateTime(dateConfirmedSellerIndex);
-            }
-
-            if (!reader.IsDBNull(filePathIndex))
-            {
-                returnedPayment.ReceiptFilePath = reader.GetString(filePathIndex);
-            }
-
-            returnedPayment.GameName = GetStringOrDefaultValue(reader, gameNameIndex, PaymentHistoryConstants.NullGameNameDefaultValue);
-            returnedPayment.OwnerName = GetStringOrDefaultValue(reader, ownerNameIndex, PaymentHistoryConstants.NullOwnerNameDefaultValue);
-
-            return returnedPayment;
+                    GameName = p.Request != null && p.Request.Game != null
+                                    ? p.Request.Game.Name
+                                    : PaymentHistoryConstants.NullGameNameDefaultValue,
+                    OwnerName = p.Owner != null
+                                    ? p.Owner.DisplayName
+                                    : PaymentHistoryConstants.NullOwnerNameDefaultValue,
+                });
         }
 
         public IReadOnlyList<HistoryPayment> GetAllPayments()
         {
-            List<HistoryPayment> allPayments = new List<HistoryPayment>();
-
-            using (var connection = new SqlConnection(connectionString))
-            {
-                string query = @"
-                    SELECT 
-                        t.tid, t.RequestId, t.ClientId, t.OwnerId, t.PaymentMethod, t.Amount, 
-                        t.DateOfTransaction, t.DateConfirmedBuyer, t.DateConfirmedSeller, t.FilePath,
-                        g.Name AS GameName,
-                        u.DisplayName AS OwnerName
-                    FROM [Payment] t
-                    LEFT JOIN [Request] r ON t.RequestId = r.rid
-                    LEFT JOIN [Game] g ON r.GameId = g.gid
-                    LEFT JOIN [User] u ON t.OwnerId = u.[uid]";
-
-                var command = new SqlCommand(query, connection);
-
-                connection.Open();
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var returnedPayment = GetPaymentFromReader(reader);
-                        allPayments.Add(returnedPayment);
-                    }
-                }
-            }
-
-            return allPayments;
+            return BuildPaymentQuery().ToList();
         }
 
-        public HistoryPayment GetPaymentById(int searchedPaymentId)
+        public HistoryPayment? GetPaymentById(int searchedPaymentId)
         {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                string query = @"
-                    SELECT 
-                        t.tid, t.RequestId, t.ClientId, t.OwnerId, t.PaymentMethod, t.Amount, 
-                        t.DateOfTransaction, t.DateConfirmedBuyer, t.DateConfirmedSeller, t.FilePath,
-                        g.Name AS GameName,
-                        u.DisplayName AS OwnerName
-                    FROM [Payment] t
-                    LEFT JOIN [Request] r ON t.RequestId = r.rid
-                    LEFT JOIN [Game] g ON r.GameId = g.gid
-                    LEFT JOIN [User] u ON t.OwnerId = u.[uid]
-                    WHERE t.tid = @id";
-
-                var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@id", searchedPaymentId);
-
-                connection.Open();
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        var returnedPayment = GetPaymentFromReader(reader);
-                        return returnedPayment;
-                    }
-                }
-            }
-
-            return null;
+            return BuildPaymentQuery()
+                .FirstOrDefault(p => p.TransactionIdentifier == searchedPaymentId);
         }
     }
+
 }
