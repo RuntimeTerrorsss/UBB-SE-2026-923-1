@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using BookingBoardGames.Data.Models;
+using BookingBoardGames.Data;
 using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.Repositories
