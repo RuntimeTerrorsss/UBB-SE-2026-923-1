@@ -2,61 +2,65 @@ root = true
 
 [*.{cs,vb}]
 
-# Curly braces “{}” must always start on a new line.
+# ==========================================
+# --- SECTION II & III: LAYOUT AND LOGIC ---
+# ==========================================
+
+# II.2: Curly braces "{}" must always start on a new line
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
 csharp_new_line_before_catch = true
 csharp_new_line_before_finally = true
 
-# Limit line length to 120 characters to avoid horizontal scrolling.
+# II.3: Limit line length to 120 characters
 max_line_length = 120
 
-# Ensure every file ends with a single empty newline character.
+# II.6: Ensure every file ends with a single empty newline character
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# Use readonly for fields and init for DTOs/Records where possible.
-dotnet_diagnostic.IDE0044.severity = warning
-csharp_style_readonly_field = true:warning
-
-# Never swallow exceptions with an empty catch block. Always log, handle, or rethrow them.
-# CA1031: Do not catch general exception types
-# CA2200: Rethrow to preserve stack details
+# III.5: Never swallow exceptions with an empty catch block
 dotnet_diagnostic.CA1031.severity = warning
 dotnet_diagnostic.CA2200.severity = warning
 
-# --- Naming Conventions ---
+# III.6: Use readonly for fields
+dotnet_diagnostic.IDE0044.severity = warning
+csharp_style_readonly_field = true:warning
 
-# Prefix interface names with a capital "I"
+
+# ==========================================
+# --- SECTION I: NAMING CONVENTIONS ---
+# ==========================================
+
+# I.3: Prefix interface names with a capital "I"
 dotnet_naming_rule.interface_should_be_begins_with_i.severity = warning
-dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
-dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
+dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface_symbols
+dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i_style
 
-dotnet_naming_symbols.interface.applicable_kinds = interface
-dotnet_naming_symbols.interface.applicable_accessibilities = any
+dotnet_naming_symbols.interface_symbols.applicable_kinds = interface
+dotnet_naming_symbols.interface_symbols.applicable_accessibilities = any
 
-dotnet_naming_style.begins_with_i.required_prefix = I
-dotnet_naming_style.begins_with_i.capitalization = pascal_case
+dotnet_naming_style.begins_with_i_style.required_prefix = I
+dotnet_naming_style.begins_with_i_style.capitalization = pascal_case
 
-# PascalCase for class names, interface names, and method names
+
+# I.1: PascalCase for class names and method names
 dotnet_naming_rule.pascal_case_types_methods.severity = warning
-dotnet_naming_rule.pascal_case_types_methods.symbols = types_and_methods
+dotnet_naming_rule.pascal_case_types_methods.symbols = types_and_methods_symbols
 dotnet_naming_rule.pascal_case_types_methods.style = pascal_case_style
 
-dotnet_naming_symbols.types_and_methods.applicable_kinds = class, struct, interface, enum, method
-dotnet_naming_symbols.types_and_methods.applicable_accessibilities = any
+dotnet_naming_symbols.types_and_methods_symbols.applicable_kinds = class, method
+dotnet_naming_symbols.types_and_methods_symbols.applicable_accessibilities = any
 
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 
-# camelCase for method arguments, local variables, and private fields
-dotnet_naming_rule.camel_case_locals_fields.severity = warning
-dotnet_naming_rule.camel_case_locals_fields.symbols = locals_and_fields
-dotnet_naming_rule.camel_case_locals_fields.style = camel_case_style
 
-dotnet_naming_symbols.locals_and_fields.applicable_kinds = parameter, local, field
-dotnet_naming_symbols.locals_and_fields.applicable_accessibilities = private, local
+# I.2: camelCase for method arguments, local variables, and private fields
+dotnet_naming_rule.camel_case_locals_args_fields.severity = warning
+dotnet_naming_rule.camel_case_locals_args_fields.symbols = locals_args_fields_symbols
+dotnet_naming_rule.camel_case_locals_args_fields.style = camel_case_style
+
+dotnet_naming_symbols.locals_args_fields_symbols.applicable_kinds = parameter, local, field
+dotnet_naming_symbols.locals_args_fields_symbols.applicable_accessibilities = local, private
 
 dotnet_naming_style.camel_case_style.capitalization = camel_case
-
-# Naming boolean variables with affirmative prefixes, plural names for collections, short methods, 
-# and grouping class members are generally handled by StyleCop or requires custom Roslyn analyzers.
