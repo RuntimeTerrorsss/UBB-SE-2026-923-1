@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookingBoardGames.Src.DTO
 {
-    public record ReadReceiptDataTransferObject(
+    public record ReadReceiptDTO(
         int conversationId,
         int readerId,
         int receiverId,
