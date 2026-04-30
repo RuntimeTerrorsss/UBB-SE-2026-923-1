@@ -105,8 +105,8 @@ namespace BookingBoardGames
             GameRepository = new GamesRepository(AppDbContext);
             RentalRepository = new RentalRepository(AppDbContext);
             PaymentRepository = new PaymentRepository(AppDbContext);
-            HistoryRepository = new RepositoryPayment(); // add context
-            ConversationRepository = new ConversationRepository(); // add context
+            HistoryRepository = new RepositoryPayment(AppDbContext);
+            ConversationRepository = new ConversationRepository(); // add AppDbContext
 
             // Services
             GlobalGeoService = new GeographicalService();

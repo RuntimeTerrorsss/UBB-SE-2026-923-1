@@ -9,6 +9,6 @@ namespace BookingBoardGames.Src.Repositories
     {
         IReadOnlyList<HistoryPayment> GetAllPayments();
 
-        HistoryPayment GetPaymentById(int searchedPaymentId);
+        HistoryPayment? GetPaymentById(int searchedPaymentId);
     }
 }
