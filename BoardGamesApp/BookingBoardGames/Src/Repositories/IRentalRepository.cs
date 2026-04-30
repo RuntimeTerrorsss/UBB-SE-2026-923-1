@@ -1,11 +1,15 @@
-﻿using System;
+﻿// <copyright file="IRentalRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace BookingBoardGames.Src.Repositories
 {
     public interface IRentalRepository
     {
-        public Rental GetById(int id);
+        public Rental? GetById(int id);
 
         public TimeRange? GetRentalTimeRange(int id);
 

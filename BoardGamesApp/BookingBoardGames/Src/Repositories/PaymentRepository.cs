@@ -1,28 +1,31 @@
+// <copyright file="PaymentRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
 
-
 namespace BookingBoardGames.Src.Repositories
 {
     public class PaymentRepository : IPaymentRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext context;
 
-        public PaymentRepository(AppDbContext context)
+        public PaymentRepository(AppDbContext appContext)
         {
-            _context = context;
+            this.context = appContext;
         }
 
         public IReadOnlyList<Payment> GetAllPayments()
         {
-            return _context.Payments.ToList();
+            return this.context.Payments.ToList();
         }
 
-        public virtual Payment GetPaymentByIdentifier(int paymentId)
+        public virtual Payment? GetPaymentByIdentifier(int paymentId)
         {
-            return _context.Payments.FirstOrDefault(p => p.TransactionIdentifier == paymentId);
+            return this.context.Payments.FirstOrDefault(p => p.TransactionIdentifier == paymentId);
         }
 
         public virtual int AddPayment(Payment payment)
@@ -32,26 +35,32 @@ namespace BookingBoardGames.Src.Repositories
                 payment.DateOfTransaction = DateTime.Now;
             }
 
-            _context.Payments.Add(payment);
-            _context.SaveChanges();
+            this.context.Payments.Add(payment);
+            this.context.SaveChanges();
 
             return payment.TransactionIdentifier;
         }
 
         public bool DeletePayment(Payment payment)
         {
-            var paymentToDelete = _context.Payments.Find(payment.TransactionIdentifier);
-            if (paymentToDelete == null) return false;
+            var paymentToDelete = this.context.Payments.Find(payment.TransactionIdentifier);
+            if (paymentToDelete == null)
+            {
+                return false;
+            }
 
-            _context.Payments.Remove(paymentToDelete);
-            return _context.SaveChanges() > 0;
+            this.context.Payments.Remove(paymentToDelete);
+            return this.context.SaveChanges() > 0;
         }
 
-        public virtual Payment UpdatePayment(Payment payment)
+        public virtual Payment? UpdatePayment(Payment payment)
         {
-            var existingPayment = _context.Payments.Find(payment.TransactionIdentifier);
+            var existingPayment = this.context.Payments.Find(payment.TransactionIdentifier);
 
-            if (existingPayment == null) return null;
+            if (existingPayment == null)
+            {
+                return null;
+            }
 
             var previousPayment = new Payment
             {
@@ -65,7 +74,7 @@ namespace BookingBoardGames.Src.Repositories
                 DateConfirmedBuyer = existingPayment.DateConfirmedBuyer,
                 DateConfirmedSeller = existingPayment.DateConfirmedSeller,
                 PaymentMethod = existingPayment.PaymentMethod,
-                PaymentState = existingPayment.PaymentState
+                PaymentState = existingPayment.PaymentState,
             };
 
             existingPayment.ReceiptFilePath = payment.ReceiptFilePath ?? string.Empty;
@@ -73,7 +82,7 @@ namespace BookingBoardGames.Src.Repositories
             existingPayment.DateConfirmedBuyer = payment.DateConfirmedBuyer;
             existingPayment.DateConfirmedSeller = payment.DateConfirmedSeller;
 
-            _context.SaveChanges();
+            this.context.SaveChanges();
 
             return previousPayment;
         }

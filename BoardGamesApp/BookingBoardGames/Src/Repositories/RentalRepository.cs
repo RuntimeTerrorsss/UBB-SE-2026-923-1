@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="RentalRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
@@ -7,21 +11,21 @@ namespace BookingBoardGames.Src.Repositories
 {
     public class RentalRepository : IRentalRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext context;
 
-        public RentalRepository(AppDbContext context)
+        public RentalRepository(AppDbContext appContext)
         {
-            _context = context;
+            this.context = appContext;
         }
 
-        public Rental GetById(int id)
+        public Rental? GetById(int id)
         {
-            return _context.Rentals.FirstOrDefault(r => r.RentalId == id);
+            return this.context.Rentals.FirstOrDefault(r => r.RentalId == id);
         }
 
         public TimeRange? GetRentalTimeRange(int id)
         {
-            return _context.Rentals
+            return this.context.Rentals
                 .Where(r => r.RentalId == id)
                 .Select(r => new TimeRange(r.StartDate, r.EndDate))
                 .FirstOrDefault();
@@ -29,14 +33,14 @@ namespace BookingBoardGames.Src.Repositories
 
         public List<TimeRange> GetAllOccupiedPeriods()
         {
-            return _context.Rentals
+            return this.context.Rentals
                 .Select(r => new TimeRange(r.StartDate, r.EndDate))
                 .ToList();
         }
 
         public List<TimeRange> GetUnavailableTimeRanges(int gameId)
         {
-            return _context.Rentals
+            return this.context.Rentals
                 .Where(r => r.GameId == gameId)
                 .Select(r => new TimeRange(r.StartDate, r.EndDate))
                 .ToList();
@@ -44,7 +48,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public bool CheckGameAvailability(DateTime start, DateTime end, int gameId)
         {
-            bool hasOverlap = _context.Rentals.Any(r =>
+            bool hasOverlap = this.context.Rentals.Any(r =>
                 r.GameId == gameId &&
                 r.StartDate < end &&
                 start < r.EndDate);
@@ -54,8 +58,8 @@ namespace BookingBoardGames.Src.Repositories
 
         public void AddRental(Rental rental)
         {
-            this._context.Rentals.Add(rental);
-            this._context.SaveChanges();
+            this.context.Rentals.Add(rental);
+            this.context.SaveChanges();
         }
     }
 }

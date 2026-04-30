@@ -1,5 +1,10 @@
-﻿namespace BookingBoardGames.Src.Repositories;
+﻿// <copyright file="IRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using System.Collections.Generic;
+
+namespace BookingBoardGames.Src.Repositories;
 
 /// <summary>
 /// Interface defining basic repository operations for managing entities of type T, including retrieval by ID and fetching all entities.

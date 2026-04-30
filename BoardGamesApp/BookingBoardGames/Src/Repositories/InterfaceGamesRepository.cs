@@ -1,8 +1,12 @@
-﻿namespace BookingBoardGames.Src.Repositories
-{
-    using System.Collections.Generic;
-    using BookingBoardGames.Src.Shared;
+﻿// <copyright file="InterfaceGamesRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
+using System.Collections.Generic;
+using BookingBoardGames.Src.Shared;
+
+namespace BookingBoardGames.Src.Repositories
+{
     /// <summary>
     /// Defines the repository operations for managing Game entities.
     /// </summary>

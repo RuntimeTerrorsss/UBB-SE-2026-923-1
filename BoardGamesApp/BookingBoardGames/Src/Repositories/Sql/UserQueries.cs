@@ -1,4 +1,8 @@
-﻿namespace SearchAndBook.Repositories.Sql
+﻿// <copyright file="UserQueries.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace SearchAndBook.Repositories.Sql
 {
     /// <summary>
     /// Provides predefined SQL query strings for retrieving user-related data from the database.

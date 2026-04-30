@@ -1,4 +1,8 @@
-﻿namespace SearchAndBook.Repositories.Sql
+﻿// <copyright file="GameQueries.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace SearchAndBook.Repositories.Sql
 {
     /// <summary>
     /// Provides SQL query strings for retrieving and searching game and owner data from the database.

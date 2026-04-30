@@ -1,4 +1,8 @@
-﻿namespace SearchAndBook.Repositories.Sql
+﻿// <copyright file="RentalQueries.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace SearchAndBook.Repositories.Sql
 {
     /// <summary>
     /// Provides SQL query strings for retrieving and managing rental data in the database.

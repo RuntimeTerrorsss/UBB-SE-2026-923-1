@@ -1,3 +1,7 @@
+// <copyright file="IPaymentRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using System.Collections.Generic;
 
 namespace BookingBoardGames.Src.Repositories
@@ -9,12 +13,12 @@ namespace BookingBoardGames.Src.Repositories
     {
         public IReadOnlyList<Payment> GetAllPayments();
 
-        public Payment GetPaymentByIdentifier(int paymentId);
+        public Payment? GetPaymentByIdentifier(int paymentId);
 
         public int AddPayment(Payment payment);
 
         public bool DeletePayment(Payment payment);
 
-        public Payment UpdatePayment(Payment payment);
+        public Payment? UpdatePayment(Payment payment);
     }
 }

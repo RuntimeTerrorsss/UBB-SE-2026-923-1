@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="UserRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
 using Microsoft.EntityFrameworkCore;
@@ -7,30 +11,31 @@ namespace BookingBoardGames.Src.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext context;
 
-        public UserRepository(AppDbContext context)
+        public UserRepository(AppDbContext appContext)
         {
-            this._context = context;
+            this.context = appContext;
         }
+
         public User? GetById(int id)
         {
-            return _context.Users.FirstOrDefault(user => user.Id == id);
+            return this.context.Users.FirstOrDefault(user => user.Id == id);
         }
 
         public User? GetGameById(int id)
         {
-            return GetById(id);
+            return this.GetById(id);
         }
 
         public List<User> GetAll()
         {
-            return _context.Users.ToList();
+            return this.context.Users.ToList();
         }
 
         public void SaveAddress(int id, Address address)
         {
-            var foundUser = _context.Users.FirstOrDefault(user => user.Id == id);
+            var foundUser = this.context.Users.FirstOrDefault(user => user.Id == id);
 
             if (foundUser is null)
             {
@@ -41,12 +46,12 @@ namespace BookingBoardGames.Src.Repositories
             foundUser.City = address.City;
             foundUser.Street = address.Street;
             foundUser.StreetNumber = address.StreetNumber;
-            _context.SaveChanges();
+            this.context.SaveChanges();
         }
 
         public decimal GetUserBalance(int userId)
         {
-            return _context.Users
+            return this.context.Users
                 .Where(user => user.Id == userId)
                 .Select(user => (decimal?)user.Balance)
                 .FirstOrDefault() ?? 0m;
@@ -54,7 +59,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public void UpdateBalance(int userId, decimal newBalance)
         {
-            var foundUser = _context.Users.FirstOrDefault(user => user.Id == userId);
+            var foundUser = this.context.Users.FirstOrDefault(user => user.Id == userId);
 
             if (foundUser is null)
             {
@@ -62,7 +67,7 @@ namespace BookingBoardGames.Src.Repositories
             }
 
             foundUser.Balance = newBalance;
-            _context.SaveChanges();
+            this.context.SaveChanges();
         }
     }
 }

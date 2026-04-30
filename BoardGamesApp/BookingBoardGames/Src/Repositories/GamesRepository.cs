@@ -1,11 +1,15 @@
-﻿using BookingBoardGames.Data;
-using BookingBoardGames.Src.Repositories;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using BookingBoardGames.Src.Shared;
+﻿// <copyright file="GamesRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BookingBoardGames.Data;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Shared;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 /// <summary>
 /// Repository responsible for reading game/listing data from the database.
