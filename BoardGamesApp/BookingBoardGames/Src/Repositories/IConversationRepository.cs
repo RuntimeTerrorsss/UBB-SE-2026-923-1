@@ -1,7 +1,11 @@
-﻿using System;
+﻿// <copyright file="IConversationRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
+using BookingBoardGames.Data.Models;
 using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Models;
 
 namespace BookingBoardGames.Src.Repositories
 {

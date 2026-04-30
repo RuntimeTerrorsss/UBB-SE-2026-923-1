@@ -1,5 +1,5 @@
 ﻿using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Models;
+using BookingBoardGames.Data.Models;
 
 namespace BookingBoardGames.Src.Services
 {
