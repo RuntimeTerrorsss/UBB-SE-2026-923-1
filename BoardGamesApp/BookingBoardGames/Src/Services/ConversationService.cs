@@ -10,6 +10,7 @@ using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Src.Repositories;
 
+
 namespace BookingBoardGames.Src.Services
 {
     public class ConversationService : IConversationService
@@ -79,7 +80,7 @@ namespace BookingBoardGames.Src.Services
 
         public void SendReadReceipt(ConversationDTO conversation)
         {
-            this.ConversationRepository.HandleReadReceipt(new ReadReceipt(
+            this.ConversationRepository.HandleReadReceipt(new ReadReceiptDTO(
                 conversation.Id,
                 UserId,
                 conversation.Participants.First(participant => participant != UserId),
@@ -121,9 +122,9 @@ namespace BookingBoardGames.Src.Services
             ActionConversationProcessed?.Invoke(conversationDTO, userName);
         }
 
-        public void OnReadReceiptReceived(ReadReceipt readReceipt)
+        public void OnReadReceiptReceived(ReadReceiptDTO readReceipt)
         {
-            ActionReadReceiptProcessed?.Invoke(ReadReceiptToReadReceiptDTO(readReceipt));
+            ActionReadReceiptProcessed?.Invoke(readReceipt);
         }
 
         public void OnMessageUpdateReceived(Message message)
@@ -215,13 +216,5 @@ namespace BookingBoardGames.Src.Services
                 lastRead: conversation.LastMessageReadTime);
         }
 
-        public ReadReceiptDTO ReadReceiptToReadReceiptDTO(ReadReceipt readReceipt)
-        {
-            return new ReadReceiptDTO(
-                readReceipt.conversationId,
-                readReceipt.messageReaderId,
-                readReceipt.messageReceiverId,
-                readReceipt.timeStamp);
-        }
     }
 }
