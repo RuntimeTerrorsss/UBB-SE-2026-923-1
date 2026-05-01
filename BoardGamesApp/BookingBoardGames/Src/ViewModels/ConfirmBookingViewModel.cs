@@ -1,4 +1,8 @@
-﻿namespace BookingBoardGames.Src.ViewModels
+﻿// <copyright file="ConfirmBookingViewModel.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace BookingBoardGames.Src.ViewModels
 {
     using System;
     using System.ComponentModel;

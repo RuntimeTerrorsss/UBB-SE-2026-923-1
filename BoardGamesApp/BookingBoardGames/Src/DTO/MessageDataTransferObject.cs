@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="MessageDataTransferObject.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using BookingBoardGames.Src.Enum;
 
 namespace BookingBoardGames.Src.DTO

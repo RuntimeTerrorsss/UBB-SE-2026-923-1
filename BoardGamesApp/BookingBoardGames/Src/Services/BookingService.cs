@@ -1,4 +1,8 @@
-﻿namespace BookingBoardGames.Src.Services;
+﻿// <copyright file="BookingService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace BookingBoardGames.Src.Services;
 
 using System;
 using BookingBoardGames.Src.Repositories;

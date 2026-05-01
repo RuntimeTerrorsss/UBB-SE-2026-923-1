@@ -1,4 +1,8 @@
-﻿using System.ComponentModel;
+﻿// <copyright file="ViewModelBase.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace BookingBoardGames.Src.ViewModels

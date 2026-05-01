@@ -1,5 +1,9 @@
-﻿using BookingBoardGames.Src.DTO;
+﻿// <copyright file="ICardPaymentService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using BookingBoardGames.Data;
+using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Src.Services
 {

@@ -1,4 +1,8 @@
-﻿namespace BookingBoardGames.Src.Shared;
+﻿// <copyright file="FilterCriteria.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace BookingBoardGames.Src.Shared;
 using BookingBoardGames.Src.Enum;
 
 /// <summary>

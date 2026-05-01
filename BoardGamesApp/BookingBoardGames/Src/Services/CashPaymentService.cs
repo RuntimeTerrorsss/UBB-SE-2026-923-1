@@ -1,102 +1,107 @@
+// <copyright file="CashPaymentService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using System;
-using BookingBoardGames.Src.Mapper;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Constants;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Mapper;
+using BookingBoardGames.Src.Repositories;
 
 namespace BookingBoardGames.Src.Services
 {
-	public class CashPaymentService : PaymentService, ICashPaymentService
-	{
+    public class CashPaymentService : PaymentService, ICashPaymentService
+    {
         private const string CashPaymentMethod = "CASH";
         private readonly ICashPaymentMapper cashPaymentMapper;
 
-		public CashPaymentService(
+        public CashPaymentService(
             IPaymentRepository paymentRepository,
             ICashPaymentMapper cashPaymentMapper,
-            IReceiptService receiptService) : base(paymentRepository, receiptService)
-		{
-			this.cashPaymentMapper = cashPaymentMapper;
-		}
+            IReceiptService receiptService)
+            : base(paymentRepository, receiptService)
+        {
+            this.cashPaymentMapper = cashPaymentMapper;
+        }
 
-		public int AddCashPayment(CashPaymentDataTransferObject cashPaymentDataTransferObject)
-		{
-            Payment paymentEntity = cashPaymentMapper.TurnDataTransferObjectIntoEntity(cashPaymentDataTransferObject);
+        public int AddCashPayment(CashPaymentDataTransferObject cashPaymentDataTransferObject)
+        {
+            Payment paymentEntity = this.cashPaymentMapper.TurnDataTransferObjectIntoEntity(cashPaymentDataTransferObject);
             paymentEntity.PaymentMethod = CashPaymentMethod;
-			paymentEntity.PaymentState = PaymentConstrants.StateCompleted;
+            paymentEntity.PaymentState = PaymentConstrants.StateCompleted;
 
-			int paymentIdentifier = paymentRepository.AddPayment(paymentEntity);
+            int paymentIdentifier = this.paymentRepository.AddPayment(paymentEntity);
 
-			return paymentIdentifier;
-		}
+            return paymentIdentifier;
+        }
 
-		public CashPaymentDataTransferObject GetCashPayment(int paymentIdentifier)
-		{
-			return cashPaymentMapper.TurnEntityIntoDataTransferObject(paymentRepository.GetPaymentByIdentifier(paymentIdentifier));
-		}
+        public CashPaymentDataTransferObject GetCashPayment(int paymentIdentifier)
+        {
+            return this.cashPaymentMapper.TurnEntityIntoDataTransferObject(paymentRepository.GetPaymentByIdentifier(paymentIdentifier));
+        }
 
-		public void ConfirmDelivery(int paymentIdentifier)
-		{
+        public void ConfirmDelivery(int paymentIdentifier)
+        {
             Payment paymentToConfirm = paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
-			paymentToConfirm.DateConfirmedBuyer = DateTime.Now;
+            paymentToConfirm.DateConfirmedBuyer = DateTime.Now;
 
-			if (IsAllConfirmed(paymentIdentifier))
-			{
+            if (IsAllConfirmed(paymentIdentifier))
+            {
                 paymentToConfirm.ReceiptFilePath = receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
             }
 
-            paymentRepository.UpdatePayment(paymentToConfirm);
-		}
+            this.paymentRepository.UpdatePayment(paymentToConfirm);
+        }
 
-		public void ConfirmPayment(int paymentIdentifier)
-		{
+        public void ConfirmPayment(int paymentIdentifier)
+        {
             Payment paymentToConfirm = paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
-			paymentToConfirm.DateConfirmedSeller = DateTime.Now;
+            paymentToConfirm.DateConfirmedSeller = DateTime.Now;
 
-			if (IsAllConfirmed(paymentIdentifier))
-			{
+            if (IsAllConfirmed(paymentIdentifier))
+            {
                 paymentToConfirm.ReceiptFilePath = receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
             }
 
-            paymentRepository.UpdatePayment(paymentToConfirm);
-		}
+            this.paymentRepository.UpdatePayment(paymentToConfirm);
+        }
 
-		public bool IsAllConfirmed(int paymentIdentifier)
-		{
+        public bool IsAllConfirmed(int paymentIdentifier)
+        {
             Payment paymentEntity = paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
 
-			if (paymentEntity.DateConfirmedSeller != null && paymentEntity.DateConfirmedBuyer != null)
-			{
-				paymentEntity.PaymentState = PaymentConstrants.StateConfirmed;
+            if (paymentEntity.DateConfirmedSeller != null && paymentEntity.DateConfirmedBuyer != null)
+            {
+                paymentEntity.PaymentState = PaymentConstrants.StateConfirmed;
 
-				return true;
-			}
+                return true;
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		public bool IsDeliveryConfirmed(int paymentIdentifier)
-		{
+        public bool IsDeliveryConfirmed(int paymentIdentifier)
+        {
             Payment paymentEntity = paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
 
-			if (paymentEntity.DateConfirmedBuyer != null)
-			{
-				return true;
-			}
+            if (paymentEntity.DateConfirmedBuyer != null)
+            {
+                return true;
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		public bool IsPaymentConfirmed(int paymentIdentifier)
-		{
+        public bool IsPaymentConfirmed(int paymentIdentifier)
+        {
             Payment paymentEntity = paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
 
-			if (paymentEntity.DateConfirmedSeller != null)
-			{
-				return true;
-			}
+            if (paymentEntity.DateConfirmedSeller != null)
+            {
+                return true;
+            }
 
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 }

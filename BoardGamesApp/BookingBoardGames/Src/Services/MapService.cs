@@ -1,9 +1,12 @@
+// <copyright file="MapService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-
 
 namespace BookingBoardGames.Src.Services
 {
@@ -14,20 +17,21 @@ namespace BookingBoardGames.Src.Services
         private const double DefaultCoordinate = 0.0;
         private readonly HttpClient httpClient;
 
-        public MapService() : this(new HttpClient())
+        public MapService()
+            : this(new HttpClient())
         {
         }
 
         public MapService(HttpClient client)
         {
-            httpClient = client;
-            if (!httpClient.DefaultRequestHeaders.Contains("User-Agent"))
+            this.httpClient = client;
+            if (!this.httpClient.DefaultRequestHeaders.Contains("User-Agent"))
             {
-                httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgentValue);
+                this.httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgentValue);
             }
         }
 
-        public async Task<Address> GetAddressFromMapAsync(double latitude, double longitude)
+        public async Task<Address?> GetAddressFromMapAsync(double latitude, double longitude)
         {
             if (latitude == DefaultCoordinate && longitude == DefaultCoordinate)
             {
@@ -37,7 +41,7 @@ namespace BookingBoardGames.Src.Services
             try
             {
                 string requestUrl = string.Format(System.Globalization.CultureInfo.InvariantCulture, NominatimUrlTemplate, latitude, longitude);
-                HttpResponseMessage response = await httpClient.GetAsync(requestUrl);
+                HttpResponseMessage response = await this.httpClient.GetAsync(requestUrl);
                 response.EnsureSuccessStatusCode();
 
                 string jsonResponse = await response.Content.ReadAsStringAsync();

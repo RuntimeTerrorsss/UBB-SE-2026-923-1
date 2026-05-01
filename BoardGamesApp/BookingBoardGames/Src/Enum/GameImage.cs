@@ -1,4 +1,8 @@
-﻿namespace BookingBoardGames.Src.Enum
+﻿// <copyright file="GameImage.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace BookingBoardGames.Src.Enum
 {
     using System;
     using System.Runtime.InteropServices.WindowsRuntime;

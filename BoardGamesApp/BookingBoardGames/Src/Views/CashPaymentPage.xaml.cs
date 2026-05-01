@@ -1,3 +1,7 @@
+// <copyright file="CashPaymentPage.xaml.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using BookingBoardGames.Src.Navigation;
 using BookingBoardGames.Src.ViewModels;
 using BookingBoardGames.Src.Views;

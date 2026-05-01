@@ -1,6 +1,11 @@
-﻿namespace BookingBoardGames.Src.Services
+﻿// <copyright file="InterfaceBookingService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using BookingBoardGames.Src.DTO;
+
+namespace BookingBoardGames.Src.Services
 {
-    using BookingBoardGames.Src.DTO;
     /// <summary>
     /// Defines the operations for managing and querying game bookings.
     /// </summary>

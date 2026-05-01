@@ -1,4 +1,8 @@
-﻿namespace BookingBoardGames.Src.DTO
+﻿// <copyright file="GameDTO.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace BookingBoardGames.Src.DTO
 {
     using System.ComponentModel;
     using System.Runtime.CompilerServices;

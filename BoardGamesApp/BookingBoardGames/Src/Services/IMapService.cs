@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="IMapService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +18,6 @@ namespace BookingBoardGames.Src.Services
         /// <param name="latitude"></param>
         /// <param name="longitude"></param>
         /// <returns>The address from those specific coordinates</returns>
-        public Task<Address> GetAddressFromMapAsync(double latitude, double longitude);
+        public Task<Address?> GetAddressFromMapAsync(double latitude, double longitude);
     }
 }

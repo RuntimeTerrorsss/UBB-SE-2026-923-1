@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="IServicePayment.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System.Collections.Generic;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
 

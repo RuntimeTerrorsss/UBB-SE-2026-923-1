@@ -1,10 +1,14 @@
-﻿using System;
+﻿// <copyright file="ServicePayment.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Src.Constants;
+using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Src.Services
 {
@@ -186,14 +190,14 @@ namespace BookingBoardGames.Src.Services
 
             if (string.IsNullOrEmpty(foundPayment.ReceiptFilePath))
             {
-                foundPayment.ReceiptFilePath = receiptService.GenerateReceiptRelativePath(foundPayment.RequestId);
+                foundPayment.ReceiptFilePath = this.receiptService.GenerateReceiptRelativePath(foundPayment.RequestId);
             }
             else if (!foundPayment.ReceiptFilePath.Contains("\\"))
             {
                 foundPayment.ReceiptFilePath = "receipts\\" + foundPayment.ReceiptFilePath;
             }
 
-            return receiptService.GetReceiptDocument(foundPayment);
+            return this.receiptService.GetReceiptDocument(foundPayment);
         }
 
         /// <summary>

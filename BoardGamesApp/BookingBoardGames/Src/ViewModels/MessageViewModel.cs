@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="MessageViewModel.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BookingBoardGames.Src.DTO;

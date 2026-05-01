@@ -1,11 +1,15 @@
-﻿namespace BookingBoardGames.Src.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+﻿// <copyright file="InterfaceGeographicalService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BookingBoardGames.Src.Services
+{
     /// <summary>
     /// Defines methods for loading, retrieving, and searching city data, as well as calculating distances between
     /// cities within a geographical context.

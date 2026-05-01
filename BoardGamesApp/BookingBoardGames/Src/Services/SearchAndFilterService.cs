@@ -1,14 +1,17 @@
-﻿namespace BookingBoardGames.Src.Services
+﻿// <copyright file="SearchAndFilterService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Shared;
+
+namespace BookingBoardGames.Src.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using BookingBoardGames.Src.Repositories;
-    using BookingBoardGames.Src.DTO;
-    using BookingBoardGames.Src.Enum;
-    using BookingBoardGames.Src.Shared;
-
-
     /// <summary>
     /// Service responsible for searching, filtering, and retrieving game feeds.
     /// </summary>

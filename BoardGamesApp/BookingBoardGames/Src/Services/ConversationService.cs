@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="ConversationService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -30,11 +34,11 @@ namespace BookingBoardGames.Src.Services
 
         public ConversationService(IConversationRepository conversationRepo, int userIdInput, IUserRepository userRepo)
         {
-            UserId = userIdInput;
-            ConversationRepository = conversationRepo;
-            userRepository = userRepo;
+            this.UserId = userIdInput;
+            this.ConversationRepository = conversationRepo;
+            this.userRepository = userRepo;
 
-            ConversationRepository.Subscribe(UserId, this);
+            this.ConversationRepository.Subscribe(UserId, this);
         }
 
         public List<ConversationDataTransferObject> FetchConversations()
@@ -45,6 +49,7 @@ namespace BookingBoardGames.Src.Services
             {
                 conversationList.Add(ConversationToConversationDTO(conversation));
             }
+
             return conversationList;
         }
 
@@ -52,28 +57,28 @@ namespace BookingBoardGames.Src.Services
         {
             int firstParticipantIndex = 0;
             int secondParticipantIndex = 1;
-            var user = userRepository.GetById(conversation.Participants[firstParticipantIndex] == UserId ? conversation.Participants[secondParticipantIndex] : conversation.Participants[firstParticipantIndex]);
+            var user = this.userRepository.GetById(conversation.Participants[firstParticipantIndex] == UserId ? conversation.Participants[secondParticipantIndex] : conversation.Participants[firstParticipantIndex]);
             return user?.Username ?? "Unknown User";
         }
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
         {
-            return userRepository.GetById(message.SenderId == UserId ? message.ReceiverId : message.SenderId).Username ?? "Unknown User";
+            return this.userRepository.GetById(message.SenderId == UserId ? message.ReceiverId : message.SenderId).Username ?? "Unknown User";
         }
 
         public void SendMessage(MessageDataTransferObject message)
         {
-            ConversationRepository.HandleNewMessage(MessageDTOToMessage(message));
+            this.ConversationRepository.HandleNewMessage(MessageDTOToMessage(message));
         }
 
         public void UpdateMessage(MessageDataTransferObject message)
         {
-            ConversationRepository.HandleMessageUpdate(MessageDTOToMessage(message));
+            this.ConversationRepository.HandleMessageUpdate(MessageDTOToMessage(message));
         }
 
         public void SendReadReceipt(ConversationDataTransferObject conversation)
         {
-            ConversationRepository.HandleReadReceipt(new ReadReceipt(
+            this.ConversationRepository.HandleReadReceipt(new ReadReceipt(
                 conversation.Id,
                 UserId,
                 conversation.Participants.First(participant => participant != UserId),
@@ -93,12 +98,12 @@ namespace BookingBoardGames.Src.Services
 
         private void FinalizeRentalRequest(int messageId)
         {
-            ConversationRepository.HandleRentalRequestFinalization(messageId);
+            this.ConversationRepository.HandleRentalRequestFinalization(messageId);
         }
 
         private void SendCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
-            ConversationRepository.CreateCashAgreementMessage(messageIdOfParentRentalRequestMessage, paymentId);
+            this.ConversationRepository.CreateCashAgreementMessage(messageIdOfParentRentalRequestMessage, paymentId);
         }
 
         public void OnMessageReceived(Message message)

@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="App.xaml.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Diagnostics;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.Mapper;
@@ -29,17 +33,17 @@ namespace BookingBoardGames
         public static AppDbContext? AppDbContext { get; private set; }
 
         // Repositories
-        public static UserRepository? UserRepository { get; private set; }
+        public static IUserRepository? UserRepository { get; private set; }
 
-        public static InterfaceGamesRepository GameRepository { get; private set; }
+        public static InterfaceGamesRepository? GameRepository { get; private set; }
 
-        public static IRentalRepository RentalRepository { get; private set; }
+        public static IRentalRepository? RentalRepository { get; private set; }
 
-        public static PaymentRepository PaymentRepository { get; private set; }
+        public static IPaymentRepository? PaymentRepository { get; private set; }
 
-        public static IRepositoryPayment HistoryRepository { get; private set; }
+        public static IRepositoryPayment? HistoryRepository { get; private set; }
 
-        public static ConversationRepository ConversationRepository { get; private set; }
+        public static IConversationRepository? ConversationRepository { get; private set; }
 
 
         // Services
@@ -47,25 +51,24 @@ namespace BookingBoardGames
 
         public static IRentalService? RentalService { get; private set; }
 
-        public static ReceiptService ReceiptService { get; private set; }
+        public static IReceiptService? ReceiptService { get; private set; }
 
-        public static CardPaymentService CardPaymentService { get; private set; }
+        public static ICardPaymentService? CardPaymentService { get; private set; }
 
-        public static MapService MapService { get; private set; }
+        public static IMapService? MapService { get; private set; }
 
-        public static ServicePayment ServicePayment { get; private set; }
+        public static IServicePayment? ServicePayment { get; private set; }
 
-        public static CashPaymentService CashPaymentService { get; private set; }
+        public static ICashPaymentService? CashPaymentService { get; private set; }
 
-        public static InterfaceBookingService BookingService { get; private set; }
+        public static InterfaceBookingService? BookingService { get; private set; }
 
-        public static InterfaceSearchAndFilterService SearchAndFilterService { get; private set; }
-
+        public static InterfaceSearchAndFilterService? SearchAndFilterService { get; private set; }
 
         public int DashboardUser = 3;
         public int NoChatsUser = 8;
 
-        public Window? Window => window;
+        public Window? Window => this.window;
 
         public App()
         {

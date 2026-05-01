@@ -1,4 +1,8 @@
-﻿using Microsoft.UI.Xaml;
+﻿// <copyright file="Booltovisibilityconverter.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
 namespace BookingBoardGames.Src.Views

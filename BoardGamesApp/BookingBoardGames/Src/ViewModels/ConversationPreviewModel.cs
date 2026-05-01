@@ -1,4 +1,8 @@
-﻿namespace BookingBoardGames.Src.ViewModels;
+﻿// <copyright file="ConversationPreviewModel.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace BookingBoardGames.Src.ViewModels;
 
 using BookingBoardGames.Src.DTO;
 using System;

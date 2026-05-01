@@ -1,3 +1,7 @@
+// <copyright file="DiscoveryView.xaml.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using System;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;

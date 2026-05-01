@@ -1,3 +1,7 @@
+// <copyright file="GameCard.xaml.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace SearchAndBook.Views.Controls
 {
     using Microsoft.UI.Xaml;

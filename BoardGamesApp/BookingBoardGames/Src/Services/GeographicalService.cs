@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="GeographicalService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -137,7 +141,7 @@ namespace BookingBoardGames.Src.Services
         /// <returns>A tuple containing a value indicating whether the city was found, the city's main name, and its latitude and
         /// longitude. If the city is not found, returns (<see langword="false"/>, an empty string, and default
         /// coordinate values).</returns>
-        public (bool isFound, string cityName, double latitude, double longitude) GetCityDetails(string cityName)
+        public (bool IsFound, string CityName, double Latitude, double Longitude) GetCityDetails(string cityName)
         {
             var normalizedCityName = this.NormalizeCityName(cityName);
 
@@ -161,16 +165,16 @@ namespace BookingBoardGames.Src.Services
             var originCityDetails = this.GetCityDetails(originCityName);
             var destinationCityDetails = this.GetCityDetails(destinationCityName);
 
-            if (!originCityDetails.isFound || !destinationCityDetails.isFound)
+            if (!originCityDetails.IsFound || !destinationCityDetails.IsFound)
             {
                 return null;
             }
 
             return GeographicDistance.CalculateDistance(
-                originCityDetails.latitude,
-                originCityDetails.longitude,
-                destinationCityDetails.latitude,
-                destinationCityDetails.longitude);
+                originCityDetails.Latitude,
+                originCityDetails.Longitude,
+                destinationCityDetails.Latitude,
+                destinationCityDetails.Longitude);
         }
 
         /// <summary>

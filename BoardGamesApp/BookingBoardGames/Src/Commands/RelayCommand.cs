@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="RelayCommand.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Windows.Input;
 
 namespace BookingBoardGames.Src.Commands

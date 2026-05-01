@@ -1,3 +1,7 @@
+// <copyright file="DashboardView.xaml.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using BookingBoardGames.Src.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

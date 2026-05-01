@@ -1,4 +1,8 @@
-﻿namespace BookingBoardGames.Src.Enum
+﻿// <copyright file="SortOption.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace BookingBoardGames.Src.Enum
 {
     /// <summary>
     /// Specifies the sorting options available for game search results.

@@ -1,10 +1,14 @@
-﻿namespace BookingBoardGames.Src.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using BookingBoardGames.Src.Shared;
-    using BookingBoardGames.Src.DTO;
+﻿// <copyright file="InterfaceSearchAndFilterService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
+using System;
+using System.Collections.Generic;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Shared;
+
+namespace BookingBoardGames.Src.Services
+{
     /// <summary>
     /// Provides search and filtering capabilities for games.
     /// </summary>
@@ -50,7 +54,7 @@
         /// <param name="page">The page number for pagination.</param>
         /// <param name="pageSize">The number of games per page.</param>
         /// <returns>A tuple containing categorized games and the total count of available items.</returns>
-        (List<GameDTO> availableTonight, List<GameDTO> others, int totalAvailableGamesCount)
+        (List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)
         GetDiscoveryFeedPaged(int userId, int page, int pageSize);
 
         /// <summary>

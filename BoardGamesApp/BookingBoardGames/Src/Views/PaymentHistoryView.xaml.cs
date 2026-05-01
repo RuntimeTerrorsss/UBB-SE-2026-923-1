@@ -1,3 +1,7 @@
+// <copyright file="PaymentHistoryView.xaml.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using BookingBoardGames.Src.DTO;

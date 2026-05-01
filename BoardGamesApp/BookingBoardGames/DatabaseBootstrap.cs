@@ -1,9 +1,13 @@
-﻿using System;
+﻿// <copyright file="DatabaseBootstrap.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using BookingBoardGames.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingBoardGames
 {

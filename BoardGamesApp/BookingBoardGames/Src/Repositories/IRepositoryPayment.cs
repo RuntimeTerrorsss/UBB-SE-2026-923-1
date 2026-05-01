@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="IRepositoryPayment.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System.Collections.Generic;
 
 namespace BookingBoardGames.Src.Repositories
 {

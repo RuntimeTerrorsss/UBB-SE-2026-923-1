@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="CardPaymentConstants.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 
 namespace BookingBoardGames.Src.Constants
 {

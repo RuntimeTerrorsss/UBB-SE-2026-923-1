@@ -1,11 +1,15 @@
-﻿using BookingBoardGames.Src.Repositories;
+﻿// <copyright file="CardPaymentService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using BookingBoardGames.Src.Constants;
 using BookingBoardGames.Src.DTO;
-using System;
+using BookingBoardGames.Src.Repositories;
 
 namespace BookingBoardGames.Src.Services
 {
-    public class CardPaymentService : PaymentService,ICardPaymentService
+    public class CardPaymentService : PaymentService, ICardPaymentService
     {
         private readonly IUserRepository userRepository;
         private readonly IRentalService rentalService;
@@ -14,7 +18,8 @@ namespace BookingBoardGames.Src.Services
             PaymentRepository paymentRepository,
             IUserRepository userRepository,
             ReceiptService receiptService,
-            IRentalService rentalService) : base(paymentRepository, receiptService)
+            IRentalService rentalService)
+            : base(paymentRepository, receiptService)
         {
             this.userRepository = userRepository;
             this.rentalService = rentalService;
@@ -22,12 +27,12 @@ namespace BookingBoardGames.Src.Services
 
         public virtual CardPaymentDataTransferObject AddCardPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier, decimal amount)
         {
-            if (!CheckBalanceSufficiency(requestIdentifier, clientIdentifier))
+            if (!this.CheckBalanceSufficiency(requestIdentifier, clientIdentifier))
             {
                 throw new Exception("Insufficient Funds");
             }
 
-            ProcessPayment(requestIdentifier, clientIdentifier, ownerIdentifier);
+            this.ProcessPayment(requestIdentifier, clientIdentifier, ownerIdentifier);
 
             Payment payment = new Payment
             {
@@ -40,20 +45,20 @@ namespace BookingBoardGames.Src.Services
                 DateConfirmedBuyer = DateTime.Now,
                 DateConfirmedSeller = null,
                 PaymentState = CardPaymentConstants.SuccessfulPaymentState,
-                ReceiptFilePath = null
+                ReceiptFilePath = null,
             };
 
-            payment.TransactionIdentifier = paymentRepository.AddPayment(payment);
-            string receiptFilePath = receiptService.GenerateReceiptRelativePath(payment.RequestId);
+            payment.TransactionIdentifier = this.paymentRepository.AddPayment(payment);
+            string receiptFilePath = this.receiptService.GenerateReceiptRelativePath(payment.RequestId);
             payment.ReceiptFilePath = receiptFilePath;
-            paymentRepository.UpdatePayment(payment);
+            this.paymentRepository.UpdatePayment(payment);
 
-            return ConvertToDataTransferObject(payment);
+            return this.ConvertToDataTransferObject(payment);
         }
 
         public bool CheckBalanceSufficiency(int requestIdentifier, int clientIdentifier)
         {
-            return rentalService.GetRentalPrice(requestIdentifier) <= userRepository.GetUserBalance(clientIdentifier);
+            return this.rentalService.GetRentalPrice(requestIdentifier) <= this.userRepository.GetUserBalance(clientIdentifier);
         }
 
         public CardPaymentDataTransferObject GetCardPayment(int paymentIdentifier)
@@ -63,14 +68,14 @@ namespace BookingBoardGames.Src.Services
 
         public decimal GetCurrentBalance(int clientIdentifier)
         {
-            return userRepository.GetUserBalance(clientIdentifier);
+            return this.userRepository.GetUserBalance(clientIdentifier);
         }
 
         public void ProcessPayment(int rentalIdentifier, int clientIdentifier, int ownerIdentifier)
         {
-            decimal rentalPrice = rentalService.GetRentalPrice(rentalIdentifier);
-            decimal clientBalance = userRepository.GetUserBalance(clientIdentifier);
-            decimal ownerBalance = userRepository.GetUserBalance(ownerIdentifier);
+            decimal rentalPrice = this.rentalService.GetRentalPrice(rentalIdentifier);
+            decimal clientBalance = this.userRepository.GetUserBalance(clientIdentifier);
+            decimal ownerBalance = this.userRepository.GetUserBalance(ownerIdentifier);
             decimal newClientBalance = clientBalance - rentalPrice;
 
             if (newClientBalance < 0)
@@ -78,8 +83,8 @@ namespace BookingBoardGames.Src.Services
                 throw new Exception("Insufficient Funds");
             }
 
-            userRepository.UpdateBalance(clientIdentifier, newClientBalance);
-            userRepository.UpdateBalance(ownerIdentifier, ownerBalance + rentalPrice);
+            this.userRepository.UpdateBalance(clientIdentifier, newClientBalance);
+            this.userRepository.UpdateBalance(ownerIdentifier, ownerBalance + rentalPrice);
         }
 
         public CardPaymentDataTransferObject ConvertToDataTransferObject(Payment cardPayment)
@@ -96,11 +101,11 @@ namespace BookingBoardGames.Src.Services
 
         public virtual RentalDataTransferObject GetRequestDataTransferObject(int rentalIdentifier)
         {
-            Rental rental = rentalService.GetRentalById(rentalIdentifier);
-            string gameName = rentalService.GetGameName(rental.RentalId);
+            Rental rental = this.rentalService.GetRentalById(rentalIdentifier);
+            string gameName = this.rentalService.GetGameName(rental.RentalId);
             string ownerName = userRepository.GetById(rental.OwnerId).Username;
             string clientName = userRepository.GetById(rental.ClientId).Username;
-            decimal gamePrice = rentalService.GetRentalPrice(rental.RentalId);
+            decimal gamePrice = this.rentalService.GetRentalPrice(rental.RentalId);
 
             return new RentalDataTransferObject(rental.RentalId, rental.GameId, gameName, rental.ClientId, clientName, rental.OwnerId, ownerName, rental.StartDate, rental.EndDate, gamePrice);
         }

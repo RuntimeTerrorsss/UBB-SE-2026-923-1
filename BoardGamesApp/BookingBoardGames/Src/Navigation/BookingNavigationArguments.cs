@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="BookingNavigationArguments.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using BookingBoardGames.Src.Services;
 using Microsoft.UI.Xaml;
 
