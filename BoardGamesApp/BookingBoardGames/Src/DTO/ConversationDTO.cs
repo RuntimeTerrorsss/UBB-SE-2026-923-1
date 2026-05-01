@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace BookingBoardGames.Src.DTO
 {
-    public class ConversationDataTransferObject
+    public class ConversationDTO
     {
         public int Id { get; set; }
 
@@ -20,20 +20,20 @@ namespace BookingBoardGames.Src.DTO
 
         public Dictionary<int, int> UnreadCount { get; set; }
 
-        public ConversationDataTransferObject(int conversationId, int[] participants, List<MessageDataTransferObject> messages, Dictionary<int, DateTime> lastRead)
+        public ConversationDTO(int conversationId, int[] participants, List<MessageDataTransferObject> messages, Dictionary<int, DateTime> lastRead)
         {
-            Id = conversationId;
-            Participants = participants;
-            MessageList = messages;
-            LastRead = lastRead;
-            UnreadCount = participants.ToDictionary(participant => participant, participant => 0);
-            UpdateUnreadCounts();
+            this.Id = conversationId;
+            this.Participants = participants;
+            this.MessageList = messages;
+            this.LastRead = lastRead;
+            this.UnreadCount = participants.ToDictionary(participant => participant, participant => 0);
+            this.UpdateUnreadCounts();
         }
 
         public void AddMessageToListDTO(MessageDataTransferObject newMessage)
         {
-            MessageList.Add(newMessage);
-            UpdateUnreadCounts();
+            this.MessageList.Add(newMessage);
+            this.UpdateUnreadCounts();
         }
 
         public void UpdateUnreadCounts()
@@ -43,19 +43,19 @@ namespace BookingBoardGames.Src.DTO
             int defaultUnreadCount = 0;
             int systemMessageSenderIdentifier = 0;
 
-            UnreadCount[Participants[firstParticipantIndex]] = defaultUnreadCount;
-            UnreadCount[Participants[secondParticipantIndex]] = defaultUnreadCount;
+            this.UnreadCount[this.Participants[firstParticipantIndex]] = defaultUnreadCount;
+            this.UnreadCount[this.Participants[secondParticipantIndex]] = defaultUnreadCount;
 
-            foreach (var messageItem in MessageList)
+            foreach (var messageItem in this.MessageList)
             {
                 if (messageItem.ReceiverId == systemMessageSenderIdentifier)
                 {
                     continue;
                 }
 
-                if (messageItem.SentAt >= LastRead[messageItem.ReceiverId])
+                if (messageItem.SentAt >= this.LastRead[messageItem.ReceiverId])
                 {
-                    UnreadCount[messageItem.ReceiverId]++;
+                    this.UnreadCount[messageItem.ReceiverId]++;
                 }
             }
         }

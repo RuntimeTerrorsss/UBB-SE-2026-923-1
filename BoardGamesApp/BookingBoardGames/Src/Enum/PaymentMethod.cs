@@ -8,6 +8,6 @@ namespace BookingBoardGames.Src.Enum
     {
         ALL,
         CASH,
-        CARD
+        CARD,
     }
 }

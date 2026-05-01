@@ -2,10 +2,10 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
+
 namespace BookingBoardGames.Src.Enum
 {
-    using System;
-
     /// <summary>
     /// Provides methods for calculating the distance between two geographic coordinates using the Haversine formula.
     /// </summary>

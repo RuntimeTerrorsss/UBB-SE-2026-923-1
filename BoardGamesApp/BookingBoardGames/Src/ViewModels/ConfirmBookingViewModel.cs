@@ -2,17 +2,17 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Storage.Streams;
+
 namespace BookingBoardGames.Src.ViewModels
 {
-    using System;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
-    using System.Runtime.InteropServices.WindowsRuntime;
-    using BookingBoardGames.Src.DTO;
-    using BookingBoardGames.Src.Services;
-    using Microsoft.UI.Xaml.Media.Imaging;
-    using Windows.Storage.Streams;
-
     /// <summary>
     /// Represents the view model for confirming a booking, providing booking details, availability checks, and commands
     /// for booking confirmation workflows.
@@ -138,8 +138,8 @@ namespace BookingBoardGames.Src.ViewModels
             get => this.gameAndUserDetail;
             private set
             {
-               this.gameAndUserDetail = value;
-               this.OnPropertyChanged();
+                this.gameAndUserDetail = value;
+                this.OnPropertyChanged();
             }
         }
 

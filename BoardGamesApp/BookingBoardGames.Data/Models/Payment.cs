@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 public class Payment
 {
-    [Key] 
+    [Key]
     public int TransactionIdentifier { get; set; }
-    
+
     public decimal PaidAmount { get; set; }
     public string? PaymentMethod { get; set; }
     public DateTime? DateOfTransaction { get; set; }

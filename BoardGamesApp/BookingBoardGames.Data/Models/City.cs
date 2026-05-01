@@ -2,7 +2,7 @@
 
 public class City
 {
-    public int CityId { get; set; } 
+    public int CityId { get; set; }
     required public string MainName { get; set; }
     required public List<string> Names { get; set; }
     public double Latitude { get; set; }

@@ -2,21 +2,21 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using BookingBoardGames.Src.Commands;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Shared;
+
 namespace BookingBoardGames.Src.ViewModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows.Input;
-    using BookingBoardGames.Src.Commands;
-    using BookingBoardGames.Src.DTO;
-    using BookingBoardGames.Src.Enum;
-    using BookingBoardGames.Src.Services;
-    using BookingBoardGames.Src.Shared;
-
     /// <summary>
     /// Provides the logic for discovering and filtering games, including pagination and search capabilities.
     /// </summary>
@@ -95,12 +95,12 @@ namespace BookingBoardGames.Src.ViewModels
         /// <summary>
         /// Gets or sets the list of games available for rent tonight.
         /// </summary>
-        public List<GameDTO> AvailableTonightGames { get; set; } = new ();
+        public List<GameDTO> AvailableTonightGames { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the list of other available games that do not match the "tonight" criteria.
         /// </summary>
-        public List<GameDTO> OtherAvailableGames { get; set; } = new ();
+        public List<GameDTO> OtherAvailableGames { get; set; } = new();
 
         /// <summary>
         /// Gets a value indicating whether the end date selection is enabled based on the start date.
@@ -125,7 +125,7 @@ namespace BookingBoardGames.Src.ViewModels
         /// <summary>
         /// Gets or sets the filter criteria used for searching games.
         /// </summary>
-        public FilterCriteria Filter { get; set; } = new ();
+        public FilterCriteria Filter { get; set; } = new();
 
         /// <summary>
         /// Gets the minimum allowed start date for a search, typically the current date.
@@ -249,7 +249,7 @@ namespace BookingBoardGames.Src.ViewModels
         /// <summary>
         /// Gets the collection of city suggestions based on the current search text.
         /// </summary>
-        public ObservableCollection<string> CitySuggestions { get; } = new ();
+        public ObservableCollection<string> CitySuggestions { get; } = new();
 
         /// <summary>
         /// Gets the command to navigate to the next page.

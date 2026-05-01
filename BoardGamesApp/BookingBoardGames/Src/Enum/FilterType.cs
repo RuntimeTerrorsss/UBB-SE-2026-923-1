@@ -13,6 +13,6 @@ namespace BookingBoardGames.Src.Enum
         Last3Months,
         Last6Months,
         Last9Months,
-        AllTime
+        AllTime,
     }
 }

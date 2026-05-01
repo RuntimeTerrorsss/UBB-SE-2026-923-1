@@ -10,24 +10,24 @@ namespace BookingBoardGames.Src.DTO
     {
         public int PaymentId { get; set; }
 
-        public string DateText { get; set; }
+        public string? DateText { get; set; }
 
-        public string ProductName { get; set; }
+        public string? ProductName { get; set; }
 
-        public string ReceiverName { get; set; }
+        public string? ReceiverName { get; set; }
 
         /// <summary>
-        /// Numeric amount used strictly for service-level total calculations.
+        /// Gets or sets numeric amount used strictly for service-level total calculations.
         /// </summary>
         public decimal Amount { get; set; }
 
         /// <summary>
-        /// Formatted amount string for display.
+        /// Gets formatted amount string for display.
         /// </summary>
-        public string AmountText => $"{Amount:C}";
+        public string AmountText => $"{this.Amount:C}";
 
-        public string PaymentMethod { get; set; }
+        public string? PaymentMethod { get; set; }
 
-        public string FilePath { get; set; }
+        public string? FilePath { get; set; }
     }
 }

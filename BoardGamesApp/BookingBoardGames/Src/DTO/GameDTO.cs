@@ -2,12 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Media.Imaging;
+
 namespace BookingBoardGames.Src.DTO
 {
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
-    using Microsoft.UI.Xaml.Media.Imaging;
-
     /// <summary>
     /// IMPORTANT - IMAGE HANDLING:
     /// This class stores the image in TWO different formats for different purposes:

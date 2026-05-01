@@ -42,7 +42,7 @@ public class RentalRequestMessage : Message
     public bool IsRequestAccepted { get; set; }
     public string? RequestContent { get; set; }
 
-    public Rental? RentalRequest { get; set; } 
+    public Rental? RentalRequest { get; set; }
 }
 
 public class CashAgreementMessage : Message
@@ -51,6 +51,6 @@ public class CashAgreementMessage : Message
     public bool IsCashAgreementResolved { get; set; }
     public bool IsCashAgreementAcceptedByBuyer { get; set; }
     public bool IsCashAgreementAcceptedBySeller { get; set; }
-    
+
     public Payment? CashPayment { get; set; }
 }

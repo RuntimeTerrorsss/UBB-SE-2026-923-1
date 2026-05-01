@@ -22,13 +22,14 @@ namespace BookingBoardGames.Src.Services
 
         public event Action<MessageDataTransferObject, string> ActionMessageProcessed;
 
-        public event Action<ConversationDataTransferObject, string> ActionConversationProcessed;
+        public event Action<ConversationDTO, string> ActionConversationProcessed;
 
         public event Action<ReadReceiptDTO> ActionReadReceiptProcessed;
 
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
 
-        public ConversationService(IConversationRepository conversationRepo, int userIdInput) : this(conversationRepo, userIdInput, App.UserRepository)
+        public ConversationService(IConversationRepository conversationRepo, int userIdInput)
+            : this(conversationRepo, userIdInput, App.UserRepository)
         {
         }
 
@@ -41,11 +42,11 @@ namespace BookingBoardGames.Src.Services
             this.ConversationRepository.Subscribe(UserId, this);
         }
 
-        public List<ConversationDataTransferObject> FetchConversations()
+        public List<ConversationDTO> FetchConversations()
         {
-            List<ConversationDataTransferObject> conversationList = new List<ConversationDataTransferObject>();
+            List<ConversationDTO> conversationList = new List<ConversationDTO>();
 
-            foreach (var conversation in ConversationRepository.GetConversationsForUser(UserId))
+            foreach (var conversation in this.ConversationRepository.GetConversationsForUser(UserId))
             {
                 conversationList.Add(ConversationToConversationDTO(conversation));
             }
@@ -53,7 +54,7 @@ namespace BookingBoardGames.Src.Services
             return conversationList;
         }
 
-        public string GetOtherUserNameByConversationDTO(ConversationDataTransferObject conversation)
+        public string GetOtherUserNameByConversationDTO(ConversationDTO conversation)
         {
             int firstParticipantIndex = 0;
             int secondParticipantIndex = 1;
@@ -63,7 +64,7 @@ namespace BookingBoardGames.Src.Services
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
         {
-            return this.userRepository.GetById(message.SenderId == UserId ? message.ReceiverId : message.SenderId).Username ?? "Unknown User";
+            return userRepository.GetById(message.SenderId == UserId ? message.ReceiverId : message.SenderId).Username ?? "Unknown User";
         }
 
         public void SendMessage(MessageDataTransferObject message)
@@ -76,7 +77,7 @@ namespace BookingBoardGames.Src.Services
             this.ConversationRepository.HandleMessageUpdate(MessageDTOToMessage(message));
         }
 
-        public void SendReadReceipt(ConversationDataTransferObject conversation)
+        public void SendReadReceipt(ConversationDTO conversation)
         {
             this.ConversationRepository.HandleReadReceipt(new ReadReceipt(
                 conversation.Id,
@@ -87,13 +88,13 @@ namespace BookingBoardGames.Src.Services
 
         public void OnCardPaymentSelected(int messageId)
         {
-            FinalizeRentalRequest(messageId);
+            this.FinalizeRentalRequest(messageId);
         }
 
         public void OnCashPaymentSelected(int messageId, int paymentId)
         {
-            FinalizeRentalRequest(messageId);
-            SendCashAgreementMessage(messageId, paymentId);
+            this.FinalizeRentalRequest(messageId);
+            this.SendCashAgreementMessage(messageId, paymentId);
         }
 
         private void FinalizeRentalRequest(int messageId)
@@ -115,7 +116,7 @@ namespace BookingBoardGames.Src.Services
 
         public void OnConversationReceived(Conversation conversation)
         {
-            ConversationDataTransferObject conversationDTO = ConversationToConversationDTO(conversation);
+            ConversationDTO conversationDTO = ConversationToConversationDTO(conversation);
             string userName = GetOtherUserNameByConversationDTO(conversationDTO);
             ActionConversationProcessed?.Invoke(conversationDTO, userName);
         }
@@ -204,10 +205,10 @@ namespace BookingBoardGames.Src.Services
             return toReturn;
         }
 
-        public ConversationDataTransferObject ConversationToConversationDTO(Conversation conversation)
+        public ConversationDTO ConversationToConversationDTO(Conversation conversation)
         {
             var messageDTOs = conversation.ConversationMessageList.Select(messageItem => MessageToMessageDTO(messageItem)).ToList();
-            return new ConversationDataTransferObject(
+            return new ConversationDTO(
                 conversationId: conversation.ConversationId,
                 participants: conversation.ConversationParticipantIds,
                 messages: messageDTOs,

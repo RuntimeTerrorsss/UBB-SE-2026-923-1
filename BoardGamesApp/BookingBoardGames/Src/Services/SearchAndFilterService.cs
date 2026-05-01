@@ -286,28 +286,28 @@ namespace BookingBoardGames.Src.Services
         /// <returns>A tuple containing available games for tonight, other available games, and the total count of games.</returns>
         public (List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)
             GetDiscoveryFeedPaged(int userId, int page, int pageSize)
-         {
-                var availableTonightGameList = this.GetGamesFeedAvailableTonightByUser(userId).ToList();
-                var otherGameList = this.GetOtherGamesFeedByUser(userId).ToList();
+        {
+            var availableTonightGameList = this.GetGamesFeedAvailableTonightByUser(userId).ToList();
+            var otherGameList = this.GetOtherGamesFeedByUser(userId).ToList();
 
-                var allDescoveryFeedGames = availableTonightGameList.Concat(otherGameList).ToList();
-                var totalAvailableGamesCount = allDescoveryFeedGames.Count;
+            var allDescoveryFeedGames = availableTonightGameList.Concat(otherGameList).ToList();
+            var totalAvailableGamesCount = allDescoveryFeedGames.Count;
 
-                var paginatedGames = allDescoveryFeedGames
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
+            var paginatedGames = allDescoveryFeedGames
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
-                var pagedAvailableTonightGames = paginatedGames
-                    .Where(availableTonightGame => availableTonightGameList.Any(anyGameAvailbaleTonight => anyGameAvailbaleTonight.GameId == availableTonightGame.GameId))
-                    .ToList();
+            var pagedAvailableTonightGames = paginatedGames
+                .Where(availableTonightGame => availableTonightGameList.Any(anyGameAvailbaleTonight => anyGameAvailbaleTonight.GameId == availableTonightGame.GameId))
+                .ToList();
 
-                var pagedOtherGames = paginatedGames
-                    .Where(otherGame => otherGameList.Any(anyOtherGame => anyOtherGame.GameId == otherGame.GameId))
-                    .ToList();
+            var pagedOtherGames = paginatedGames
+                .Where(otherGame => otherGameList.Any(anyOtherGame => anyOtherGame.GameId == otherGame.GameId))
+                .ToList();
 
-                return (pagedAvailableTonightGames, pagedOtherGames, totalAvailableGamesCount);
-         }
+            return (pagedAvailableTonightGames, pagedOtherGames, totalAvailableGamesCount);
+        }
 
         /// <summary>
         /// Validates if a given date range is logical (start date is before or equal to end date).
@@ -342,7 +342,7 @@ namespace BookingBoardGames.Src.Services
                 return true;
             }
 
-            return playersNumber.Value >= minimumAllowedPlayers;
+            return playersNumber.Value >= MinimumAllowedPlayers;
         }
 
         /// <summary>

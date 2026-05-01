@@ -2,11 +2,11 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace BookingBoardGames.Src.Services;
-
 using System;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;
+
+namespace BookingBoardGames.Src.Services;
 /// <summary>
 /// Service responsible for handling booking operations, including retrieving game details,
 /// checking availability, and managing rental time rentaltimeranges.

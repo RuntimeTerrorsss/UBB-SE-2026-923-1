@@ -2,10 +2,9 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace BookingBoardGames.Src.DTO;
-
 using System;
 
+namespace BookingBoardGames.Src.DTO;
 /// <summary>
 /// Represents the data transfer object for a booking, containing information about the booked game, user, and related
 /// details.

@@ -6,38 +6,27 @@ using System;
 
 namespace BookingBoardGames.Src.DTO
 {
-    public class CardPaymentDataTransferObject
+    public class CardPaymentDTO(
+        int transactionIdentifier,
+        int requestIdentifier,
+        int clientIdentifier,
+        int ownerIdentifier,
+        decimal amount,
+        DateTime dateOfTransaction,
+        string paymentMethod)
     {
-        public int TransactionIdentifier { get; set; }
+        public int TransactionIdentifier { get; set; } = transactionIdentifier;
 
-        public int RequestIdentifier { get; set; }
+        public int RequestIdentifier { get; set; } = requestIdentifier;
 
-        public int ClientIdentifier { get; set; }
+        public int ClientIdentifier { get; set; } = clientIdentifier;
 
-        public int OwnerIdentifier { get; set; }
+        public int OwnerIdentifier { get; set; } = ownerIdentifier;
 
-        public decimal Amount { get; set; }
+        public decimal Amount { get; set; } = amount;
 
-        public DateTime DateOfTransaction { get; set; }
+        public DateTime DateOfTransaction { get; set; } = dateOfTransaction;
 
-        public string PaymentMethod { get; set; }
-
-        public CardPaymentDataTransferObject(
-            int transactionIdentifier,
-            int requestIdentifier,
-            int clientIdentifier,
-            int ownerIdentifier,
-            decimal amount,
-            DateTime dateOfTransaction,
-            string paymentMethod)
-        {
-            TransactionIdentifier = transactionIdentifier;
-            RequestIdentifier = requestIdentifier;
-            ClientIdentifier = clientIdentifier;
-            OwnerIdentifier = ownerIdentifier;
-            Amount = amount;
-            DateOfTransaction = dateOfTransaction;
-            PaymentMethod = paymentMethod;
-        }
+        public string PaymentMethod { get; set; } = paymentMethod;
     }
 }

@@ -7,24 +7,24 @@ using System.Windows.Input;
 
 namespace BookingBoardGames.Src.Commands
 {
-    public class RelayCommand : ICommand
+    public class RelayCommand(Action<object?> executeAction, Func<bool>? canExecuteFunction = null) : ICommand
     {
-        private readonly Action<Object?> executeAction;
-        private readonly Func<bool> canExecuteFunction;
+        private readonly Action<object?> executeAction = executeAction;
+        private readonly Func<bool>? canExecuteFunction = canExecuteFunction;
 
-        public RelayCommand(Action<Object?> executeAction, Func<bool> canExecuteFunction = null)
+        public event EventHandler? CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
         {
-            this.executeAction = executeAction;
-            this.canExecuteFunction = canExecuteFunction;
+            return this.canExecuteFunction?.Invoke() ?? true;
         }
 
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter) => canExecuteFunction?.Invoke() ?? true;
-
-        public void Execute(object parameter) => executeAction(parameter);
+        public void Execute(object parameter)
+        {
+            this.executeAction(parameter);
+        }
 
         public void NotifyCanExecuteChanged() =>
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

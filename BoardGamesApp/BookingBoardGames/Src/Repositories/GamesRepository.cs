@@ -133,14 +133,14 @@ public class GamesRepository : InterfaceGamesRepository
         return this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId && !game.Rentals.Any(rental => rental.StartDate < tomorrowDate && rental.EndDate > todayDate)).ToList();
     }
 
-        /// <summary>
-        /// Gets all remaining active games that are not part of the "Available Tonight" section.
-        /// </summary>
-        /// <param name="userId">
-        /// Current authenticated user id.
-        /// Used to exclude the user's own games from the feed.
-        /// </param>
-        /// <returns>A list of games for the "Available Tonight" section.</returns>
+    /// <summary>
+    /// Gets all remaining active games that are not part of the "Available Tonight" section.
+    /// </summary>
+    /// <param name="userId">
+    /// Current authenticated user id.
+    /// Used to exclude the user's own games from the feed.
+    /// </param>
+    /// <returns>A list of games for the "Available Tonight" section.</returns>
     public List<Game> GetRemainingGamesForFeed(int userId)
     {
         var todayDate = DateTime.Today;

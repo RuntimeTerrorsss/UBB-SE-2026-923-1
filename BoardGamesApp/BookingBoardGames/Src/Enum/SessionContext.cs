@@ -4,7 +4,6 @@
 
 namespace BookingBoardGames.Src.Shared
 {
-
     /// <summary>
     /// Provides a context for managing the current user's session state, including authentication status and user
     /// identification.

@@ -4,25 +4,16 @@
 
 namespace BookingBoardGames.Src.DTO
 {
-    public class CashPaymentDataTransferObject
+    public class CashPaymentDataTransferObject(int paymentId, int requestId, int clientId, int ownerId, decimal amount)
     {
-        public int Id { get; set; }
+        public int Id { get; set; } = paymentId;
 
-        public int RequestId { get; set; }
+        public int RequestId { get; set; } = requestId;
 
-        public int ClientId { get; set; }
+        public int ClientId { get; set; } = clientId;
 
-        public int OwnerId { get; set; }
+        public int OwnerId { get; set; } = ownerId;
 
-        public decimal PaidAmount { get; set; }
-
-        public CashPaymentDataTransferObject(int paymentId, int requestId, int clientId, int ownerId, decimal amount)
-        {
-            Id = paymentId;
-            RequestId = requestId;
-            ClientId = clientId;
-            OwnerId = ownerId;
-            PaidAmount = amount;
-        }
+        public decimal PaidAmount { get; set; } = amount;
     }
 }

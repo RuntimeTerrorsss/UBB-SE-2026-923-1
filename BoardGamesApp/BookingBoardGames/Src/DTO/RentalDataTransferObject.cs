@@ -24,16 +24,16 @@ namespace BookingBoardGames.Src.DTO
             DateTime endDate,
             decimal price)
         {
-            Id = id;
-            GameId = gameId;
-            GameName = gameName;
-            ClientId = clientId;
-            ClientName = clientName;
-            OwnerId = ownerId;
-            OwnerName = ownerName;
-            StartDate = startDate;
-            EndDate = endDate;
-            Price = price;
+            this.Id = id;
+            this.GameId = gameId;
+            this.GameName = gameName;
+            this.ClientId = clientId;
+            this.ClientName = clientName;
+            this.OwnerId = ownerId;
+            this.OwnerName = ownerName;
+            this.StartDate = startDate;
+            this.EndDate = endDate;
+            this.Price = price;
         }
 
         public RentalDataTransferObject()

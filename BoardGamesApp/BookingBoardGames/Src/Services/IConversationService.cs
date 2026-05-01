@@ -18,9 +18,9 @@ namespace BookingBoardGames.Src.Services
 
         void OnReadReceiptReceived(ReadReceipt readReceipt);
 
-        List<ConversationDataTransferObject> FetchConversations();
+        List<ConversationDTO> FetchConversations();
 
-        string GetOtherUserNameByConversationDTO(ConversationDataTransferObject conversation);
+        string GetOtherUserNameByConversationDTO(ConversationDTO conversation);
 
         void UpdateMessage(MessageDataTransferObject message);
 
@@ -28,7 +28,7 @@ namespace BookingBoardGames.Src.Services
 
         event Action<MessageDataTransferObject, string> ActionMessageProcessed;
 
-        event Action<ConversationDataTransferObject, string> ActionConversationProcessed;
+        event Action<ConversationDTO, string> ActionConversationProcessed;
 
         event Action<ReadReceiptDTO> ActionReadReceiptProcessed;
 

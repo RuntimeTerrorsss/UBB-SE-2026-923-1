@@ -14,7 +14,7 @@ public class User
     public bool IsSuspended { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    
+
     public string? Street { get; set; }
     public string? StreetNumber { get; set; }
     public string City { get; set; } = string.Empty;

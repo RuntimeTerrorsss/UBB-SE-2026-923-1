@@ -2,20 +2,20 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Input;
+using BookingBoardGames.Src.Commands;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Shared;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Storage.Streams;
+
 namespace BookingBoardGames.Src.ViewModels
 {
-    using System;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
-    using System.Runtime.InteropServices.WindowsRuntime;
-    using System.Windows.Input;
-    using BookingBoardGames.Src.Commands;
-    using BookingBoardGames.Src.DTO;
-    using BookingBoardGames.Src.Services;
-    using BookingBoardGames.Src.Shared;
-    using Microsoft.UI.Xaml.Media.Imaging;
-    using Windows.Storage.Streams;
-
     /// <summary>
     /// Provides details for a specific game, including pricing, availability, and booking commands.
     /// </summary>

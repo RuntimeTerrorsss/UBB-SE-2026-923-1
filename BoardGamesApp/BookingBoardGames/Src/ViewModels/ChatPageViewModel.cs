@@ -27,7 +27,7 @@ public class ChatPageViewModel
         get => conversationService;
     }
 
-    private List<ConversationDataTransferObject> conversations = new();
+    private List<ConversationDTO> conversations = new();
 
     public ChatPageViewModel(int currentUser)
     : this(currentUser, new ConversationService(App.ConversationRepository, currentUser))
@@ -100,7 +100,7 @@ public class ChatPageViewModel
         conversationService.SendMessage(message);
     }
 
-    private void SendReadReceipt(ConversationDataTransferObject conversation)
+    private void SendReadReceipt(ConversationDTO conversation)
     {
         conversationService.SendReadReceipt(conversation);
     }
@@ -155,7 +155,7 @@ public class ChatPageViewModel
         OnSendMessageUpdate(targetMessage);
     }
 
-    private void OnConversationReceived(ConversationDataTransferObject conversation, string otherUsername)
+    private void OnConversationReceived(ConversationDTO conversation, string otherUsername)
     {
         conversations.Add(conversation);
         LeftPanelModelView.HandleIncomingConversation(conversation, otherUsername, currentUserId);
@@ -163,12 +163,12 @@ public class ChatPageViewModel
 
     private void OnReadReceiptReceived(ReadReceiptDTO readReceipt)
     {
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == readReceipt.conversationId);
-        matchedConversation.LastRead[readReceipt.readerId] = readReceipt.receiptTimeStamp;
+        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == readReceipt.ConversationId);
+        matchedConversation.LastRead[readReceipt.ReaderId] = readReceipt.ReceiptTimeStamp;
         matchedConversation.UpdateUnreadCounts();
-        if (ChatModelView.ConversationId == readReceipt.conversationId && readReceipt.readerId != currentUserId)
+        if (ChatModelView.ConversationId == readReceipt.ConversationId && readReceipt.ReaderId != currentUserId)
         {
-            ChatModelView.LoadConversation(LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, matchedConversation.UnreadCount[readReceipt.readerId]);
+            ChatModelView.LoadConversation(LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, matchedConversation.UnreadCount[readReceipt.ReaderId]);
         }
     }
 

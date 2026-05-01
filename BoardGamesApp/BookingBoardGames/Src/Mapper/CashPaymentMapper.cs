@@ -6,12 +6,12 @@ using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Src.Mapper
 {
-	public class CashPaymentMapper : ICashPaymentMapper
-	{
+    public class CashPaymentMapper : ICashPaymentMapper
+    {
         private const string CashPaymentMethod = "CASH";
 
-		public Payment TurnDataTransferObjectIntoEntity(CashPaymentDataTransferObject paymentDto)
-		{
+        public Payment TurnDataTransferObjectIntoEntity(CashPaymentDataTransferObject paymentDto)
+        {
             return new Payment
             {
                 TransactionIdentifier = paymentDto.Id,
@@ -19,13 +19,13 @@ namespace BookingBoardGames.Src.Mapper
                 ClientId = paymentDto.ClientId,
                 OwnerId = paymentDto.OwnerId,
                 PaidAmount = paymentDto.PaidAmount,
-                PaymentMethod = CashPaymentMethod
+                PaymentMethod = CashPaymentMethod,
             };
         }
 
-		public CashPaymentDataTransferObject TurnEntityIntoDataTransferObject(Payment payment)
-		{
-			return new CashPaymentDataTransferObject(payment.TransactionIdentifier, payment.RequestId, payment.ClientId, payment.OwnerId, payment.PaidAmount);
-		}
-	}
+        public CashPaymentDataTransferObject TurnEntityIntoDataTransferObject(Payment payment)
+        {
+            return new CashPaymentDataTransferObject(payment.TransactionIdentifier, payment.RequestId, payment.ClientId, payment.OwnerId, payment.PaidAmount);
+        }
+    }
 }

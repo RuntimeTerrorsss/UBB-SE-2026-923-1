@@ -45,7 +45,6 @@ namespace BookingBoardGames
 
         public static IConversationRepository? ConversationRepository { get; private set; }
 
-
         // Services
         public static InterfaceGeographicalService? GlobalGeoService { get; private set; }
 

@@ -25,7 +25,7 @@ namespace BookingBoardGames.Src.Services
             this.rentalService = rentalService;
         }
 
-        public virtual CardPaymentDataTransferObject AddCardPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier, decimal amount)
+        public virtual CardPaymentDTO AddCardPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier, decimal amount)
         {
             if (!this.CheckBalanceSufficiency(requestIdentifier, clientIdentifier))
             {
@@ -61,7 +61,7 @@ namespace BookingBoardGames.Src.Services
             return this.rentalService.GetRentalPrice(requestIdentifier) <= this.userRepository.GetUserBalance(clientIdentifier);
         }
 
-        public CardPaymentDataTransferObject GetCardPayment(int paymentIdentifier)
+        public CardPaymentDTO GetCardPayment(int paymentIdentifier)
         {
             return this.ConvertToDataTransferObject(paymentRepository.GetPaymentByIdentifier(paymentIdentifier));
         }
@@ -87,9 +87,9 @@ namespace BookingBoardGames.Src.Services
             this.userRepository.UpdateBalance(ownerIdentifier, ownerBalance + rentalPrice);
         }
 
-        public CardPaymentDataTransferObject ConvertToDataTransferObject(Payment cardPayment)
+        public CardPaymentDTO ConvertToDataTransferObject(Payment cardPayment)
         {
-            return new CardPaymentDataTransferObject(
+            return new CardPaymentDTO(
                     transactionIdentifier: cardPayment.TransactionIdentifier,
                     requestIdentifier: cardPayment.RequestId,
                     clientIdentifier: cardPayment.ClientId,

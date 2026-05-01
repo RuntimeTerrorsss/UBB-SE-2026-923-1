@@ -2,22 +2,22 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using BookingBoardGames.Src.Commands;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Shared;
+using Microsoft.UI.Xaml.Media.Imaging;
+
 namespace BookingBoardGames.Src.ViewModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows.Input;
-    using BookingBoardGames.Src.Commands;
-    using BookingBoardGames.Src.DTO;
-    using BookingBoardGames.Src.Enum;
-    using BookingBoardGames.Src.Services;
-    using BookingBoardGames.Src.Shared;
-    using Microsoft.UI.Xaml.Media.Imaging;
-
     /// <summary>
     /// ViewModel for the filtered search page.
     /// Handles game search, filtering, sorting, pagination, and navigation.
@@ -48,7 +48,7 @@ namespace BookingBoardGames.Src.ViewModels
         private readonly InterfaceGeographicalService geographicalService;
 
         /// <summary>Cache of loaded BitmapImages keyed by game ID.</summary>
-        private readonly Dictionary<int, BitmapImage?> gameImages = new ();
+        private readonly Dictionary<int, BitmapImage?> gameImages = new();
 
         private BitmapImage? selectedGameImage;
         private string citySearchText = string.Empty;
@@ -74,7 +74,7 @@ namespace BookingBoardGames.Src.ViewModels
         public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>Gets or sets the collection of games currently visible on the active page. Bound directly to the UI list/grid.</summary>
-        public ObservableCollection<GameDTO> VisibleGames { get; set; } = new ();
+        public ObservableCollection<GameDTO> VisibleGames { get; set; } = new();
 
         /// <summary>Gets the images.</summary>
         public Dictionary<int, BitmapImage?> GameImages => this.gameImages;
@@ -106,7 +106,7 @@ namespace BookingBoardGames.Src.ViewModels
             : string.Empty;
 
         /// <summary>Gets or sets the flat list of all games currently subject to pagination.</summary>
-        public List<GameDTO> Games { get; set; } = new ();
+        public List<GameDTO> Games { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the game the user has just tapped/clicked.
@@ -293,7 +293,7 @@ namespace BookingBoardGames.Src.ViewModels
         public ICommand GoBackCommand { get; }
 
         /// <summary>Gets observable list of city name suggestions shown in the autocomplete dropdown.</summary>
-        public ObservableCollection<string> CitySuggestions { get; } = new ();
+        public ObservableCollection<string> CitySuggestions { get; } = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilteredSearchViewModel"/> class.

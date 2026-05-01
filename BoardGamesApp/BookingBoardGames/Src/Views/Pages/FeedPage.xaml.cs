@@ -2,10 +2,10 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using Microsoft.UI.Xaml.Controls;
+
 namespace SearchAndBook.Views.Pages
 {
-    using Microsoft.UI.Xaml.Controls;
-
     /// <summary>
     /// Represents the main feed page where users can browse and discover games.
     /// </summary>

@@ -178,12 +178,12 @@ namespace BookingBoardGames.Src.ViewModels
             ApplyFilter();
         }
 
-        public void HandleIncomingConversation(ConversationDataTransferObject conversation, string displayName, int userId)
+        public void HandleIncomingConversation(ConversationDTO conversation, string displayName, int userId)
         {
             HandleIncomingConversation(conversation, displayName, userId, App.UserRepository);
         }
 
-        public void HandleIncomingConversation(ConversationDataTransferObject conversation, string displayName, int userId, IUserRepository service)
+        public void HandleIncomingConversation(ConversationDTO conversation, string displayName, int userId, IUserRepository service)
         {
             int firstParticipantIndex = 0;
             int secondParticipantIndex = 1;

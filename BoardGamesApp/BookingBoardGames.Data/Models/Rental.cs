@@ -7,7 +7,7 @@ public class Rental
 
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    
+
     public decimal? TotalPrice { get; set; }
 
     public int GameId { get; set; }

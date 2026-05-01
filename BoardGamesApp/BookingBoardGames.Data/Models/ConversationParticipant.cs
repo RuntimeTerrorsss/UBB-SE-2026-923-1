@@ -9,5 +9,5 @@ public class ConversationParticipant
     public int UnreadMessagesCount { get; set; }
 
     public Conversation? Conversation { get; set; }
-    public User? User { get; set; } 
+    public User? User { get; set; }
 }

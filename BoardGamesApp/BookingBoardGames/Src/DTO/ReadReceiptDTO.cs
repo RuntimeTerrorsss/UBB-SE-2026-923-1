@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 namespace BookingBoardGames.Src.DTO
 {
     public record ReadReceiptDTO(
-        int conversationId,
-        int readerId,
-        int receiverId,
-        DateTime receiptTimeStamp);
+        int ConversationId,
+        int ReaderId,
+        int ReceiverId,
+        DateTime ReceiptTimeStamp);
 }
