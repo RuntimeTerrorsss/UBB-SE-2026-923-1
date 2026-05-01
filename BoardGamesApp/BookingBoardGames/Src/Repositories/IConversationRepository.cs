@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using BookingBoardGames.Data;
+using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.Repositories
@@ -19,7 +20,7 @@ namespace BookingBoardGames.Src.Repositories
 
         void HandleMessageUpdate(Message message);
 
-        void HandleReadReceipt(ReadReceipt readReceipt);
+        void HandleReadReceipt(ReadReceiptDTO readReceipt);
 
         int CreateConversation(int senderId, int receiverId);
 
@@ -37,6 +38,6 @@ namespace BookingBoardGames.Src.Repositories
 
         void NotifySubscribersAboutNewConversation(Conversation conversation);
 
-        void NotifySubscribersAboutReadReceipt(ReadReceipt readReceipt);
+        void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt);
     }
 }

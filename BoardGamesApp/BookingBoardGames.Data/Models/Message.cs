@@ -44,6 +44,7 @@ public class TextMessage : Message
 [Table("image_messages")]
 public class ImageMessage : Message
 {
+
     [Column("message_image_url")]
     public string? MessageImageUrl { get; set; }
 }
@@ -58,6 +59,7 @@ public class SystemMessage : Message
 [Table("rental_request_messages")]
 public class RentalRequestMessage : Message
 {
+
     [Column("rental_request_id")]
     public int RentalRequestId { get; set; }
 

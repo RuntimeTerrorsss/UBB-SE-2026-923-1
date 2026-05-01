@@ -16,7 +16,7 @@ namespace BookingBoardGames.Src.Services
 
         void OnConversationReceived(Conversation conversation);
 
-        void OnReadReceiptReceived(ReadReceipt readReceipt);
+        void OnReadReceiptReceived(ReadReceiptDTO readReceipt);
 
         List<ConversationDTO> FetchConversations();
 

@@ -92,11 +92,9 @@ public class ChatPageViewModel
 
     private void OnMessageSent(MessageDataTransferObject message)
     {
-        int firstParticipantIndex = 0;
-        int secondParticipantIndex = 1;
-
         var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
-        message = message with { ReceiverId = matchedConversation.Participants[firstParticipantIndex] == message.SenderId ? matchedConversation.Participants[secondParticipantIndex] : matchedConversation.Participants[firstParticipantIndex] };
+        int receiverUserId = matchedConversation.Participants.First(participantItem => participantItem.UserId != message.SenderId).UserId;
+        message = message with { ReceiverId = receiverUserId };
         conversationService.SendMessage(message);
     }
 

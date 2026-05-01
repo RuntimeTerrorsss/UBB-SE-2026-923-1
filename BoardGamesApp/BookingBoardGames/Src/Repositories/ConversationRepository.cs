@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
+using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -111,7 +112,7 @@ namespace BookingBoardGames.Src.Repositories
             throw new System.NotImplementedException();
         }
 
-        public void HandleReadReceipt(ReadReceipt readReceipt)
+        public void HandleReadReceipt(ReadReceiptDTO readReceipt)
         {
             throw new System.NotImplementedException();
         }
@@ -161,7 +162,7 @@ namespace BookingBoardGames.Src.Repositories
             throw new System.NotImplementedException();
         }
 
-        public void NotifySubscribersAboutReadReceipt(ReadReceipt readReceipt)
+        public void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
         {
             throw new System.NotImplementedException();
         }

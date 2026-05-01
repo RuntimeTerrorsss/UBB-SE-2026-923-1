@@ -185,8 +185,6 @@ namespace BookingBoardGames.Src.ViewModels
 
         public void HandleIncomingConversation(ConversationDTO conversation, string displayName, int userId, IUserRepository service)
         {
-            int firstParticipantIndex = 0;
-            int secondParticipantIndex = 1;
             int firstCharacterIndex = 0;
             int singleCharacterLength = 1;
 
@@ -196,7 +194,7 @@ namespace BookingBoardGames.Src.ViewModels
                 return;
             }
 
-            var otherUserIdentifier = conversation.Participants[firstParticipantIndex] == userId ? conversation.Participants[secondParticipantIndex] : conversation.Participants[firstParticipantIndex];
+            var otherUserIdentifier = conversation.Participants.First(participantItem => participantItem.UserId != userId).UserId;
 
             var newConversationPreview = new ConversationPreviewModel(
                 conversation.Id,

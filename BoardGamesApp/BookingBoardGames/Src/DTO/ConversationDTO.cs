@@ -14,19 +14,19 @@ namespace BookingBoardGames.Src.DTO
 
         public List<MessageDataTransferObject> MessageList { get; set; }
 
-        public int[] Participants { get; set; }
+        public ICollection<ConversationParticipant> Participants { get; set; }
 
         public Dictionary<int, DateTime> LastRead { get; set; }
 
         public Dictionary<int, int> UnreadCount { get; set; }
 
-        public ConversationDTO(int conversationId, int[] participants, List<MessageDataTransferObject> messages, Dictionary<int, DateTime> lastRead)
+        public ConversationDTO(int conversationId, ICollection<ConversationParticipant> participants, List<MessageDataTransferObject> messages, Dictionary<int, DateTime> lastRead)
         {
             this.Id = conversationId;
             this.Participants = participants;
             this.MessageList = messages;
             this.LastRead = lastRead;
-            this.UnreadCount = participants.ToDictionary(participant => participant, participant => 0);
+            this.UnreadCount = participants.ToDictionary(participant => participant.UserId, _ => 0);
             this.UpdateUnreadCounts();
         }
 
@@ -38,13 +38,13 @@ namespace BookingBoardGames.Src.DTO
 
         public void UpdateUnreadCounts()
         {
-            int firstParticipantIndex = 0;
-            int secondParticipantIndex = 1;
             int defaultUnreadCount = 0;
             int systemMessageSenderIdentifier = 0;
 
-            this.UnreadCount[this.Participants[firstParticipantIndex]] = defaultUnreadCount;
-            this.UnreadCount[this.Participants[secondParticipantIndex]] = defaultUnreadCount;
+            foreach (var participantItem in this.Participants)
+            {
+                this.UnreadCount[participantItem.UserId] = defaultUnreadCount;
+            }
 
             foreach (var messageItem in this.MessageList)
             {
