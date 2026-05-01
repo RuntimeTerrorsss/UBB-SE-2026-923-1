@@ -1,13 +1,26 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+[Table("conversation_participants")]
 public class ConversationParticipant
 {
+    [Column("conversation_id")]
     public int ConversationId { get; set; }
+
+    [Column("user_id")]
     public int UserId { get; set; }
 
+    [Column("last_message_read_time")]
     public DateTime? LastMessageReadTime { get; set; }
+
+    [Column("unread_messages_count")]
     public int UnreadMessagesCount { get; set; }
 
+    [ForeignKey("ConversationId")]
     public Conversation? Conversation { get; set; }
-    public User? User { get; set; }
+
+    [ForeignKey("UserId")]
+    public User? User { get; set; } 
 }
