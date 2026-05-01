@@ -2,9 +2,7 @@ root = true
 
 [*.{cs,vb}]
 
-# ==========================================
-# --- SECTION II & III: LAYOUT AND LOGIC ---
-# ==========================================
+# SECTION II & III: LAYOUT AND LOGIC
 
 # II.2: Curly braces "{}" must always start on a new line
 csharp_new_line_before_open_brace = all
@@ -28,20 +26,8 @@ dotnet_diagnostic.IDE0044.severity = warning
 csharp_style_readonly_field = true:warning
 
 
-# ==========================================
-# --- SECTION I: NAMING CONVENTIONS ---
-# ==========================================
 
-# I.3: Prefix interface names with a capital "I"
-dotnet_naming_rule.interface_should_be_begins_with_i.severity = warning
-dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface_symbols
-dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i_style
-
-dotnet_naming_symbols.interface_symbols.applicable_kinds = interface
-dotnet_naming_symbols.interface_symbols.applicable_accessibilities = any
-
-dotnet_naming_style.begins_with_i_style.required_prefix = I
-dotnet_naming_style.begins_with_i_style.capitalization = pascal_case
+# SECTION I: NAMING CONVENTIONS
 
 
 # I.1: PascalCase for class names and method names
@@ -64,3 +50,25 @@ dotnet_naming_symbols.locals_args_fields_symbols.applicable_kinds = parameter, l
 dotnet_naming_symbols.locals_args_fields_symbols.applicable_accessibilities = local, private
 
 dotnet_naming_style.camel_case_style.capitalization = camel_case
+
+
+# I.3: Prefix interface names with a capital "I"
+dotnet_naming_rule.interface_should_be_begins_with_i.severity = warning
+dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface_symbols
+dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i_style
+
+dotnet_naming_symbols.interface_symbols.applicable_kinds = interface
+dotnet_naming_symbols.interface_symbols.applicable_accessibilities = any
+
+dotnet_naming_style.begins_with_i_style.required_prefix = I
+dotnet_naming_style.begins_with_i_style.capitalization = pascal_case
+
+
+# I.4: PascalCase for constants
+dotnet_naming_rule.pascal_case_constants.severity = warning
+dotnet_naming_rule.pascal_case_constants.symbols = constants_symbols
+dotnet_naming_rule.pascal_case_constants.style = pascal_case_style
+
+dotnet_naming_symbols.constants_symbols.applicable_kinds = field
+dotnet_naming_symbols.constants_symbols.required_modifiers = const
+dotnet_naming_symbols.constants_symbols.applicable_accessibilities = any

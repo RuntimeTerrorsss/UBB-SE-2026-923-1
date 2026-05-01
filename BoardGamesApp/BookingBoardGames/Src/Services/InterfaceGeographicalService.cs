@@ -29,7 +29,7 @@ namespace BookingBoardGames.Src.Services
         /// <returns>A tuple containing a Boolean value indicating whether the city was found, the city's name, its latitude, and
         /// its longitude. If the city is not found, the tuple's values are unspecified except for the Boolean flag,
         /// which is set to false.</returns>
-        (bool isFound, string cityName, double latitude, double longitude) GetCityDetails(string cityName);
+        (bool IsFound, string CityName, double Latitude, double Longitude) GetCityDetails(string cityName);
 
         /// <summary>
         /// Calculates the distance between two specified cities.

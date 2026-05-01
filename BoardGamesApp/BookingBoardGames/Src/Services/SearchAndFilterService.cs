@@ -222,7 +222,7 @@ namespace BookingBoardGames.Src.Services
                             var userCityDetails =
                                 this.geographicalService.GetCityDetails(activeFilter.City);
 
-                            if (userCityDetails.isFound)
+                            if (userCityDetails.IsFound)
                             {
                                 var cachedCityDistanceLookup = new Dictionary<string, double?>();
 
@@ -238,12 +238,12 @@ namespace BookingBoardGames.Src.Services
                                         var gameCityDetails =
                                             this.geographicalService.GetCityDetails(filteredGame.City);
 
-                                        cachedDistance = gameCityDetails.isFound
+                                        cachedDistance = gameCityDetails.IsFound
                                             ? GeographicDistance.CalculateDistance(
-                                                userCityDetails.latitude,
-                                                userCityDetails.longitude,
-                                                gameCityDetails.latitude,
-                                                gameCityDetails.longitude)
+                                                userCityDetails.Latitude,
+                                                userCityDetails.Longitude,
+                                                gameCityDetails.Latitude,
+                                                gameCityDetails.Longitude)
                                             : null;
 
                                         cachedCityDistanceLookup[filteredGame.City] = cachedDistance;
@@ -284,7 +284,7 @@ namespace BookingBoardGames.Src.Services
         /// <param name="page">The current page number (1-based).</param>
         /// <param name="pageSize">The number of items to include per page.</param>
         /// <returns>A tuple containing available games for tonight, other available games, and the total count of games.</returns>
-        public (List<GameDTO> availableTonight, List<GameDTO> others, int totalAvailableGamesCount)
+        public (List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)
             GetDiscoveryFeedPaged(int userId, int page, int pageSize)
          {
                 var availableTonightGameList = this.GetGamesFeedAvailableTonightByUser(userId).ToList();
@@ -342,7 +342,7 @@ namespace BookingBoardGames.Src.Services
                 return true;
             }
 
-            return playersNumber.Value >= MinimumAllowedPlayers;
+            return playersNumber.Value >= minimumAllowedPlayers;
         }
 
         /// <summary>
