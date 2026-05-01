@@ -1,23 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+[Table("users")]
 public class User
 {
+    [Key]
+    [Column("id")]
     public int Id { get; set; }
+
+    [Column("username")]
     public string Username { get; set; } = string.Empty;
+
+    [Column("display_name")]
     public string DisplayName { get; set; } = string.Empty;
+
+    [Column("email")]
     public string Email { get; set; } = string.Empty;
+
+    [Column("password_hash")]
     public string PasswordHash { get; set; } = string.Empty;
+
+    [Column("phone_number")]
     public string? PhoneNumber { get; set; }
+
+    [Column("avatar_url")]
     public string? AvatarUrl { get; set; }
+
+    [Column("balance")]
     public decimal Balance { get; set; } = 0m;
+
+    [Column("is_suspended")]
     public bool IsSuspended { get; set; }
+
+    [Column("created_at")]
     public DateTime CreatedAt { get; set; }
+
+    [Column("updated_at")]
     public DateTime? UpdatedAt { get; set; }
-    
+
+    [Column("street")]
     public string? Street { get; set; }
+
+    [Column("street_number")]
     public string? StreetNumber { get; set; }
+
+    [Column("city")]
     public string City { get; set; } = string.Empty;
+
+    [Column("country")]
     public string Country { get; set; } = string.Empty;
 
     public ICollection<Game> OwnedGames { get; set; } = new List<Game>();
