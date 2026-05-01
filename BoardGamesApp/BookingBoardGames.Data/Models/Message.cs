@@ -7,7 +7,7 @@ public abstract class Message
 {
     public int MessageId { get; set; }
     public DateTime MessageSentTime { get; set; }
-    public required string MessageContentAsString { get; set; }
+    public string? MessageContentAsString { get; set; }
 
 
     public int ConversationId { get; set; }
@@ -22,17 +22,17 @@ public abstract class Message
 
 public class TextMessage : Message
 {
-    public required string TextMessageContent { get; set; }
+    public string? TextMessageContent { get; set; }
 }
 
 public class ImageMessage : Message
 {
-    public required string MessageImageUrl { get; set; }
+    public string? MessageImageUrl { get; set; }
 }
 
 public class SystemMessage : Message
 {
-    public required string MessageContent { get; set; }
+    public string? MessageContent { get; set; }
 }
 
 public class RentalRequestMessage : Message
@@ -40,9 +40,9 @@ public class RentalRequestMessage : Message
     public int RentalRequestId { get; set; }
     public bool IsRequestResolved { get; set; }
     public bool IsRequestAccepted { get; set; }
-    public required string RequestContent { get; set; }
+    public string? RequestContent { get; set; }
 
-    public required Rental RentalRequest { get; set; } 
+    public Rental? RentalRequest { get; set; } 
 }
 
 public class CashAgreementMessage : Message
@@ -52,5 +52,5 @@ public class CashAgreementMessage : Message
     public bool IsCashAgreementAcceptedByBuyer { get; set; }
     public bool IsCashAgreementAcceptedBySeller { get; set; }
     
-    public required Payment CashPayment { get; set; }
+    public Payment? CashPayment { get; set; }
 }

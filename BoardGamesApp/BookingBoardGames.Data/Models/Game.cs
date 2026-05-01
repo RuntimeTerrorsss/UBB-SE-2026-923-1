@@ -42,7 +42,7 @@ public class Game
 
     [ForeignKey("OwnerId")]
 
-    public required User Owner { get; set; }
+    public User? Owner { get; set; }
 
     public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
 }
