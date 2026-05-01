@@ -20,7 +20,7 @@ namespace BookingBoardGames.Src.Services
 
         public event Action<ConversationDataTransferObject, string> ActionConversationProcessed;
 
-        public event Action<ReadReceiptDataTransferObject> ActionReadReceiptProcessed;
+        public event Action<ReadReceiptDTO> ActionReadReceiptProcessed;
 
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
 
@@ -180,22 +180,22 @@ namespace BookingBoardGames.Src.Services
             int defaultMissingIdentifier = -1;
 
             MessageDataTransferObject toReturn = new MessageDataTransferObject(
-                id: message.MessageId,
-                conversationId: message.ConversationId,
-                senderId: message.MessageSenderId,
-                receiverId: message.MessageReceiverId,
-                sentAt: message.MessageSentTime,
-                content: message.MessageContentAsString,
-                type: message.TypeOfMessage,
-                imageUrl: message is ImageMessage imageMessage ? imageMessage.MessageImageUrl : string.Empty,
-                isResolved: message is RentalRequestMessage rentalResolvedMessage ? rentalResolvedMessage.IsRequestResolved
+                Id: message.MessageId,
+                ConversationId: message.ConversationId,
+                SenderId: message.MessageSenderId,
+                ReceiverId: message.MessageReceiverId,
+                SentAt: message.MessageSentTime,
+                Content: message.MessageContentAsString,
+                Type: message.TypeOfMessage,
+                ImageUrl: message is ImageMessage imageMessage ? imageMessage.MessageImageUrl : string.Empty,
+                IsResolved: message is RentalRequestMessage rentalResolvedMessage ? rentalResolvedMessage.IsRequestResolved
                           : message is CashAgreementMessage cashResolvedMessage ? cashResolvedMessage.IsCashAgreementResolved
                           : false,
-                isAccepted: message is RentalRequestMessage rentalAcceptedMessage ? rentalAcceptedMessage.IsRequestAccepted : false,
-                isAcceptedByBuyer: message is CashAgreementMessage cashBuyerMessage ? cashBuyerMessage.IsCashAgreementAcceptedByBuyer : false,
-                isAcceptedBySeller: message is CashAgreementMessage cashSellerMessage ? cashSellerMessage.IsCashAgreementAcceptedBySeller : false,
-                paymentId: message is CashAgreementMessage cashPaymentMessage ? cashPaymentMessage.CashPaymentId : defaultMissingIdentifier,
-                requestId: message is RentalRequestMessage rentalRequestMessage ? rentalRequestMessage.RentalRequestId : defaultMissingIdentifier);
+                IsAccepted: message is RentalRequestMessage rentalAcceptedMessage ? rentalAcceptedMessage.IsRequestAccepted : false,
+                IsAcceptedByBuyer: message is CashAgreementMessage cashBuyerMessage ? cashBuyerMessage.IsCashAgreementAcceptedByBuyer : false,
+                IsAcceptedBySeller: message is CashAgreementMessage cashSellerMessage ? cashSellerMessage.IsCashAgreementAcceptedBySeller : false,
+                PaymentId: message is CashAgreementMessage cashPaymentMessage ? cashPaymentMessage.CashPaymentId : defaultMissingIdentifier,
+                RequestId: message is RentalRequestMessage rentalRequestMessage ? rentalRequestMessage.RentalRequestId : defaultMissingIdentifier);
             return toReturn;
         }
 
@@ -209,9 +209,9 @@ namespace BookingBoardGames.Src.Services
                 lastRead: conversation.LastMessageReadTime);
         }
 
-        public ReadReceiptDataTransferObject ReadReceiptToReadReceiptDTO(ReadReceipt readReceipt)
+        public ReadReceiptDTO ReadReceiptToReadReceiptDTO(ReadReceipt readReceipt)
         {
-            return new ReadReceiptDataTransferObject(
+            return new ReadReceiptDTO(
                 readReceipt.conversationId,
                 readReceipt.messageReaderId,
                 readReceipt.messageReceiverId,

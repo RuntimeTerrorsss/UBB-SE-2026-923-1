@@ -1,34 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using BookingBoardGames;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.Mapper;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using BookingBoardGames.Data;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -49,10 +26,10 @@ namespace BookingBoardGames
         ///
 
         // AppDbContext
-        public static AppDbContext AppDbContext { get; private set; }
+        public static AppDbContext? AppDbContext { get; private set; }
 
         // Repositories
-        public static UserRepository UserRepository { get; private set; }
+        public static UserRepository? UserRepository { get; private set; }
 
         public static InterfaceGamesRepository GameRepository { get; private set; }
 
@@ -68,7 +45,7 @@ namespace BookingBoardGames
         // Services
         public static InterfaceGeographicalService? GlobalGeoService { get; private set; }
 
-        public static IRentalService RentalService { get; private set; }
+        public static IRentalService? RentalService { get; private set; }
 
         public static ReceiptService ReceiptService { get; private set; }
 

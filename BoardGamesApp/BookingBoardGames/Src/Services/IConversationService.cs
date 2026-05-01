@@ -26,7 +26,7 @@ namespace BookingBoardGames.Src.Services
 
         event Action<ConversationDataTransferObject, string> ActionConversationProcessed;
 
-        event Action<ReadReceiptDataTransferObject> ActionReadReceiptProcessed;
+        event Action<ReadReceiptDTO> ActionReadReceiptProcessed;
 
         event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
     }

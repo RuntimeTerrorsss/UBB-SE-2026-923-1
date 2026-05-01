@@ -157,7 +157,7 @@ public class ChatPageViewModel
         LeftPanelModelView.HandleIncomingConversation(conversation, otherUsername, currentUserId);
     }
 
-    private void OnReadReceiptReceived(ReadReceiptDataTransferObject readReceipt)
+    private void OnReadReceiptReceived(ReadReceiptDTO readReceipt)
     {
         var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == readReceipt.conversationId);
         matchedConversation.LastRead[readReceipt.readerId] = readReceipt.receiptTimeStamp;

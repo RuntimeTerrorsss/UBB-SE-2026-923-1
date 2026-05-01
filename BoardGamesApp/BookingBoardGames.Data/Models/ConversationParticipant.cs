@@ -8,6 +8,6 @@ public class ConversationParticipant
     public DateTime? LastMessageReadTime { get; set; }
     public int UnreadMessagesCount { get; set; }
 
-    public Conversation Conversation { get; set; }
-    public User User { get; set; } 
+    public Conversation? Conversation { get; set; }
+    public User? User { get; set; } 
 }
