@@ -1,56 +1,94 @@
 ﻿using System;
-using System.Net.NetworkInformation;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-using System;
-
+[Table("messages")]
 public abstract class Message
 {
+    [Key]
+    [Column("id")]
     public int MessageId { get; set; }
+
+    [Column("message_sent_time")]
     public DateTime MessageSentTime { get; set; }
+
+    [Column("message_content_as_string")]
     public string? MessageContentAsString { get; set; }
 
-
+    [Column("conversation_id")]
     public int ConversationId { get; set; }
+
+    [Column("message_sender_id")]
     public int MessageSenderId { get; set; }
+
+    [Column("message_receiver_id")]
     public int MessageReceiverId { get; set; }
 
+    [ForeignKey("ConversationId")]
     public required Conversation Conversation { get; set; }
+
+    [ForeignKey("MessageSenderId")]
     public required User Sender { get; set; }
+
+    [ForeignKey("MessageReceiverId")]
     public required User Receiver { get; set; }
 }
 
-
+[Table("text_messages")]
 public class TextMessage : Message
 {
+    [Column("text_message_content")]
     public string? TextMessageContent { get; set; }
 }
 
+[Table("image_messages")]
 public class ImageMessage : Message
 {
+    [Column("message_image_url")]
     public string? MessageImageUrl { get; set; }
 }
 
+[Table("system_messages")]
 public class SystemMessage : Message
 {
+    [Column("message_content")]
     public string? MessageContent { get; set; }
 }
 
+[Table("rental_request_messages")]
 public class RentalRequestMessage : Message
 {
+    [Column("rental_request_id")]
     public int RentalRequestId { get; set; }
+
+    [Column("is_request_resolved")]
     public bool IsRequestResolved { get; set; }
+
+    [Column("is_request_accepted")]
     public bool IsRequestAccepted { get; set; }
+
+    [Column("request_content")]
     public string? RequestContent { get; set; }
 
-    public Rental? RentalRequest { get; set; } 
+    [ForeignKey("RentalRequestId")]
+    public Rental? RentalRequest { get; set; }
 }
 
+[Table("cash_agreement_messages")]
 public class CashAgreementMessage : Message
 {
+    [Column("cash_payment_id")]
     public int CashPaymentId { get; set; }
+
+    [Column("is_cash_agreement_resolved")]
     public bool IsCashAgreementResolved { get; set; }
+
+    [Column("is_cash_agreement_accepted_by_buyer")]
     public bool IsCashAgreementAcceptedByBuyer { get; set; }
+
+    [Column("is_cash_agreement_accepted_by_seller")]
     public bool IsCashAgreementAcceptedBySeller { get; set; }
-    
+
+    [ForeignKey("CashPaymentId")]
     public Payment? CashPayment { get; set; }
 }
