@@ -5,10 +5,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Shared;
-using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

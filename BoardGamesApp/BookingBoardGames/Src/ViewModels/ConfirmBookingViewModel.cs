@@ -8,10 +8,10 @@ namespace BookingBoardGames.Src.ViewModels
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices.WindowsRuntime;
-    using Microsoft.UI.Xaml.Media.Imaging;
-    using Windows.Storage.Streams;
     using BookingBoardGames.Src.DTO;
     using BookingBoardGames.Src.Services;
+    using Microsoft.UI.Xaml.Media.Imaging;
+    using Windows.Storage.Streams;
 
     /// <summary>
     /// Represents the view model for confirming a booking, providing booking details, availability checks, and commands

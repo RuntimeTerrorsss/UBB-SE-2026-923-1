@@ -11,10 +11,10 @@ namespace BookingBoardGames.Src.ViewModels
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using BookingBoardGames.Src.Services;
     using BookingBoardGames.Src.Commands;
-    using BookingBoardGames.Src.Enum;
     using BookingBoardGames.Src.DTO;
+    using BookingBoardGames.Src.Enum;
+    using BookingBoardGames.Src.Services;
     using BookingBoardGames.Src.Shared;
 
     /// <summary>

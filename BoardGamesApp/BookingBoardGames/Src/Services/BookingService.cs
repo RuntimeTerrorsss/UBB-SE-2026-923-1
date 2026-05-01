@@ -5,8 +5,8 @@
 namespace BookingBoardGames.Src.Services;
 
 using System;
-using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Repositories;
 /// <summary>
 /// Service responsible for handling booking operations, including retrieving game details,
 /// checking availability, and managing rental time rentaltimeranges.

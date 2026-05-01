@@ -2,10 +2,10 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.ViewModels;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace BookingBoardGames.Src.Views
 {
