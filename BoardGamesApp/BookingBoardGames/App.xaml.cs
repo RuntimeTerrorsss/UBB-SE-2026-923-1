@@ -24,10 +24,39 @@ namespace BookingBoardGames
         private Window? window;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="App"/> class.
         /// Gets the initialization of the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
-        ///
+        public App()
+        {
+            this.InitializeComponent();
+
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlServer(DatabaseConfig.ConnectionString)
+                .Options;
+
+            AppDbContext = new AppDbContext(options);
+
+            // Repositories
+            UserRepository = new UserRepository(AppDbContext);
+            GameRepository = new GamesRepository(AppDbContext);
+            RentalRepository = new RentalRepository(AppDbContext);
+            PaymentRepository = new PaymentRepository(AppDbContext);
+            HistoryRepository = new RepositoryPayment(AppDbContext);
+            ConversationRepository = new ConversationRepository(); // add context
+
+            // Services
+            GlobalGeographicalService = new GeographicalService();
+            RentalService = new RentalService(RentalRepository, GameRepository);
+            ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
+            CardPaymentService = new CardPaymentService((PaymentRepository)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
+            MapService = new MapService();
+            ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
+            CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);
+            BookingService = new BookingService(GameRepository, RentalRepository, UserRepository);
+            SearchAndFilterService = new SearchAndFilterService(GameRepository, UserRepository, RentalRepository, GlobalGeographicalService);
+        }
 
         // AppDbContext
         public static AppDbContext? AppDbContext { get; private set; }
@@ -64,40 +93,11 @@ namespace BookingBoardGames
 
         public static InterfaceSearchAndFilterService? SearchAndFilterService { get; private set; }
 
-        public int DashboardUser = 3;
-        public int NoChatsUser = 8;
+        public int DashboardUser { get; set; } = 3;
+
+        public int NoChatsUser { get; set; } = 8;
 
         public Window? Window => this.window;
-
-        public App()
-        {
-            this.InitializeComponent();
-
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseSqlServer(DatabaseConfig.ConnectionString)
-                .Options;
-
-            AppDbContext = new AppDbContext(options);
-
-            // Repositories
-            UserRepository = new UserRepository(AppDbContext);
-            GameRepository = new GamesRepository(AppDbContext);
-            RentalRepository = new RentalRepository(AppDbContext);
-            PaymentRepository = new PaymentRepository(AppDbContext);
-            HistoryRepository = new RepositoryPayment(AppDbContext);
-            ConversationRepository = new ConversationRepository(); // add context
-
-            // Services
-            GlobalGeographicalService = new GeographicalService();
-            RentalService = new RentalService(RentalRepository, GameRepository);
-            ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
-            CardPaymentService = new CardPaymentService(PaymentRepository, UserRepository, ReceiptService, RentalService);
-            MapService = new MapService();
-            ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
-            CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);
-            BookingService = new BookingService(GameRepository, RentalRepository, UserRepository);
-            SearchAndFilterService = new SearchAndFilterService(GameRepository, UserRepository, RentalRepository, GlobalGeographicalService);
-        }
 
         /// <summary>
         /// Invoked when the application is launched.

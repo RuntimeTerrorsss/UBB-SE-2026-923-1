@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
+using BookingBoardGames.Src.Navigation;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Validators;
 using BookingBoardGames.Src.ViewModels;
