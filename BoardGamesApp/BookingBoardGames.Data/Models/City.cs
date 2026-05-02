@@ -15,7 +15,7 @@ public class City
         Longitude = longitude;
     }
 
-    public City()
+    private City()
     {
     }
 

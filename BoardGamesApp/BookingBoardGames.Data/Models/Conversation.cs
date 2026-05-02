@@ -10,7 +10,7 @@ public class Conversation
     {
         Participants = participants;
     }
-    public Conversation()
+    private Conversation()
     {
     }
 
