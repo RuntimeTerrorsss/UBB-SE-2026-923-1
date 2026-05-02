@@ -16,7 +16,7 @@ public class Game
         IsActive = true;
     }
 
-    private Game()
+    public Game()
     {
     }
 

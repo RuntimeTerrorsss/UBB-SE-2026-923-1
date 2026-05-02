@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("payments")]
 public class Payment
 {
-    protected Payment(decimal paidAmount, int requestId, int clientId, int ownerId)
+    public Payment(decimal paidAmount, int requestId, int clientId, int ownerId)
     {
         PaidAmount = paidAmount;
         RequestId = requestId;
@@ -14,7 +14,7 @@ public class Payment
         PaymentState = 0;
     }
 
-    protected Payment() { }
+    public Payment() { }
 
     [Key]
     [Column("id")]
@@ -70,7 +70,7 @@ public class HistoryPayment : Payment
         OwnerName = ownerName;
     }
 
-    private HistoryPayment() : base() { }
+    public HistoryPayment() : base() { }
 
     [Column("game_name")]
     public string? GameName { get; set; }

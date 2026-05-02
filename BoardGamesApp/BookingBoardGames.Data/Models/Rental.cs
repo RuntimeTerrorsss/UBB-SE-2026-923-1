@@ -16,7 +16,7 @@ public class Rental
         TotalPrice = totalPrice;
     }
 
-    private Rental()
+    public Rental()
     {
     }
 

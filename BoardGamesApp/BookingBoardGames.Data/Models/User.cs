@@ -19,7 +19,7 @@ public class User
         CreatedAt = DateTime.UtcNow;
     }
 
-    private User()
+    public User()
     {
     }
 

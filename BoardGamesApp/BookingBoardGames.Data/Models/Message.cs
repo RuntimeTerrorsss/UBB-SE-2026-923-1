@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 public abstract class Message
 {
     [SetsRequiredMembers]
-    protected Message(int conversationId, int messageSenderId, int messageReceiverId)
+    public Message(int conversationId, int messageSenderId, int messageReceiverId)
     {
         ConversationId = conversationId;
         MessageSenderId = messageSenderId;
@@ -15,7 +15,7 @@ public abstract class Message
         MessageSentTime = DateTime.UtcNow;
     }
 
-    protected Message() { }
+    public Message() { }
 
     [Key]
     [Column("id")]
@@ -57,7 +57,7 @@ public class TextMessage : Message
         MessageContentAsString = textMessageContent;
     }
 
-    private TextMessage() : base() { }
+    public TextMessage() : base() { }
 
     [Column("text_message_content")]
     public string? TextMessageContent { get; set; }
@@ -73,7 +73,7 @@ public class ImageMessage : Message
         MessageImageUrl = messageImageUrl;
     }
 
-    private ImageMessage() : base() { }
+    public ImageMessage() : base() { }
 
     [Column("message_image_url")]
     public string? MessageImageUrl { get; set; }
@@ -90,7 +90,7 @@ public class SystemMessage : Message
         MessageContentAsString = messageContent;
     }
 
-    private SystemMessage() : base() { }
+    public SystemMessage() : base() { }
 
     [Column("message_content")]
     public string? MessageContent { get; set; }
@@ -109,7 +109,7 @@ public class RentalRequestMessage : Message
         IsRequestAccepted = false;
     }
 
-    private RentalRequestMessage() : base() { }
+    public RentalRequestMessage() : base() { }
 
     [Column("rental_request_id")]
     public int RentalRequestId { get; set; }
@@ -140,7 +140,7 @@ public class CashAgreementMessage : Message
         IsCashAgreementAcceptedBySeller = false;
     }
 
-    private CashAgreementMessage() : base() { }
+    public CashAgreementMessage() : base() { }
 
     [Column("cash_payment_id")]
     public int CashPaymentId { get; set; }

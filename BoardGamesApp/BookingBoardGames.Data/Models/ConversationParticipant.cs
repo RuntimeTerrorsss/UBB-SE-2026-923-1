@@ -14,7 +14,7 @@ public class ConversationParticipant
         LastMessageReadTime = null;
     }
 
-    private ConversationParticipant()
+    public ConversationParticipant()
     {
     }
 
