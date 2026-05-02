@@ -6,6 +6,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("users")]
 public class User
 {
+    public User(string username, string displayName, string email, string passwordHash, string city, string country)
+    {
+        Username = username;
+        DisplayName = displayName;
+        Email = email;
+        PasswordHash = passwordHash;
+        City = city;
+        Country = country;
+        Balance = 0m;
+        IsSuspended = false;
+        CreatedAt = DateTime.UtcNow;
+    }
+
+    private User()
+    {
+    }
+
     [Key]
     [Column("id")]
     public int Id { get; set; }

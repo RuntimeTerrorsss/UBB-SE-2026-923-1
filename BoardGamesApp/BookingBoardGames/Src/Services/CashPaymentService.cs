@@ -37,17 +37,17 @@ namespace BookingBoardGames.Src.Services
 
         public CashPaymentDataTransferObject GetCashPayment(int paymentIdentifier)
         {
-            return this.cashPaymentMapper.TurnEntityIntoDataTransferObject(paymentRepository.GetPaymentByIdentifier(paymentIdentifier));
+            return this.cashPaymentMapper.TurnEntityIntoDataTransferObject(this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier));
         }
 
         public void ConfirmDelivery(int paymentIdentifier)
         {
-            Payment paymentToConfirm = paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
+            Payment paymentToConfirm = this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
             paymentToConfirm.DateConfirmedBuyer = DateTime.Now;
 
-            if (IsAllConfirmed(paymentIdentifier))
+            if (this.IsAllConfirmed(paymentIdentifier))
             {
-                paymentToConfirm.ReceiptFilePath = receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
+                paymentToConfirm.ReceiptFilePath = this.receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
             }
 
             this.paymentRepository.UpdatePayment(paymentToConfirm);
@@ -55,12 +55,12 @@ namespace BookingBoardGames.Src.Services
 
         public void ConfirmPayment(int paymentIdentifier)
         {
-            Payment paymentToConfirm = paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
+            Payment paymentToConfirm = this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
             paymentToConfirm.DateConfirmedSeller = DateTime.Now;
 
-            if (IsAllConfirmed(paymentIdentifier))
+            if (this.IsAllConfirmed(paymentIdentifier))
             {
-                paymentToConfirm.ReceiptFilePath = receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
+                paymentToConfirm.ReceiptFilePath = this.receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
             }
 
             this.paymentRepository.UpdatePayment(paymentToConfirm);
@@ -68,7 +68,7 @@ namespace BookingBoardGames.Src.Services
 
         public bool IsAllConfirmed(int paymentIdentifier)
         {
-            Payment paymentEntity = paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
+            Payment paymentEntity = this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
 
             if (paymentEntity.DateConfirmedSeller != null && paymentEntity.DateConfirmedBuyer != null)
             {
@@ -82,7 +82,7 @@ namespace BookingBoardGames.Src.Services
 
         public bool IsDeliveryConfirmed(int paymentIdentifier)
         {
-            Payment paymentEntity = paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
+            Payment paymentEntity = this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
 
             if (paymentEntity.DateConfirmedBuyer != null)
             {
@@ -94,7 +94,7 @@ namespace BookingBoardGames.Src.Services
 
         public bool IsPaymentConfirmed(int paymentIdentifier)
         {
-            Payment paymentEntity = paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
+            Payment paymentEntity = this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
 
             if (paymentEntity.DateConfirmedSeller != null)
             {

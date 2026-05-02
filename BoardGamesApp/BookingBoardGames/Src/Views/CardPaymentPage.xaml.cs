@@ -22,7 +22,7 @@ namespace BookingBoardGames.Src.Views
 
         public CardPaymentPage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
@@ -30,7 +30,7 @@ namespace BookingBoardGames.Src.Views
             base.OnNavigatedTo(navigationEventArguments);
             var bookingArguments = (BookingNavigationArguments)navigationEventArguments.Parameter;
 
-            PaymentViewModel = new CardPaymentViewModel(
+            this.PaymentViewModel = new CardPaymentViewModel(
                 App.CardPaymentService,
                 App.UserRepository,
                 bookingArguments.RequestIdentifier,
@@ -38,39 +38,39 @@ namespace BookingBoardGames.Src.Views
                 bookingArguments.BookingMessageIdentifier,
                 bookingArguments.ConversationService);
 
-            DataContext = PaymentViewModel;
-            activeCurrentWindow = bookingArguments.CurrentWindow;
+            this.DataContext = this.PaymentViewModel;
+            this.activeCurrentWindow = bookingArguments.CurrentWindow;
 
-            Bindings.Update();
+            this.Bindings.Update();
 
-            PaymentViewModel.NavigateBackwardsAction = () =>
+            this.PaymentViewModel.NavigateBackwardsAction = () =>
             {
-                activeCurrentWindow.Close();
+                this.activeCurrentWindow.Close();
             };
-            PaymentViewModel.NavigateToExitAction = () =>
+            this.PaymentViewModel.NavigateToExitAction = () =>
             {
-                activeCurrentWindow.Close();
+                this.activeCurrentWindow.Close();
             };
 
-            PaymentViewModel.OnPageActivated();
+            this.PaymentViewModel.OnPageActivated();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs onNavigatedFromEventArguments)
         {
             base.OnNavigatedFrom(onNavigatedFromEventArguments);
-            PaymentViewModel.OnPageDeactivated();
+            this.PaymentViewModel.OnPageDeactivated();
         }
 
         protected override void OnPointerMoved(PointerRoutedEventArgs onPointerMovedEventArguments)
         {
             base.OnPointerMoved(onPointerMovedEventArguments);
-            PaymentViewModel.ResetInactivityCommand.Execute(null);
+            this.PaymentViewModel.ResetInactivityCommand.Execute(null);
         }
 
         protected override void OnKeyDown(KeyRoutedEventArgs onKeyDownEventArguments)
         {
             base.OnKeyDown(onKeyDownEventArguments);
-            PaymentViewModel.ResetInactivityCommand.Execute(null);
+            this.PaymentViewModel.ResetInactivityCommand.Execute(null);
         }
 
         private async void OnTermsLinkClick(Hyperlink hyperlinkSender, HyperlinkClickEventArgs onTermsClickedEventArguments)

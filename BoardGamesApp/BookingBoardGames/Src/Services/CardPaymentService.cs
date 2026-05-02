@@ -63,7 +63,7 @@ namespace BookingBoardGames.Src.Services
 
         public CardPaymentDTO GetCardPayment(int paymentIdentifier)
         {
-            return this.ConvertToDataTransferObject(paymentRepository.GetPaymentByIdentifier(paymentIdentifier));
+            return this.ConvertToDataTransferObject(this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier));
         }
 
         public decimal GetCurrentBalance(int clientIdentifier)
@@ -103,8 +103,8 @@ namespace BookingBoardGames.Src.Services
         {
             Rental rental = this.rentalService.GetRentalById(rentalIdentifier);
             string gameName = this.rentalService.GetGameName(rental.RentalId);
-            string ownerName = userRepository.GetById(rental.OwnerId).Username;
-            string clientName = userRepository.GetById(rental.ClientId).Username;
+            string ownerName = this.userRepository.GetById(rental.OwnerId).Username;
+            string clientName = this.userRepository.GetById(rental.ClientId).Username;
             decimal gamePrice = this.rentalService.GetRentalPrice(rental.RentalId);
 
             return new RentalDataTransferObject(rental.RentalId, rental.GameId, gameName, rental.ClientId, clientName, rental.OwnerId, ownerName, rental.StartDate, rental.EndDate, gamePrice);

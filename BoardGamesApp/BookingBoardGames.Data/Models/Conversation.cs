@@ -6,6 +6,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("conversations")]
 public class Conversation
 {
+    public Conversation(List<ConversationParticipant> participants)
+    {
+        Participants = participants;
+    }
+    public Conversation()
+    {
+    }
+
     [Key]
     [Column("id")]
     public int ConversationId { get; set; }

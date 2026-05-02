@@ -19,7 +19,7 @@ namespace BookingBoardGames.Src.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly CardPaymentService cardPaymentService;
+        private readonly ICardPaymentService cardPaymentService;
         private readonly IUserRepository userService;
         private readonly System.Timers.Timer inactivityTimer;
         private readonly System.Timers.Timer balanceRefreshTimer;
@@ -47,24 +47,24 @@ namespace BookingBoardGames.Src.ViewModels
 
         public int BookingMessageIdentifier { get; init; }
 
-        public ConversationService ConversationService { get; init; }
+        public IConversationService ConversationService { get; init; }
 
         private decimal balanceAmount;
 
         public decimal BalanceAmount
         {
-            get => balanceAmount;
+            get => this.balanceAmount;
             set
             {
-                if (balanceAmount == value)
+                if (this.balanceAmount == value)
                 {
                     return;
                 }
 
-                balanceAmount = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsPaymentButtonEnabled));
-                OnPropertyChanged(nameof(IsWarningMessageVisible));
+                this.balanceAmount = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.IsPaymentButtonEnabled));
+                this.OnPropertyChanged(nameof(this.IsWarningMessageVisible));
             }
         }
 
@@ -72,18 +72,18 @@ namespace BookingBoardGames.Src.ViewModels
 
         public bool AreTermsAccepted
         {
-            get => areTermsAccepted;
+            get => this.areTermsAccepted;
             set
             {
-                if (areTermsAccepted == value)
+                if (this.areTermsAccepted == value)
                 {
                     return;
                 }
 
-                areTermsAccepted = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsPaymentButtonEnabled));
-                FinishPaymentCommand.NotifyCanExecuteChanged();
+                this.areTermsAccepted = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.IsPaymentButtonEnabled));
+                this.FinishPaymentCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -91,17 +91,17 @@ namespace BookingBoardGames.Src.ViewModels
 
         public bool IsCurrentlyLoading
         {
-            get => isCurrentlyLoading;
+            get => this.isCurrentlyLoading;
             set
             {
-                if (isCurrentlyLoading == value)
+                if (this.isCurrentlyLoading == value)
                 {
                     return;
                 }
 
-                isCurrentlyLoading = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsPaymentButtonEnabled));
+                this.isCurrentlyLoading = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.IsPaymentButtonEnabled));
             }
         }
 
@@ -109,11 +109,11 @@ namespace BookingBoardGames.Src.ViewModels
 
         public string CurrentStatusMessage
         {
-            get => currentStatusMessage;
+            get => this.currentStatusMessage;
             set
             {
-                currentStatusMessage = value;
-                OnPropertyChanged();
+                this.currentStatusMessage = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -121,11 +121,11 @@ namespace BookingBoardGames.Src.ViewModels
 
         public bool IsPaymentSuccessful
         {
-            get => isPaymentSuccessful;
+            get => this.isPaymentSuccessful;
             set
             {
-                isPaymentSuccessful = value;
-                OnPropertyChanged();
+                this.isPaymentSuccessful = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -133,18 +133,18 @@ namespace BookingBoardGames.Src.ViewModels
 
         public string CardNumber
         {
-            get => cardNumber;
+            get => this.cardNumber;
             set
             {
-                if (cardNumber == value)
+                if (this.cardNumber == value)
                 {
                     return;
                 }
 
-                cardNumber = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsPaymentButtonEnabled));
-                FinishPaymentCommand.NotifyCanExecuteChanged();
+                this.cardNumber = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.IsPaymentButtonEnabled));
+                this.FinishPaymentCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -152,18 +152,18 @@ namespace BookingBoardGames.Src.ViewModels
 
         public string CardholderName
         {
-            get => cardholderName;
+            get => this.cardholderName;
             set
             {
-                if (cardholderName == value)
+                if (this.cardholderName == value)
                 {
                     return;
                 }
 
-                cardholderName = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsPaymentButtonEnabled));
-                FinishPaymentCommand.NotifyCanExecuteChanged();
+                this.cardholderName = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.IsPaymentButtonEnabled));
+                this.FinishPaymentCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -171,18 +171,18 @@ namespace BookingBoardGames.Src.ViewModels
 
         public string ExpiryDate
         {
-            get => expiryDate;
+            get => this.expiryDate;
             set
             {
-                if (expiryDate == value)
+                if (this.expiryDate == value)
                 {
                     return;
                 }
 
-                expiryDate = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsPaymentButtonEnabled));
-                FinishPaymentCommand.NotifyCanExecuteChanged();
+                this.expiryDate = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.IsPaymentButtonEnabled));
+                this.FinishPaymentCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -190,31 +190,31 @@ namespace BookingBoardGames.Src.ViewModels
 
         public string CardVerificationValue
         {
-            get => cardVerificationValue;
+            get => this.cardVerificationValue;
             set
             {
-                if (cardVerificationValue == value)
+                if (this.cardVerificationValue == value)
                 {
                     return;
                 }
 
-                cardVerificationValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsPaymentButtonEnabled));
-                FinishPaymentCommand.NotifyCanExecuteChanged();
+                this.cardVerificationValue = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged(nameof(this.IsPaymentButtonEnabled));
+                this.FinishPaymentCommand.NotifyCanExecuteChanged();
             }
         }
 
         public bool IsPaymentButtonEnabled =>
-            BalanceAmount >= Price &&
-            AreTermsAccepted &&
-            !IsCurrentlyLoading &&
-            !string.IsNullOrWhiteSpace(CardNumber) &&
-            !string.IsNullOrWhiteSpace(CardholderName) &&
-            !string.IsNullOrWhiteSpace(ExpiryDate) &&
-            !string.IsNullOrWhiteSpace(CardVerificationValue);
+            this.BalanceAmount >= this.Price &&
+            this.AreTermsAccepted &&
+            !this.IsCurrentlyLoading &&
+            !string.IsNullOrWhiteSpace(this.CardNumber) &&
+            !string.IsNullOrWhiteSpace(this.CardholderName) &&
+            !string.IsNullOrWhiteSpace(this.ExpiryDate) &&
+            !string.IsNullOrWhiteSpace(this.CardVerificationValue);
 
-        public bool IsWarningMessageVisible => BalanceAmount < Price;
+        public bool IsWarningMessageVisible => this.BalanceAmount < this.Price;
 
         public RelayCommand FinishPaymentCommand { get; }
 
@@ -227,139 +227,142 @@ namespace BookingBoardGames.Src.ViewModels
         public Action NavigateToExitAction { get; set; }
 
         public CardPaymentViewModel(
-            CardPaymentService cardPaymentService,
+            ICardPaymentService cardPaymentService,
             IUserRepository userService,
             int requestId,
             string deliveryAddress,
             int bookingMessageIdentifier,
-            ConversationService conversationService)
+            IConversationService conversationService)
         {
             this.cardPaymentService = cardPaymentService;
             this.userService = userService;
 
-            RequestIdentifier = requestId;
-            DeliveryAddress = deliveryAddress;
-            BookingMessageIdentifier = bookingMessageIdentifier;
+            this.RequestIdentifier = requestId;
+            this.DeliveryAddress = deliveryAddress;
+            this.BookingMessageIdentifier = bookingMessageIdentifier;
             RentalDataTransferObject requestDataTransferObject = this.cardPaymentService.GetRequestDataTransferObject(requestId);
-            ConversationService = conversationService;
+            this.ConversationService = conversationService;
 
-            ClientIdentifier = requestDataTransferObject.ClientId;
-            OwnerIdentifier = requestDataTransferObject.OwnerId;
-            GameName = requestDataTransferObject.GameName;
-            OwnerName = requestDataTransferObject.OwnerName;
-            ClientName = requestDataTransferObject.ClientName;
-            RequestDates = requestDataTransferObject.StartDate.ToShortDateString() + " to " + requestDataTransferObject.EndDate.Date.Date.ToShortDateString();
-            Price = requestDataTransferObject.Price;
-            DeliveryDate = requestDataTransferObject.StartDate.ToShortDateString();
+            this.ClientIdentifier = requestDataTransferObject.ClientId;
+            this.OwnerIdentifier = requestDataTransferObject.OwnerId;
+            this.GameName = requestDataTransferObject.GameName;
+            this.OwnerName = requestDataTransferObject.OwnerName;
+            this.ClientName = requestDataTransferObject.ClientName;
+            this.RequestDates = requestDataTransferObject.StartDate.ToShortDateString() + " to " + requestDataTransferObject.EndDate.Date.Date.ToShortDateString();
+            this.Price = requestDataTransferObject.Price;
+            this.DeliveryDate = requestDataTransferObject.StartDate.ToShortDateString();
 
-            FinishPaymentCommand = new RelayCommand(() => _ = FinishPaymentAsync(), () => IsPaymentButtonEnabled);
-            ExitCommand = new RelayCommand(() => NavigateBackwardsAction?.Invoke());
-            ResetInactivityCommand = new RelayCommand(ResetInactivityTimer);
+            this.FinishPaymentCommand = new RelayCommand(() => _ = this.FinishPaymentAsync(), () => this.IsPaymentButtonEnabled);
+            this.ExitCommand = new RelayCommand(() => this.NavigateBackwardsAction?.Invoke());
+            this.ResetInactivityCommand = new RelayCommand(ResetInactivityTimer);
 
-            balanceRefreshTimer = new System.Timers.Timer(CardPaymentConstants.TimerForRefreshingBalance);
-            balanceRefreshTimer.Elapsed += (timerSender, timerEventArguments) => RefreshBalance();
-            balanceRefreshTimer.AutoReset = true;
+            this.balanceRefreshTimer = new System.Timers.Timer(CardPaymentConstants.TimerForRefreshingBalance);
+            this.balanceRefreshTimer.Elapsed += (timerSender, timerEventArguments) => this.RefreshBalance();
+            this.balanceRefreshTimer.AutoReset = true;
 
-            inactivityTimer = new System.Timers.Timer(CardPaymentConstants.TimerBeforeClosingPayment);
-            inactivityTimer.Elapsed += OnSessionExpired;
-            inactivityTimer.AutoReset = false;
+            this.inactivityTimer = new System.Timers.Timer(CardPaymentConstants.TimerBeforeClosingPayment);
+            this.inactivityTimer.Elapsed += this.OnSessionExpired;
+            this.inactivityTimer.AutoReset = false;
 
-            synchronizationContext = SynchronizationContext.Current;
+            this.synchronizationContext = SynchronizationContext.Current;
         }
 
         private bool isPageCurrentlyActive = false;
 
         public void OnPageActivated()
         {
-            isPageCurrentlyActive = true;
-            RefreshBalance();
-            balanceRefreshTimer.Start();
-            inactivityTimer.Start();
+            this.isPageCurrentlyActive = true;
+            this.RefreshBalance();
+            this.balanceRefreshTimer.Start();
+            this.inactivityTimer.Start();
         }
 
         public void OnPageDeactivated()
         {
-            balanceRefreshTimer.Stop();
-            balanceRefreshTimer?.Dispose();
-            inactivityTimer.Stop();
-            inactivityTimer?.Dispose();
+            this.balanceRefreshTimer.Stop();
+            this.balanceRefreshTimer?.Dispose();
+            this.inactivityTimer.Stop();
+            this.inactivityTimer?.Dispose();
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void RefreshBalance()
         {
-            if (!isPageCurrentlyActive)
+            if (!this.isPageCurrentlyActive)
             {
                 return;
             }
 
-            decimal newBalance = userService.GetUserBalance(ClientIdentifier);
-            synchronizationContext.Post(threadState =>
+            decimal newBalance = this.userService.GetUserBalance(this.ClientIdentifier);
+            this.synchronizationContext.Post(
+                threadState =>
             {
-                BalanceAmount = newBalance;
-                FinishPaymentCommand.NotifyCanExecuteChanged();
-            }, null);
+                this.BalanceAmount = newBalance;
+                this.FinishPaymentCommand.NotifyCanExecuteChanged();
+            },
+                null);
         }
 
         private async Task FinishPaymentAsync()
         {
-            IsCurrentlyLoading = true;
-            CurrentStatusMessage = string.Empty;
-            FinishPaymentCommand.NotifyCanExecuteChanged();
+            this.IsCurrentlyLoading = true;
+            this.CurrentStatusMessage = string.Empty;
+            this.FinishPaymentCommand.NotifyCanExecuteChanged();
 
             await Task.Delay(CardPaymentConstants.LoadingTime);
 
             try
             {
                 await Task.Run(() =>
-                    cardPaymentService.AddCardPayment(RequestIdentifier, ClientIdentifier, OwnerIdentifier, Price));
+                    this.cardPaymentService.AddCardPayment(this.RequestIdentifier, this.ClientIdentifier, this.OwnerIdentifier, this.Price));
 
-                ConversationService?.OnCardPaymentSelected(BookingMessageIdentifier);
-                RefreshBalance();
-                IsPaymentSuccessful = true;
-                CurrentStatusMessage = "Payment successful!";
-                balanceRefreshTimer.Stop();
-                inactivityTimer.Stop();
+                this.ConversationService?.OnCardPaymentSelected(this.BookingMessageIdentifier);
+                this.RefreshBalance();
+                this.IsPaymentSuccessful = true;
+                this.CurrentStatusMessage = "Payment successful!";
+                this.balanceRefreshTimer.Stop();
+                this.inactivityTimer.Stop();
             }
             catch (Exception paymentException)
             {
-                CurrentStatusMessage = $"Payment failed: {paymentException.Message}";
+                this.CurrentStatusMessage = $"Payment failed: {paymentException.Message}";
             }
             finally
             {
-                IsCurrentlyLoading = false;
-                FinishPaymentCommand.NotifyCanExecuteChanged();
+                this.IsCurrentlyLoading = false;
+                this.FinishPaymentCommand.NotifyCanExecuteChanged();
             }
         }
 
         private void OnSessionExpired(object timerSender, System.Timers.ElapsedEventArgs elapsedEventArguments)
         {
-            if (!isPageCurrentlyActive)
+            if (!this.isPageCurrentlyActive)
             {
                 return;
             }
 
-            balanceRefreshTimer.Stop();
-            CurrentStatusMessage = "Session expired due to inactivity.";
-            synchronizationContext.Post(threadState =>
+            this.balanceRefreshTimer.Stop();
+            this.CurrentStatusMessage = "Session expired due to inactivity.";
+            this.synchronizationContext.Post(
+                threadState =>
             {
-                if (!isPageCurrentlyActive)
+                if (!this.isPageCurrentlyActive)
                 {
                     return;
                 }
 
-                NavigateToExitAction?.Invoke();
+                this.NavigateToExitAction?.Invoke();
             }, null);
         }
 
         private void ResetInactivityTimer()
         {
-            inactivityTimer.Stop();
-            inactivityTimer.Start();
+            this.inactivityTimer.Stop();
+            this.inactivityTimer.Start();
         }
     }
 }

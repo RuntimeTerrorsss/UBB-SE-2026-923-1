@@ -1,10 +1,22 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 [Table("messages")]
 public abstract class Message
 {
+    [SetsRequiredMembers]
+    protected Message(int conversationId, int messageSenderId, int messageReceiverId)
+    {
+        ConversationId = conversationId;
+        MessageSenderId = messageSenderId;
+        MessageReceiverId = messageReceiverId;
+        MessageSentTime = DateTime.UtcNow;
+    }
+
+    protected Message() { }
+
     [Key]
     [Column("id")]
     public int MessageId { get; set; }
@@ -37,6 +49,16 @@ public abstract class Message
 [Table("text_messages")]
 public class TextMessage : Message
 {
+    [SetsRequiredMembers]
+    public TextMessage(int conversationId, int messageSenderId, int messageReceiverId, string textMessageContent)
+        : base(conversationId, messageSenderId, messageReceiverId)
+    {
+        TextMessageContent = textMessageContent;
+        MessageContentAsString = textMessageContent;
+    }
+
+    private TextMessage() : base() { }
+
     [Column("text_message_content")]
     public string? TextMessageContent { get; set; }
 }
@@ -44,6 +66,14 @@ public class TextMessage : Message
 [Table("image_messages")]
 public class ImageMessage : Message
 {
+    [SetsRequiredMembers]
+    public ImageMessage(int conversationId, int messageSenderId, int messageReceiverId, string messageImageUrl)
+        : base(conversationId, messageSenderId, messageReceiverId)
+    {
+        MessageImageUrl = messageImageUrl;
+    }
+
+    private ImageMessage() : base() { }
 
     [Column("message_image_url")]
     public string? MessageImageUrl { get; set; }
@@ -52,6 +82,16 @@ public class ImageMessage : Message
 [Table("system_messages")]
 public class SystemMessage : Message
 {
+    [SetsRequiredMembers]
+    public SystemMessage(int conversationId, int messageSenderId, int messageReceiverId, string messageContent)
+        : base(conversationId, messageSenderId, messageReceiverId)
+    {
+        MessageContent = messageContent;
+        MessageContentAsString = messageContent;
+    }
+
+    private SystemMessage() : base() { }
+
     [Column("message_content")]
     public string? MessageContent { get; set; }
 }
@@ -59,6 +99,17 @@ public class SystemMessage : Message
 [Table("rental_request_messages")]
 public class RentalRequestMessage : Message
 {
+    [SetsRequiredMembers]
+    public RentalRequestMessage(int conversationId, int messageSenderId, int messageReceiverId, int rentalRequestId, string? requestContent = null)
+        : base(conversationId, messageSenderId, messageReceiverId)
+    {
+        RentalRequestId = rentalRequestId;
+        RequestContent = requestContent;
+        IsRequestResolved = false;
+        IsRequestAccepted = false;
+    }
+
+    private RentalRequestMessage() : base() { }
 
     [Column("rental_request_id")]
     public int RentalRequestId { get; set; }
@@ -79,6 +130,18 @@ public class RentalRequestMessage : Message
 [Table("cash_agreement_messages")]
 public class CashAgreementMessage : Message
 {
+    [SetsRequiredMembers]
+    public CashAgreementMessage(int conversationId, int messageSenderId, int messageReceiverId, int cashPaymentId)
+        : base(conversationId, messageSenderId, messageReceiverId)
+    {
+        CashPaymentId = cashPaymentId;
+        IsCashAgreementResolved = false;
+        IsCashAgreementAcceptedByBuyer = false;
+        IsCashAgreementAcceptedBySeller = false;
+    }
+
+    private CashAgreementMessage() : base() { }
+
     [Column("cash_payment_id")]
     public int CashPaymentId { get; set; }
 

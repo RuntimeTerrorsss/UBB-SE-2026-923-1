@@ -19,7 +19,7 @@ namespace BookingBoardGames.Src.Views
 
         public CashPaymentPage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -28,7 +28,7 @@ namespace BookingBoardGames.Src.Views
 
             if (e.Parameter is BookingNavigationArguments booking)
             {
-                PaymentViewModel = new CashPaymentViewModel(
+                this.PaymentViewModel = new CashPaymentViewModel(
                     App.CashPaymentService,
                     App.UserRepository,
                     App.RentalService,
@@ -38,14 +38,14 @@ namespace BookingBoardGames.Src.Views
                     booking.BookingMessageIdentifier,
                     booking.ConversationService);
 
-                DataContext = PaymentViewModel;
-                currentApplicationWindow = booking.CurrentWindow;
+                this.DataContext = this.PaymentViewModel;
+                this.currentApplicationWindow = booking.CurrentWindow;
             }
         }
 
         private void NavigateToChatButton_Click(object sender, RoutedEventArgs e)
         {
-            currentApplicationWindow.Close();
+            this.currentApplicationWindow.Close();
             /*
             if (Frame.CanGoBack)
             {

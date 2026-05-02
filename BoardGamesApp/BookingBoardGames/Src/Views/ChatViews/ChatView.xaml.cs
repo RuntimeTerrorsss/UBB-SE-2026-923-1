@@ -28,33 +28,33 @@ namespace BookingBoardGames.Src.Views.ChatViews
 {
     public sealed partial class ChatView : UserControl
     {
-        public event EventHandler<(int userId, int requestId, int messageId)>? ProceedToPaymentRequested;
+        public event EventHandler<(int UserId, int RequestId, int MessageId)>? ProceedToPaymentRequested;
 
         private ChatViewModel chatViewModel;
         private string? pendingImageFileName = null;
 
         public ChatViewModel ViewModel
         {
-            get => chatViewModel;
+            get => this.chatViewModel;
             set
             {
-                if (chatViewModel != null)
+                if (this.chatViewModel != null)
                 {
-                    chatViewModel.Messages.CollectionChanged -= OnMessagesChanged;
-                    chatViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+                    this.chatViewModel.Messages.CollectionChanged -= this.OnMessagesChanged;
+                    this.chatViewModel.PropertyChanged -= this.OnViewModelPropertyChanged;
                 }
 
-                chatViewModel = value;
+                this.chatViewModel = value;
 
-                if (chatViewModel != null)
+                if (this.chatViewModel != null)
                 {
-                    chatViewModel.Messages.CollectionChanged += OnMessagesChanged;
-                    chatViewModel.PropertyChanged += OnViewModelPropertyChanged;
+                    this.chatViewModel.Messages.CollectionChanged += this.OnMessagesChanged;
+                    this.chatViewModel.PropertyChanged += this.OnViewModelPropertyChanged;
 
-                    BannerDisplayName.Text = chatViewModel.DisplayName;
-                    SetupAvatar();
+                    this.BannerDisplayName.Text = this.chatViewModel.DisplayName;
+                    this.SetupAvatar();
 
-                    RefreshMessages();
+                    this.RefreshMessages();
                 }
             }
         }
@@ -63,27 +63,27 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public ChatView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         private void RefreshMessages()
         {
-            MessagesPanel.Children.Clear();
-            foreach (var messageViewModel in chatViewModel.Messages)
+            this.MessagesPanel.Children.Clear();
+            foreach (var messageViewModel in this.chatViewModel.Messages)
             {
                 var itemView = new MessageItemView();
-                itemView.SetMessage(messageViewModel, CurrentUserId);
+                itemView.SetMessage(messageViewModel, this.CurrentUserId);
 
-                itemView.AcceptRequested += OnAcceptRequested;
-                itemView.DeclineRequested += OnDeclineRequested;
-                itemView.CancelRequested += OnCancelRequested;
-                itemView.AgreementAccepted += OnAcceptCashAgreement;
-                itemView.ProceedToPaymentRequested += (sender, paymentArguments) => ProceedToPaymentRequested?.Invoke(sender, paymentArguments);
+                itemView.AcceptRequested += this.OnAcceptRequested;
+                itemView.DeclineRequested += this.OnDeclineRequested;
+                itemView.CancelRequested += this.OnCancelRequested;
+                itemView.AgreementAccepted += this.OnAcceptCashAgreement;
+                itemView.ProceedToPaymentRequested += (sender, paymentArguments) => this.ProceedToPaymentRequested?.Invoke(sender, paymentArguments);
 
-                MessagesPanel.Children.Add(itemView);
+                this.MessagesPanel.Children.Add(itemView);
             }
 
-            ScrollToBottom();
+            this.ScrollToBottom();
         }
 
         private void OnMessagesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs collectionChangedEventArgs)
@@ -93,20 +93,20 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 foreach (MessageViewModel addedMessageViewModel in collectionChangedEventArgs.NewItems)
                 {
                     var itemView = new MessageItemView();
-                    itemView.SetMessage(addedMessageViewModel, CurrentUserId);
+                    itemView.SetMessage(addedMessageViewModel, this.CurrentUserId);
 
-                    itemView.AcceptRequested += OnAcceptRequested;
-                    itemView.DeclineRequested += OnDeclineRequested;
-                    itemView.CancelRequested += OnCancelRequested;
-                    itemView.AgreementAccepted += OnAcceptCashAgreement;
-                    itemView.ProceedToPaymentRequested += (eventSender, paymentArguments) => ProceedToPaymentRequested?.Invoke(eventSender, paymentArguments);
+                    itemView.AcceptRequested += this.OnAcceptRequested;
+                    itemView.DeclineRequested += this.OnDeclineRequested;
+                    itemView.CancelRequested += this.OnCancelRequested;
+                    itemView.AgreementAccepted += this.OnAcceptCashAgreement;
+                    itemView.ProceedToPaymentRequested += (eventSender, paymentArguments) => this.ProceedToPaymentRequested?.Invoke(eventSender, paymentArguments);
 
-                    MessagesPanel.Children.Add(itemView);
+                    this.MessagesPanel.Children.Add(itemView);
                 }
             }
             else
             {
-                RefreshMessages();
+                this.RefreshMessages();
             }
         }
 
@@ -114,59 +114,59 @@ namespace BookingBoardGames.Src.Views.ChatViews
         {
             if (propertyChangedEventArgs.PropertyName == nameof(ChatViewModel.DisplayName))
             {
-                BannerDisplayName.Text = chatViewModel.DisplayName;
+                this.BannerDisplayName.Text = this.chatViewModel.DisplayName;
             }
             else if (propertyChangedEventArgs.PropertyName == nameof(ChatViewModel.InputText))
             {
-                MessageInput.Text = chatViewModel.InputText;
+                this.MessageInput.Text = this.chatViewModel.InputText;
             }
             else if (propertyChangedEventArgs.PropertyName == nameof(ChatViewModel.AvatarUrl))
             {
-                SetupAvatar();
+                this.SetupAvatar();
             }
         }
 
         private void SendButton_Click(object sender, RoutedEventArgs routedEventArgs)
         {
-            if (pendingImageFileName != null)
+            if (this.pendingImageFileName != null)
             {
-                ViewModel?.SendImage(pendingImageFileName);
-                ClearPendingImage();
+                this.ViewModel?.SendImage(this.pendingImageFileName);
+                this.ClearPendingImage();
             }
-            else if (!string.IsNullOrWhiteSpace(ViewModel?.InputText))
+            else if (!string.IsNullOrWhiteSpace(this.ViewModel?.InputText))
             {
-                ViewModel?.SendMessage();
+                this.ViewModel?.SendMessage();
             }
         }
 
         private void SetupAvatar()
         {
-            AvatarPicture.DisplayName = chatViewModel.DisplayName;
-            if (!string.IsNullOrEmpty(chatViewModel.AvatarUrl))
+            this.AvatarPicture.DisplayName = this.chatViewModel.DisplayName;
+            if (!string.IsNullOrEmpty(this.chatViewModel.AvatarUrl))
             {
                 try
                 {
-                    string fullPath = Path.Combine(AppContext.BaseDirectory, "Images", chatViewModel.AvatarUrl);
-                    AvatarPicture.ProfilePicture = new BitmapImage(new Uri(fullPath));
+                    string fullPath = Path.Combine(AppContext.BaseDirectory, "Images", this.chatViewModel.AvatarUrl);
+                    this.AvatarPicture.ProfilePicture = new BitmapImage(new Uri(fullPath));
                 }
                 catch (Exception exception)
                 {
                     Debug.WriteLine($"Error loading avatar: {exception.Message}");
-                    AvatarPicture.ProfilePicture = null;
+                    this.AvatarPicture.ProfilePicture = null;
                 }
             }
             else
             {
-                AvatarPicture.ProfilePicture = null;
+                this.AvatarPicture.ProfilePicture = null;
             }
         }
 
         private void ScrollToBottom()
         {
-            DispatcherQueue.TryEnqueue(() =>
+            this.DispatcherQueue.TryEnqueue(() =>
             {
-                ScrollContainer.UpdateLayout();
-                ScrollContainer.ChangeView(null, ScrollContainer.ExtentHeight, null);
+                this.ScrollContainer.UpdateLayout();
+                this.ScrollContainer.ChangeView(null, this.ScrollContainer.ExtentHeight, null);
             });
         }
 
@@ -185,8 +185,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
                 var bitmapImage = new BitmapImage();
                 await bitmapImage.SetSourceAsync(rawStream);
-                ImagePreview.Source = bitmapImage;
-                ImagePreviewPanel.Visibility = Visibility.Visible;
+                this.ImagePreview.Source = bitmapImage;
+                this.ImagePreviewPanel.Visibility = Visibility.Visible;
 
                 rawStream.Seek(0);
 
@@ -197,20 +197,20 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 using var fileStream = File.Create(fullImagePath);
                 await rawStream.AsStreamForRead().CopyToAsync(fileStream);
 
-                pendingImageFileName = generatedFileName;
+                this.pendingImageFileName = generatedFileName;
             }
         }
 
         private void ClearPendingImage()
         {
-            pendingImageFileName = null;
-            ImagePreview.Source = null;
-            ImagePreviewPanel.Visibility = Visibility.Collapsed;
+            this.pendingImageFileName = null;
+            this.ImagePreview.Source = null;
+            this.ImagePreviewPanel.Visibility = Visibility.Collapsed;
         }
 
         private void RemoveImageButton_Click(object sender, RoutedEventArgs routedEventArgs)
         {
-            ClearPendingImage();
+            this.ClearPendingImage();
         }
 
         private async void AttachImageButton_Click(object sender, RoutedEventArgs routedEventArgs)
@@ -235,35 +235,35 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
             var bitmapImage = new BitmapImage();
             await bitmapImage.SetSourceAsync(rawStream);
-            ImagePreview.Source = bitmapImage;
-            ImagePreviewPanel.Visibility = Visibility.Visible;
+            this.ImagePreview.Source = bitmapImage;
+            this.ImagePreviewPanel.Visibility = Visibility.Visible;
 
             rawStream.Seek(0);
 
             using var fileStream = File.Create(fullImagePath);
             await rawStream.AsStreamForRead().CopyToAsync(fileStream);
 
-            pendingImageFileName = generatedFileName;
+            this.pendingImageFileName = generatedFileName;
         }
 
         private void OnAcceptRequested(object? sender, int messageId)
         {
-            ViewModel?.ResolveBookingRequest(messageId, true);
+            this.ViewModel?.ResolveBookingRequest(messageId, true);
         }
 
         private void OnDeclineRequested(object? sender, int messageId)
         {
-            ViewModel?.ResolveBookingRequest(messageId, false);
+            this.ViewModel?.ResolveBookingRequest(messageId, false);
         }
 
         private void OnCancelRequested(object? sender, int messageId)
         {
-            ViewModel?.ResolveBookingRequest(messageId, false);
+            this.ViewModel?.ResolveBookingRequest(messageId, false);
         }
 
         private void OnAcceptCashAgreement(object? sender, int messageId)
         {
-            ViewModel?.UpdateCashAgreement(messageId);
+            this.ViewModel?.UpdateCashAgreement(messageId);
         }
     }
 }

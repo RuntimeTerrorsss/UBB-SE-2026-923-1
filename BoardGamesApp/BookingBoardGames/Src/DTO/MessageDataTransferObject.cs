@@ -29,7 +29,7 @@ namespace BookingBoardGames.Src.DTO
 
             return this.Type switch
             {
-                MessageType.MessageText or MessageType.MessageSystem => this.Content.Length > maximumPreviewLength ? this.Content[..maximumPreviewLength] : Content,
+                MessageType.MessageText or MessageType.MessageSystem => this.Content.Length > maximumPreviewLength ? this.Content[..maximumPreviewLength] : this.Content,
                 MessageType.MessageImage => "[Image]",
                 MessageType.MessageRentalRequest => "[Rental Request]",
                 MessageType.MessageCashAgreement => "[Cash Agreement]",

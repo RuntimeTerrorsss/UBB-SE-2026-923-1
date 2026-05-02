@@ -5,12 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Owned]
 public class TimeRange
 {
-    [Column("start_time")]
-    public DateTime StartTime { get; set; }
-
-    [Column("end_time")]
-    public DateTime EndTime { get; set; }
-
     public TimeRange() { }
 
     public TimeRange(DateTime startTime, DateTime endTime)
@@ -19,4 +13,10 @@ public class TimeRange
         StartTime = startTime;
         EndTime = endTime;
     }
+
+    [Column("start_time")]
+    public DateTime StartTime { get; set; }
+
+    [Column("end_time")]
+    public DateTime EndTime { get; set; }
 }

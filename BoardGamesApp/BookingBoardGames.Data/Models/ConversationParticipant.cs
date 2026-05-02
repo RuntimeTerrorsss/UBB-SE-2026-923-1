@@ -6,6 +6,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("conversation_participants")]
 public class ConversationParticipant
 {
+    public ConversationParticipant(int conversationId, int userId)
+    {
+        ConversationId = conversationId;
+        UserId = userId;
+        UnreadMessagesCount = 0;
+        LastMessageReadTime = null;
+    }
+
+    private ConversationParticipant()
+    {
+    }
+
     [Column("conversation_id")]
     public int ConversationId { get; set; }
 

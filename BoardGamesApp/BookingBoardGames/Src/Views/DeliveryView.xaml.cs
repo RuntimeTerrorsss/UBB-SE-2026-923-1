@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Validators;
 using BookingBoardGames.Src.ViewModels;
-using BookingBoardGames.Src.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -32,75 +31,76 @@ namespace BookingBoardGames.Src.Views
 
         public DeliveryView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs navigationEvent)
         {
             base.OnNavigatedTo(navigationEvent);
 
-            var arguments = ((int userId, int requestId, int messageId, ConversationService conversationService, Window window))navigationEvent.Parameter;
-            currentUserId = arguments.userId;
-            requestId = arguments.requestId;
-            incomingMessageId = arguments.messageId;
-            conversationService = arguments.conversationService;
-            currentWindow = arguments.window;
+            var arguments = ((int UserId, int RequestId, int MessageId, ConversationService ConversationService, Window ToWindow))navigationEvent.Parameter;
+            this.currentUserId = arguments.UserId;
+            this.requestId = arguments.RequestId;
+            this.incomingMessageId = arguments.MessageId;
+            this.conversationService = arguments.ConversationService;
+            this.currentWindow = arguments.ToWindow;
 
-            deliveryViewModel = new DeliveryViewModel(
-                currentUserId,
+            this.deliveryViewModel = new DeliveryViewModel(
+                this.currentUserId,
                 App.MapService,
                 App.UserRepository,
                 new AddressValidator());
 
-            deliveryViewModel.OnNavigateToPayment = () =>
+            this.deliveryViewModel.OnNavigateToPayment = () =>
             {
                 var bookingArguments = new BookingNavigationArguments
                 {
-                    RequestIdentifier = requestId,
-                    DeliveryAddress = deliveryViewModel.CurrentAddress.ToString(),
-                    BookingMessageIdentifier = incomingMessageId,
-                    ConversationService = conversationService,
-                    CurrentWindow = currentWindow
+                    RequestIdentifier = this.requestId,
+                    DeliveryAddress = this.deliveryViewModel.CurrentAddress.ToString(),
+                    BookingMessageIdentifier = this.incomingMessageId,
+                    ConversationService = this.conversationService,
+                    CurrentWindow = this.currentWindow,
                 };
+
                 // Debug.WriteLine(_conversationService.UserId);
-                if (CashPaymentRadio.IsChecked == true)
+                if (this.CashPaymentRadio.IsChecked == true)
                 {
-                    Frame.Navigate(typeof(PaymentCash.View.CashPaymentPage), bookingArguments);
+                    this.Frame.Navigate(typeof(CashPaymentPage), bookingArguments);
                 }
                 else
                 {
-                    Frame.Navigate(typeof(CardPaymentPage), bookingArguments);
+                    this.Frame.Navigate(typeof(CardPaymentPage), bookingArguments);
                 }
             };
 
-            deliveryViewModel.StateChanged += RefreshUi;
-            deliveryViewModel.Initialize(currentUserId);
-            RefreshUi();
+            this.deliveryViewModel.StateChanged += this.RefreshUi;
+            this.deliveryViewModel.Initialize(this.currentUserId);
+            this.RefreshUi();
         }
 
         private void RefreshUi()
         {
             // Sync all text fields from CurrentAddress (also handles map auto-fill)
-            CountryInput.Text = deliveryViewModel.CurrentAddress.Country;
-            CityInput.Text = deliveryViewModel.CurrentAddress.City;
-            StreetInput.Text = deliveryViewModel.CurrentAddress.Street;
-            StreetNumberInput.Text = deliveryViewModel.CurrentAddress.StreetNumber;
+            this.CountryInput.Text = this.deliveryViewModel.CurrentAddress.Country;
+            this.CityInput.Text = this.deliveryViewModel.CurrentAddress.City;
+            this.StreetInput.Text = this.deliveryViewModel.CurrentAddress.Street;
+            this.StreetNumberInput.Text = this.deliveryViewModel.CurrentAddress.StreetNumber;
 
             // Show/hide the map overlay
-            MapOverlay.Visibility = deliveryViewModel.IsMapVisible
+            this.MapOverlay.Visibility = this.deliveryViewModel.IsMapVisible
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
             // Show or clear validation errors per field
-            ShowFieldError(CountryInput, CountryError, "Country");
-            ShowFieldError(CityInput, CityError, "City");
-            ShowFieldError(StreetInput, StreetError, "Street");
-            ShowFieldError(StreetNumberInput, StreetNumberError, "StreetNumber");
+            this.ShowFieldError(this.CountryInput, this.CountryError, "Country");
+            this.ShowFieldError(this.CityInput, this.CityError, "City");
+            this.ShowFieldError(this.StreetInput, this.StreetError, "Street");
+            this.ShowFieldError(this.StreetNumberInput, this.StreetNumberError, "StreetNumber");
         }
 
         private void ShowFieldError(TextBox input, TextBlock errorBlock, string fieldName)
         {
-            if (deliveryViewModel.ValidationErrors.TryGetValue(fieldName, out string? message))
+            if (this.deliveryViewModel.ValidationErrors.TryGetValue(fieldName, out string? message))
             {
                 errorBlock.Text = message;
                 errorBlock.Visibility = Visibility.Visible;
@@ -117,45 +117,45 @@ namespace BookingBoardGames.Src.Views
         {
             if (sender is TextBox tb && tb.Tag is string fieldName)
             {
-                deliveryViewModel.OnFieldChange(fieldName, tb.Text);
+                this.deliveryViewModel.OnFieldChange(fieldName, tb.Text);
             }
         }
 
         private void OnSaveAddressChecked(object sender, RoutedEventArgs routedEventArguments)
-            => deliveryViewModel.IsSaveAddress = true;
+            => this.deliveryViewModel.IsSaveAddress = true;
 
         private void OnSaveAddressUnchecked(object sender, RoutedEventArgs routedEventArguments)
-            => deliveryViewModel.IsSaveAddress = false;
+            => this.deliveryViewModel.IsSaveAddress = false;
 
         private void OnOpenMapClicked(object sender, RoutedEventArgs routedEventArguments)
-            => _ = InitializeMapAsync();
+            => _ = this.InitializeMapAsync();
 
         private void OnCloseMapClicked(object sender, RoutedEventArgs routedEventArguments)
-            => deliveryViewModel.CloseMap();
+            => this.deliveryViewModel.CloseMap();
 
         private void OnSubmitClicked(object sender, RoutedEventArgs routedEventArguments)
-            => deliveryViewModel.SubmitDelivery();
+            => this.deliveryViewModel.SubmitDelivery();
 
         private async void OnConfirmLocationClicked(object sender, RoutedEventArgs routedEventArguments)
-            => await deliveryViewModel.ConfirmMapLocationAsync(pendingLatitude, pendingLongitude);
+            => await this.deliveryViewModel.ConfirmMapLocationAsync(this.pendingLatitude, this.pendingLongitude);
 
         private async Task InitializeMapAsync()
         {
-            deliveryViewModel.OpenMap();
-            await MapWebView.EnsureCoreWebView2Async();
+            this.deliveryViewModel.OpenMap();
+            await this.MapWebView.EnsureCoreWebView2Async();
 
-            MapWebView.CoreWebView2.Settings.UserAgent = "BookingBoardgamesApp/1.0 (Contact: your.email@gmail.com)";
-            MapWebView.CoreWebView2.WebMessageReceived -= OnMapMessageReceived;
-            MapWebView.CoreWebView2.WebMessageReceived += OnMapMessageReceived;
+            this.MapWebView.CoreWebView2.Settings.UserAgent = "BookingBoardgamesApp/1.0 (Contact: your.email@gmail.com)";
+            this.MapWebView.CoreWebView2.WebMessageReceived -= this.OnMapMessageReceived;
+            this.MapWebView.CoreWebView2.WebMessageReceived += this.OnMapMessageReceived;
 
-            /// VERY
-            /// VERY
-            /// IMPORTANT
-            /// GO to your device settings to Time and Language
-            /// Select Region
-            /// Select region format
-            /// Change to English US
-            MapWebView.CoreWebView2.NavigateToString("""
+            // VERY
+            // VERY
+            // IMPORTANT
+            // GO to your device settings to Time and Language
+            // Select Region
+            // Select region format
+            // Change to English US
+            this.MapWebView.CoreWebView2.NavigateToString("""
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -192,10 +192,10 @@ namespace BookingBoardGames.Src.Views
 
                 using JsonDocument jsonDocument = JsonDocument.Parse(rawMessage);
 
-                pendingLatitude = jsonDocument.RootElement.GetProperty("lat").GetDouble();
-                pendingLongitude = jsonDocument.RootElement.GetProperty("lng").GetDouble();
+                this.pendingLatitude = jsonDocument.RootElement.GetProperty("lat").GetDouble();
+                this.pendingLongitude = jsonDocument.RootElement.GetProperty("lng").GetDouble();
 
-                Debug.WriteLine($"MAP CLICK REGISTERED -> Lat: {pendingLatitude}, Lon: {pendingLongitude}");
+                Debug.WriteLine($"MAP CLICK REGISTERED -> Lat: {this.pendingLatitude}, Lon: {this.pendingLongitude}");
             }
             catch (Exception ex)
             {

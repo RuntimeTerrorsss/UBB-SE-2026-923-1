@@ -31,8 +31,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public string DisplayName
         {
-            get => (string)GetValue(DisplayNameProperty);
-            set => SetValue(DisplayNameProperty, value);
+            get => (string)this.GetValue(DisplayNameProperty);
+            set => this.SetValue(DisplayNameProperty, value);
         }
 
         private static void OnDisplayNameChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArguments)
@@ -51,8 +51,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public string AvatarUrl
         {
-            get => (string)GetValue(AvatarUrlProperty);
-            set => SetValue(AvatarUrlProperty, value);
+            get => (string)this.GetValue(AvatarUrlProperty);
+            set => this.SetValue(AvatarUrlProperty, value);
         }
 
         private static void OnAvatarUrlChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArguments)
@@ -87,8 +87,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public string AvatarColor
         {
-            get => (string)GetValue(AvatarColorProperty);
-            set => SetValue(AvatarColorProperty, value);
+            get => (string)this.GetValue(AvatarColorProperty);
+            set => this.SetValue(AvatarColorProperty, value);
         }
 
         public static readonly DependencyProperty MessagePreviewProperty =
@@ -100,8 +100,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public string MessagePreview
         {
-            get => (string)GetValue(MessagePreviewProperty);
-            set => SetValue(MessagePreviewProperty, value);
+            get => (string)this.GetValue(MessagePreviewProperty);
+            set => this.SetValue(MessagePreviewProperty, value);
         }
 
         private static void OnMessagePreviewChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArguments)
@@ -119,8 +119,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public string Timestamp
         {
-            get => (string)GetValue(TimestampProperty);
-            set => SetValue(TimestampProperty, value);
+            get => (string)this.GetValue(TimestampProperty);
+            set => this.SetValue(TimestampProperty, value);
         }
 
         private static void OnTimestampChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArguments)
@@ -138,8 +138,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public int UnreadCount
         {
-            get => (int)GetValue(UnreadCountProperty);
-            set => SetValue(UnreadCountProperty, value);
+            get => (int)this.GetValue(UnreadCountProperty);
+            set => this.SetValue(UnreadCountProperty, value);
         }
 
         private static void OnUnreadCountChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArguments)
@@ -157,8 +157,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public bool HasUnread
         {
-            get => (bool)GetValue(HasUnreadProperty);
-            set => SetValue(HasUnreadProperty, value);
+            get => (bool)this.GetValue(HasUnreadProperty);
+            set => this.SetValue(HasUnreadProperty, value);
         }
 
         private static void OnHasUnreadChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArguments)

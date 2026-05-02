@@ -19,7 +19,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Security.Authentication.OnlineId;
 
-namespace BookingBoardgamesILoveBan.Src.Chat.View
+namespace BookingBoardGames.Src.Views.ChatViews
 {
     public sealed partial class ChatPageView : Page
     {
@@ -28,42 +28,43 @@ namespace BookingBoardgamesILoveBan.Src.Chat.View
 
         public ChatPageView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public void Initialize(int currentUserId)
         {
-            chatPageViewModel = new ChatPageViewModel(currentUserId);
-            LeftPanel.ViewModel = chatPageViewModel.LeftPanelModelView;
-            RightPanel.ChatViewModel = chatPageViewModel.ChatModelView;
-            RightPanel.CurrentUserId = currentUserId;
-            RightPanel.ProceedToPaymentRequested += ProceedToPaymentClick;
+            this.chatPageViewModel = new ChatPageViewModel(currentUserId);
+            this.LeftPanel.ViewModel = this.chatPageViewModel.LeftPanelModelView;
+            this.RightPanel.ChatViewModel = this.chatPageViewModel.ChatModelView;
+            this.RightPanel.CurrentUserId = currentUserId;
+            this.RightPanel.ProceedToPaymentRequested += this.ProceedToPaymentClick;
 
-            chatPageViewModel.LeftPanelModelView.PropertyChanged += (sender, propertyChangedEventArgs) =>
+            this.chatPageViewModel.LeftPanelModelView.PropertyChanged += (sender, propertyChangedEventArgs) =>
             {
                 if (propertyChangedEventArgs.PropertyName != nameof(LeftPanelViewModel.SelectedConversation))
                 {
                     return;
                 }
-                RightPanel.IsConversationSelected = chatPageViewModel.LeftPanelModelView.SelectedConversation != null;
+
+                this.RightPanel.IsConversationSelected = this.chatPageViewModel.LeftPanelModelView.SelectedConversation != null;
             };
         }
 
-        private void ProceedToPaymentClick(object sender, (int userId, int requestId, int messageId) paymentArguments)
+        private void ProceedToPaymentClick(object sender, (int UserId, int RequestId, int MessageId) paymentArguments)
         {
             var deliveryWindow = new Window();
             var deliveryFrame = new Frame();
             deliveryWindow.Content = deliveryFrame;
-            deliveryFrame.Navigate(typeof(DeliveryView), (paymentArguments.userId, paymentArguments.requestId, paymentArguments.messageId, chatPageViewModel.ConversationService, deliveryWindow));
+            deliveryFrame.Navigate(typeof(DeliveryView), (paymentArguments.UserId, paymentArguments.RequestId, paymentArguments.MessageId, this.chatPageViewModel.ConversationService, deliveryWindow));
             deliveryWindow.Activate();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs navigationEventArgs)
         {
             base.OnNavigatedTo(navigationEventArgs);
-            currentUserId = (int)navigationEventArgs.Parameter;
+            this.currentUserId = (int)navigationEventArgs.Parameter;
 
-            Initialize(currentUserId);
+            this.Initialize(this.currentUserId);
         }
     }
 }

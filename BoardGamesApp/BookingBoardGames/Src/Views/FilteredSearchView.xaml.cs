@@ -2,26 +2,10 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Shared;
 using BookingBoardGames.Src.ViewModels;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Notifications;
 
 namespace BookingBoardGames.Src.Views
 {
@@ -46,12 +30,7 @@ namespace BookingBoardGames.Src.Views
         {
             base.OnNavigatedTo(e);
             var criteria = e.Parameter as FilterCriteria ?? new FilterCriteria();
-            //var gamesRepository = new GamesRepository();
-            //var usersRepository = new UsersRepository();
-            //var rentalsRepository = new RentalsRepository();
-            //var geographicalService = App.GlobalGeoService!;
-            //var service = new SearchAndFilterService(gamesRepository, usersRepository, rentalsRepository, geographicalService);
-            var viewModel = new FilteredSearchViewModel(App.SearchAndFilterService, App.GeographicalService);
+            var viewModel = new FilteredSearchViewModel(App.SearchAndFilterService, App.GlobalGeographicalService);
             viewModel.OnGameSelectedRequest += gameId =>
             {
                 this.Frame.Navigate(typeof(GameDetailsView), gameId);

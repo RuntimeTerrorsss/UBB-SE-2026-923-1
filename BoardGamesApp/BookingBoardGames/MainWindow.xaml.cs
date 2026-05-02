@@ -3,7 +3,8 @@
 // </copyright>
 
 using System;
-using BookingBoardgamesILoveBan.Src.Chat.View;
+using BookingBoardGames.Src.Views;
+using BookingBoardGames.Src.Views.ChatViews;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -20,7 +21,7 @@ namespace BookingBoardGames
         {
             this.InitializeComponent();
 
-            this.RootFrame.Navigate(typeof(Src.Views.DiscoveryView));
+            this.RootFrame.Navigate(typeof(DiscoveryView));
 
             var window1 = new Window();
             var frame1 = new Frame();

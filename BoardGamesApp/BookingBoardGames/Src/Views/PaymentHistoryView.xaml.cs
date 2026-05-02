@@ -29,17 +29,18 @@ namespace BookingBoardGames.Src.Views
         {
             if (sender is Button clickedButton && clickedButton.DataContext is PaymentDataTransferObject selectedPayment)
             {
-                if (ViewModel.OpenReceiptCommand != null && ViewModel.OpenReceiptCommand.CanExecute(selectedPayment))
+                if (this.ViewModel.OpenReceiptCommand != null && this.ViewModel.OpenReceiptCommand.CanExecute(selectedPayment))
                 {
-                    ViewModel.OpenReceiptCommand.Execute(selectedPayment);
+                    this.ViewModel.OpenReceiptCommand.Execute(selectedPayment);
                 }
             }
+
             // fallback for null
             else if (sender is Button fallbackButton && fallbackButton.Tag is PaymentDataTransferObject fallbackPayment)
             {
-                if (ViewModel.OpenReceiptCommand != null && ViewModel.OpenReceiptCommand.CanExecute(fallbackPayment))
+                if (this.ViewModel.OpenReceiptCommand != null && this.ViewModel.OpenReceiptCommand.CanExecute(fallbackPayment))
                 {
-                    ViewModel.OpenReceiptCommand.Execute(fallbackPayment);
+                    this.ViewModel.OpenReceiptCommand.Execute(fallbackPayment);
                 }
             }
         }
@@ -51,9 +52,10 @@ namespace BookingBoardGames.Src.Views
             {
                 currentParentElement = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(currentParentElement);
             }
+
             if (currentParentElement is Frame navigationFrame)
             {
-                navigationFrame.Navigate(typeof(BookingBoardgamesILoveBan.Src.View.DashboardView));
+                navigationFrame.Navigate(typeof(DashboardView));
             }
         }
     }

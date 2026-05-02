@@ -14,25 +14,25 @@ namespace BookingBoardGames.Src.ViewModels
 
         public RelayCommand(Action<T> execute, Predicate<T> canExecute = null)
         {
-            executeAction = execute ?? throw new ArgumentNullException(nameof(execute));
-            canExecutePredicate = canExecute;
+            this.executeAction = execute ?? throw new ArgumentNullException(nameof(execute));
+            this.canExecutePredicate = canExecute;
         }
 
         public bool CanExecute(object parameter)
         {
-            return canExecutePredicate == null || canExecutePredicate((T)parameter);
+            return this.canExecutePredicate == null || this.canExecutePredicate((T)parameter);
         }
 
         public void Execute(object parameter)
         {
-            executeAction((T)parameter);
+            this.executeAction((T)parameter);
         }
 
         public event EventHandler CanExecuteChanged;
 
         public void RaiseCanExecuteChanged()
         {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -43,25 +43,25 @@ namespace BookingBoardGames.Src.ViewModels
 
         public RelayCommandNoParam(Action execute, Func<bool> canExecute = null)
         {
-            executeAct = execute ?? throw new ArgumentNullException(nameof(execute));
-            canExecuteFunc = canExecute;
+            this.executeAct = execute ?? throw new ArgumentNullException(nameof(execute));
+            this.canExecuteFunc = canExecute;
         }
 
         public bool CanExecute(object parameter)
         {
-            return canExecuteFunc == null || canExecuteFunc();
+            return this.canExecuteFunc == null || this.canExecuteFunc();
         }
 
         public void Execute(object parameter)
         {
-            executeAct();
+            this.executeAct();
         }
 
         public event EventHandler CanExecuteChanged;
 
         public void RaiseCanExecuteChanged()
         {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
-namespace SearchAndBook.Views.Controls
+namespace BookingBoardGames.Src.Views.Controls
 {
     /// <summary>
     /// Represents a visual card control that displays summarized information about a game.
@@ -145,7 +145,7 @@ namespace SearchAndBook.Views.Controls
             if (this.Parent is FrameworkElement parent)
             {
                 var frame = parent.XamlRoot.Content as Frame;
-                frame?.Navigate(typeof(SearchAndBook.Views.GameDetailsView), this.GameId);
+                frame?.Navigate(typeof(GameDetailsView), this.GameId);
             }
         }
     }

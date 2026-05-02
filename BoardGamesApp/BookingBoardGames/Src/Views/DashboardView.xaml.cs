@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Src.Views;
+using BookingBoardGames.Src.Views.ChatViews;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -36,7 +36,7 @@ namespace BookingBoardGames.Src.Views
             var window1 = new Window();
             var frame1 = new Frame();
             window1.Content = frame1;
-            frame1.Navigate(typeof(ChatPageView), App.NO_CHATS_USER);
+            frame1.Navigate(typeof(ChatPageView), App.NoChatsUser);
             window1.Activate();
         }
     }

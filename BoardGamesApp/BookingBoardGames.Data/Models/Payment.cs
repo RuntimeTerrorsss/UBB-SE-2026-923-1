@@ -5,6 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("payments")]
 public class Payment
 {
+    protected Payment(decimal paidAmount, int requestId, int clientId, int ownerId)
+    {
+        PaidAmount = paidAmount;
+        RequestId = requestId;
+        ClientId = clientId;
+        OwnerId = ownerId;
+        PaymentState = 0;
+    }
+
+    protected Payment() { }
+
     [Key]
     [Column("id")]
     public int TransactionIdentifier { get; set; }
@@ -52,6 +63,15 @@ public class Payment
 [Table("history_payments")]
 public class HistoryPayment : Payment
 {
+    public HistoryPayment(decimal paidAmount, int requestId, int clientId, int ownerId, string? gameName, string? ownerName)
+        : base(paidAmount, requestId, clientId, ownerId)
+    {
+        GameName = gameName;
+        OwnerName = ownerName;
+    }
+
+    private HistoryPayment() : base() { }
+
     [Column("game_name")]
     public string? GameName { get; set; }
 

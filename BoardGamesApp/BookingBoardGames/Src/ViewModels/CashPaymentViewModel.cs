@@ -53,13 +53,13 @@ namespace BookingBoardGames.Src.ViewModels
             User clientUser = this.userRepository.GetById(rentalRequest.ClientId);
             User ownerUser = this.userRepository.GetById(rentalRequest.OwnerId);
 
-            OwnerName = ownerUser.Username;
-            GameName = game.Name;
-            DeliveryAddress = deliveryAddress;
-            RequestDates = rentalRequest.StartDate.ToShortDateString() + DateRangeSeparator + rentalRequest.EndDate.ToShortDateString();
+            this.OwnerName = ownerUser.Username;
+            this.GameName = game.Name;
+            this.DeliveryAddress = deliveryAddress;
+            this.RequestDates = rentalRequest.StartDate.ToShortDateString() + DateRangeSeparator + rentalRequest.EndDate.ToShortDateString();
 
             decimal rentalPrice = this.rentalRequestService.GetRentalPrice(rentalRequestId);
-            PaidAmount = rentalPrice.ToString();
+            this.PaidAmount = rentalPrice.ToString();
 
             int createdPaymentIdentifier = this.cashPaymentService.AddCashPayment(
                 new CashPaymentDataTransferObject(NewPaymentPlaceholderId, rentalRequestId, clientUser.Id, ownerUser.Id, rentalPrice));

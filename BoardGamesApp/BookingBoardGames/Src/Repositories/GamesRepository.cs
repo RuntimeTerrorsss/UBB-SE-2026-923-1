@@ -60,7 +60,7 @@ public class GamesRepository : InterfaceGamesRepository
     /// <returns>A list of all active games.</returns>
     public List<Game> GetAll()
     {
-        return GetAllActiveGames(AnonymousUserId);
+        return this.GetAllActiveGames(AnonymousUserId);
     }
 
     /// <summary>

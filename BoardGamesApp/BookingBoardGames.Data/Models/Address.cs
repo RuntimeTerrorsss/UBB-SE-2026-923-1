@@ -5,6 +5,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Owned]
 public class Address
 {
+    public Address(string country, string city, string street, string streetNumber)
+    {
+        Country = country;
+        City = city;
+        Street = street;
+        StreetNumber = streetNumber;
+    }
+
+    public Address()
+    {
+    }
+
     [Column("country")]
     public string Country { get; set; } = string.Empty;
 

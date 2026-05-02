@@ -22,13 +22,13 @@ namespace BookingBoardGames.Src.ViewModels
             IUserRepository userRepository,
             IValidator<Dictionary<string, string>, Address> validator)
         {
-            CurrentId = currentUserId;
-            MapService = mapService;
-            UserRepository = userRepository;
-            Validator = validator;
-            CurrentUser = UserRepository.GetById(currentUserId);
-            CurrentAddress = CurrentUser != null
-                ? new Address(CurrentUser.Country, CurrentUser.City, CurrentUser.Street, CurrentUser.StreetNumber)
+            this.CurrentId = currentUserId;
+            this.MapService = mapService;
+            this.UserRepository = userRepository;
+            this.Validator = validator;
+            this.CurrentUser = this.UserRepository.GetById(currentUserId);
+            this.CurrentAddress = this.CurrentUser != null
+                ? new Address(this.CurrentUser.Country, this.CurrentUser.City, this.CurrentUser.Street, this.CurrentUser.StreetNumber)
                 : new Address();
         }
 
@@ -56,51 +56,51 @@ namespace BookingBoardGames.Src.ViewModels
 
         public void Initialize(int userId)
         {
-            CurrentId = userId;
-            CurrentUser = UserRepository.GetById(userId);
+            this.CurrentId = userId;
+            this.CurrentUser = this.UserRepository.GetById(userId);
 
-            if (CurrentUser != null)
+            if (this.CurrentUser != null)
             {
-                CurrentAddress = new Address(
-                    CurrentUser.Country,
-                    CurrentUser.City,
-                    CurrentUser.Street,
-                    CurrentUser.StreetNumber);
+                this.CurrentAddress = new Address(
+                    this.CurrentUser.Country,
+                    this.CurrentUser.City,
+                    this.CurrentUser.Street,
+                    this.CurrentUser.StreetNumber);
             }
         }
 
         public void OnFieldChange(string fieldName, string newValue)
         {
-            typeof(Address).GetProperty(fieldName)?.SetValue(CurrentAddress, newValue);
+            typeof(Address).GetProperty(fieldName)?.SetValue(this.CurrentAddress, newValue);
 
-            if (ValidationErrors.Remove(fieldName))
+            if (this.ValidationErrors.Remove(fieldName))
             {
-                StateChanged?.Invoke();
+                this.StateChanged?.Invoke();
             }
         }
 
         public void OpenMap()
         {
-            IsMapVisible = true;
-            StateChanged?.Invoke();
+            this.IsMapVisible = true;
+            this.StateChanged?.Invoke();
         }
 
         public void CloseMap()
         {
-            IsMapVisible = false;
-            StateChanged?.Invoke();
+            this.IsMapVisible = false;
+            this.StateChanged?.Invoke();
         }
 
         public async Task ConfirmMapLocationAsync(double latitude, double longitude)
         {
             Debug.WriteLine($"--- CONFIRM LOCATION CLICKED --- Lat: {latitude}, Lon: {longitude}");
-            Address resolved = await MapService.GetAddressFromMapAsync(latitude, longitude);
+            Address resolved = await this.MapService.GetAddressFromMapAsync(latitude, longitude);
 
             if (resolved != null)
             {
-                CurrentAddress = resolved;
-                IsMapVisible = false;
-                StateChanged?.Invoke();
+                this.CurrentAddress = resolved;
+                this.IsMapVisible = false;
+                this.StateChanged?.Invoke();
             }
             else
             {
@@ -110,17 +110,17 @@ namespace BookingBoardGames.Src.ViewModels
 
         public void SubmitDelivery()
         {
-            ValidationErrors = Validator.Validate(CurrentAddress);
-            StateChanged?.Invoke();
+            this.ValidationErrors = this.Validator.Validate(this.CurrentAddress);
+            this.StateChanged?.Invoke();
 
-            if (ValidationErrors.Count == 0)
+            if (this.ValidationErrors.Count == 0)
             {
-                if (IsSaveAddress && CurrentUser is not null)
+                if (this.IsSaveAddress && this.CurrentUser is not null)
                 {
-                    UserRepository.SaveAddress(CurrentUser.Id, CurrentAddress);
+                    this.UserRepository.SaveAddress(this.CurrentUser.Id, this.CurrentAddress);
                 }
 
-                OnNavigateToPayment?.Invoke();
+                this.OnNavigateToPayment?.Invoke();
             }
         }
     }

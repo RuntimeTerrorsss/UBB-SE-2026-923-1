@@ -5,6 +5,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("games")]
 public class Game
 {
+    public Game(string name, decimal pricePerDay, int minimumPlayerNumber, int maximumPlayerNumber, string description, int ownerId)
+    {
+        Name = name;
+        PricePerDay = pricePerDay;
+        MinimumPlayerNumber = minimumPlayerNumber;
+        MaximumPlayerNumber = maximumPlayerNumber;
+        Description = description;
+        OwnerId = ownerId;
+        IsActive = true;
+    }
+
+    private Game()
+    {
+    }
+
     [Key]
     [Column("id")]
     public int Id { get; set; }

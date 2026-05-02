@@ -23,11 +23,11 @@ namespace BookingBoardGames.Src.Services
         /// <param name="paymentId">of payment to set file path to</param>
         public void GenerateReceipt(int paymentId)
         {
-            Payment paymentToUpdate = paymentRepository.GetPaymentByIdentifier(paymentId);
+            Payment paymentToUpdate = this.paymentRepository.GetPaymentByIdentifier(paymentId);
 
-            paymentToUpdate.ReceiptFilePath = receiptService.GenerateReceiptRelativePath(paymentToUpdate.RequestId);
+            paymentToUpdate.ReceiptFilePath = this.receiptService.GenerateReceiptRelativePath(paymentToUpdate.RequestId);
 
-            paymentRepository.UpdatePayment(paymentToUpdate);
+            this.paymentRepository.UpdatePayment(paymentToUpdate);
         }
 
         /// <summary>
@@ -37,15 +37,15 @@ namespace BookingBoardGames.Src.Services
         /// <returns>full path to pdf</returns>
         public string GetReceipt(int paymentId)
         {
-            Payment paymentToRead = paymentRepository.GetPaymentByIdentifier(paymentId);
+            Payment paymentToRead = this.paymentRepository.GetPaymentByIdentifier(paymentId);
 
             if (string.IsNullOrEmpty(paymentToRead.ReceiptFilePath))
             {
-                GenerateReceipt(paymentId);
-                paymentToRead = paymentRepository.GetPaymentByIdentifier(paymentId);
+                this.GenerateReceipt(paymentId);
+                paymentToRead = this.paymentRepository.GetPaymentByIdentifier(paymentId);
             }
 
-            return receiptService.GetReceiptDocument(paymentToRead);
+            return this.receiptService.GetReceiptDocument(paymentToRead);
         }
     }
 }

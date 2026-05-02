@@ -40,16 +40,16 @@ namespace BookingBoardGames.Src.Services
             this.ConversationRepository = conversationRepo;
             this.userRepository = userRepo;
 
-            this.ConversationRepository.Subscribe(UserId, this);
+            this.ConversationRepository.Subscribe(this.UserId, this);
         }
 
         public List<ConversationDTO> FetchConversations()
         {
             List<ConversationDTO> conversationList = new List<ConversationDTO>();
 
-            foreach (var conversation in this.ConversationRepository.GetConversationsForUser(UserId))
+            foreach (var conversation in this.ConversationRepository.GetConversationsForUser(this.UserId))
             {
-                conversationList.Add(ConversationToConversationDTO(conversation));
+                conversationList.Add(this.ConversationToConversationDTO(conversation));
             }
 
             return conversationList;
@@ -57,32 +57,32 @@ namespace BookingBoardGames.Src.Services
 
         public string GetOtherUserNameByConversationDTO(ConversationDTO conversation)
         {
-            int otherUserId = conversation.Participants.First(participantItem => participantItem.UserId != UserId).UserId;
+            int otherUserId = conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId;
             var user = this.userRepository.GetById(otherUserId);
             return user?.Username ?? "Unknown User";
         }
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
         {
-            return userRepository.GetById(message.SenderId == UserId ? message.ReceiverId : message.SenderId).Username ?? "Unknown User";
+            return this.userRepository.GetById(message.SenderId == this.UserId ? message.ReceiverId : message.SenderId).Username ?? "Unknown User";
         }
 
         public void SendMessage(MessageDataTransferObject message)
         {
-            this.ConversationRepository.HandleNewMessage(MessageDTOToMessage(message));
+            this.ConversationRepository.HandleNewMessage(this.MessageDTOToMessage(message));
         }
 
         public void UpdateMessage(MessageDataTransferObject message)
         {
-            this.ConversationRepository.HandleMessageUpdate(MessageDTOToMessage(message));
+            this.ConversationRepository.HandleMessageUpdate(this.MessageDTOToMessage(message));
         }
 
         public void SendReadReceipt(ConversationDTO conversation)
         {
             this.ConversationRepository.HandleReadReceipt(new ReadReceiptDTO(
                 conversation.Id,
-                UserId,
-                conversation.Participants.First(participantItem => participantItem.UserId != UserId).UserId,
+                this.UserId,
+                conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId,
                 DateTime.Now));
         }
 
@@ -109,28 +109,28 @@ namespace BookingBoardGames.Src.Services
 
         public void OnMessageReceived(Message message)
         {
-            MessageDataTransferObject messageDTO = MessageToMessageDTO(message);
-            string userName = GetOtherUserNameByMessageDTO(messageDTO);
-            ActionMessageProcessed?.Invoke(messageDTO, userName);
+            MessageDataTransferObject messageDTO = this.MessageToMessageDTO(message);
+            string userName = this.GetOtherUserNameByMessageDTO(messageDTO);
+            this.ActionMessageProcessed?.Invoke(messageDTO, userName);
         }
 
         public void OnConversationReceived(Conversation conversation)
         {
-            ConversationDTO conversationDTO = ConversationToConversationDTO(conversation);
-            string userName = GetOtherUserNameByConversationDTO(conversationDTO);
-            ActionConversationProcessed?.Invoke(conversationDTO, userName);
+            ConversationDTO conversationDTO = this.ConversationToConversationDTO(conversation);
+            string userName = this.GetOtherUserNameByConversationDTO(conversationDTO);
+            this.ActionConversationProcessed?.Invoke(conversationDTO, userName);
         }
 
         public void OnReadReceiptReceived(ReadReceiptDTO readReceipt)
         {
-            ActionReadReceiptProcessed?.Invoke(readReceipt);
+            this.ActionReadReceiptProcessed?.Invoke(readReceipt);
         }
 
         public void OnMessageUpdateReceived(Message message)
         {
-            MessageDataTransferObject messageDTO = MessageToMessageDTO(message);
-            string userName = GetOtherUserNameByMessageDTO(messageDTO);
-            ActionMessageUpdateProcessed?.Invoke(messageDTO, userName);
+            MessageDataTransferObject messageDTO = this.MessageToMessageDTO(message);
+            string userName = this.GetOtherUserNameByMessageDTO(messageDTO);
+            this.ActionMessageUpdateProcessed?.Invoke(messageDTO, userName);
         }
 
         public Message MessageDTOToMessage(MessageDataTransferObject messageDto)
@@ -260,7 +260,7 @@ namespace BookingBoardGames.Src.Services
         {
             var messageDTOs = conversation.Messages
                 .OrderBy(messageItem => messageItem.MessageSentTime)
-                .Select(messageItem => MessageToMessageDTO(messageItem))
+                .Select(messageItem => this.MessageToMessageDTO(messageItem))
                 .ToList();
 
             var participantsOrdered = conversation.Participants

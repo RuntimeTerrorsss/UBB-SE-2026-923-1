@@ -24,7 +24,7 @@ public class ChatPageViewModel
 
     public ConversationService ConversationService
     {
-        get => conversationService;
+        get => this.conversationService;
     }
 
     private List<ConversationDTO> conversations = new();
@@ -40,31 +40,31 @@ public class ChatPageViewModel
 
     public ChatPageViewModel(int currentUser, ConversationService service, IUserRepository userRepository)
     {
-        LeftPanelModelView = new LeftPanelViewModel();
-        ChatModelView = new ChatViewModel(currentUser);
-        currentUserId = currentUser;
+        this.LeftPanelModelView = new LeftPanelViewModel();
+        this.ChatModelView = new ChatViewModel(currentUser);
+        this.currentUserId = currentUser;
 
-        LeftPanelModelView.PropertyChanged += OnLeftPanelPropertyChanged;
-        ChatModelView.MessageSent += OnMessageSent;
-        ChatModelView.BookingRequestUpdate += UpdateBookingRequest;
-        ChatModelView.CashAgreementAccept += UpdateCashAgreement;
+        this.LeftPanelModelView.PropertyChanged += this.OnLeftPanelPropertyChanged;
+        this.ChatModelView.MessageSent += this.OnMessageSent;
+        this.ChatModelView.BookingRequestUpdate += this.UpdateBookingRequest;
+        this.ChatModelView.CashAgreementAccept += this.UpdateCashAgreement;
 
-        conversationService = service;
-        conversations = conversationService.FetchConversations();
+        this.conversationService = service;
+        this.conversations = this.conversationService.FetchConversations();
 
-        foreach (var conversationItem in conversations)
+        foreach (var conversationItem in this.conversations)
         {
-            LeftPanelModelView.HandleIncomingConversation(
+            this.LeftPanelModelView.HandleIncomingConversation(
                 conversationItem,
-                conversationService.GetOtherUserNameByConversationDTO(conversationItem),
-                currentUserId,
+                this.conversationService.GetOtherUserNameByConversationDTO(conversationItem),
+                this.currentUserId,
                 userRepository);
         }
 
-        conversationService.ActionMessageProcessed += OnMessageReceived;
-        conversationService.ActionConversationProcessed += OnConversationReceived;
-        conversationService.ActionReadReceiptProcessed += OnReadReceiptReceived;
-        conversationService.ActionMessageUpdateProcessed += OnMessageUpdateReceived;
+        this.conversationService.ActionMessageProcessed += this.OnMessageReceived;
+        this.conversationService.ActionConversationProcessed += this.OnConversationReceived;
+        this.conversationService.ActionReadReceiptProcessed += this.OnReadReceiptReceived;
+        this.conversationService.ActionMessageUpdateProcessed += this.OnMessageUpdateReceived;
     }
 
     private void OnLeftPanelPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -73,120 +73,127 @@ public class ChatPageViewModel
         {
             return;
         }
-        if (LeftPanelModelView.SelectedConversation == null)
+
+        if (this.LeftPanelModelView.SelectedConversation == null)
         {
             return;
         }
 
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == LeftPanelModelView.SelectedConversation.ConversationId);
+        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == this.LeftPanelModelView.SelectedConversation.ConversationId);
         if (matchedConversation == null)
         {
             return;
         }
 
-        int selectedConversationOtherUserUnreadCount = matchedConversation.UnreadCount.FirstOrDefault(unreadItem => unreadItem.Key != currentUserId).Value;
-        ChatModelView.LoadConversation(LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, selectedConversationOtherUserUnreadCount);
+        int selectedConversationOtherUserUnreadCount = matchedConversation.UnreadCount.FirstOrDefault(unreadItem => unreadItem.Key != this.currentUserId).Value;
+        this.ChatModelView.LoadConversation(this.LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, selectedConversationOtherUserUnreadCount);
 
-        SendReadReceipt(matchedConversation);
+        this.SendReadReceipt(matchedConversation);
     }
 
     private void OnMessageSent(MessageDataTransferObject message)
     {
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
+        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
         int receiverUserId = matchedConversation.Participants.First(participantItem => participantItem.UserId != message.SenderId).UserId;
         message = message with { ReceiverId = receiverUserId };
-        conversationService.SendMessage(message);
+        this.conversationService.SendMessage(message);
     }
 
     private void SendReadReceipt(ConversationDTO conversation)
     {
-        conversationService.SendReadReceipt(conversation);
+        this.conversationService.SendReadReceipt(conversation);
     }
 
     private void OnSendMessageUpdate(MessageDataTransferObject message)
     {
-        conversationService.UpdateMessage(message);
+        this.conversationService.UpdateMessage(message);
     }
 
     private void OnMessageReceived(MessageDataTransferObject message, string senderName)
     {
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
+        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
 
         matchedConversation?.AddMessageToListDTO(message);
 
-        LeftPanelModelView.HandleIncomingMessage(message, senderName);
-        ChatModelView.HandleIncomingMessage(message);
-        if (ChatModelView.ConversationId == message.ConversationId)
+        this.LeftPanelModelView.HandleIncomingMessage(message, senderName);
+        this.ChatModelView.HandleIncomingMessage(message);
+        if (this.ChatModelView.ConversationId == message.ConversationId)
         {
-            SendReadReceipt(matchedConversation);
+            this.SendReadReceipt(matchedConversation);
         }
     }
 
     private void UpdateBookingRequest(int messageId, int conversationId, bool accepted, bool resolved)
     {
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == conversationId);
+        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == conversationId);
         var targetMessage = matchedConversation?.MessageList.FirstOrDefault(messageItem => messageItem.Id == messageId);
         if (targetMessage == null)
         {
             return;
         }
+
         targetMessage = targetMessage with { IsResolved = resolved, IsAccepted = accepted };
-        OnSendMessageUpdate(targetMessage);
+        this.OnSendMessageUpdate(targetMessage);
     }
 
     private void UpdateCashAgreement(int messageId, int conversationId)
     {
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == conversationId);
+        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == conversationId);
         var targetMessage = matchedConversation?.MessageList.FirstOrDefault(messageItem => messageItem.Id == messageId);
         if (targetMessage == null)
         {
             return;
         }
-        if (currentUserId == targetMessage.SenderId)
+
+        if (this.currentUserId == targetMessage.SenderId)
         {
             targetMessage = targetMessage with { IsAcceptedBySeller = true };
         }
-        if (currentUserId == targetMessage.ReceiverId)
+
+        if (this.currentUserId == targetMessage.ReceiverId)
         {
             targetMessage = targetMessage with { IsAcceptedByBuyer = true };
         }
-        OnSendMessageUpdate(targetMessage);
+
+        this.OnSendMessageUpdate(targetMessage);
     }
 
     private void OnConversationReceived(ConversationDTO conversation, string otherUsername)
     {
-        conversations.Add(conversation);
-        LeftPanelModelView.HandleIncomingConversation(conversation, otherUsername, currentUserId);
+        this.conversations.Add(conversation);
+        this.LeftPanelModelView.HandleIncomingConversation(conversation, otherUsername, this.currentUserId);
     }
 
     private void OnReadReceiptReceived(ReadReceiptDTO readReceipt)
     {
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == readReceipt.ConversationId);
+        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == readReceipt.ConversationId);
         matchedConversation.LastRead[readReceipt.ReaderId] = readReceipt.ReceiptTimeStamp;
         matchedConversation.UpdateUnreadCounts();
-        if (ChatModelView.ConversationId == readReceipt.ConversationId && readReceipt.ReaderId != currentUserId)
+        if (this.ChatModelView.ConversationId == readReceipt.ConversationId && readReceipt.ReaderId != this.currentUserId)
         {
-            ChatModelView.LoadConversation(LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, matchedConversation.UnreadCount[readReceipt.ReaderId]);
+            this.ChatModelView.LoadConversation(this.LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, matchedConversation.UnreadCount[readReceipt.ReaderId]);
         }
     }
 
     private void OnMessageUpdateReceived(MessageDataTransferObject updatedMessage, string senderName)
     {
         int noUnreadMessagesCount = 0;
-        var matchedConversation = conversations.FirstOrDefault(conversationItem => conversationItem.Id == updatedMessage.ConversationId);
+        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == updatedMessage.ConversationId);
         if (matchedConversation == null)
         {
             return;
         }
+
         for (int i = 0; i < matchedConversation.MessageList.Count; i++)
         {
             if (matchedConversation.MessageList[i].Id == updatedMessage.Id)
             {
                 matchedConversation.MessageList[i] = updatedMessage;
-                if (ChatModelView.ConversationId == updatedMessage.ConversationId)
+                if (this.ChatModelView.ConversationId == updatedMessage.ConversationId)
                 {
-                    ChatModelView.LoadConversation(LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, noUnreadMessagesCount);
+                    this.ChatModelView.LoadConversation(this.LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, noUnreadMessagesCount);
                 }
+
                 break;
             }
         }

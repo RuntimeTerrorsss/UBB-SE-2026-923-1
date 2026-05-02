@@ -41,9 +41,9 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public void MarkAsRead()
         {
-            if (statusIcon != null)
+            if (this.statusIcon != null)
             {
-                statusIcon.Text = "\uE73E\uE73E";
+                this.statusIcon.Text = "\uE73E\uE73E";
             }
         }
 
@@ -53,7 +53,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
             double topMargin = 1;
             double rightMargin = 2;
 
-            statusIcon = new TextBlock
+            this.statusIcon = new TextBlock
             {
                 Text = isRead ? "\uE73E\uE73E" : "\uE73E",
                 Margin = new Thickness(0, topMargin, rightMargin, 0),
@@ -62,7 +62,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 FontSize = smallIconFontSize,
                 Foreground = (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"]
             };
-            return statusIcon;
+            return this.statusIcon;
         }
 
         public void SetMessage(MessageViewModel message, int currentUserId)
@@ -70,23 +70,23 @@ namespace BookingBoardGames.Src.Views.ChatViews
             switch (message.Type)
             {
                 case MessageType.MessageSystem:
-                    RenderSystemMessage(message);
+                    this.RenderSystemMessage(message);
                     break;
 
                 case MessageType.MessageText:
-                    RenderTextMessage(message, currentUserId);
+                    this.RenderTextMessage(message, currentUserId);
                     break;
 
                 case MessageType.MessageImage:
-                    RenderImageMessage(message, currentUserId);
+                    this.RenderImageMessage(message, currentUserId);
                     break;
 
                 case MessageType.MessageRentalRequest:
-                    RenderBookingRequest(message, currentUserId);
+                    this.RenderBookingRequest(message, currentUserId);
                     break;
 
                 case MessageType.MessageCashAgreement:
-                    RenderCashAgreement(message, currentUserId);
+                    this.RenderCashAgreement(message, currentUserId);
                     break;
             }
         }
@@ -120,7 +120,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
                     textBlock.Inlines.Add(new Run { Text = currentPath });
                 }
             }
-            MessagePresenter.Content = textBlock;
+
+            this.MessagePresenter.Content = textBlock;
         }
 
         private void RenderTextMessage(MessageViewModel message, int currentUserId)
@@ -181,9 +182,10 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
             if (isMine)
             {
-                stackPanel.Children.Add(CreateStatusIcon(message.IsRead));
+                stackPanel.Children.Add(this.CreateStatusIcon(message.IsRead));
             }
-            MessagePresenter.Content = stackPanel;
+
+            this.MessagePresenter.Content = stackPanel;
         }
 
         private void RenderImageMessage(MessageViewModel message, int currentUserId)
@@ -252,12 +254,12 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 catch (Exception exception)
                 {
                     System.Diagnostics.Debug.WriteLine($"Error loading image: {exception.Message}");
-                    imageBorder.Child = CreateImagePlaceholder();
+                    imageBorder.Child = this.CreateImagePlaceholder();
                 }
             }
             else
             {
-                imageBorder.Child = CreateImagePlaceholder();
+                imageBorder.Child = this.CreateImagePlaceholder();
             }
 
             outerBorder.Child = imageBorder;
@@ -265,10 +267,10 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
             if (isMine)
             {
-                stackPanel.Children.Add(CreateStatusIcon(message.IsRead));
+                stackPanel.Children.Add(this.CreateStatusIcon(message.IsRead));
             }
 
-            MessagePresenter.Content = stackPanel;
+            this.MessagePresenter.Content = stackPanel;
         }
 
         private StackPanel CreateImagePlaceholder()
@@ -376,8 +378,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
                     MinWidth = minimumButtonWidth
                 };
 
-                acceptActionButton.Click += (sender, routedEventArgs) => AcceptRequested?.Invoke(this, message.Id);
-                declineActionButton.Click += (sender, routedEventArgs) => DeclineRequested?.Invoke(this, message.Id);
+                acceptActionButton.Click += (sender, routedEventArgs) => this.AcceptRequested?.Invoke(this, message.Id);
+                declineActionButton.Click += (sender, routedEventArgs) => this.DeclineRequested?.Invoke(this, message.Id);
 
                 actionButtonPanel.Children.Add(acceptActionButton);
                 actionButtonPanel.Children.Add(declineActionButton);
@@ -400,7 +402,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                         MinWidth = minimumButtonWidth
                     };
 
-                    cancelRequestButton.Click += (sender, routedEventArgs) => CancelRequested?.Invoke(this, message.Id);
+                    cancelRequestButton.Click += (sender, routedEventArgs) => this.CancelRequested?.Invoke(this, message.Id);
 
                     cancelPanel.Children.Add(cancelRequestButton);
                     stackPanel.Children.Add(cancelPanel);
@@ -420,7 +422,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                         MinWidth = minimumButtonWidth
                     };
 
-                    proceedPaymentButton.Click += (sender, routedEventArgs) => ProceedToPaymentRequested?.Invoke(this, (currentUserId, message.RequestId, message.Id));
+                    proceedPaymentButton.Click += (sender, routedEventArgs) => this.ProceedToPaymentRequested?.Invoke(this, (currentUserId, message.RequestId, message.Id));
 
                     paymentPanel.Children.Add(proceedPaymentButton);
                     stackPanel.Children.Add(paymentPanel);
@@ -428,7 +430,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
             }
 
             border.Child = stackPanel;
-            MessagePresenter.Content = border;
+            this.MessagePresenter.Content = border;
         }
 
         private void RenderCashAgreement(MessageViewModel message, int currentUserId)
@@ -489,12 +491,12 @@ namespace BookingBoardGames.Src.Views.ChatViews
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Style = (Style)Application.Current.Resources["AccentButtonStyle"]
                 };
-                confirmAgreementButton.Click += (sender, routedEventArgs) => AgreementAccepted(this, message.Id);
+                confirmAgreementButton.Click += (sender, routedEventArgs) => this.AgreementAccepted(this, message.Id);
                 stackPanel.Children.Add(confirmAgreementButton);
             }
 
             border.Child = stackPanel;
-            MessagePresenter.Content = border;
+            this.MessagePresenter.Content = border;
         }
     }
 }

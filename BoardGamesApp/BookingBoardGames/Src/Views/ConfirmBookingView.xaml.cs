@@ -133,6 +133,7 @@ public sealed partial class ConfirmBookingView : Page
                 {
                     calendarSender.SelectedDates.Add(date);
                 }
+
                 return;
             }
 

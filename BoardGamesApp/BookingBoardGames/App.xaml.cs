@@ -46,7 +46,7 @@ namespace BookingBoardGames
         public static IConversationRepository? ConversationRepository { get; private set; }
 
         // Services
-        public static InterfaceGeographicalService? GlobalGeoService { get; private set; }
+        public static InterfaceGeographicalService? GlobalGeographicalService { get; private set; }
 
         public static IRentalService? RentalService { get; private set; }
 
@@ -88,7 +88,7 @@ namespace BookingBoardGames
             ConversationRepository = new ConversationRepository(); // add context
 
             // Services
-            GlobalGeoService = new GeographicalService();
+            GlobalGeographicalService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
             CardPaymentService = new CardPaymentService(PaymentRepository, UserRepository, ReceiptService, RentalService);
@@ -96,7 +96,7 @@ namespace BookingBoardGames
             ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
             CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);
             BookingService = new BookingService(GameRepository, RentalRepository, UserRepository);
-            SearchAndFilterService = new SearchAndFilterService(GameRepository, UserRepository, RentalRepository, GlobalGeoService);
+            SearchAndFilterService = new SearchAndFilterService(GameRepository, UserRepository, RentalRepository, GlobalGeographicalService);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace BookingBoardGames
 
             try
             {
-                GlobalGeoService = await GeographicalService.LoadFromFileAsync();
+                GlobalGeographicalService = await GeographicalService.LoadFromFileAsync();
             }
             catch (Exception ex)
             {

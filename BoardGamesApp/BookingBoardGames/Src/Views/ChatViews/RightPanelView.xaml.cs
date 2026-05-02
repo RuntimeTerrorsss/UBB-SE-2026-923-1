@@ -18,42 +18,42 @@ using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-namespace BookingBoardgamesILoveBan.Src.Chat.View
+namespace BookingBoardGames.Src.Views.ChatViews
 {
     public sealed partial class RightPanelView : UserControl
     {
-        public event EventHandler<(int userId, int requestId, int messageId)>? ProceedToPaymentRequested;
+        public event EventHandler<(int UserId, int RequestId, int MessageId)>? ProceedToPaymentRequested;
 
         public RightPanelView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
-            ActiveChat.ProceedToPaymentRequested += (sender, paymentArguments) => ProceedToPaymentRequested?.Invoke(sender, paymentArguments);
+            this.ActiveChat.ProceedToPaymentRequested += (sender, paymentArguments) => this.ProceedToPaymentRequested?.Invoke(sender, paymentArguments);
         }
 
         public ChatViewModel ChatViewModel
         {
             set
             {
-                ActiveChat.ViewModel = value;
+                this.ActiveChat.ViewModel = value;
             }
         }
 
         public int CurrentUserId
         {
-            set => ActiveChat.CurrentUserId = value;
+            set => this.ActiveChat.CurrentUserId = value;
         }
 
         private bool isConversationSelected = false;
 
         public bool IsConversationSelected
         {
-            get => isConversationSelected;
+            get => this.isConversationSelected;
             set
             {
-                isConversationSelected = value;
-                WelcomePlaceholder.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
-                ActiveChat.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+                this.isConversationSelected = value;
+                this.WelcomePlaceholder.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
+                this.ActiveChat.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
             }
         }
     }

@@ -21,7 +21,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
 
-namespace BookingBoardgamesILoveBan.Src.Chat.View
+namespace BookingBoardGames.Src.Views.ChatViews
 {
     public sealed partial class LeftPanelView : UserControl
     {
@@ -29,32 +29,32 @@ namespace BookingBoardgamesILoveBan.Src.Chat.View
 
         public LeftPanelViewModel ViewModel
         {
-            get => viewModel;
+            get => this.viewModel;
             set
             {
-                viewModel = value;
-                viewModel.PropertyChanged += (sender, propertyChangedEventArgs) => RefreshVisibility();
-                RefreshVisibility();
+                this.viewModel = value;
+                this.viewModel.PropertyChanged += (sender, propertyChangedEventArgs) => this.RefreshVisibility();
+                this.RefreshVisibility();
             }
         }
 
         private void RefreshVisibility()
         {
-            EmptyStatePanel.Visibility = ViewModel.IsEmptyStateVisible ? Visibility.Visible : Visibility.Collapsed;
-            NoMatchesPanel.Visibility = ViewModel.IsNoMatchesVisible ? Visibility.Visible : Visibility.Collapsed;
-            ConversationList.Visibility = ViewModel.IsListVisible ? Visibility.Visible : Visibility.Collapsed;
+            this.EmptyStatePanel.Visibility = this.ViewModel.IsEmptyStateVisible ? Visibility.Visible : Visibility.Collapsed;
+            this.NoMatchesPanel.Visibility = this.ViewModel.IsNoMatchesVisible ? Visibility.Visible : Visibility.Collapsed;
+            this.ConversationList.Visibility = this.ViewModel.IsListVisible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public LeftPanelView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         private void ConversationList_SelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
-            if (ConversationList.SelectedItem is ConversationPreviewModel selectedConversation)
+            if (this.ConversationList.SelectedItem is ConversationPreviewModel selectedConversation)
             {
-                ViewModel.SelectedConversation = selectedConversation;
+                this.ViewModel.SelectedConversation = selectedConversation;
             }
         }
     }

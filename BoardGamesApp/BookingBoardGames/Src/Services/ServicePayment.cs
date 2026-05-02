@@ -37,8 +37,8 @@ namespace BookingBoardGames.Src.Services
         /// <returns>A list of all mapped TransactionDto objects.</returns>
         public List<PaymentDataTransferObject> GetAllPaymentsForUI()
         {
-            var allPayments = paymentRepository.GetAllPayments();
-            return MapToDataTransferObject(allPayments);
+            var allPayments = this.paymentRepository.GetAllPayments();
+            return this.MapToDataTransferObject(allPayments);
         }
 
         private bool IsPaymentMethodFilterApplied(PaymentMethod paymentMethod)
@@ -91,18 +91,18 @@ namespace BookingBoardGames.Src.Services
 
         private IEnumerable<HistoryPayment> ApplyFilters(IEnumerable<HistoryPayment> payments, PaymentMethod paymentMethod, string searchQuery, FilterType filter)
         {
-            if (IsPaymentMethodFilterApplied(paymentMethod))
+            if (this.IsPaymentMethodFilterApplied(paymentMethod))
             {
                 string paymentMethodString = paymentMethod.ToString().ToLower();
-                payments = FilterPaymentsByPaymentMethod(paymentMethodString, payments);
+                payments = this.FilterPaymentsByPaymentMethod(paymentMethodString, payments);
             }
 
-            if (IsUserSearching(searchQuery))
+            if (this.IsUserSearching(searchQuery))
             {
-                payments = FilterPaymentsBySearchQuery(searchQuery, payments);
+                payments = this.FilterPaymentsBySearchQuery(searchQuery, payments);
             }
 
-            payments = ApplyDateFilters(payments, filter);
+            payments = this.ApplyDateFilters(payments, filter);
 
             return payments;
         }
@@ -141,7 +141,7 @@ namespace BookingBoardGames.Src.Services
 
             return new PagedResult<PaymentDataTransferObject>
             {
-                Items = MapToDataTransferObject(pagedSource),
+                Items = this.MapToDataTransferObject(pagedSource),
                 TotalCount = totalCount,
                 PageNumber = pageNumber,
                 PageSize = pageSize
@@ -157,12 +157,12 @@ namespace BookingBoardGames.Src.Services
         /// <returns>A filtered/sorted list of mapped TransactionDto objects.</returns>
         public PagedResult<PaymentDataTransferObject> GetFilteredPayments(FilterType filter, PaymentMethod paymentMethod = PaymentMethod.ALL, string searchQuery = "", int pageNumber = 1, int pageSize = 10)
         {
-            var payments = paymentRepository.GetAllPayments().AsEnumerable();
+            var payments = this.paymentRepository.GetAllPayments().AsEnumerable();
 
-            payments = ApplyFilters(payments, paymentMethod, searchQuery, filter);
-            payments = ApplySorting(payments, filter);
+            payments = this.ApplyFilters(payments, paymentMethod, searchQuery, filter);
+            payments = this.ApplySorting(payments, filter);
 
-            return GetPagedResult(payments, pageSize, pageNumber);
+            return this.GetPagedResult(payments, pageSize, pageNumber);
         }
 
         /// <summary>
@@ -176,6 +176,7 @@ namespace BookingBoardGames.Src.Services
             {
                 return PaymentHistoryConstants.NullAmountDefaultValue;
             }
+
             return displayedPayments.Sum(transaction => transaction.Amount);
         }
 
@@ -186,7 +187,7 @@ namespace BookingBoardGames.Src.Services
         /// <returns>The string file path to the Receipt PDF.</returns>
         public string GetReceiptDocumentPath(int paymentId)
         {
-            Payment foundPayment = paymentRepository.GetPaymentById(paymentId);
+            Payment foundPayment = this.paymentRepository.GetPaymentById(paymentId);
 
             if (string.IsNullOrEmpty(foundPayment.ReceiptFilePath))
             {

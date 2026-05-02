@@ -39,18 +39,7 @@ namespace BookingBoardGames.Src.Views
         {
             base.OnNavigatedTo(e);
 
-            //var gamesRepository = new GamesRepository();
-            //var usersRepository = new UsersRepository();
-            //var rentalsRepository = new RentalsRepository();
-            //var geographicalService = App.GlobalGeoService!;
-
-            //var service = new SearchAndFilterService(
-            //    gamesRepository,
-            //    usersRepository,
-            //    rentalsRepository,
-            //    geographicalService);
-
-            this.ViewModel = new DiscoveryViewModel(App.SearchAndFilterService, App.GeographicalService);
+            this.ViewModel = new DiscoveryViewModel(App.SearchAndFilterService, App.GlobalGeographicalService);
 
             this.ViewModel.OnSearchRequest += this.HandleSearchRequest;
             this.ViewModel.OnGameSelectedRequest += gameId =>

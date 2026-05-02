@@ -63,7 +63,7 @@ namespace BookingBoardGames.Src.Services
 
             if (!File.Exists(fullReceiptPath))
             {
-                return CreateReceipt(selectedPayment);
+                return this.CreateReceipt(selectedPayment);
             }
 
             return fullReceiptPath;
@@ -76,7 +76,7 @@ namespace BookingBoardGames.Src.Services
                 throw new InvalidOperationException("Receipt path is missing.");
             }
 
-            string documentPath = GetFullPath(selectedPayment.ReceiptFilePath);
+            string documentPath = this.GetFullPath(selectedPayment.ReceiptFilePath);
 
             string? directoryName = Path.GetDirectoryName(documentPath);
             if (!string.IsNullOrEmpty(directoryName))
@@ -129,7 +129,7 @@ namespace BookingBoardGames.Src.Services
         {
             foreach (string textLine in textSection.Split("\n"))
             {
-                currentYPosition = DrawLine(
+                currentYPosition = this.DrawLine(
                     graphicsContext,
                     pdfPage,
                     font,
@@ -149,9 +149,9 @@ namespace BookingBoardGames.Src.Services
             double currentXPosition,
             double currentYPosition)
         {
-            foreach (string textSection in GetReceiptContent(payment))
+            foreach (string textSection in this.GetReceiptContent(payment))
             {
-                currentYPosition = DrawTextSection(
+                currentYPosition = this.DrawTextSection(
                     graphicsContext,
                     pdfPage,
                     font,
@@ -180,7 +180,7 @@ namespace BookingBoardGames.Src.Services
             double currentXPosition = ReceiptServiceConstants.HorizontalMargin;
             double currentYPosition = ReceiptServiceConstants.VerticalStart;
 
-            currentYPosition = DrawAllSections(
+            currentYPosition = this.DrawAllSections(
                 graphicsContext,
                 pdfPage,
                 font,
@@ -198,12 +198,12 @@ namespace BookingBoardGames.Src.Services
         /// <exception cref="InvalidOperationException">receipt path of transaction is missing</exception>
         private string CreateReceipt(Payment payment)
         {
-            string documentPath = PrepareDocumentPath(payment);
+            string documentPath = this.PrepareDocumentPath(payment);
 
-            using var document = CreateDocument();
+            using var document = this.CreateDocument();
             var page = document.AddPage();
 
-            DrawReceiptContent(document, page, payment);
+            this.DrawReceiptContent(document, page, payment);
             document.Save(documentPath);
 
             return documentPath;
@@ -222,7 +222,7 @@ namespace BookingBoardGames.Src.Services
 
         private string BuildHeader(Payment payment)
         {
-            string issuedDate = GetIssuedDateFromFilename(payment.ReceiptFilePath.Split("\\")[ReceiptServiceConstants.FileNameIndexInPath]);
+            string issuedDate = this.GetIssuedDateFromFilename(payment.ReceiptFilePath.Split("\\")[ReceiptServiceConstants.FileNameIndexInPath]);
 
             return $"Receipt - Boardgame Rental\n" +
                    $"Rental ID: {payment.RequestId}\n" +
@@ -231,9 +231,9 @@ namespace BookingBoardGames.Src.Services
 
         private string BuildRequestInfo(Payment payment, Rental request)
         {
-            var requestedGame = gameRepository.GetGameById(request.GameId);
-            var client = userRepository.GetById(payment.ClientId);
-            var owner = userRepository.GetById(payment.OwnerId);
+            var requestedGame = this.gameRepository.GetGameById(request.GameId);
+            var client = this.userRepository.GetById(payment.ClientId);
+            var owner = this.userRepository.GetById(payment.OwnerId);
 
             string requestInfo = $"Rental Information\n" +
                 $"- Rental ID: {payment.RequestId}\n" +
@@ -282,15 +282,15 @@ namespace BookingBoardGames.Src.Services
         /// <returns>pdf content text</returns>
         private string[] GetReceiptContent(Payment payment)
         {
-            var request = rentalService.GetRentalById(payment.RequestId);
+            var request = this.rentalService.GetRentalById(payment.RequestId);
 
             return new[]
             {
-                BuildHeader(payment),
-                BuildRequestInfo(payment, request),
-                BuildPaymentDetails(payment),
-                BuildConfirmation(payment),
-                BuildSummary()
+                this.BuildHeader(payment),
+                this.BuildRequestInfo(payment, request),
+                this.BuildPaymentDetails(payment),
+                this.BuildConfirmation(payment),
+                this.BuildSummary()
             };
         }
 

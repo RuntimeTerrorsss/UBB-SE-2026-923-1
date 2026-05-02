@@ -6,6 +6,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("rentals")]
 public class Rental
 {
+    public Rental(DateTime startDate, DateTime endDate, int gameId, int clientId, int ownerId, decimal? totalPrice = null)
+    {
+        StartDate = startDate;
+        EndDate = endDate;
+        GameId = gameId;
+        ClientId = clientId;
+        OwnerId = ownerId;
+        TotalPrice = totalPrice;
+    }
+
+    private Rental()
+    {
+    }
+
     [Key]
     [Column("id")]
     public int RentalId { get; set; }
