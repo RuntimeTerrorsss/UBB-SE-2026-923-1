@@ -60,7 +60,6 @@ public class Payment
     public User? Owner { get; set; }
 }
 
-[Table("history_payments")]
 public class HistoryPayment : Payment
 {
     public HistoryPayment(decimal paidAmount, int requestId, int clientId, int ownerId, string? gameName, string? ownerName)

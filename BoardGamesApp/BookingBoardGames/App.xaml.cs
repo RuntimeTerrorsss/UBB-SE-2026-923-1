@@ -33,7 +33,7 @@ namespace BookingBoardGames
             this.InitializeComponent();
 
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseSqlServer(DatabaseConfig.ConnectionString)
+                .UseSqlServer(DatabaseConfig.ResolveConnectionString())
                 .Options;
 
             AppDbContext = new AppDbContext(options);

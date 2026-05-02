@@ -3,16 +3,51 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 
 namespace BookingBoardGames
 {
     public static class DatabaseConfig
     {
-        // change this to your server
-        public const string ConnectionString = "Server=(localdb)\\MSSQLLocalDB;Database=MergedBoardGamesDb;Trusted_Connection=True;TrustServerCertificate=True;";
+        private const string DatabaseName = "MergedBoardGamesDb";
+
+        public static string ResolveConnectionString()
+        {
+            string? overrideConnection = Environment.GetEnvironmentVariable("BOOKINGBOARDGAMES_DB_CONNECTION");
+            if (!string.IsNullOrWhiteSpace(overrideConnection))
+            {
+                return overrideConnection;
+            }
+
+            string[] candidates =
+            {
+                $"Server=(localdb)\\MSSQLLocalDB;Database={DatabaseName};Trusted_Connection=True;TrustServerCertificate=True;",
+                $"Server=.\\SQLEXPRESS;Database={DatabaseName};Trusted_Connection=True;TrustServerCertificate=True;",
+            };
+
+            foreach (string candidate in candidates)
+            {
+                if (CanConnect(candidate))
+                {
+                    return candidate;
+                }
+            }
+
+            return candidates[0];
+        }
+
+        private static bool CanConnect(string connectionString)
+        {
+            try
+            {
+                using var connection = new SqlConnection(connectionString);
+                connection.Open();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

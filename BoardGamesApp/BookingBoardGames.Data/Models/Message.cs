@@ -46,7 +46,6 @@ public abstract class Message
     public required User Receiver { get; set; }
 }
 
-[Table("text_messages")]
 public class TextMessage : Message
 {
     [SetsRequiredMembers]
@@ -63,7 +62,6 @@ public class TextMessage : Message
     public string? TextMessageContent { get; set; }
 }
 
-[Table("image_messages")]
 public class ImageMessage : Message
 {
     [SetsRequiredMembers]
@@ -79,7 +77,6 @@ public class ImageMessage : Message
     public string? MessageImageUrl { get; set; }
 }
 
-[Table("system_messages")]
 public class SystemMessage : Message
 {
     [SetsRequiredMembers]
@@ -96,7 +93,6 @@ public class SystemMessage : Message
     public string? MessageContent { get; set; }
 }
 
-[Table("rental_request_messages")]
 public class RentalRequestMessage : Message
 {
     [SetsRequiredMembers]
@@ -127,7 +123,6 @@ public class RentalRequestMessage : Message
     public Rental? RentalRequest { get; set; }
 }
 
-[Table("cash_agreement_messages")]
 public class CashAgreementMessage : Message
 {
     [SetsRequiredMembers]
