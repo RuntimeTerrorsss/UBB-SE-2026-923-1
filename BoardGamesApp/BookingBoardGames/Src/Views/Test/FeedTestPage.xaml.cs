@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-namespace SearchAndBook.Views.Test
-=======
 // <copyright file="FeedTestPage.xaml.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,12 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace BookingBoardGames.Src.Views.Test
->>>>>>> Stashed changes
 {
-    using System.Collections.Generic;
-    using Microsoft.UI.Xaml.Controls;
-    using Microsoft.UI.Xaml.Media.Imaging;
-
     /// <summary>
     /// Represents a test page for the games feed, used to verify the visual layout with mock data.
     /// </summary>
@@ -80,31 +72,31 @@ namespace BookingBoardGames.Src.Views.Test
         /// <summary>
         /// Gets or sets the unique identifier for the game.
         /// </summary>
-        required public int GameId { get; set; }
+        public required int GameId { get; set; }
 
         /// <summary>
         /// Gets or sets the title of the game.
         /// </summary>
-        required public string Title { get; set; }
+        public required string Title { get; set; }
 
         /// <summary>
         /// Gets or sets the location where the game is available.
         /// </summary>
-        required public string Location { get; set; }
+        public required string Location { get; set; }
 
         /// <summary>
         /// Gets or sets the text describing the number of players.
         /// </summary>
-        required public string PlayersText { get; set; }
+        public required string PlayersText { get; set; }
 
         /// <summary>
         /// Gets or sets the text describing the rental price.
         /// </summary>
-        required public string PriceText { get; set; }
+        public required string PriceText { get; set; }
 
         /// <summary>
         /// Gets or sets the source image for the game thumbnail.
         /// </summary>
-        required public BitmapImage ImageSource { get; set; }
+        public required BitmapImage ImageSource { get; set; }
     }
 }

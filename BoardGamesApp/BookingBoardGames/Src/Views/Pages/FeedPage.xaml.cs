@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-namespace SearchAndBook.Views.Pages
-=======
 // <copyright file="FeedPage.xaml.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,10 +5,7 @@ namespace SearchAndBook.Views.Pages
 using Microsoft.UI.Xaml.Controls;
 
 namespace BookingBoardGames.Src.Views.Pages
->>>>>>> Stashed changes
 {
-    using Microsoft.UI.Xaml.Controls;
-
     /// <summary>
     /// Represents the main feed page where users can browse and discover games.
     /// </summary>

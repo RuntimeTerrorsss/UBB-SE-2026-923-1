@@ -1,20 +1,16 @@
-<<<<<<< Updated upstream
-﻿using System;
-=======
 // <copyright file="PaymentHistoryViewModel.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
 using System;
->>>>>>> Stashed changes
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.ViewModels
@@ -22,6 +18,7 @@ namespace BookingBoardGames.Src.ViewModels
     public class FilterOption
     {
         public FilterType Type { get; set; }
+
         public string DisplayName { get; set; }
     }
 
@@ -43,7 +40,9 @@ namespace BookingBoardGames.Src.ViewModels
         public ObservableCollection<PaymentDataTransferObject> Payments { get; set; }
 
         public RelayCommand<PaymentDataTransferObject> OpenReceiptCommand { get; }
+
         public RelayCommandNoParam NextPageCommand { get; }
+
         public RelayCommandNoParam PreviousPageCommand { get; }
 
         public int CurrentPage
@@ -73,6 +72,7 @@ namespace BookingBoardGames.Src.ViewModels
         }
 
         public ObservableCollection<FilterOption> FilterOptions { get; }
+
         public IEnumerable<PaymentMethod> PaymentMethodOptions { get; } = System.Enum.GetValues(typeof(PaymentMethod)).Cast<PaymentMethod>();
 
         public string SearchText
@@ -130,10 +130,6 @@ namespace BookingBoardGames.Src.ViewModels
 
         public decimal TotalAmount
         {
-<<<<<<< Updated upstream
-            get => totalAmount;
-            private set => SetProperty(ref totalAmount, value);
-=======
             get => this.totalAmount;
             private set
             {
@@ -142,7 +138,6 @@ namespace BookingBoardGames.Src.ViewModels
                     this.OnPropertyChanged(nameof(TotalAmountText));
                 }
             }
->>>>>>> Stashed changes
         }
 
         public string TotalAmountText => $"{this.TotalAmount:C}";
@@ -161,7 +156,7 @@ namespace BookingBoardGames.Src.ViewModels
                 new FilterOption { Type = FilterType.Newest, DisplayName = "Date: Newest First" },
                 new FilterOption { Type = FilterType.Oldest, DisplayName = "Date: Oldest First" },
                 new FilterOption { Type = FilterType.AlphabeticalAsc, DisplayName = "Alphabetical (A-Z)" },
-                new FilterOption { Type = FilterType.AlphabeticalDesc, DisplayName = "Alphabetical (Z-A)" }
+                new FilterOption { Type = FilterType.AlphabeticalDesc, DisplayName = "Alphabetical (Z-A)" },
             };
 
             OpenReceiptCommand = new RelayCommand<PaymentDataTransferObject>(OpenReceipt);
