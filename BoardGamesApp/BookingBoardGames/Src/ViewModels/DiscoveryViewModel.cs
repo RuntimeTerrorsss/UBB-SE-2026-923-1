@@ -282,10 +282,10 @@ namespace BookingBoardGames.Src.ViewModels
 
                 var discoveryFeedResult = this.searchAndFilterService.GetDiscoveryFeedPaged(currentUserId, this.CurrentPage, ItemsPerPage);
 
-                this.AvailableTonightGames = discoveryFeedResult.availableTonight;
-                this.OtherAvailableGames = discoveryFeedResult.others;
+                this.AvailableTonightGames = discoveryFeedResult.AvailableTonight;
+                this.OtherAvailableGames = discoveryFeedResult.Others;
                 this.ShowOthersHeader = this.OtherAvailableGames.Any();
-                this.totalAvailableGamesCount = discoveryFeedResult.totalAvailableGamesCount;
+                this.totalAvailableGamesCount = discoveryFeedResult.TotalAvailableGamesCount;
 
                 await this.LoadImagesForGames(this.AvailableTonightGames);
                 await this.LoadImagesForGames(this.OtherAvailableGames);
