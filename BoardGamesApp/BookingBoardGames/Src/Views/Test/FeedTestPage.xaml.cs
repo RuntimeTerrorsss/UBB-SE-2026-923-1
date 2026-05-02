@@ -1,3 +1,6 @@
+<<<<<<< Updated upstream
+namespace SearchAndBook.Views.Test
+=======
 // <copyright file="FeedTestPage.xaml.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -6,8 +9,13 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace SearchAndBook.Views.Test
+namespace BookingBoardGames.Src.Views.Test
+>>>>>>> Stashed changes
 {
+    using System.Collections.Generic;
+    using Microsoft.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Media.Imaging;
+
     /// <summary>
     /// Represents a test page for the games feed, used to verify the visual layout with mock data.
     /// </summary>

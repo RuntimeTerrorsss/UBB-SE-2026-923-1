@@ -16,7 +16,7 @@ namespace BookingBoardGames.Src.Views
         public PaymentHistoryView()
         {
             this.InitializeComponent();
-            this.ViewModel = new PaymentHistoryViewModel(App.ServicePayment);
+            this.ViewModel = new PaymentHistoryViewModel(App.ServicePayment!);
         }
 
         public PaymentHistoryView(PaymentHistoryViewModel viewModel)
@@ -25,7 +25,7 @@ namespace BookingBoardGames.Src.Views
             this.ViewModel = viewModel;
         }
 
-        private void OnReceiptButtonClicked(object sender, RoutedEventArgs e)
+        public void OnReceiptButtonClicked(object sender, RoutedEventArgs e)
         {
             if (sender is Button clickedButton && clickedButton.DataContext is PaymentDataTransferObject selectedPayment)
             {
@@ -45,7 +45,7 @@ namespace BookingBoardGames.Src.Views
             }
         }
 
-        private void OnBackToDashboardClicked(object sender, RoutedEventArgs e)
+        public void OnBackToDashboardClicked(object sender, RoutedEventArgs e)
         {
             var currentParentElement = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(this);
             while (currentParentElement != null && !(currentParentElement is Frame))

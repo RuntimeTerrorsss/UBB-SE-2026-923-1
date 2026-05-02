@@ -1,8 +1,4 @@
-// <copyright file="DashboardView.xaml.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
-using BookingBoardGames.Src.Views.ChatViews;
+using BookingBoardGames.Src.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -22,7 +18,7 @@ namespace BookingBoardGames.Src.Views
 
         private void ChatButton_Click(object sender, RoutedEventArgs e)
         {
-            App.ConversationRepository.CreateConversation(3, 1);
+            App.ConversationRepository?.CreateConversation(3, 1);
             var window1 = new Window();
             var frame1 = new Frame();
             window1.Content = frame1;
@@ -30,13 +26,16 @@ namespace BookingBoardGames.Src.Views
             frame1.Navigate(typeof(ChatPageView), 3);
             window1.Activate();
         }
-
         private void SeeEmptyChat_Click(object sender, RoutedEventArgs e)
         {
             var window1 = new Window();
             var frame1 = new Frame();
             window1.Content = frame1;
-            frame1.Navigate(typeof(ChatPageView), App.NoChatsUser);
+<<<<<<< Updated upstream
+            frame1.Navigate(typeof(ChatPageView), App.NO_CHATS_USER);
+=======
+            frame1.Navigate(typeof(ChatPageView), ((App)Application.Current).NoChatsUser);
+>>>>>>> Stashed changes
             window1.Activate();
         }
     }

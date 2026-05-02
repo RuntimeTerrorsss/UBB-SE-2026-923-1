@@ -8,7 +8,7 @@ namespace BookingBoardGames.Data
         public AppDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=MergedBoardGamesDb;Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Data Source=TEA\\SQLEXPRESS;Initial Catalog=BookingBoardGamesDb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
 
             return new AppDbContext(optionsBuilder.Options);
         }

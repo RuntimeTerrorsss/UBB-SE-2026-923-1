@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="Root"
     xmlns:viewModels="using:BookingBoardGames.Src.ViewModels"
-    xmlns:shared="using:BookingBoardGames.Src.Shared"
+    xmlns:shared="using:BookingBoardGames.Src.DTO"
     mc:Ignorable="d">
 
     <Grid Padding="20" RowSpacing="20" ColumnSpacing="20">

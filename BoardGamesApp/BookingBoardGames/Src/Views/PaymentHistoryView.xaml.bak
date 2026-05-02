@@ -99,7 +99,7 @@
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="dto:PaymentDataTransferObject">
                         <!-- Individual Card Row -->
                         <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
@@ -114,20 +114,20 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding DateText}" FontSize="14" FontWeight="Medium"/>
-                                    <TextBlock Text="{Binding PaymentId}" FontSize="12" Foreground="Gray" Margin="0,2,0,0"/> 
+                                    <TextBlock Text="{x:Bind DateText}" FontSize="14" FontWeight="Medium"/>
+                                    <TextBlock Text="{x:Bind PaymentId.ToString()}" FontSize="12" Foreground="Gray" Margin="0,2,0,0"/> 
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding ProductName}" FontSize="15" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding ReceiverName}" FontSize="13" Foreground="Gray" Margin="0,2,0,0"/>
+                                    <TextBlock Text="{x:Bind ProductName}" FontSize="15" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind ReceiverName}" FontSize="13" Foreground="Gray" Margin="0,2,0,0"/>
                                 </StackPanel>
 
-                                <TextBlock Text="{Binding AmountText}" Grid.Column="2" VerticalAlignment="Center" FontWeight="Bold" FontSize="15"/>
+                                <TextBlock Text="{x:Bind AmountText}" Grid.Column="2" VerticalAlignment="Center" FontWeight="Bold" FontSize="15"/>
 
                                 <Border Grid.Column="3" Background="{ThemeResource SystemFillColorNeutralBackgroundBrush}" 
                                         CornerRadius="4" Padding="8,4" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding PaymentMethod}" FontSize="12" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind PaymentMethod}" FontSize="12" FontWeight="SemiBold"/>
                                 </Border>
 
                                 <Button Content="Receipt" Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" 
@@ -141,12 +141,12 @@
             <!-- Pagination Controls -->
             <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" Margin="0,20,0,0">
                 <Button Content="Previous" Command="{x:Bind ViewModel.PreviousPageCommand}" Width="100"/>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Page " FontSize="14" FontWeight="Medium"/>
-                    <TextBlock Text="{x:Bind ViewModel.CurrentPage.ToString(), Mode=OneWay}" FontSize="14" FontWeight="Medium"/>
-                    <TextBlock Text=" of " FontSize="14" FontWeight="Medium"/>
-                    <TextBlock Text="{x:Bind ViewModel.TotalPages.ToString(), Mode=OneWay}" FontSize="14" FontWeight="Medium"/>
-                </StackPanel>
+                <TextBlock VerticalAlignment="Center" FontSize="14" FontWeight="Medium">
+                    <Run Text="Page "/>
+                    <Run Text="{x:Bind ViewModel.CurrentPage.ToString(), Mode=OneWay}"/>
+                    <Run Text=" of "/>
+                    <Run Text="{x:Bind ViewModel.TotalPages.ToString(), Mode=OneWay}"/>
+                </TextBlock>
                 <Button Content="Next" Command="{x:Bind ViewModel.NextPageCommand}" Width="100"/>
             </StackPanel>
         </Grid>
