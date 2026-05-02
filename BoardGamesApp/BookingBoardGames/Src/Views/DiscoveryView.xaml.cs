@@ -50,7 +50,7 @@ namespace BookingBoardGames.Src.Views
             //    rentalsRepository,
             //    geographicalService);
 
-            this.ViewModel = new DiscoveryViewModel(App.SearchAndFilterService, App.GeographicalService);
+            this.ViewModel = new DiscoveryViewModel(App.SearchAndFilterService, App.GlobalGeoService);
 
             this.ViewModel.OnSearchRequest += this.HandleSearchRequest;
             this.ViewModel.OnGameSelectedRequest += gameId =>

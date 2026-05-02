@@ -51,7 +51,7 @@ namespace BookingBoardGames.Src.Views
             //var rentalsRepository = new RentalsRepository();
             //var geographicalService = App.GlobalGeoService!;
             //var service = new SearchAndFilterService(gamesRepository, usersRepository, rentalsRepository, geographicalService);
-            var viewModel = new FilteredSearchViewModel(App.SearchAndFilterService, App.GeographicalService);
+            var viewModel = new FilteredSearchViewModel(App.SearchAndFilterService, App.GlobalGeoService);
             viewModel.OnGameSelectedRequest += gameId =>
             {
                 this.Frame.Navigate(typeof(GameDetailsView), gameId);

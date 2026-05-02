@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using BookingBoardGames.Src.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -145,7 +146,7 @@ namespace SearchAndBook.Views.Controls
             if (this.Parent is FrameworkElement parent)
             {
                 var frame = parent.XamlRoot.Content as Frame;
-                frame?.Navigate(typeof(SearchAndBook.Views.GameDetailsView), this.GameId);
+                frame?.Navigate(typeof(GameDetailsView), this.GameId);
             }
         }
     }

@@ -3,6 +3,7 @@
 // </copyright>
 
 using BookingBoardGames.Src.Views;
+using BookingBoardgamesILoveBan.Src.Chat.View;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
