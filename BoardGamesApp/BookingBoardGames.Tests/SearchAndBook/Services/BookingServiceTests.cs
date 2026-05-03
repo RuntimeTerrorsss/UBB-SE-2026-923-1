@@ -191,12 +191,12 @@ public class BookingServiceTests
 
     private static BookingService CreateSut(
         out Mock<InterfaceGamesRepository> gamesRepository,
-        out Mock<InterfaceRentalsRepository> rentalsRepository,
-        out Mock<InterfaceUsersRepository> usersRepository)
+        out Mock<IRentalRepository> rentalsRepository,
+        out Mock<IUserRepository> usersRepository)
     {
         gamesRepository = new Mock<InterfaceGamesRepository>(MockBehavior.Loose);
-        rentalsRepository = new Mock<InterfaceRentalsRepository>(MockBehavior.Loose);
-        usersRepository = new Mock<InterfaceUsersRepository>(MockBehavior.Loose);
+        rentalsRepository = new Mock<IRentalRepository>(MockBehavior.Loose);
+        usersRepository = new Mock<IUserRepository>(MockBehavior.Loose);
 
         return new BookingService(
             gamesRepository.Object,

@@ -16,13 +16,13 @@ public class RequestServiceUnitTests
     private const decimal TestExpectedPrice = TestPricePerDay * TestDays;
 
     private readonly Mock<IRequestRepository> mockRequestRepository;
-    private readonly Mock<IGameRepository> mockGameRepository;
+    private readonly Mock<InterfaceGamesRepository> mockGameRepository;
     private readonly RequestService requestService;
 
     public RequestServiceUnitTests()
     {
         mockRequestRepository = new Mock<IRequestRepository>();
-        mockGameRepository = new Mock<IGameRepository>();
+        mockGameRepository = new Mock<InterfaceGamesRepository>();
         requestService = new RequestService(mockRequestRepository.Object, mockGameRepository.Object);
     }
 

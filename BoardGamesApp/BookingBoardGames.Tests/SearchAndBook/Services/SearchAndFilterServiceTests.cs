@@ -283,13 +283,13 @@ public class SearchAndFilterServiceTests
 
     private static SearchAndFilterService CreateSut(
         out Mock<InterfaceGamesRepository> gamesRepository,
-        out Mock<InterfaceUsersRepository> usersRepository,
-        out Mock<InterfaceRentalsRepository> rentalsRepository,
+        out Mock<IUserRepository> usersRepository,
+        out Mock<IRentalRepository> rentalsRepository,
         out Mock<InterfaceGeographicalService> geographicalService)
     {
         gamesRepository = new Mock<InterfaceGamesRepository>(MockBehavior.Loose);
-        usersRepository = new Mock<InterfaceUsersRepository>(MockBehavior.Loose);
-        rentalsRepository = new Mock<InterfaceRentalsRepository>(MockBehavior.Loose);
+        usersRepository = new Mock<IUserRepository>(MockBehavior.Loose);
+        rentalsRepository = new Mock<IRentalRepository>(MockBehavior.Loose);
         geographicalService = new Mock<InterfaceGeographicalService>(MockBehavior.Loose);
 
         geographicalService

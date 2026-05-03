@@ -295,6 +295,9 @@ namespace BookingBoardGames.Tests.Delivery
             public User UserToReturn { get; set; } = null;
             public bool SaveAddressCalled { get; set; } = false;
 
+    public User GetGameById(int id) => throw new System.NotImplementedException();
+    public System.Collections.Generic.List<User> GetAll() => throw new System.NotImplementedException();
+
             public User GetById(int id)
             {
                 return UserToReturn;

@@ -25,7 +25,7 @@ namespace BookingBoardGames.Tests.PaymentCash
             var requestService = new Mock<IRequestService>();
             requestService.Setup(requestServiceDependency => requestServiceDependency.GetRequestById(requestId)).Returns(request);
             requestService.Setup(requestServiceDependency => requestServiceDependency.GetRequestPrice(requestId)).Returns(88.5m);
-            var gameRepository = new Mock<IGameRepository>();
+            var gameRepository = new Mock<InterfaceGamesRepository>();
             gameRepository.Setup(gameRepositoryDependency => gameRepositoryDependency.GetById(200)).Returns(game);
             var userRepository = new Mock<IUserRepository>();
             userRepository.Setup(userRepositoryDependency => userRepositoryDependency.GetById(301)).Returns(client);
@@ -75,7 +75,7 @@ namespace BookingBoardGames.Tests.PaymentCash
             var requestService = new Mock<IRequestService>();
             requestService.Setup(requestServiceDependency => requestServiceDependency.GetRequestById(requestId)).Returns(request);
             requestService.Setup(requestServiceDependency => requestServiceDependency.GetRequestPrice(requestId)).Returns(40m);
-            var gameRepository = new Mock<IGameRepository>();
+            var gameRepository = new Mock<InterfaceGamesRepository>();
             gameRepository.Setup(gameRepositoryDependency => gameRepositoryDependency.GetById(1)).Returns(new Game(1, "G", 1m));
             var userRepository = new Mock<IUserRepository>();
             userRepository.Setup(userRepositoryDependency => userRepositoryDependency.GetById(10)).Returns(new User(10, "a", "b", "c", "d", "e", "f", string.Empty, 0m));
@@ -135,7 +135,7 @@ namespace BookingBoardGames.Tests.PaymentCash
             var requestService = new Mock<IRequestService>();
             requestService.Setup(requestServiceDependency => requestServiceDependency.GetRequestById(requestId)).Returns(request);
             requestService.Setup(requestServiceDependency => requestServiceDependency.GetRequestPrice(requestId)).Returns(1m);
-            var gameRepository = new Mock<IGameRepository>();
+            var gameRepository = new Mock<InterfaceGamesRepository>();
             gameRepository.Setup(gameRepositoryDependency => gameRepositoryDependency.GetById(1)).Returns(new Game(1, "G", 1m));
             var userRepository = new Mock<IUserRepository>();
             userRepository.Setup(userRepositoryDependency => userRepositoryDependency.GetById(40)).Returns(new User(40, "a", "b", "c", "d", "e", "f", string.Empty, 0m));

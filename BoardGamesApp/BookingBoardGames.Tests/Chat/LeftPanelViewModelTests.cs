@@ -46,12 +46,12 @@ namespace BookingBoardGames.Tests.Chat
             return serviceMock.Object;
         }
 
-        private ConversationDataTransferObject CreateConversation(int targetConversationId = 1)
+        private ConversationDTO CreateConversation(int targetConversationId = 1)
         {
             int firstParticipantId = 1;
             int secondParticipantId = 2;
 
-            return new ConversationDataTransferObject(
+            return new ConversationDTO(
                 targetConversationId,
                 new[] { firstParticipantId, secondParticipantId },
                 new List<MessageDataTransferObject>(),
@@ -285,7 +285,7 @@ namespace BookingBoardGames.Tests.Chat
             string senderName = "John";
             string expectedText = "hello";
 
-            var conversation = new ConversationDataTransferObject(
+            var conversation = new ConversationDTO(
                 targetConversationId,
                 new[] { firstParticipantId, secondParticipantId },
                 new List<MessageDataTransferObject> { message },

@@ -5,6 +5,7 @@ using Xunit;
 using Moq;
 using BookingBoardGames.Src.ViewModels;
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Repositories;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {

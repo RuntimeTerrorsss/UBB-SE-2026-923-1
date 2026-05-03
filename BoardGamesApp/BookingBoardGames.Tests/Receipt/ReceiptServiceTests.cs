@@ -17,14 +17,14 @@ namespace BookingBoardGames.Tests.Receipt
     public class ReceiptServiceTests
     {
         private Mock<IUserRepository> userRepositoryMock;
-        private Mock<IGameRepository> gameRepositoryMock;
+        private Mock<InterfaceGamesRepository> gameRepositoryMock;
         private Mock<IRequestService> requestServiceMock;
         private ReceiptService receiptService;
 
         private void InitializeService()
         {
             userRepositoryMock = new Mock<IUserRepository>();
-            gameRepositoryMock = new Mock<IGameRepository>();
+            gameRepositoryMock = new Mock<InterfaceGamesRepository>();
             requestServiceMock = new Mock<IRequestService>();
 
             userRepositoryMock

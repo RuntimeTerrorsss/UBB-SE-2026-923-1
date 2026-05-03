@@ -349,7 +349,7 @@ public class SearchAndFilterServiceIntegrationTests
         };
     }
 
-    private interface IInMemoryRentalsRepository : InterfaceRentalsRepository
+    private interface IInMemoryRentalsRepository : IRentalRepository
     {
         void SetAvailability(int gameId, bool isAvailable);
     }
@@ -366,6 +366,8 @@ public class SearchAndFilterServiceIntegrationTests
         }
 
         public List<Game> GetGamesByFilter(FilterCriteria filter) => _games.ToList();
+
+        public decimal GetPriceGameById(int gameId) => throw new System.NotImplementedException();
 
         public List<Game> GetGamesForFeedAvailableTonight(int userId)
         {
@@ -386,7 +388,7 @@ public class SearchAndFilterServiceIntegrationTests
         public List<Game> GetAll() => _games.ToList();
     }
 
-    private sealed class InMemoryUsersRepository : InterfaceUsersRepository
+    private sealed class InMemoryUsersRepository : IUserRepository
     {
         private readonly Dictionary<int, User> _users;
 
@@ -409,6 +411,12 @@ public class SearchAndFilterServiceIntegrationTests
         {
             throw new NotImplementedException();
         }
+
+        public User GetById(int id) => throw new System.NotImplementedException();
+        public void SaveAddress(int userId, Address address) => throw new System.NotImplementedException();
+        public decimal GetUserBalance(int userId) => throw new System.NotImplementedException();
+        public void UpdateBalance(int userId, decimal newBalance) => throw new System.NotImplementedException();
+
     }
 
     private sealed class InMemoryRentalsRepository : IInMemoryRentalsRepository
@@ -435,6 +443,13 @@ public class SearchAndFilterServiceIntegrationTests
         public List<TimeRange> GetAllGames() => new List<TimeRange>();
         public List<TimeRange> GetUnavailableTimeRanges(int gameId) => throw new NotImplementedException();
         public List<TimeRange> GetAll() => throw new NotImplementedException();
+
+        public Rental GetById(int id) => throw new System.NotImplementedException();
+        public TimeRange GetRentalTimeRange(int rentalId) => throw new System.NotImplementedException();
+        public List<TimeRange> GetAllOccupiedPeriods() => throw new System.NotImplementedException();
+        public bool CheckGameAvailability(System.DateTime startTime, System.DateTime endTime, int gameId) => throw new System.NotImplementedException();
+        public void AddRental(Rental rental) => throw new System.NotImplementedException();
+
     }
 
     public sealed class InMemoryGeographicalService : InterfaceGeographicalService
@@ -451,7 +466,7 @@ public class SearchAndFilterServiceIntegrationTests
             return Task.CompletedTask;
         }
 
-        public (bool isFound, string cityName, double latitude, double longitude) GetCityDetails(string cityName)
+        public (bool IsFound, string CityName, double Latitude, double Longitude) GetCityDetails(string cityName)
         {
             if (_cities.TryGetValue(cityName, out var coordinates))
             {
@@ -466,7 +481,7 @@ public class SearchAndFilterServiceIntegrationTests
             var first = GetCityDetails(city1);
             var second = GetCityDetails(city2);
 
-            if (!first.isFound || !second.isFound)
+            if (!first.IsFound || !second.IsFound)
             {
                 return null;
             }

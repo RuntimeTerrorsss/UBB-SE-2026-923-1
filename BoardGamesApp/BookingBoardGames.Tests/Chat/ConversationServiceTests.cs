@@ -166,7 +166,7 @@ namespace BookingBoardGames.Tests.Chat
             int firstParticipantId = 1;
             int secondParticipantId = 2;
 
-            var conversationDataTransferObject = new ConversationDataTransferObject(
+            var conversationDataTransferObject = new ConversationDTO(
                 targetConversationId,
                 new int[] { firstParticipantId, secondParticipantId },
                 new List<MessageDataTransferObject>(),
@@ -190,7 +190,7 @@ namespace BookingBoardGames.Tests.Chat
             int currentUserId = 1;
             int externalUserId = 2;
 
-            var conversationDataTransferObject = new ConversationDataTransferObject(
+            var conversationDataTransferObject = new ConversationDTO(
                 targetConversationId,
                 new int[] { currentUserId, externalUserId },
                 new List<MessageDataTransferObject>(),
@@ -369,7 +369,7 @@ namespace BookingBoardGames.Tests.Chat
                 .Setup(userRepository => userRepository.GetById(It.IsAny<int>()))
                 .Returns((User)null);
 
-            var conversationDataTransferObject = new ConversationDataTransferObject(
+            var conversationDataTransferObject = new ConversationDTO(
                 targetConversationId,
                 new int[] { firstParticipantId, secondParticipantId },
                 new List<MessageDataTransferObject>(),
