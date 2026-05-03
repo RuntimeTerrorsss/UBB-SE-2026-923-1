@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BookingBoardGames.Data
@@ -22,7 +25,7 @@ namespace BookingBoardGames.Data
 
             // COMPOSITE KEYS
             modelBuilder.Entity<ConversationParticipant>()
-                .HasKey(cp => new { cp.ConversationId, cp.UserId });
+                .HasKey(participant => new { participant.ConversationId, participant.UserId });
 
 
             // TABLE-PER-HIERARCHY (TPH) CONFIGURATIONS
@@ -47,96 +50,98 @@ namespace BookingBoardGames.Data
 
             // RENTALS
             modelBuilder.Entity<Rental>()
-                .HasOne(r => r.Client)
-                .WithMany(u => u.RentalsAsClient)
-                .HasForeignKey(r => r.ClientId)
+                .HasOne(rental => rental.Client)
+                .WithMany(user => user.RentalsAsClient)
+                .HasForeignKey(rental => rental.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Rental>()
-                .HasOne(r => r.Owner)
-                .WithMany(u => u.RentalsAsOwner)
-                .HasForeignKey(r => r.OwnerId)
+                .HasOne(rental => rental.Owner)
+                .WithMany(user => user.RentalsAsOwner)
+                .HasForeignKey(rental => rental.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // PAYMENTS
             modelBuilder.Entity<Payment>()
-                .HasOne(p => p.Client)
+                .HasOne(payment => payment.Client)
                 .WithMany()
-                .HasForeignKey(p => p.ClientId)
+                .HasForeignKey(payment => payment.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Payment>()
-                .HasOne(p => p.Owner)
+                .HasOne(payment => payment.Owner)
                 .WithMany()
-                .HasForeignKey(p => p.OwnerId)
+                .HasForeignKey(payment => payment.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Payment>()
-                .HasOne(p => p.Request)
+                .HasOne(payment => payment.Request)
                 .WithMany()
-                .HasForeignKey(p => p.RequestId)
+                .HasForeignKey(payment => payment.RequestId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // MESSAGES
             // Base Message relationships to User
             modelBuilder.Entity<Message>()
-                .HasOne(m => m.Sender)
+                .HasOne(message => message.Sender)
                 .WithMany()
-                .HasForeignKey(m => m.MessageSenderId)
+                .HasForeignKey(message => message.MessageSenderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Message>()
-                .HasOne(m => m.Receiver)
+                .HasOne(message => message.Receiver)
                 .WithMany()
-                .HasForeignKey(m => m.MessageReceiverId)
+                .HasForeignKey(message => message.MessageReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Derived Message relationships
             modelBuilder.Entity<RentalRequestMessage>()
-                .HasOne(m => m.RentalRequest)
-                .WithMany(r => r.Messages)
-                .HasForeignKey(m => m.RentalRequestId)
+                .HasOne(message => message.RentalRequest)
+                .WithMany(rental => rental.Messages)
+                .HasForeignKey(message => message.RentalRequestId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CashAgreementMessage>()
-                .HasOne(m => m.CashPayment)
+                .HasOne(message => message.CashPayment)
                 .WithMany()
-                .HasForeignKey(m => m.CashPaymentId)
+                .HasForeignKey(message => message.CashPaymentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // CONVERSATION PARTICIPANTS
             modelBuilder.Entity<ConversationParticipant>()
-                .HasOne(cp => cp.User)
-                .WithMany(u => u.Conversations)
-                .HasForeignKey(cp => cp.UserId)
+                .HasOne(participant => participant.User)
+                .WithMany(user => user.Conversations)
+                .HasForeignKey(participant => participant.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // CITIES 
             modelBuilder.Entity<City>()
-                .Property(c => c.Names)
+                .Property(city => city.Names)
                 .HasConversion(
-                    v => string.Join(',', v),
-                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                    namesList => string.Join(',', namesList),
+                    commaSeparatedNames => commaSeparatedNames.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
                 )
                 .Metadata.SetValueComparer(new ValueComparer<List<string>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList()
+                    (list1, list2) => list1.SequenceEqual(list2),
+                    namesList => namesList.Aggregate(0, (accumulator, name) => HashCode.Combine(accumulator, name.GetHashCode())),
+                    namesList => namesList.ToList()
                 ));
 
+            // PRECISIONS
             modelBuilder.Entity<Game>()
-                .Property(g => g.PricePerDay)
+                .Property(game => game.PricePerDay)
                 .HasPrecision(18, 2);
 
             modelBuilder.Entity<Payment>()
-                .Property(p => p.PaidAmount)
+                .Property(payment => payment.PaidAmount)
                 .HasPrecision(18, 2);
 
             modelBuilder.Entity<Rental>()
-                .Property(r => r.TotalPrice)
+                .Property(rental => rental.TotalPrice)
                 .HasPrecision(18, 2);
 
             modelBuilder.Entity<User>()
-                .Property(u => u.Balance)
+                .Property(user => user.Balance)
                 .HasPrecision(18, 2);
         }
     }
