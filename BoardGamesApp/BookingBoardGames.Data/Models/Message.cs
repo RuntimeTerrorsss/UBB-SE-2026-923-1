@@ -37,13 +37,13 @@ public abstract class Message
     public int MessageReceiverId { get; set; }
 
     [ForeignKey("ConversationId")]
-    public required Conversation Conversation { get; set; }
+    public required Conversation Conversation { get; set; } = null!;
 
     [ForeignKey("MessageSenderId")]
-    public required User Sender { get; set; }
+    public required User Sender { get; set; } = null!;
 
     [ForeignKey("MessageReceiverId")]
-    public required User Receiver { get; set; }
+    public required User Receiver { get; set; } = null!;
 }
 
 public class TextMessage : Message

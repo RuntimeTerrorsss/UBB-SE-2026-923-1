@@ -13,7 +13,7 @@ namespace BookingBoardGames.Src.Services
 {
     public class ReceiptService : IReceiptService
     {
-        private static string baseFolderPath = Path.Combine(
+        private static readonly string BaseFolderPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             ReceiptServiceConstants.BaseFolderName);
 
@@ -91,7 +91,7 @@ namespace BookingBoardGames.Src.Services
         {
             var createdDocument = new PdfDocument
             {
-                PageLayout = PdfPageLayout.SinglePage
+                PageLayout = PdfPageLayout.SinglePage,
             };
 
             createdDocument.Info.Title = ReceiptServiceConstants.DocumentTitle;
@@ -217,7 +217,7 @@ namespace BookingBoardGames.Src.Services
         /// <returns>full path</returns>
         private string GetFullPath(string relativePath)
         {
-            return Path.Combine(baseFolderPath, relativePath.TrimStart('\\', '/'));
+            return Path.Combine(BaseFolderPath, relativePath.TrimStart('\\', '/'));
         }
 
         private string BuildHeader(Payment payment)
@@ -290,7 +290,7 @@ namespace BookingBoardGames.Src.Services
                 this.BuildRequestInfo(payment, request),
                 this.BuildPaymentDetails(payment),
                 this.BuildConfirmation(payment),
-                this.BuildSummary()
+                this.BuildSummary(),
             };
         }
 

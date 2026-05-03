@@ -38,6 +38,9 @@ namespace BookingBoardGames.Src.DTO
 
         public RentalDataTransferObject()
         {
+            this.GameName = string.Empty;
+            this.ClientName = string.Empty;
+            this.OwnerName = string.Empty;
         }
 
         public int Id { get; set; }

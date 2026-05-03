@@ -10,6 +10,20 @@ namespace BookingBoardGames.Src.DTO
 {
     public class ConversationDTO
     {
+        public ConversationDTO(
+            int conversationId,
+            ICollection<ConversationParticipant> participants,
+            List<MessageDataTransferObject> messages,
+            Dictionary<int, DateTime> lastRead)
+        {
+            this.Id = conversationId;
+            this.Participants = participants;
+            this.MessageList = messages;
+            this.LastRead = lastRead;
+            this.UnreadCount = participants.ToDictionary(participant => participant.UserId, _ => 0);
+            this.UpdateUnreadCounts();
+        }
+
         public int Id { get; set; }
 
         public List<MessageDataTransferObject> MessageList { get; set; }
@@ -19,16 +33,6 @@ namespace BookingBoardGames.Src.DTO
         public Dictionary<int, DateTime> LastRead { get; set; }
 
         public Dictionary<int, int> UnreadCount { get; set; }
-
-        public ConversationDTO(int conversationId, ICollection<ConversationParticipant> participants, List<MessageDataTransferObject> messages, Dictionary<int, DateTime> lastRead)
-        {
-            this.Id = conversationId;
-            this.Participants = participants;
-            this.MessageList = messages;
-            this.LastRead = lastRead;
-            this.UnreadCount = participants.ToDictionary(participant => participant.UserId, _ => 0);
-            this.UpdateUnreadCounts();
-        }
 
         public void AddMessageToListDTO(MessageDataTransferObject newMessage)
         {

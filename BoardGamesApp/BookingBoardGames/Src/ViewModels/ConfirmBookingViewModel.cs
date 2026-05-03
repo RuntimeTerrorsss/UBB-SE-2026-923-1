@@ -35,6 +35,30 @@ namespace BookingBoardGames.Src.ViewModels
         private BitmapImage? gameImage;
 
         /// <summary>
+        /// Occurs when a request to navigate back to the previous screen is made.
+        /// </summary>
+        public event Action? OnGoBackRequested;
+
+        /// <summary>
+        /// Occurs when the user confirms the booking process.
+        /// </summary>
+        public event Action? OnConfirmBookingRequested;
+
+        /// <summary>
+        /// Occurs when a property value changes.
+        /// </summary>
+        /// <remarks>This event is typically raised by classes that implement the INotifyPropertyChanged
+        /// interface to notify clients, such as data-binding frameworks, that a property value has changed.</remarks>
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        /// <summary>
+        /// Occurs when an error is encountered, providing a message that describes the error.
+        /// </summary>
+        /// <remarks>Subscribers can use this event to handle or log errors as they occur. The event
+        /// provides a string containing details about the error condition.</remarks>
+        public event Action<string>? OnErrorOccurred;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ConfirmBookingViewModel"/> class.
         /// </summary>
         /// <param name="bookingService">The service used to manage bookings.</param>
@@ -66,30 +90,6 @@ namespace BookingBoardGames.Src.ViewModels
 
         private void OnPropertyChanged([CallerMemberName] string? name = null)
            => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
-        /// <summary>
-        /// Occurs when a request to navigate back to the previous screen is made.
-        /// </summary>
-        public event Action? OnGoBackRequested;
-
-        /// <summary>
-        /// Occurs when the user confirms the booking process.
-        /// </summary>
-        public event Action? OnConfirmBookingRequested;
-
-        /// <summary>
-        /// Occurs when a property value changes.
-        /// </summary>
-        /// <remarks>This event is typically raised by classes that implement the INotifyPropertyChanged
-        /// interface to notify clients, such as data-binding frameworks, that a property value has changed.</remarks>
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        /// <summary>
-        /// Occurs when an error is encountered, providing a message that describes the error.
-        /// </summary>
-        /// <remarks>Subscribers can use this event to handle or log errors as they occur. The event
-        /// provides a string containing details about the error condition.</remarks>
-        public event Action<string>? OnErrorOccurred;
 
         /// <summary>
         /// Gets the currently selected time range for the booking.

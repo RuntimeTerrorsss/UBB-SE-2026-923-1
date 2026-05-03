@@ -15,26 +15,17 @@ namespace BookingBoardGames.Src.ViewModels;
 
 public class ChatPageViewModel
 {
-    public LeftPanelViewModel LeftPanelModelView { get; }
-
-    public ChatViewModel ChatModelView { get; }
-
     private readonly int currentUserId;
     private readonly ConversationService conversationService;
-
-    public ConversationService ConversationService
-    {
-        get => this.conversationService;
-    }
-
-    private List<ConversationDTO> conversations = new();
+    private readonly List<ConversationDTO> conversations = new();
 
     public ChatPageViewModel(int currentUser)
-    : this(currentUser, new ConversationService(App.ConversationRepository, currentUser))
+   : this(currentUser, new ConversationService(App.ConversationRepository, currentUser))
     {
     }
 
-    public ChatPageViewModel(int currentUser, ConversationService service) : this(currentUser, service, App.UserRepository)
+    public ChatPageViewModel(int currentUser, ConversationService service)
+        : this(currentUser, service, App.UserRepository)
     {
     }
 
@@ -65,6 +56,15 @@ public class ChatPageViewModel
         this.conversationService.ActionConversationProcessed += this.OnConversationReceived;
         this.conversationService.ActionReadReceiptProcessed += this.OnReadReceiptReceived;
         this.conversationService.ActionMessageUpdateProcessed += this.OnMessageUpdateReceived;
+    }
+
+    public LeftPanelViewModel LeftPanelModelView { get; }
+
+    public ChatViewModel ChatModelView { get; }
+
+    public ConversationService ConversationService
+    {
+        get => this.conversationService;
     }
 
     private void OnLeftPanelPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
