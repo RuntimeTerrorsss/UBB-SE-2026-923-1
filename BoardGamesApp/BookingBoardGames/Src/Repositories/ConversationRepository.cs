@@ -13,11 +13,16 @@ namespace BookingBoardGames.Src.Repositories
 {
     public class ConversationRepository : IConversationRepository
     {
-        private readonly AppDbContextFactory contextFactory = new();
+        private readonly AppDbContext context;
+
+        public ConversationRepository(AppDbContext context)
+        {
+            this.context = context;
+        }
 
         public Conversation? GetById(int id)
         {
-            using var context = this.contextFactory.CreateDbContext([]);
+            //using var context = this.contextFactory.CreateDbContext([]);
 
             return context.Conversations
                 .Include(c => c.Participants)
@@ -27,7 +32,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public List<Conversation> GetAll()
         {
-            using var context = this.contextFactory.CreateDbContext([]);
+            //using var context = this.contextFactory.CreateDbContext([]);
 
             return context.Conversations
                 .Include(c => c.Participants)
@@ -36,7 +41,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public List<Conversation> GetByUserId(int userId)
         {
-            using var context = this.contextFactory.CreateDbContext([]);
+            //using var context = this.contextFactory.CreateDbContext([]);
 
             return context.Conversations
                 .Include(c => c.Participants)
@@ -47,7 +52,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public int CreateConversation(int senderId, int receiverId)
         {
-            using var context = this.contextFactory.CreateDbContext([]);
+            //using var context = this.contextFactory.CreateDbContext([]);
 
             var conversation = new Conversation
             {
@@ -67,7 +72,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public void AddMessage(Message message)
         {
-            using var context = this.contextFactory.CreateDbContext([]);
+            //using var context = this.contextFactory.CreateDbContext([]);
 
             context.Messages.Add(message);
             context.SaveChanges();
@@ -75,7 +80,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public void UpdateMessage(Message message)
         {
-            using var context = this.contextFactory.CreateDbContext([]);
+            //using var context = this.contextFactory.CreateDbContext([]);
 
             context.Messages.Update(message);
             context.SaveChanges();
@@ -83,7 +88,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public void DeleteConversation(int conversationId)
         {
-            using var context = this.contextFactory.CreateDbContext([]);
+            //using var context = this.contextFactory.CreateDbContext([]);
 
             var conversation = context.Conversations
                 .FirstOrDefault(c => c.ConversationId == conversationId);

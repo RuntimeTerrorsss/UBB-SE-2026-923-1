@@ -26,117 +26,136 @@ namespace BookingBoardGames.Data.Migrations
                 {
                     b.Property<int>("CityId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CityId"));
 
                     b.Property<double>("Latitude")
-                        .HasColumnType("float");
+                        .HasColumnType("float")
+                        .HasColumnName("latitude");
 
                     b.Property<double>("Longitude")
-                        .HasColumnType("float");
+                        .HasColumnType("float")
+                        .HasColumnName("longitude");
 
                     b.Property<string>("MainName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("main_name");
 
                     b.Property<string>("Names")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("names");
 
                     b.HasKey("CityId");
 
-                    b.ToTable("Cities");
+                    b.ToTable("cities");
                 });
 
             modelBuilder.Entity("Conversation", b =>
                 {
                     b.Property<int>("ConversationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConversationId"));
 
                     b.HasKey("ConversationId");
 
-                    b.ToTable("Conversations");
+                    b.ToTable("conversations");
                 });
 
             modelBuilder.Entity("ConversationParticipant", b =>
                 {
                     b.Property<int>("ConversationId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("conversation_id");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
 
                     b.Property<DateTime?>("LastMessageReadTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("last_message_read_time");
 
                     b.Property<int>("UnreadMessagesCount")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("unread_messages_count");
 
                     b.HasKey("ConversationId", "UserId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ConversationParticipants");
+                    b.ToTable("conversation_participants");
                 });
 
             modelBuilder.Entity("Game", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("description");
 
                     b.Property<byte[]>("Image")
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("image");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
 
                     b.Property<int>("MaximumPlayerNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("maximum_player_number");
 
                     b.Property<int>("MinimumPlayerNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("minimum_player_number");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("int")
+                        .HasColumnName("owner_id");
 
                     b.Property<decimal>("PricePerDay")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("price");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Games");
+                    b.ToTable("games");
                 });
 
             modelBuilder.Entity("Message", b =>
                 {
                     b.Property<int>("MessageId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"));
 
                     b.Property<int>("ConversationId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("conversation_id");
 
                     b.Property<string>("MessageCategory")
                         .IsRequired()
@@ -144,33 +163,30 @@ namespace BookingBoardGames.Data.Migrations
                         .HasColumnType("nvarchar(13)");
 
                     b.Property<string>("MessageContentAsString")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("message_content_as_string");
 
                     b.Property<int>("MessageReceiverId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("message_receiver_id");
 
                     b.Property<int>("MessageSenderId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("message_sender_id");
 
                     b.Property<DateTime>("MessageSentTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("message_sent_time");
 
                     b.HasKey("MessageId");
 
                     b.HasIndex("ConversationId");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("MessageReceiverId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("MessageSenderId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("messages");
 
                     b.HasDiscriminator<string>("MessageCategory").HasValue("Message");
 
@@ -181,27 +197,35 @@ namespace BookingBoardGames.Data.Migrations
                 {
                     b.Property<int>("TransactionIdentifier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionIdentifier"));
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("client_id");
 
                     b.Property<DateTime?>("DateConfirmedBuyer")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("date_confirmed_buyer");
 
                     b.Property<DateTime?>("DateConfirmedSeller")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("date_confirmed_seller");
 
                     b.Property<DateTime?>("DateOfTransaction")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("date_of_transaction");
 
                     b.Property<int>("OwnerId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("owner_id");
 
                     b.Property<decimal>("PaidAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("paid_amount");
 
                     b.Property<string>("PaymentCategory")
                         .IsRequired()
@@ -209,17 +233,20 @@ namespace BookingBoardGames.Data.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("PaymentMethod")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("payment_method");
 
                     b.Property<int>("PaymentState")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("payment_state");
 
                     b.Property<string>("ReceiptFilePath")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("receipt_file_path");
 
                     b.Property<int>("RequestId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("request_id");
 
                     b.HasKey("TransactionIdentifier");
 
@@ -227,10 +254,9 @@ namespace BookingBoardGames.Data.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.HasIndex("RequestId")
-                        .IsUnique();
+                    b.HasIndex("RequestId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("payments");
 
                     b.HasDiscriminator<string>("PaymentCategory").HasValue("Standard");
 
@@ -241,27 +267,38 @@ namespace BookingBoardGames.Data.Migrations
                 {
                     b.Property<int>("RentalId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RentalId"));
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("client_id");
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("end_date");
 
                     b.Property<int>("GameId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("game_id");
 
                     b.Property<int>("OwnerId")
+                        .HasColumnType("int")
+                        .HasColumnName("owner_id");
+
+                    b.Property<int?>("PaymentTransactionIdentifier")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("start_date");
 
                     b.Property<decimal?>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("total_price");
 
                     b.HasKey("RentalId");
 
@@ -271,68 +308,86 @@ namespace BookingBoardGames.Data.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Rentals");
+                    b.HasIndex("PaymentTransactionIdentifier");
+
+                    b.ToTable("rentals");
                 });
 
             modelBuilder.Entity("User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AvatarUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("avatar_url");
 
                     b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("balance");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("city");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("country");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("display_name");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("email");
 
                     b.Property<bool>("IsSuspended")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("is_suspended");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("password_hash");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("phone_number");
 
                     b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("street");
 
                     b.Property<string>("StreetNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("street_number");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("username");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("users");
                 });
 
             modelBuilder.Entity("CashAgreementMessage", b =>
@@ -340,18 +395,24 @@ namespace BookingBoardGames.Data.Migrations
                     b.HasBaseType("Message");
 
                     b.Property<int>("CashPaymentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("cash_payment_id");
 
                     b.Property<bool>("IsCashAgreementAcceptedByBuyer")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("is_cash_agreement_accepted_by_buyer");
 
                     b.Property<bool>("IsCashAgreementAcceptedBySeller")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("is_cash_agreement_accepted_by_seller");
 
                     b.Property<bool>("IsCashAgreementResolved")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("is_cash_agreement_resolved");
 
                     b.HasIndex("CashPaymentId");
+
+                    b.ToTable("messages");
 
                     b.HasDiscriminator().HasValue("CashAgreement");
                 });
@@ -361,8 +422,10 @@ namespace BookingBoardGames.Data.Migrations
                     b.HasBaseType("Message");
 
                     b.Property<string>("MessageImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("message_image_url");
+
+                    b.ToTable("messages");
 
                     b.HasDiscriminator().HasValue("Image");
                 });
@@ -372,19 +435,24 @@ namespace BookingBoardGames.Data.Migrations
                     b.HasBaseType("Message");
 
                     b.Property<bool>("IsRequestAccepted")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("is_request_accepted");
 
                     b.Property<bool>("IsRequestResolved")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("is_request_resolved");
 
                     b.Property<int>("RentalRequestId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("rental_request_id");
 
                     b.Property<string>("RequestContent")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("request_content");
 
                     b.HasIndex("RentalRequestId");
+
+                    b.ToTable("messages");
 
                     b.HasDiscriminator().HasValue("RentalRequest");
                 });
@@ -394,8 +462,10 @@ namespace BookingBoardGames.Data.Migrations
                     b.HasBaseType("Message");
 
                     b.Property<string>("MessageContent")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("message_content");
+
+                    b.ToTable("messages");
 
                     b.HasDiscriminator().HasValue("System");
                 });
@@ -405,8 +475,10 @@ namespace BookingBoardGames.Data.Migrations
                     b.HasBaseType("Message");
 
                     b.Property<string>("TextMessageContent")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("text_message_content");
+
+                    b.ToTable("messages");
 
                     b.HasDiscriminator().HasValue("Text");
                 });
@@ -416,12 +488,14 @@ namespace BookingBoardGames.Data.Migrations
                     b.HasBaseType("Payment");
 
                     b.Property<string>("GameName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("game_name");
 
                     b.Property<string>("OwnerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("owner_name");
+
+                    b.ToTable("payments");
 
                     b.HasDiscriminator().HasValue("History");
                 });
@@ -437,7 +511,7 @@ namespace BookingBoardGames.Data.Migrations
                     b.HasOne("User", "User")
                         .WithMany("Conversations")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Conversation");
@@ -466,14 +540,14 @@ namespace BookingBoardGames.Data.Migrations
 
                     b.HasOne("User", "Receiver")
                         .WithMany()
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("MessageReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("User", "Sender")
                         .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("MessageSenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Conversation");
@@ -498,9 +572,9 @@ namespace BookingBoardGames.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Rental", "Request")
-                        .WithOne("Payment")
-                        .HasForeignKey("Payment", "RequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany()
+                        .HasForeignKey("RequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Client");
@@ -530,11 +604,17 @@ namespace BookingBoardGames.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Payment", "Payment")
+                        .WithMany()
+                        .HasForeignKey("PaymentTransactionIdentifier");
+
                     b.Navigation("Client");
 
                     b.Navigation("Game");
 
                     b.Navigation("Owner");
+
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("CashAgreementMessage", b =>
@@ -542,7 +622,7 @@ namespace BookingBoardGames.Data.Migrations
                     b.HasOne("Payment", "CashPayment")
                         .WithMany()
                         .HasForeignKey("CashPaymentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("CashPayment");
@@ -553,7 +633,7 @@ namespace BookingBoardGames.Data.Migrations
                     b.HasOne("Rental", "RentalRequest")
                         .WithMany("Messages")
                         .HasForeignKey("RentalRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("RentalRequest");
@@ -574,9 +654,6 @@ namespace BookingBoardGames.Data.Migrations
             modelBuilder.Entity("Rental", b =>
                 {
                     b.Navigation("Messages");
-
-                    b.Navigation("Payment")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("User", b =>

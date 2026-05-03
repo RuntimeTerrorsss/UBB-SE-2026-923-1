@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BookingBoardGames.Data
 {
@@ -109,6 +110,34 @@ namespace BookingBoardGames.Data
                 .WithMany(u => u.Conversations)
                 .HasForeignKey(cp => cp.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<City>()
+                .Property(c => c.Names)
+                .HasConversion(
+                    v => string.Join(',', v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                )
+                .Metadata.SetValueComparer(new ValueComparer<List<string>>(
+                    (c1, c2) => c1.SequenceEqual(c2),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()
+                ));
+
+            modelBuilder.Entity<Game>()
+                .Property(g => g.PricePerDay)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.PaidAmount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Rental>()
+                .Property(r => r.TotalPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.Balance)
+                .HasPrecision(18, 2);
         }
     }
 }
