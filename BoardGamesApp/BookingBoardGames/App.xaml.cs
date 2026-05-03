@@ -119,9 +119,6 @@ namespace BookingBoardGames
             {
                 Debug.WriteLine($"GeographicalService initialization failed: {ex.Message}");
             }
-
-            this.window = new MainWindow();
-            this.window.Activate();
         }
     }
 }

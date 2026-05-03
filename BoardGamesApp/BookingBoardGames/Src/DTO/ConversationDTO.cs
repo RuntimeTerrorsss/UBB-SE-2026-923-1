@@ -53,7 +53,12 @@ namespace BookingBoardGames.Src.DTO
                     continue;
                 }
 
-                if (messageItem.SentAt >= this.LastRead[messageItem.ReceiverId])
+                DateTime receiverLastRead = this.LastRead.TryGetValue(messageItem.ReceiverId, out DateTime readTime)
+                    ? readTime
+                    : DateTime.MinValue;
+
+                if (messageItem.SentAt >= receiverLastRead
+                    && this.UnreadCount.TryGetValue(messageItem.ReceiverId, out int _))
                 {
                     this.UnreadCount[messageItem.ReceiverId]++;
                 }

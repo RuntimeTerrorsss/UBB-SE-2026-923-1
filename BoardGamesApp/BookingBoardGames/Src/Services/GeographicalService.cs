@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BookingBoardGames.Src.Enum;
@@ -67,10 +68,7 @@ namespace BookingBoardGames.Src.Services
         /// <returns>A task that represents the asynchronous load operation.</returns>
         public async Task LoadCitiesFromFileAsync()
         {
-            var file = await StorageFile.GetFileFromApplicationUriAsync(
-                new Uri("ms-appx:///Assets/RO.txt"));
-
-            var lines = await FileIO.ReadLinesAsync(file);
+            var lines = await ReadRoCityLinesAsync();
 
             foreach (var line in lines)
             {
@@ -130,6 +128,28 @@ namespace BookingBoardGames.Src.Services
                         this.AddCityAlias(city, alternate);
                     }
                 }
+            }
+        }
+
+        private static async Task<IReadOnlyList<string>> ReadRoCityLinesAsync()
+        {
+            string relativePath = Path.Combine("Assets", "RO.txt");
+            string nextToExecutable = Path.Combine(AppContext.BaseDirectory, relativePath);
+            if (File.Exists(nextToExecutable))
+            {
+                return await File.ReadAllLinesAsync(nextToExecutable);
+            }
+
+            try
+            {
+                StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/RO.txt"));
+                return (await FileIO.ReadLinesAsync(file)).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    "Could not load Assets/RO.txt from the output directory or from the application package. Ensure RO.txt is listed as Content in BookingBoardGames.csproj.",
+                    ex);
             }
         }
 
