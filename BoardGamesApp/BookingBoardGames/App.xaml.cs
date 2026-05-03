@@ -108,6 +108,9 @@ namespace BookingBoardGames
         {
             DatabaseBootstrap.Initialize();
 
+            this.window = new MainWindow();
+            this.window.Activate();
+
             try
             {
                 GlobalGeographicalService = await GeographicalService.LoadFromFileAsync();

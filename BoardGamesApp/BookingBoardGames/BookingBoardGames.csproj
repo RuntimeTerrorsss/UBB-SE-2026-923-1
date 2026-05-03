@@ -17,7 +17,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="Assets\RO.txt" />
+    <None Remove="Assets\RO.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,6 +66,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BookingBoardGames.Data\BookingBoardGames.Data.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Assets\RO.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <!--
