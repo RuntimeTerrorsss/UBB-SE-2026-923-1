@@ -18,6 +18,7 @@ namespace BookingBoardGames.Src.ViewModels
         private readonly IRentalService rentalRequestService;
         private readonly InterfaceGamesRepository gameRepository;
         private readonly ConversationService conversationService;
+        private readonly int rentalRequestMessageIdentifier;
 
         public string OwnerName { get; set; }
 
@@ -28,8 +29,6 @@ namespace BookingBoardGames.Src.ViewModels
         public string RequestDates { get; set; }
 
         public string PaidAmount { get; set; }
-
-        private readonly int rentalRequestMessageIdentifier;
 
         public CashPaymentViewModel(
             ICashPaymentService cashPaymentService,

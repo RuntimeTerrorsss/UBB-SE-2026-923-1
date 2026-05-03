@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace BookingBoardGames.Src.Validators
 {
-    public interface IValidator<T, E>
+    public interface IValidator<T, TE>
     {
-        T Validate(E element);
+        T Validate(TE element);
     }
 }

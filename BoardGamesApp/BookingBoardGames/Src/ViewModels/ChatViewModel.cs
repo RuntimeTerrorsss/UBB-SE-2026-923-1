@@ -17,14 +17,6 @@ namespace BookingBoardGames.Src.ViewModels;
 
 public class ChatViewModel : INotifyPropertyChanged
 {
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    public event Action<MessageDataTransferObject> MessageSent;
-
-    public event Action<int, int, bool, bool> BookingRequestUpdate;
-
-    public event Action<int, int> CashAgreementAccept;
-
     private string displayName;
 
     private string initials;
@@ -33,19 +25,19 @@ public class ChatViewModel : INotifyPropertyChanged
 
     private string inputText = string.Empty;
 
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public event Action<MessageDataTransferObject> MessageSent;
+
+    public event Action<int, int, bool, bool> BookingRequestUpdate;
+
+    public event Action<int, int> CashAgreementAccept;
+
     public int CurrentUserId { get; private set; }
 
     public int ConversationId { get; private set; }
 
     public ObservableCollection<MessageViewModel> Messages { get; } = new();
-
-    public ChatViewModel(int currentUser)
-    {
-        this.CurrentUserId = currentUser;
-    }
-
-    protected void OnPropertyChanged([CallerMemberName] string name = null)
-        => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     public string DisplayName
     {
@@ -76,6 +68,25 @@ public class ChatViewModel : INotifyPropertyChanged
             this.OnPropertyChanged(nameof(this.AvatarUrl));
         }
     }
+
+    public string InputText
+    {
+        get => this.inputText;
+        set
+        {
+            this.inputText = value;
+            this.OnPropertyChanged();
+            this.OnPropertyChanged(nameof(this.CanSend));
+        }
+    }
+
+    public ChatViewModel(int currentUser)
+    {
+        this.CurrentUserId = currentUser;
+    }
+
+    protected void OnPropertyChanged([CallerMemberName] string name = null)
+        => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     public void LoadConversation(ConversationPreviewModel conversation, List<MessageDataTransferObject> messages, int theirUnreadCount)
     {
@@ -122,17 +133,6 @@ public class ChatViewModel : INotifyPropertyChanged
         }
 
         this.Messages.Add(new MessageViewModel(message, this.CurrentUserId));
-    }
-
-    public string InputText
-    {
-        get => this.inputText;
-        set
-        {
-            this.inputText = value;
-            this.OnPropertyChanged();
-            this.OnPropertyChanged(nameof(this.CanSend));
-        }
     }
 
     public bool CanSend => !string.IsNullOrWhiteSpace(this.InputText);

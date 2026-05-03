@@ -104,77 +104,82 @@ namespace BookingBoardGames.Src.Repositories
 
         public List<Conversation> GetConversationsForUser(int userId)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
+            List<Conversation> abc = new List<Conversation>();
+            return abc;
         }
 
         public Conversation GetConversationById(int conversationId)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
+            Conversation c = new Conversation();
+            return c;
         }
 
         public void HandleNewMessage(Message message)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void HandleReadReceipt(ReadReceiptDTO readReceipt)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void HandleMessageUpdate(Message message)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void HandleRentalRequestFinalization(int messageId)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void CreateSystemMessageForCashAgreementFinalization(int conversationId, string legalDocumentFilePath)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void Subscribe(int userId, IConversationService observer)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void Unsubscribe(int userId)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void NotifySubscribersAboutMessage(Message message)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void NotifySubscribersAboutMessageUpdate(Message message)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void NotifySubscribersAboutNewConversation(Conversation conversation)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public Conversation? GetGameById(int id)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
+            return null;
         }
     }
 }

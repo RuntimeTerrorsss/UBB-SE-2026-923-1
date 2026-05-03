@@ -112,7 +112,7 @@ namespace BookingBoardGames.Src.Services
                 OwnerId = ownerId,
                 StartDate = startDate,
                 EndDate = endDate,
-                TotalPrice = totalPrice
+                TotalPrice = totalPrice,
             };
 
             this.rentalRepository.AddRental(rental);

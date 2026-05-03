@@ -14,12 +14,12 @@ namespace BookingBoardGames.Src.Commands
 
         public event EventHandler? CanExecuteChanged;
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             return this.canExecuteFunction?.Invoke() ?? true;
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             this.executeAction(parameter);
         }

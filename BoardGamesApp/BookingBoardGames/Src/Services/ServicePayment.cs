@@ -21,7 +21,7 @@ namespace BookingBoardGames.Src.Services
         private readonly IReceiptService receiptService;
 
         /// <summary>
-        /// Initializes a new instance of the ServiceTransactions class.
+        /// Initializes a new instance of the <see cref="ServicePayment"/> class.
         /// </summary>
         /// <param name="repository">The transactions repository providing data access.</param>
         /// <param name="receiptService">Service to handle generating and opening receipts.</param>
@@ -218,7 +218,7 @@ namespace BookingBoardGames.Src.Services
                     ReceiverName = !string.IsNullOrWhiteSpace(transaction.OwnerName) ? transaction.OwnerName : PaymentHistoryConstants.NullOwnerNameDefaultValue,
                     Amount = transaction.PaidAmount,
                     PaymentMethod = transaction.PaymentMethod,
-                    FilePath = transaction.ReceiptFilePath
+                    FilePath = transaction.ReceiptFilePath,
                 };
             }).ToList();
         }

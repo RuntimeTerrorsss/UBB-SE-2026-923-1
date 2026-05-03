@@ -265,8 +265,7 @@ namespace BookingBoardGames.Src.Services
                 {
                     filteredGames = filteredGames.Where(game =>
                         this.rentalsRepository.CheckGameAvailability(
-                            activeFilter.AvailabilityRange.StartTime, activeFilter.AvailabilityRange.EndTime,
-                            game.GameId));
+                            activeFilter.AvailabilityRange.StartTime, activeFilter.AvailabilityRange.EndTime, game.GameId));
                 }
 
                 return filteredGames.ToArray();

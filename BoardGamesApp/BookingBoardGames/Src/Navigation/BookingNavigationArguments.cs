@@ -12,12 +12,12 @@ namespace BookingBoardGames.Src.Navigation
     {
         public int RequestIdentifier { get; set; }
 
-        public string DeliveryAddress { get; set; }
+        public required string DeliveryAddress { get; set; }
 
         public int BookingMessageIdentifier { get; set; }
 
-        public ConversationService ConversationService { get; set; }
+        public required ConversationService ConversationService { get; set; }
 
-        public Window CurrentWindow { get; set; }
+        public required Window CurrentWindow { get; set; }
     }
 }
