@@ -1,13 +1,10 @@
-using BookingBoardgamesILoveBan.Src.PaymentCash.Mapper;
-using BookingBoardgamesILoveBan.Src.PaymentCash.Model;
-using BookingBoardgamesILoveBan.Src.PaymentCash.Service;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Constants;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Repository;
-using BookingBoardgamesILoveBan.Src.Mocks.GameMock;
-using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.Receipt.Service;
+using BookingBoardGames.Src.Mapper;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Constants;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Tests.PaymentCash
 {

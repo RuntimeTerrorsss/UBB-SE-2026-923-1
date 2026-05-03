@@ -1,5 +1,5 @@
-using SearchAndBook.Domain;
-using SearchAndBook.Services;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 using System.Reflection;
 
 namespace BookingBoardGames.Tests.SearchAndBook.Services;

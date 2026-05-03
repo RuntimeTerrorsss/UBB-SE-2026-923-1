@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardgamesILoveBan.Src.Chat.DTO;
-using BookingBoardgamesILoveBan.Src.Chat.Model;
-using BookingBoardgamesILoveBan.Src.Chat.Repository;
-using BookingBoardgamesILoveBan.Src.Chat.Service;
-using BookingBoardgamesILoveBan.Src.Enum;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.Model;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.DTO;
 using Moq;
 using Xunit;
 

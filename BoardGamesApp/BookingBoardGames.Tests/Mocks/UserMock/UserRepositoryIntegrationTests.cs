@@ -1,5 +1,4 @@
-using BookingBoardgamesILoveBan.Src.Delivery.Model;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
+using BookingBoardGames.Src.DTO;
 using Microsoft.Data.SqlClient;
 using Xunit;
 

@@ -1,7 +1,7 @@
-using BookingBoardgamesILoveBan.Src.PaymentCash.Mapper;
-using BookingBoardgamesILoveBan.Src.PaymentCash.Model;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Constants;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
+using BookingBoardGames.Src.Mapper;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Constants;
+using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Tests.PaymentCash
 {

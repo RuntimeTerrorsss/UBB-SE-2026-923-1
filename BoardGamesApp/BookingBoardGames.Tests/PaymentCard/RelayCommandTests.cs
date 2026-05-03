@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using Xunit;
-using BookingBoardgamesILoveBan.Src.PaymentCard.Commands;
+using BookingBoardGames.Src.Commands;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {

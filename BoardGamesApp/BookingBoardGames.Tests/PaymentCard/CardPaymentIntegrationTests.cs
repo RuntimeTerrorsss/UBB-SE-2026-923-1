@@ -1,11 +1,8 @@
-﻿using System;
+using System;
 using Xunit;
-using BookingBoardgamesILoveBan.Src.PaymentCard.Service;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Repository;
-using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.Receipt.Service;
-using BookingBoardgamesILoveBan.Src.Mocks.GameMock;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {

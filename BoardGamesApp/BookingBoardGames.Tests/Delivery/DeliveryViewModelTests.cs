@@ -1,13 +1,13 @@
+using BookingBoardGames.Src.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookingBoardgamesILoveBan.Src.Delivery.Model;
-using BookingBoardgamesILoveBan.Src.Delivery.Model.Validators;
-using BookingBoardgamesILoveBan.Src.Delivery.Service.MapServices;
-using BookingBoardgamesILoveBan.Src.Delivery.ViewModel;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Validators;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.ViewModels;
 using Xunit;
 
 namespace BookingBoardGames.Tests.Delivery

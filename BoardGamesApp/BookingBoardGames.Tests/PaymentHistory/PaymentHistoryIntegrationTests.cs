@@ -1,10 +1,8 @@
-﻿using BookingBoardgamesILoveBan.Src.Mocks.GameMock;
-using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Enums;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Repository;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Service;
-using BookingBoardgamesILoveBan.Src.Receipt.Service;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

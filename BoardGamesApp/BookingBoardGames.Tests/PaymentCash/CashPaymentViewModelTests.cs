@@ -1,11 +1,8 @@
-using BookingBoardgamesILoveBan.Src.Chat.Repository;
-using BookingBoardgamesILoveBan.Src.Chat.Service;
-using BookingBoardgamesILoveBan.Src.Mocks.GameMock;
-using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.PaymentCash.Model;
-using BookingBoardgamesILoveBan.Src.PaymentCash.Service;
-using BookingBoardgamesILoveBan.Src.PaymentCash.ViewModel;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.ViewModels;
 using Moq;
 
 namespace BookingBoardGames.Tests.PaymentCash

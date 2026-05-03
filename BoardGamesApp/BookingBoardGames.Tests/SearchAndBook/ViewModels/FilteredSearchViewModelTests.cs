@@ -1,8 +1,9 @@
 using Moq;
-using SearchAndBook.Domain;
-using SearchAndBook.Services;
-using SearchAndBook.Shared;
-using SearchAndBook.ViewModels;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.ViewModels;
 
 namespace BookingBoardGames.Tests.SearchAndBook.ViewModels;
 

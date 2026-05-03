@@ -1,5 +1,5 @@
-using BookingBoardgamesILoveBan.Src.Delivery.Model;
-using BookingBoardgamesILoveBan.Src.Delivery.Model.Validators;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Validators;
 
 namespace BookingBoardGames.Tests.Delivery
 {

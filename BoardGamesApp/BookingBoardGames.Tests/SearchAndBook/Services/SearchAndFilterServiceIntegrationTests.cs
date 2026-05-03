@@ -1,7 +1,8 @@
-using SearchAndBook.Domain;
-using SearchAndBook.Repositories;
-using SearchAndBook.Services;
-using SearchAndBook.Shared;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
 
 namespace BookingBoardGames.Tests.SearchAndBook.Services;
 

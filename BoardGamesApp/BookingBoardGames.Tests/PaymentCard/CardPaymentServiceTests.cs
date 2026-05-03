@@ -1,12 +1,10 @@
 using System;
 using Xunit;
 using Moq;
-using BookingBoardgamesILoveBan.Src.PaymentCard.Service;
-using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Repository;
-using BookingBoardgamesILoveBan.Src.Receipt.Service;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {
@@ -23,7 +21,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             mockPaymentRepository = new Mock<PaymentRepository>();
             mockUserService = new Mock<IUserRepository>();
 
-            Mock<BookingBoardgamesILoveBan.Src.Mocks.GameMock.GameRepository> mockGameRepository = new Mock<BookingBoardgamesILoveBan.Src.Mocks.GameMock.GameRepository>();
+            Mock<BookingBoardGames.Src.Mocks.GameMock.GameRepository> mockGameRepository = new Mock<BookingBoardGames.Src.Mocks.GameMock.GameRepository>();
             mockRequestService = new Mock<IRequestService>();
 
             mockReceiptService = new Mock<ReceiptService>(
@@ -265,9 +263,9 @@ namespace BookingBoardGames.Tests.PaymentCard
         public void GetRequestDataTransferObject_FetchesAndReturnsDataTransferObject()
         {
             int requestIdentifier = 1;
-            var fakeRequest = new BookingBoardgamesILoveBan.Src.Mocks.RequestMock.Request(requestIdentifier, 2, 3, 4, DateTime.Now, DateTime.Now.AddDays(1));
-            var fakeUserClient = new BookingBoardgamesILoveBan.Src.Mocks.UserMock.User(3, "Client", "RO", "Cluj", "St.", "1");
-            var fakeUserOwner = new BookingBoardgamesILoveBan.Src.Mocks.UserMock.User(4, "Owner", "RO", "Cluj", "St.", "1");
+            var fakeRequest = new BookingBoardGames.Src.Mocks.RequestMock.Request(requestIdentifier, 2, 3, 4, DateTime.Now, DateTime.Now.AddDays(1));
+            var fakeUserClient = new BookingBoardGames.Src.Mocks.UserMock.User(3, "Client", "RO", "Cluj", "St.", "1");
+            var fakeUserOwner = new BookingBoardGames.Src.Mocks.UserMock.User(4, "Owner", "RO", "Cluj", "St.", "1");
 
             mockRequestService.Setup(r => r.GetRequestById(requestIdentifier)).Returns(fakeRequest);
             mockRequestService.Setup(r => r.GetGameName(fakeRequest.Id)).Returns("TestGame");

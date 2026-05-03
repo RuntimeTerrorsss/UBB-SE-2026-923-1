@@ -1,12 +1,10 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Moq;
-using BookingBoardgamesILoveBan.Src.PaymentCard.ViewModel;
-using BookingBoardgamesILoveBan.Src.PaymentCard.Service;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
+using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {

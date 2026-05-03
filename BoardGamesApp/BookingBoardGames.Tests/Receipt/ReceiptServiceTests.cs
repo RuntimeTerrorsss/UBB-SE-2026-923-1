@@ -1,10 +1,9 @@
-﻿using BookingBoardgamesILoveBan.Src.Delivery.Model;
-using BookingBoardgamesILoveBan.Src.Mocks.GameMock;
-using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Enums;
-using BookingBoardgamesILoveBan.Src.Receipt.Service;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.Services;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -51,7 +50,7 @@ namespace BookingBoardGames.Tests.Receipt
         {
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "BookingBoardgames",
+                "BookingBoardGames",
                 relativePath.TrimStart('\\', '/'));
         }
 

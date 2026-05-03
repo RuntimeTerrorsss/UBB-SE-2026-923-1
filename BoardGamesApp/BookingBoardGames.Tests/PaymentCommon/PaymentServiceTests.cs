@@ -1,8 +1,8 @@
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
-using BookingBoardgamesILoveBan.Src.PaymentCash.Mapper;
-using BookingBoardgamesILoveBan.Src.PaymentCash.Service;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Repository;
-using BookingBoardgamesILoveBan.Src.Receipt.Service;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Mapper;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
 using Moq;
 
 namespace BookingBoardGames.Tests.PaymentCommon

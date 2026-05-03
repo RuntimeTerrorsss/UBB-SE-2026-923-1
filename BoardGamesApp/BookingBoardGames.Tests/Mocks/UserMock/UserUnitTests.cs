@@ -1,4 +1,3 @@
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
 using Xunit;
 
 namespace BookingBoardGames.Tests.Mocks.UserMock

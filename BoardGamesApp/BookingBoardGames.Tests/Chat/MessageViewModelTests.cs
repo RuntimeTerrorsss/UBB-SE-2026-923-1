@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using Xunit;
-using BookingBoardgamesILoveBan.Src.Chat.ViewModel;
-using BookingBoardgamesILoveBan.Src.Chat.DTO;
-using BookingBoardgamesILoveBan.Src.Enum;
+using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
 using Microsoft.UI.Xaml;
 
 namespace BookingBoardGames.Tests.Chat
