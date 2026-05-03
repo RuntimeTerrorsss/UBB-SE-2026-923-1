@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml;
 
 namespace BookingBoardGames
 {
+    //TODO: rename repositoryPayment and PaymentRepository, finish conversation repo
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>

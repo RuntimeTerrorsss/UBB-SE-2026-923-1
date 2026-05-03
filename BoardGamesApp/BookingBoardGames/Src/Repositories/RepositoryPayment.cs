@@ -27,34 +27,34 @@ namespace BookingBoardGames.Src.Repositories
         public HistoryPayment? GetPaymentById(int searchedPaymentId)
         {
             return this.BuildPaymentQuery()
-                .FirstOrDefault(p => p.TransactionIdentifier == searchedPaymentId);
+                .FirstOrDefault(payment => payment.TransactionIdentifier == searchedPaymentId);
         }
 
         private IQueryable<HistoryPayment> BuildPaymentQuery()
         {
             return this.context.Payments
-                .Include(p => p.Request)
-                    .ThenInclude(r => r.Game)
-                .Include(p => p.Owner)
-                .Select(p => new HistoryPayment
+                .Include(payment => payment.Request)
+                    .ThenInclude(rental => rental.Game)
+                .Include(payment => payment.Owner)
+                .Select(payment => new HistoryPayment
                 {
-                    TransactionIdentifier = p.TransactionIdentifier,
-                    PaidAmount = p.PaidAmount,
-                    PaymentMethod = p.PaymentMethod,
-                    DateOfTransaction = p.DateOfTransaction,
-                    DateConfirmedBuyer = p.DateConfirmedBuyer,
-                    DateConfirmedSeller = p.DateConfirmedSeller,
-                    PaymentState = p.PaymentState,
-                    ReceiptFilePath = p.ReceiptFilePath,
-                    RequestId = p.RequestId,
-                    ClientId = p.ClientId,
-                    OwnerId = p.OwnerId,
+                    TransactionIdentifier = payment.TransactionIdentifier,
+                    PaidAmount = payment.PaidAmount,
+                    PaymentMethod = payment.PaymentMethod,
+                    DateOfTransaction = payment.DateOfTransaction,
+                    DateConfirmedBuyer = payment.DateConfirmedBuyer,
+                    DateConfirmedSeller = payment.DateConfirmedSeller,
+                    PaymentState = payment.PaymentState,
+                    ReceiptFilePath = payment.ReceiptFilePath,
+                    RequestId = payment.RequestId,
+                    ClientId = payment.ClientId,
+                    OwnerId = payment.OwnerId,
 
-                    GameName = p.Request != null && p.Request.Game != null
-                                    ? p.Request.Game.Name
+                    GameName = payment.Request != null && payment.Request.Game != null
+                                    ? payment.Request.Game.Name
                                     : PaymentHistoryConstants.NullGameNameDefaultValue,
-                    OwnerName = p.Owner != null
-                                    ? p.Owner.DisplayName
+                    OwnerName = payment.Owner != null
+                                    ? payment.Owner.DisplayName
                                     : PaymentHistoryConstants.NullOwnerNameDefaultValue,
                 });
         }

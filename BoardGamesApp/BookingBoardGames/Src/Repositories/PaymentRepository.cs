@@ -25,7 +25,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public virtual Payment? GetPaymentByIdentifier(int paymentId)
         {
-            return this.context.Payments.FirstOrDefault(p => p.TransactionIdentifier == paymentId);
+            return this.context.Payments.FirstOrDefault(payment => payment.TransactionIdentifier == paymentId);
         }
 
         public virtual int AddPayment(Payment payment)
