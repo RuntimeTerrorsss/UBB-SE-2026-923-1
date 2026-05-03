@@ -18,40 +18,40 @@ namespace BookingBoardGames.Src.Repositories
             this.context = appContext;
         }
 
-        public Rental? GetById(int id)
+        public Rental? GetById(int rentalId)
         {
-            return this.context.Rentals.FirstOrDefault(r => r.RentalId == id);
+            return this.context.Rentals.FirstOrDefault(rental => rental.RentalId == rentalId);
         }
 
-        public TimeRange? GetRentalTimeRange(int id)
+        public TimeRange? GetRentalTimeRange(int rentalId)
         {
             return this.context.Rentals
-                .Where(r => r.RentalId == id)
-                .Select(r => new TimeRange(r.StartDate, r.EndDate))
+                .Where(rental => rental.RentalId == rentalId)
+                .Select(rental => new TimeRange(rental.StartDate, rental.EndDate))
                 .FirstOrDefault();
         }
 
         public List<TimeRange> GetAllOccupiedPeriods()
         {
             return this.context.Rentals
-                .Select(r => new TimeRange(r.StartDate, r.EndDate))
+                .Select(rental => new TimeRange(rental.StartDate, rental.EndDate))
                 .ToList();
         }
 
         public List<TimeRange> GetUnavailableTimeRanges(int gameId)
         {
             return this.context.Rentals
-                .Where(r => r.GameId == gameId)
-                .Select(r => new TimeRange(r.StartDate, r.EndDate))
+                .Where(rental => rental.GameId == gameId)
+                .Select(rental => new TimeRange(rental.StartDate, rental.EndDate))
                 .ToList();
         }
 
-        public bool CheckGameAvailability(DateTime start, DateTime end, int gameId)
+        public bool CheckGameAvailability(DateTime startTime, DateTime endTime, int gameId)
         {
-            bool hasOverlap = this.context.Rentals.Any(r =>
-                r.GameId == gameId &&
-                r.StartDate < end &&
-                start < r.EndDate);
+            bool hasOverlap = this.context.Rentals.Any(rental =>
+                rental.GameId == gameId &&
+                rental.StartDate < endTime &&
+                startTime < rental.EndDate);
 
             return !hasOverlap;
         }
