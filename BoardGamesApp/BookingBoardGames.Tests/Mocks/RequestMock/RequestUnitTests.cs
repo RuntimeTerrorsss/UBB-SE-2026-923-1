@@ -1,3 +1,6 @@
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.DTO;
 using System;
 using Xunit;
 

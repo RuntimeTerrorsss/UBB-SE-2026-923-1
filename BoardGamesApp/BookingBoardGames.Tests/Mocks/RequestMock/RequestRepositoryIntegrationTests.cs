@@ -1,14 +1,17 @@
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.DTO;
 using System;
 using Microsoft.Data.SqlClient;
 using Xunit;
 
 namespace BookingBoardGames.Tests.Mocks.RequestMock
 {
-    public class RequestRepositoryIntegrationTests
+    public class RentalRepositoryIntegrationTests
     {
         private readonly string connectionString;
 
-        public RequestRepositoryIntegrationTests()
+        public RentalRepositoryIntegrationTests()
         {
             DatabaseBootstrap.Initialize();
             connectionString = DatabaseBootstrap.GetAppConnection();
@@ -60,12 +63,12 @@ namespace BookingBoardGames.Tests.Mocks.RequestMock
                     new SqlCommand("SET IDENTITY_INSERT Request OFF", connection).ExecuteNonQuery();
                 }
 
-                var requestRepository = new RequestRepository().GetById(rid);
+                var RentalRepository = new RentalRepository().GetById(rid);
 
-                Assert.NotNull(requestRepository);
+                Assert.NotNull(RentalRepository);
                 Assert.Equal(
                     new { Id = rid, GameId = gid, StartDate = start, EndDate = end },
-                    new { requestRepository.Id, requestRepository.GameId, requestRepository.StartDate, requestRepository.EndDate });
+                    new { RentalRepository.Id, RentalRepository.GameId, RentalRepository.StartDate, RentalRepository.EndDate });
             }
             finally
             {
@@ -81,8 +84,8 @@ namespace BookingBoardGames.Tests.Mocks.RequestMock
         [Fact]
         public void GetById_RequestDoesNotExist_ReturnsNull()
         {
-            var requestRepository = new RequestRepository();
-            var request = requestRepository.GetById(-999);
+            var RentalRepository = new RentalRepository();
+            var request = RentalRepository.GetById(-999);
 
             Assert.Null(request);
         }

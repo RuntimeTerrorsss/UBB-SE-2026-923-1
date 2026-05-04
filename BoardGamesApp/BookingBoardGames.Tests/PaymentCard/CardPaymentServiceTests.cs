@@ -13,7 +13,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         private readonly Mock<PaymentRepository> mockPaymentRepository;
         private readonly Mock<IUserRepository> mockUserService;
         private readonly Mock<ReceiptService> mockReceiptService;
-        private readonly Mock<IRequestService> mockRequestService;
+        private readonly Mock<IRentalService> mockRentalService;
         private readonly CardPaymentService cardPaymentService;
 
         public CardPaymentServiceTests()
@@ -21,19 +21,19 @@ namespace BookingBoardGames.Tests.PaymentCard
             mockPaymentRepository = new Mock<PaymentRepository>();
             mockUserService = new Mock<IUserRepository>();
 
-            Mock<BookingBoardGames.Src.Mocks.GameMock.GameRepository> mockGameRepository = new Mock<BookingBoardGames.Src.Mocks.GameMock.GameRepository>();
-            mockRequestService = new Mock<IRequestService>();
+            Mock<InterfaceGamesRepository> mockGameRepository = new Mock<InterfaceGamesRepository>();
+            mockRentalService = new Mock<IRentalService>();
 
             mockReceiptService = new Mock<ReceiptService>(
                 mockUserService.Object,
-                mockRequestService.Object,
+                mockRentalService.Object,
                 mockGameRepository.Object);
 
             cardPaymentService = new CardPaymentService(
                 mockPaymentRepository.Object,
                 mockUserService.Object,
                 mockReceiptService.Object,
-                mockRequestService.Object);
+                mockRentalService.Object);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal requestPrice = 50.0m;
             decimal clientBalance = 100.0m;
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
 
             bool isBalanceSufficient = cardPaymentService.CheckBalanceSufficiency(requestIdentifier, clientIdentifier);
@@ -60,7 +60,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal requestPrice = 100.0m;
             decimal clientBalance = 50.0m;
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
 
             bool isBalanceSufficient = cardPaymentService.CheckBalanceSufficiency(requestIdentifier, clientIdentifier);
@@ -79,7 +79,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal clientBalance = 50.0m;
             string expectedExceptionMessage = "Insufficient Funds";
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
 
             Exception thrownException = Assert.Throws<Exception>(() =>
@@ -98,7 +98,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal requestPrice = 100.0m;
             decimal clientBalance = 50.0m;
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
 
             try
@@ -125,7 +125,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal clientBalance = 150.0m;
             decimal ownerBalance = 500.0m;
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(ownerIdentifier)).Returns(ownerBalance);
             mockPaymentRepository.Setup(paymentRepositoryMock => paymentRepositoryMock.AddPayment(It.IsAny<Payment>())).Returns(expectedTransactionIdentifier);
@@ -149,7 +149,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal clientBalance = 150.0m;
             decimal ownerBalance = 500.0m;
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(ownerIdentifier)).Returns(ownerBalance);
             mockPaymentRepository.Setup(paymentRepositoryMock => paymentRepositoryMock.AddPayment(It.IsAny<Payment>())).Returns(expectedTransactionIdentifier);
@@ -174,7 +174,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal ownerBalance = 500.0m;
             string expectedPaymentMethod = "CARD";
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(ownerIdentifier)).Returns(ownerBalance);
             mockPaymentRepository.Setup(paymentRepositoryMock => paymentRepositoryMock.AddPayment(It.IsAny<Payment>())).Returns(expectedTransactionIdentifier);
@@ -199,7 +199,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal ownerBalance = 500.0m;
             decimal expectedNewClientBalance = 50.0m;
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(ownerIdentifier)).Returns(ownerBalance);
             mockPaymentRepository.Setup(paymentRepositoryMock => paymentRepositoryMock.AddPayment(It.IsAny<Payment>())).Returns(expectedTransactionIdentifier);
@@ -224,7 +224,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal ownerBalance = 500.0m;
             decimal expectedNewOwnerBalance = 600.0m;
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(ownerIdentifier)).Returns(ownerBalance);
             mockPaymentRepository.Setup(paymentRepositoryMock => paymentRepositoryMock.AddPayment(It.IsAny<Payment>())).Returns(expectedTransactionIdentifier);
@@ -248,7 +248,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal clientBalance = 150.0m;
             decimal ownerBalance = 500.0m;
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(ownerIdentifier)).Returns(ownerBalance);
             mockPaymentRepository.Setup(paymentRepositoryMock => paymentRepositoryMock.AddPayment(It.IsAny<Payment>())).Returns(expectedTransactionIdentifier);
@@ -267,9 +267,9 @@ namespace BookingBoardGames.Tests.PaymentCard
             var fakeUserClient = new BookingBoardGames.Src.Mocks.UserMock.User(3, "Client", "RO", "Cluj", "St.", "1");
             var fakeUserOwner = new BookingBoardGames.Src.Mocks.UserMock.User(4, "Owner", "RO", "Cluj", "St.", "1");
 
-            mockRequestService.Setup(r => r.GetRequestById(requestIdentifier)).Returns(fakeRequest);
-            mockRequestService.Setup(r => r.GetGameName(fakeRequest.Id)).Returns("TestGame");
-            mockRequestService.Setup(r => r.GetRequestPrice(fakeRequest.Id)).Returns(50.0m);
+            mockRentalService.Setup(r => r.GetRequestById(requestIdentifier)).Returns(fakeRequest);
+            mockRentalService.Setup(r => r.GetGameName(fakeRequest.Id)).Returns("TestGame");
+            mockRentalService.Setup(r => r.GetRentalPrice(fakeRequest.Id)).Returns(50.0m);
             mockUserService.Setup(u => u.GetById(fakeRequest.ClientId)).Returns(fakeUserClient);
             mockUserService.Setup(u => u.GetById(fakeRequest.OwnerId)).Returns(fakeUserOwner);
 
@@ -355,7 +355,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             decimal ownerBalance = 500.0m;
             string expectedExceptionMessage = "Insufficient Funds";
 
-            mockRequestService.Setup(requestServiceMock => requestServiceMock.GetRequestPrice(requestIdentifier)).Returns(requestPrice);
+            mockRentalService.Setup(rentalServiceMock => rentalServiceMock.GetRentalPrice(requestIdentifier)).Returns(requestPrice);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(clientIdentifier)).Returns(clientBalance);
             mockUserService.Setup(userServiceMock => userServiceMock.GetUserBalance(ownerIdentifier)).Returns(ownerBalance);
 

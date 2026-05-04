@@ -15,7 +15,7 @@ namespace BookingBoardGames.Src.Services
     /// <summary>
     /// Service responsible for searching, filtering, and retrieving game feeds.
     /// </summary>
-    internal class SearchAndFilterService : InterfaceSearchAndFilterService
+    public class SearchAndFilterService : InterfaceSearchAndFilterService
     {
         private const int MinimumAllowedPlayers = 0;
         private const double MinimumFilterValue = 0;

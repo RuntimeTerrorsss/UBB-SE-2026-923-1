@@ -18,14 +18,14 @@ namespace BookingBoardGames.Tests.Receipt
     {
         private Mock<IUserRepository> userRepositoryMock;
         private Mock<InterfaceGamesRepository> gameRepositoryMock;
-        private Mock<IRequestService> requestServiceMock;
+        private Mock<IRentalService> rentalServiceMock;
         private ReceiptService receiptService;
 
         private void InitializeService()
         {
             userRepositoryMock = new Mock<IUserRepository>();
             gameRepositoryMock = new Mock<InterfaceGamesRepository>();
-            requestServiceMock = new Mock<IRequestService>();
+            rentalServiceMock = new Mock<IRentalService>();
 
             userRepositoryMock
                 .Setup(repository => repository.GetById(It.IsAny<int>()))
@@ -35,13 +35,13 @@ namespace BookingBoardGames.Tests.Receipt
                 .Setup(repository => repository.GetById(It.IsAny<int>()))
                 .Returns((int gameIdToSearch) => new Game(gameIdToSearch, $"game_{gameIdToSearch}", 100m));
 
-            requestServiceMock
-                .Setup(service => service.GetRequestById(It.IsAny<int>()))
+            rentalServiceMock
+                .Setup(service => service.GetRentalById(It.IsAny<int>()))
                 .Returns((int requestIdToSearch) => new Request(requestIdToSearch, 1, 2, 3, DateTime.Now, DateTime.Now.AddDays(3)));
 
             receiptService = new ReceiptService(
                 userRepositoryMock.Object,
-                requestServiceMock.Object,
+                rentalServiceMock.Object,
                 gameRepositoryMock.Object
             );
         }
