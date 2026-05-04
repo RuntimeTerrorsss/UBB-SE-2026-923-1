@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingBoardGames.Src.Repositories

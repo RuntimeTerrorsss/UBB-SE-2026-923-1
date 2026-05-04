@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingBoardGames", "Bookin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingBoardGames.Data", "..\BookingBoardGames.Data\BookingBoardGames.Data.csproj", "{DD40A3C7-FCB1-47A7-A298-9ED3221138AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGamesAppWebApi", "..\BoardGamesAppWebApi\BoardGamesAppWebApi.csproj", "{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -47,6 +49,18 @@ Global
 		{DD40A3C7-FCB1-47A7-A298-9ED3221138AF}.Release|x64.Build.0 = Release|Any CPU
 		{DD40A3C7-FCB1-47A7-A298-9ED3221138AF}.Release|x86.ActiveCfg = Release|Any CPU
 		{DD40A3C7-FCB1-47A7-A298-9ED3221138AF}.Release|x86.Build.0 = Release|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Debug|x64.Build.0 = Debug|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Debug|x86.Build.0 = Debug|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Release|ARM64.Build.0 = Release|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Release|x64.ActiveCfg = Release|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Release|x64.Build.0 = Release|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Release|x86.ActiveCfg = Release|Any CPU
+		{DF136B4E-199B-4EF4-91F6-5B1156AFC99D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
