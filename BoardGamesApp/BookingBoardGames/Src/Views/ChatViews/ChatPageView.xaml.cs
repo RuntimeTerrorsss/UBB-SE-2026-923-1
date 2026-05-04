@@ -78,8 +78,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Frame.CanGoBack)
-                this.Frame.GoBack();
+            this.Frame.Navigate(typeof(DiscoveryView));
         }
     }
 }
