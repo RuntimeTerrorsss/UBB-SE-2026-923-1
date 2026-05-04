@@ -16,14 +16,22 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- SEARCH BAR -->
-        <Border Grid.Row="0"
-                Padding="16"
-                CornerRadius="8"
-                BorderBrush="LightGray"
-                BorderThickness="1">
+        
+        <StackPanel Grid.Row="0" Spacing="8">
 
-            <Grid ColumnSpacing="8">
+            <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Spacing="8">
+                <Button Content="Dashboard" Click="DashboardButton_Click"/>
+                <Button Content="Chat" Click="ChatButton_Click"/>
+            </StackPanel>
+
+            <Border Padding="16"
+            CornerRadius="8"
+            BorderBrush="LightGray"
+            BorderThickness="1">
+
+                <Grid ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
@@ -72,6 +80,7 @@
                         Command="{Binding SearchCommand}"/>
             </Grid>
         </Border>
+        </StackPanel>
 
         <!-- RESULTS -->
         <ScrollViewer x:Name="MainScrollViewer"
