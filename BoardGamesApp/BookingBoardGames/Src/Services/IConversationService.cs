@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Src.Services
@@ -25,6 +26,18 @@ namespace BookingBoardGames.Src.Services
         void UpdateMessage(MessageDataTransferObject message);
 
         void SendMessage(MessageDataTransferObject message);
+
+        void Subscribe(int userId, IConversationService observer);
+
+        void Unsubscribe(int userId);
+
+        void NotifySubscribersAboutMessage(Message message);
+
+        void NotifySubscribersAboutMessageUpdate(Message message);
+
+        void NotifySubscribersAboutNewConversation(Conversation conversation);
+
+        void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt);
 
         event Action<MessageDataTransferObject, string> ActionMessageProcessed;
 

@@ -4,20 +4,36 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Src.Repositories;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingBoardGames.Src.Services
 {
     public class ConversationService : IConversationService
     {
-        private IConversationRepository ConversationRepository { get; set; }
+        private readonly IConversationRepository conversationRepository;
+        private readonly IUserRepository userRepository;
+        private readonly AppDbContext context;
+        private readonly Dictionary<int, IConversationService> subscribers = new Dictionary<int, IConversationService>();
 
-        private IUserRepository userRepository;
+        public ConversationService(IConversationRepository conversationRepo, int userIdInput, AppDbContext appContext)
+                    : this(conversationRepo, userIdInput, appContext, App.UserRepository)
+        {
+        }
+
+        public ConversationService(IConversationRepository conversationRepo, int userIdInput, AppDbContext appContext, IUserRepository userRepo)
+        {
+            this.UserId = userIdInput;
+            this.conversationRepository = conversationRepo;
+            this.userRepository = userRepo;
+            this.context = appContext;
+
+            this.Subscribe(this.UserId, this);
+        }
 
         private int UserId { get; set; }
 
@@ -28,62 +44,56 @@ namespace BookingBoardGames.Src.Services
         public event Action<ReadReceiptDTO> ActionReadReceiptProcessed;
 
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
-        
-        public ConversationService(IConversationRepository conversationRepo, int userIdInput)
-            : this(conversationRepo, userIdInput, App.UserRepository)
-        {
-        }
-
-        public ConversationService(IConversationRepository conversationRepo, int userIdInput, IUserRepository userRepo)
-        {
-            this.UserId = userIdInput;
-            this.ConversationRepository = conversationRepo;
-            this.userRepository = userRepo;
-
-            this.ConversationRepository.Subscribe(this.UserId, this);
-        }
 
         public List<ConversationDTO> FetchConversations()
         {
-            List<ConversationDTO> conversationList = new List<ConversationDTO>();
-
-            foreach (var conversation in this.ConversationRepository.GetConversationsForUser(this.UserId))
-            {
-                conversationList.Add(this.ConversationToConversationDTO(conversation));
-            }
-
-            return conversationList;
+            return this.conversationRepository
+                .GetConversationsForUser(this.UserId)
+                .Select(conversation => this.ConversationToConversationDTO(conversation))
+                .ToList();
         }
 
         public string GetOtherUserNameByConversationDTO(ConversationDTO conversation)
         {
-            int otherUserId = conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId;
-            var user = this.userRepository.GetById(otherUserId);
-            return user?.Username ?? "Unknown User";
+            int otherUserId = conversation.Participants
+                .First(participants => participants.UserId != this.UserId).UserId;
+            return this.userRepository.GetById(otherUserId)?.Username ?? "Unknown User";
         }
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
         {
-            return this.userRepository.GetById(message.SenderId == this.UserId ? message.ReceiverId : message.SenderId).Username ?? "Unknown User";
+            int otherId = message.SenderId == this.UserId ? message.ReceiverId : message.SenderId;
+            return this.userRepository.GetById(otherId)?.Username ?? "Unknown User";
         }
 
         public void SendMessage(MessageDataTransferObject message)
         {
-            this.ConversationRepository.HandleNewMessage(this.MessageDTOToMessage(message));
+            var entity = this.MessageDTOToMessage(message);
+            this.conversationRepository.HandleNewMessage(entity);
+
+            var persisted = this.FetchPersistedMessage(entity.MessageId);
+            this.NotifySubscribersAboutMessage(persisted);
         }
 
         public void UpdateMessage(MessageDataTransferObject message)
         {
-            this.ConversationRepository.HandleMessageUpdate(this.MessageDTOToMessage(message));
+            var entity = this.MessageDTOToMessage(message);
+            this.conversationRepository.HandleMessageUpdate(entity);
+
+            var persisted = this.FetchPersistedMessage(entity.MessageId);
+            this.NotifySubscribersAboutMessageUpdate(persisted);
         }
 
         public void SendReadReceipt(ConversationDTO conversation)
         {
-            this.ConversationRepository.HandleReadReceipt(new ReadReceiptDTO(
+            var receipt = new ReadReceiptDTO(
                 conversation.Id,
                 this.UserId,
-                conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId,
-                DateTime.Now));
+                conversation.Participants.First(participants => participants.UserId != this.UserId).UserId,
+                DateTime.Now);
+
+            this.conversationRepository.HandleReadReceipt(receipt);
+            this.NotifySubscribersAboutReadReceipt(receipt);
         }
 
         public void OnCardPaymentSelected(int messageId)
@@ -94,31 +104,19 @@ namespace BookingBoardGames.Src.Services
         public void OnCashPaymentSelected(int messageId, int paymentId)
         {
             this.FinalizeRentalRequest(messageId);
-            this.SendCashAgreementMessage(messageId, paymentId);
-        }
-
-        private void FinalizeRentalRequest(int messageId)
-        {
-            this.ConversationRepository.HandleRentalRequestFinalization(messageId);
-        }
-
-        private void SendCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
-        {
-            this.ConversationRepository.CreateCashAgreementMessage(messageIdOfParentRentalRequestMessage, paymentId);
+            this.CreateCashAgreementMessage(messageId, paymentId);
         }
 
         public void OnMessageReceived(Message message)
         {
-            MessageDataTransferObject messageDTO = this.MessageToMessageDTO(message);
-            string userName = this.GetOtherUserNameByMessageDTO(messageDTO);
-            this.ActionMessageProcessed?.Invoke(messageDTO, userName);
+            var dto = this.MessageToMessageDTO(message);
+            this.ActionMessageProcessed?.Invoke(dto, this.GetOtherUserNameByMessageDTO(dto));
         }
 
         public void OnConversationReceived(Conversation conversation)
         {
-            ConversationDTO conversationDTO = this.ConversationToConversationDTO(conversation);
-            string userName = this.GetOtherUserNameByConversationDTO(conversationDTO);
-            this.ActionConversationProcessed?.Invoke(conversationDTO, userName);
+            var dto = this.ConversationToConversationDTO(conversation);
+            this.ActionConversationProcessed?.Invoke(dto, this.GetOtherUserNameByConversationDTO(dto));
         }
 
         public void OnReadReceiptReceived(ReadReceiptDTO readReceipt)
@@ -128,14 +126,67 @@ namespace BookingBoardGames.Src.Services
 
         public void OnMessageUpdateReceived(Message message)
         {
-            MessageDataTransferObject messageDTO = this.MessageToMessageDTO(message);
-            string userName = this.GetOtherUserNameByMessageDTO(messageDTO);
-            this.ActionMessageUpdateProcessed?.Invoke(messageDTO, userName);
+            var dto = this.MessageToMessageDTO(message);
+            this.ActionMessageUpdateProcessed?.Invoke(dto, this.GetOtherUserNameByMessageDTO(dto));
+        }
+
+        public void Subscribe(int userId, IConversationService observer)
+        {
+            this.subscribers[userId] = observer;
+        }
+
+        public void Unsubscribe(int userId)
+        {
+            this.subscribers.Remove(userId);
+        }
+
+        public void NotifySubscribersAboutMessage(Message message)
+        {
+            foreach (int userId in this.GetParticipantUserIds(message.ConversationId))
+            {
+                if (this.subscribers.TryGetValue(userId, out var observer))
+                {
+                    observer.OnMessageReceived(message);
+                }
+            }
+        }
+
+        public void NotifySubscribersAboutMessageUpdate(Message message)
+        {
+            foreach (int userId in this.GetParticipantUserIds(message.ConversationId))
+            {
+                if (this.subscribers.TryGetValue(userId, out var observer))
+                {
+                    observer.OnMessageUpdateReceived(message);
+                }
+            }
+        }
+
+        public void NotifySubscribersAboutNewConversation(Conversation conversation)
+        {
+            foreach (int userId in conversation.Participants.Select(participants => participants.UserId))
+            {
+                if (this.subscribers.TryGetValue(userId, out var observer))
+                {
+                    observer.OnConversationReceived(conversation);
+                }
+            }
+        }
+
+        public void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
+        {
+            foreach (int userId in this.GetParticipantUserIds(readReceipt.ConversationId))
+            {
+                if (this.subscribers.TryGetValue(userId, out var observer))
+                {
+                    observer.OnReadReceiptReceived(readReceipt);
+                }
+            }
         }
 
         public Message MessageDTOToMessage(MessageDataTransferObject messageDto)
         {
-            Message toReturn = messageDto.Type switch
+            return messageDto.Type switch
             {
                 MessageType.MessageText => new TextMessage
                 {
@@ -210,13 +261,11 @@ namespace BookingBoardGames.Src.Services
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(messageDto.Type), messageDto.Type, "Unsupported message type."),
             };
-
-            return toReturn;
         }
 
         public MessageDataTransferObject MessageToMessageDTO(Message message)
         {
-            int defaultMissingIdentifier = -1;
+            const int defaultMissingIdentifier = -1;
 
             MessageType messageType = message switch
             {
@@ -231,12 +280,12 @@ namespace BookingBoardGames.Src.Services
             string content = message switch
             {
                 TextMessage textMessage => textMessage.TextMessageContent ?? textMessage.MessageContentAsString ?? string.Empty,
-                RentalRequestMessage rentalForContent => rentalForContent.RequestContent ?? rentalForContent.MessageContentAsString ?? string.Empty,
+                RentalRequestMessage rentalReq => rentalReq.RequestContent ?? rentalReq.MessageContentAsString ?? string.Empty,
                 SystemMessage systemMessage => systemMessage.MessageContent ?? systemMessage.MessageContentAsString ?? string.Empty,
                 _ => message.MessageContentAsString ?? string.Empty,
             };
 
-            MessageDataTransferObject toReturn = new MessageDataTransferObject(
+            return new MessageDataTransferObject(
                 Id: message.MessageId,
                 ConversationId: message.ConversationId,
                 SenderId: message.MessageSenderId,
@@ -245,31 +294,29 @@ namespace BookingBoardGames.Src.Services
                 Content: content,
                 Type: messageType,
                 ImageUrl: message is ImageMessage imageMessage ? imageMessage.MessageImageUrl ?? string.Empty : string.Empty,
-                IsResolved: message is RentalRequestMessage rentalResolvedMessage ? rentalResolvedMessage.IsRequestResolved
-                          : message is CashAgreementMessage cashResolvedMessage ? cashResolvedMessage.IsCashAgreementResolved
-                          : false,
-                IsAccepted: message is RentalRequestMessage rentalAcceptedMessage ? rentalAcceptedMessage.IsRequestAccepted : false,
-                IsAcceptedByBuyer: message is CashAgreementMessage cashBuyerMessage ? cashBuyerMessage.IsCashAgreementAcceptedByBuyer : false,
-                IsAcceptedBySeller: message is CashAgreementMessage cashSellerMessage ? cashSellerMessage.IsCashAgreementAcceptedBySeller : false,
-                PaymentId: message is CashAgreementMessage cashPaymentMessage ? cashPaymentMessage.CashPaymentId : defaultMissingIdentifier,
-                RequestId: message is RentalRequestMessage rentalRequestMessage ? rentalRequestMessage.RentalRequestId : defaultMissingIdentifier);
-            return toReturn;
+                IsResolved: message is RentalRequestMessage rentalRequest ? rentalRequest.IsRequestResolved
+                          : message is CashAgreementMessage cashAgreement && cashAgreement.IsCashAgreementResolved,
+                IsAccepted: message is RentalRequestMessage rentalRequestMessage ? rentalRequestMessage.IsRequestAccepted : false,
+                IsAcceptedByBuyer: message is CashAgreementMessage cashAgreementBuyer ? cashAgreementBuyer.IsCashAgreementAcceptedByBuyer : false,
+                IsAcceptedBySeller: message is CashAgreementMessage cashAgreementSeller ? cashAgreementSeller.IsCashAgreementAcceptedBySeller : false,
+                PaymentId: message is CashAgreementMessage cashPayment ? cashPayment.CashPaymentId : defaultMissingIdentifier,
+                RequestId: message is RentalRequestMessage request ? request.RentalRequestId : defaultMissingIdentifier);
         }
 
         public ConversationDTO ConversationToConversationDTO(Conversation conversation)
         {
             var messageDTOs = conversation.Messages
-                .OrderBy(messageItem => messageItem.MessageSentTime)
-                .Select(messageItem => this.MessageToMessageDTO(messageItem))
+                .OrderBy(message => message.MessageSentTime)
+                .Select(message => this.MessageToMessageDTO(message))
                 .ToList();
 
             var participantsOrdered = conversation.Participants
-                .OrderBy(participantItem => participantItem.UserId)
+                .OrderBy(participants => participants.UserId)
                 .ToList();
 
             var lastRead = conversation.Participants.ToDictionary(
-                participantItem => participantItem.UserId,
-                participantItem => participantItem.LastMessageReadTime ?? DateTime.MinValue);
+                participants => participants.UserId,
+                participants => participants.LastMessageReadTime ?? DateTime.MinValue);
 
             return new ConversationDTO(
                 conversationId: conversation.ConversationId,
@@ -278,5 +325,44 @@ namespace BookingBoardGames.Src.Services
                 lastRead: lastRead);
         }
 
+        private void FinalizeRentalRequest(int messageId)
+        {
+            this.conversationRepository.HandleRentalRequestFinalization(messageId);
+
+            var persisted = this.FetchPersistedMessage(messageId);
+            this.NotifySubscribersAboutMessageUpdate(persisted);
+        }
+
+        private void CreateCashAgreementMessage(int parentMessageId, int paymentId)
+        {
+            this.conversationRepository.CreateCashAgreementMessage(parentMessageId, paymentId);
+
+            var persisted = this.context.Messages
+                .Include(message => message.Sender)
+                .Include(message => message.Receiver)
+                .Include(message => message.Conversation)
+                .OfType<CashAgreementMessage>()
+                .OrderByDescending(message => message.MessageId)
+                .First();
+
+            this.NotifySubscribersAboutMessage(persisted);
+        }
+
+        private Message FetchPersistedMessage(int messageId)
+        {
+            return this.context.Messages
+                .Include(message => message.Sender)
+                .Include(message => message.Receiver)
+                .Include(message => message.Conversation)
+                .First(message => message.MessageId == messageId);
+        }
+
+        private List<int> GetParticipantUserIds(int conversationId)
+        {
+            return this.context.ConversationParticipants
+                .Where(participants => participants.ConversationId == conversationId)
+                .Select(participants => participants.UserId)
+                .ToList();
+        }
     }
 }
