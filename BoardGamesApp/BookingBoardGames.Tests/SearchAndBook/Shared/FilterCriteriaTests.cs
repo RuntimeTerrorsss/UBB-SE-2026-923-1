@@ -17,7 +17,7 @@ public class FilterCriteriaTests
             MaximumPrice = 50m,
             PlayerCount = 4,
             SortOption = SortOption.PriceAscending,
-            Id = 7,
+            UserId = 7,
         };
 
         criteria.Reset();

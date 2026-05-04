@@ -24,10 +24,13 @@ namespace BookingBoardGames.Tests.Chat
             string testCity = "city";
             string testStreet = "street";
             string testStreetNumber = "streetNumber";
+            string testDisplayName = "displayName";
+            string testProfilePictureUrl = "url";
+            decimal testBalance = 0m;
 
             userServiceMock
                 .Setup(userRepository => userRepository.GetById(It.IsAny<int>()))
-                .Returns(new User(defaultUserId, testName, testCountry, testCity, testStreet, testStreetNumber));
+                .Returns(new User(defaultUserId, testName, testCountry, testCity, testStreet, testStreetNumber, testDisplayName, testProfilePictureUrl, testBalance));
             return new LeftPanelViewModel();
         }
 
@@ -40,9 +43,12 @@ namespace BookingBoardGames.Tests.Chat
             string testCity = "city";
             string testStreet = "street";
             string testStreetNumber = "streetNumber";
+            string testDisplayName = "displayName";
+            string testAvatarUrl = "url";
+            decimal testBalance = 0m;
 
             serviceMock.Setup(userRepository => userRepository.GetById(It.IsAny<int>()))
-                .Returns(new User(defaultUserId, testName, testCountry, testCity, testStreet, testStreetNumber));
+                .Returns(new User(defaultUserId, testName, testCountry, testCity, testStreet, testStreetNumber, testDisplayName, testAvatarUrl, testBalance));
 
             return serviceMock.Object;
         }

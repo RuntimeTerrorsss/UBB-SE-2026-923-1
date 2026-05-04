@@ -40,8 +40,8 @@ public class RentalServiceUnitTests
 
         Assert.NotNull(resultedRental);
         Assert.Equal(
-            new { expectedRequest.Id, expectedRequest.GameId, expectedRequest.StartDate, expectedRequest.EndDate },
-            new { resultedRental.RequestId, resultedRental.GameId, resultedRental.StartDate, resultedRental.EndDate });
+            new { expectedRequest.RentalId, expectedRequest.GameId, expectedRequest.StartDate, expectedRequest.EndDate },
+            new { resultedRental.RentalId, resultedRental.GameId, resultedRental.StartDate, resultedRental.EndDate });
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class RentalServiceUnitTests
         var Rental = new Rental(TestRequestId, TestGameId, TestClientId, TestOwnerId, TestStartDate, TestEndDate);
         var game = new Game(TestGameName, TestPricePerDay, 2, 4, "Description", 1);
         mockRentalRepository.Setup(r => r.GetById(TestRequestId)).Returns(Rental);
-        mockGamesRepository.Setup(g => g.GetById(TestGameId)).Returns(game);
+        mockGamesRepository.Setup(g => g.GetGameById(TestGameId)).Returns(game);
 
         var resultedRental = RentalService.GetGameName(TestRequestId);
 

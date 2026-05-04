@@ -296,7 +296,7 @@ namespace BookingBoardGames.Tests.Delivery
             public User UserToReturn { get; set; } = null;
             public bool SaveAddressCalled { get; set; } = false;
 
-    public System.Collections.Generic.List<User> GetAll() => throw new System.NotImplementedException();
+            public System.Collections.Generic.List<User> GetAll() => throw new System.NotImplementedException();
 
             public User GetById(int Id)
             {
@@ -315,6 +315,17 @@ namespace BookingBoardGames.Tests.Delivery
 
             public void UpdateBalance(int userId, decimal newBalance)
             {
+            }
+
+            public User? GetGameById(int id)
+            {
+                var users = new List<User>
+                {
+                    new User("John", "Doe", "john.doe@example.com", "hash1", "New York", "USA"),
+                    new User("Jane", "Smith", "jane.smith@example.com", "hash2", "London", "UK")
+                };
+
+                return users.FirstOrDefault(user => user.Id == id);
             }
         }
 

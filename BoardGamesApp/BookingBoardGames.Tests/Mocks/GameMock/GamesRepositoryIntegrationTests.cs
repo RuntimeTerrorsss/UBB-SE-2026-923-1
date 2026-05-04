@@ -45,7 +45,7 @@ public class GamesRepositoryIntegrationTests
             }
 
             var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            var game = GamesRepository.GetById(testId);
+            var game = GamesRepository.GetGameById(testId);
 
             Assert.NotNull(game);
             Assert.Equal(
@@ -68,7 +68,7 @@ public class GamesRepositoryIntegrationTests
     public void GetById_GameDoesNotExist_ReturnsNull()
     {
         var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-        var game = GamesRepository.GetById(-999);
+        var game = GamesRepository.GetGameById(-999);
 
         Assert.Null(game);
     }

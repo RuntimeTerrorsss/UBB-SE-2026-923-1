@@ -7,6 +7,7 @@ using Moq;
 using BookingBoardGames.Src.ViewModels;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {

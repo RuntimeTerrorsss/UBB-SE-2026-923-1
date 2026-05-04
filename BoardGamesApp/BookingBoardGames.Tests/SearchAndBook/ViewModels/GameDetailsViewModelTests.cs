@@ -235,7 +235,7 @@ public class GameDetailsViewModelTests
             MinimumNrPlayers = 2,
             MaximumNumberPlayers = 4,
             Description = "desc",
-            Id = 1,
+            UserId = 1,
             DisplayName = "Owner"
         };
     }

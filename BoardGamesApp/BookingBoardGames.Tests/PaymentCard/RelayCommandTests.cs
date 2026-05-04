@@ -10,7 +10,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         public void Execute_InvokesAction()
         {
             bool actionWasInvoked = false;
-            RelayCommand executeRelayCommand = new RelayCommand(() => actionWasInvoked = true);
+            RelayCommand executeRelayCommand = new RelayCommand(_ => actionWasInvoked = true);
             object nullCommandParameter = null;
 
             executeRelayCommand.Execute(nullCommandParameter);
@@ -21,7 +21,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         [Fact]
         public void CanExecute_NoConditionProvided_ReturnsTrue()
         {
-            RelayCommand canExecuteRelayCommand = new RelayCommand(() => { });
+            RelayCommand canExecuteRelayCommand = new RelayCommand(_ => { });
             object nullCommandParameter = null;
 
             bool canExecuteResult = canExecuteRelayCommand.CanExecute(nullCommandParameter);
@@ -33,7 +33,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         public void CanExecute_ConditionProvidedAndFalse_ReturnsFalse()
         {
             bool executeCondition = false;
-            RelayCommand conditionalRelayCommand = new RelayCommand(() => { }, () => executeCondition);
+            RelayCommand conditionalRelayCommand = new RelayCommand(_ => { }, () => executeCondition);
             object nullCommandParameter = null;
 
             bool canExecuteResult = conditionalRelayCommand.CanExecute(nullCommandParameter);
@@ -45,7 +45,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         public void CanExecute_ConditionProvidedAndTrue_ReturnsTrue()
         {
             bool executeCondition = true;
-            RelayCommand conditionalRelayCommand = new RelayCommand(() => { }, () => executeCondition);
+            RelayCommand conditionalRelayCommand = new RelayCommand(_ => { }, () => executeCondition);
             object nullCommandParameter = null;
 
             bool canExecuteResult = conditionalRelayCommand.CanExecute(nullCommandParameter);
@@ -56,7 +56,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         [Fact]
         public void NotifyCanExecuteChanged_FiresEvent()
         {
-            RelayCommand eventRelayCommand = new RelayCommand(() => { });
+            RelayCommand eventRelayCommand = new RelayCommand(_ => { });
             bool commandEventFired = false;
             eventRelayCommand.CanExecuteChanged += (eventSender, eventArguments) => commandEventFired = true;
 
@@ -66,6 +66,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         }
     }
 }
+
 
 
 

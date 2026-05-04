@@ -51,7 +51,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
 
         private HistoryPayment MakePayment(int PaymentId, string gameName, string ownerName, string method, decimal amount, DateTime? date = null)
         {
-            var createdPayment = new HistoryPayment(PaymentId, 1, 1, 2, method, amount)
+            var createdPayment = new HistoryPayment(PaymentId, 1, 1, 2, method, ownerName)
             {
                 GameName = gameName,
                 OwnerName = ownerName,
@@ -348,7 +348,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void GetReceiptDocumentPath_NullFilePath_GeneratesNewPath()
         {
-            var payment = new HistoryPayment(1, 1, 1, 2, "Card", 50) { ReceiptFilePath = null };
+            var payment = new HistoryPayment(1, 1, 1, 2, "Card", "Owner") { ReceiptFilePath = null };
             var payments = new List<HistoryPayment> { payment };
             InitializeService(payments);
 
@@ -360,7 +360,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void GetReceiptDocumentPath_FilePathWithoutBackslashes_AddsBackslashes()
         {
-            var payment = new HistoryPayment(1, 1, 1, 2, "Card", 50) { ReceiptFilePath = "receipt_1_test.pdf" };
+            var payment = new HistoryPayment(1, 1, 1, 2, "Card", "Owner") { ReceiptFilePath = "receipt_1_test.pdf" };
             var payments = new List<HistoryPayment> { payment };
             InitializeService(payments);
 
@@ -371,7 +371,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void GetReceiptDocumentPath_FilePathWithBackslashes_ReturnsDocument()
         {
-            var payment = new HistoryPayment(1, 1, 1, 2, "Card", 50) { ReceiptFilePath = "receipts\\receipt_1_test.pdf" };
+            var payment = new HistoryPayment(1, 1, 1, 2, "Card", "Owner") { ReceiptFilePath = "receipts\\receipt_1_test.pdf" };
             var payments = new List<HistoryPayment> { payment };
             InitializeService(payments);
 
