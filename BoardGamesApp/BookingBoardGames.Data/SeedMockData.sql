@@ -73,7 +73,7 @@
     SET IDENTITY_INSERT rentals ON;
     INSERT INTO rentals (id, game_id, client_id, owner_id, start_date, end_date, total_price) VALUES
     (1, 1, 2, 1, '2026-05-10T00:00:00', '2026-05-15T00:00:00', 75.00),
-    (2, 2, 1, 2, '2026-05-20T00:00:00', '2026-05-22T00:00:00', 20.00),
+    (2, 2, 1, 3, '2026-05-20T00:00:00', '2026-05-22T00:00:00', 20.00),
     (3, 1, 4, 1, '2026-04-01T00:00:00', '2026-04-05T00:00:00', 20.00),
     (4, 5, 5, 1, '2026-06-01T00:00:00', '2026-06-10T00:00:00', 135.00),
     (5, 7, 6, 3, '2026-06-15T00:00:00', '2026-06-18T00:00:00', 48.00),
@@ -100,27 +100,27 @@
 
     -- CONVERSATION PARTICIPANTS
     INSERT INTO conversation_participants (conversation_id, user_id, last_message_read_time, unread_messages_count) VALUES
-    (1, 1, '2026-05-01 12:00:00', 0), (1, 2, '2026-05-01 11:45:00', 0),
-    (2, 2, '2026-05-15 09:00:00', 0), (2, 1, '2026-05-15 08:50:00', 0),
+    (1, 1, '2026-04-01 12:00:00', 0), (1, 2, '2026-04-01 11:45:00', 0),
+    (2, 2, '2026-04-15 09:00:00', 0), (2, 1, '2026-04-15 08:50:00', 0),
     (3, 1, '2026-03-20 10:00:00', 0), (3, 4, '2026-03-20 09:55:00', 0),
-    (4, 1, '2026-05-20 08:30:00', 0), (4, 5, '2026-05-20 08:20:00', 0),
-    (5, 3, '2026-06-05 15:00:00', 0), (5, 6, '2026-06-05 14:45:00', 0),
-    (6, 5, '2026-06-20 17:00:00', 0), (6, 7, '2026-06-20 16:50:00', 0),
-    (7, 4, '2026-07-01 12:00:00', 0), (7, 2, '2026-07-01 12:00:00', 0);
+    (4, 1, '2026-04-20 08:30:00', 0), (4, 5, '2026-04-20 08:20:00', 0),
+    (5, 3, '2026-01-05 15:00:00', 0), (5, 6, '2026-02-05 14:45:00', 0),
+    (6, 5, '2026-01-20 17:00:00', 0), (6, 7, '2026-01-20 16:50:00', 0),
+    (7, 4, '2026-03-01 12:00:00', 0), (7, 2, '2026-03-01 12:00:00', 0);
 
     -- MESSAGES (using EF Core TPH standard Discriminator)
     SET IDENTITY_INSERT messages ON;
     INSERT INTO messages (id, conversation_id, message_sender_id, message_receiver_id, message_sent_time, message_content_as_string, MessageCategory, text_message_content, rental_request_id, is_request_resolved, is_request_accepted, request_content, message_image_url) VALUES
     -- Convo 1
-    (1, 1, 2, 1, '2026-05-01 09:00:00', 'Hey, is Catan available May 10-15?', 'RentalRequest', NULL, 1, 1, 1, 'Hey, is Catan available May 10-15?', NULL),
-    (2, 1, 1, 2, '2026-05-01 09:05:00', 'Yes, it''s free — it''s all yours!', 'Text', 'Yes, it''s free — it''s all yours!', NULL, NULL, NULL, NULL, NULL),
-    (3, 1, 2, 1, '2026-05-01 09:08:00', 'hamster.jpg', 'Image', NULL, NULL, NULL, NULL, NULL, 'hamster.jpg'),
-    (4, 1, 2, 1, '2026-05-01 09:10:00', 'Perfect, thanks a lot!', 'Text', 'Perfect, thanks a lot!', NULL, NULL, NULL, NULL, NULL),
+    (1, 1, 2, 1, '2026-04-01 09:00:00', 'Hey, is Catan available May 10-15?', 'RentalRequest', NULL, 1, 1, 1, 'Hey, is Catan available May 10-15?', NULL),
+    (2, 1, 1, 2, '2026-04-01 09:05:00', 'Yes, it''s free — it''s all yours!', 'Text', 'Yes, it''s free — it''s all yours!', NULL, NULL, NULL, NULL, NULL),
+    (3, 1, 2, 1, '2026-04-01 09:08:00', 'hamster.jpg', 'Image', NULL, NULL, NULL, NULL, NULL, 'hamster.jpg'),
+    (4, 1, 2, 1, '2026-04-01 09:10:00', 'Perfect, thanks a lot!', 'Text', 'Perfect, thanks a lot!', NULL, NULL, NULL, NULL, NULL),
     
     -- Convo 2
-    (5, 2, 1, 2, '2026-05-15 10:00:00', 'Can I borrow Monopoly May 20-22?', 'RentalRequest', NULL, 2, 1, 1, 'Can I borrow Monopoly May 20-22?', NULL),
-    (6, 2, 2, 1, '2026-05-15 10:10:00', 'Sure, I can bring it over Monday.', 'Text', 'Sure, I can bring it over Monday.', NULL, NULL, NULL, NULL, NULL),
-    (7, 2, 1, 2, '2026-05-15 10:15:00', 'Great, see you then!', 'Text', 'Great, see you then!', NULL, NULL, NULL, NULL, NULL),
+    (5, 2, 1, 3, '2026-03-15 10:00:00', 'Can I borrow Monopoly May 20-22?', 'RentalRequest', NULL, 2, 1, 1, 'Can I borrow Monopoly May 20-22?', NULL),
+    (6, 2, 3, 1, '2026-03-15 10:10:00', 'Sure, I can bring it over Monday.', 'Text', 'Sure, I can bring it over Monday.', NULL, NULL, NULL, NULL, NULL),
+    (7, 2, 1, 3, '2026-03-15 10:15:00', 'Great, see you then!', 'Text', 'Great, see you then!', NULL, NULL, NULL, NULL, NULL),
 
     -- Convo 3
     (8, 3, 4, 1, '2026-03-20 09:00:00', 'Hi, is Catan free from the 1st of April?', 'RentalRequest', NULL, 3, 1, 1, 'Hi, is Catan free from the 1st of April?', NULL),
@@ -129,22 +129,22 @@
     (11, 3, 1, 4, '2026-03-20 09:12:00', 'Will be there Tuesday morning!', 'Text', 'Will be there Tuesday morning!', NULL, NULL, NULL, NULL, NULL),
 
     -- Convo 4
-    (12, 4, 5, 1, '2026-05-20 08:00:00', 'Would love to rent Ticket to Ride.', 'RentalRequest', NULL, 4, 1, 1, 'Would love to rent Ticket to Ride.', NULL),
-    (13, 4, 1, 5, '2026-05-20 08:10:00', 'Sure, it''s available. Want to meet Saturday?', 'Text', 'Sure, it''s available. Want to meet Saturday?', NULL, NULL, NULL, NULL, NULL),
-    (14, 4, 5, 1, '2026-05-20 08:20:00', 'Saturday works perfectly for me.', 'Text', 'Saturday works perfectly for me.', NULL, NULL, NULL, NULL, NULL),
+    (12, 4, 5, 1, '2026-02-20 08:00:00', 'Would love to rent Ticket to Ride.', 'RentalRequest', NULL, 4, 1, 1, 'Would love to rent Ticket to Ride.', NULL),
+    (13, 4, 1, 5, '2026-02-20 08:10:00', 'Sure, it''s available. Want to meet Saturday?', 'Text', 'Sure, it''s available. Want to meet Saturday?', NULL, NULL, NULL, NULL, NULL),
+    (14, 4, 5, 1, '2026-02-20 08:20:00', 'Saturday works perfectly for me.', 'Text', 'Saturday works perfectly for me.', NULL, NULL, NULL, NULL, NULL),
 
     -- Convo 5
-    (15, 5, 6, 3, '2026-06-05 11:00:00', 'Is 7 Wonders available?', 'RentalRequest', NULL, 5, 1, 1, 'Is 7 Wonders available?', NULL),
-    (16, 5, 3, 6, '2026-06-05 11:05:00', 'Yep, I''ll have it ready by Tuesday.', 'Text', 'Yep, I''ll have it ready by Tuesday.', NULL, NULL, NULL, NULL, NULL),
-    (17, 5, 6, 3, '2026-06-05 11:10:00', 'hamster.jpg', 'Image', NULL, NULL, NULL, NULL, NULL, 'hamster.jpg'),
+    (15, 5, 6, 3, '2026-01-05 11:00:00', 'Is 7 Wonders available?', 'RentalRequest', NULL, 5, 1, 1, 'Is 7 Wonders available?', NULL),
+    (16, 5, 3, 6, '2026-01-05 11:05:00', 'Yep, I''ll have it ready by Tuesday.', 'Text', 'Yep, I''ll have it ready by Tuesday.', NULL, NULL, NULL, NULL, NULL),
+    (17, 5, 6, 3, '2026-01-05 11:10:00', 'hamster.jpg', 'Image', NULL, NULL, NULL, NULL, NULL, 'hamster.jpg'),
 
     -- Convo 6
-    (18, 6, 7, 5, '2026-06-20 16:00:00', 'Can I get Risk from July 1st to 7th?', 'RentalRequest', NULL, 6, 1, 1, 'Can I get Risk from July 1st to 7th?', NULL),
-    (19, 6, 5, 7, '2026-06-20 16:10:00', 'Sounds good, just message me before you come.', 'Text', 'Sounds good, just message me before you come.', NULL, NULL, NULL, NULL, NULL),
-    (20, 6, 7, 5, '2026-06-20 16:20:00', 'Will do, cheers!', 'Text', 'Will do, cheers!', NULL, NULL, NULL, NULL, NULL),
+    (18, 6, 7, 5, '2026-01-20 16:00:00', 'Can I get Risk from July 1st to 7th?', 'RentalRequest', NULL, 6, 1, 1, 'Can I get Risk from July 1st to 7th?', NULL),
+    (19, 6, 5, 7, '2026-01-20 16:10:00', 'Sounds good, just message me before you come.', 'Text', 'Sounds good, just message me before you come.', NULL, NULL, NULL, NULL, NULL),
+    (20, 6, 7, 5, '2026-01-20 16:20:00', 'Will do, cheers!', 'Text', 'Will do, cheers!', NULL, NULL, NULL, NULL, NULL),
     
     -- Convo 7
-    (21, 7, 2, 4, '2026-07-01 09:00:00', 'Is The Crew free?', 'RentalRequest', NULL, 7, 1, 1, 'Is The Crew free?', NULL),
-    (22, 7, 4, 2, '2026-07-01 09:10:00', 'Yes, grab it.', 'Text', 'Yes, grab it.', NULL, NULL, NULL, NULL, NULL);
+    (21, 7, 2, 4, '2026-02-01 09:00:00', 'Is The Crew free?', 'RentalRequest', NULL, 7, 1, 1, 'Is The Crew free?', NULL),
+    (22, 7, 4, 2, '2026-02-01 09:10:00', 'Yes, grab it.', 'Text', 'Yes, grab it.', NULL, NULL, NULL, NULL, NULL);
 
     SET IDENTITY_INSERT messages OFF;

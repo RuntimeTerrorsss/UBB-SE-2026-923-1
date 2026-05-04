@@ -3,9 +3,11 @@
 // </copyright>
 
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Shared;
 using BookingBoardGames.Src.Views.ChatViews;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace BookingBoardGames.Src.Views
 {
@@ -16,6 +18,15 @@ namespace BookingBoardGames.Src.Views
             this.InitializeComponent();
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (e.Parameter is int userId)
+            {
+                SessionContext.GetInstance().UserId = userId;
+            }
+        }
+
         private void PaymentHistoryButton_Click(object sender, RoutedEventArgs e)
         {
             this.Frame?.Navigate(typeof(PaymentHistoryView));
@@ -23,17 +34,18 @@ namespace BookingBoardGames.Src.Views
 
         private void ChatButton_Click(object sender, RoutedEventArgs e)
         {
+            int currentUserId = SessionContext.GetInstance().UserId;
             if (App.ConversationRepository is { } conversationRepository && App.UserRepository is { } userRepository)
             {
-                var conversationService = new ConversationService(conversationRepository, 3, userRepository);
-                conversationService.CreateConversation(3, 1);
+                var conversationService = new ConversationService(conversationRepository, currentUserId, userRepository);
+                conversationService.CreateConversation(currentUserId, 1);
             }
 
             var window1 = new Window();
             var frame1 = new Frame();
             window1.Content = frame1;
-            window1.Title = "Carol";
-            frame1.Navigate(typeof(ChatPageView), 3);
+            window1.Title = "User " + currentUserId;
+            frame1.Navigate(typeof(ChatPageView), currentUserId);
             window1.Activate();
         }
 

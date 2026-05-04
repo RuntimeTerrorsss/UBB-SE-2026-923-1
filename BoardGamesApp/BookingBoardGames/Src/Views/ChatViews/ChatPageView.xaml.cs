@@ -29,6 +29,15 @@ namespace BookingBoardGames.Src.Views.ChatViews
         public ChatPageView()
         {
             this.InitializeComponent();
+            BookingBoardGames.Src.Shared.SessionContext.GetInstance().OnUserChanged += () =>
+            {
+                var newUserId = BookingBoardGames.Src.Shared.SessionContext.GetInstance().UserId;
+                if (this.currentUserId != newUserId)
+                {
+                    this.currentUserId = newUserId;
+                    this.Initialize(this.currentUserId);
+                }
+            };
         }
 
         public void Initialize(int currentUserId)

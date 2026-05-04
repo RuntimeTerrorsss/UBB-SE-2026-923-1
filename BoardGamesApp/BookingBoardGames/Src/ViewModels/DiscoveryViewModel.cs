@@ -1,4 +1,4 @@
-﻿// <copyright file="DiscoveryViewModel.cs" company="PlaceholderCompany">
+// <copyright file="DiscoveryViewModel.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -56,6 +56,8 @@ namespace BookingBoardGames.Src.ViewModels
             this.NextPageCommand = new RelayCommand(_ => this.GoToNextPage());
             this.PreviousPageCommand = new RelayCommand(_ => this.GoToPreviousPage());
             this.SearchCommand = new RelayCommand(_ => this.SearchGamesByFilter(this.Filter));
+
+            SessionContext.GetInstance().OnUserChanged += this.LoadPaginatedDiscoveryFeed;
 
             try
             {

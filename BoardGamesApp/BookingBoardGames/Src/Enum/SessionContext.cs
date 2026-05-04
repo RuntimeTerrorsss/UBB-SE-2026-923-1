@@ -1,6 +1,8 @@
-﻿// <copyright file="SessionContext.cs" company="PlaceholderCompany">
+// <copyright file="SessionContext.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
+
+using System;
 
 namespace BookingBoardGames.Src.Shared
 {
@@ -16,6 +18,9 @@ namespace BookingBoardGames.Src.Shared
     {
         private const int UnregisteredUserID = -1;
         private static SessionContext? instance;
+        private int userId;
+
+        public event Action? OnUserChanged;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SessionContext"/> class with default values.
@@ -24,14 +29,25 @@ namespace BookingBoardGames.Src.Shared
         /// intended for internal use to establish a default session state.</remarks>
         private SessionContext()
         {
-            this.UserId = UnregisteredUserID;
+            this.userId = UnregisteredUserID;
             this.IsLoggedIn = false;
         }
 
         /// <summary>
         /// Gets or sets the unique identifier for the user.
         /// </summary>
-        public int UserId { get; set; }
+        public int UserId 
+        { 
+            get => this.userId; 
+            set 
+            {
+                if (this.userId != value)
+                {
+                    this.userId = value;
+                    this.OnUserChanged?.Invoke();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the user is currently authenticated.

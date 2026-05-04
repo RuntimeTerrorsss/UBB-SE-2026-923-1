@@ -38,6 +38,7 @@ namespace BookingBoardGames.Src.Views
         protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
             base.OnNavigatedTo(eventArgs);
+            SessionContext.GetInstance().UserId = 1;
             if (eventArgs.Parameter is not int gameId)
             {
                 return;

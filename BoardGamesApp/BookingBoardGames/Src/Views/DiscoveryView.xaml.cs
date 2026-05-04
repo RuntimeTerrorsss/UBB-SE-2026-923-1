@@ -32,6 +32,7 @@ namespace BookingBoardGames.Src.Views
         /// Gets the view model associated with the discovery logic.
         /// </summary>
         public DiscoveryViewModel ViewModel { get; private set; } = null!;
+        public static int loggedUserId = 1;
 
         /// <summary>
         /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
@@ -40,6 +41,8 @@ namespace BookingBoardGames.Src.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            SessionContext.GetInstance().UserId = loggedUserId;
 
             this.ViewModel = new DiscoveryViewModel(App.SearchAndFilterService, App.GlobalGeographicalService);
 
@@ -88,14 +91,29 @@ namespace BookingBoardGames.Src.Views
 
         private void ChatButton_Click(object sender, RoutedEventArgs e)
         {
-            var app = (App)Application.Current;
-            this.Frame.Navigate(typeof(ChatPageView), app.NoChatsUser);
+            this.Frame.Navigate(typeof(ChatPageView), SessionContext.GetInstance().UserId);
         }
 
         private void DashboardButton_Click(object sender, RoutedEventArgs e)
         {
             var app = (App)Application.Current;
             this.Frame.Navigate(typeof(DashboardView), app.DashboardUser);
+        }
+
+        private void SwitchUserButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (loggedUserId == MainWindow.loggedInUserAlice)
+            {
+                loggedUserId = MainWindow.loggedInUserBob;
+                this.SwitchUserButton.Content = "Switch to Alice (User 1)";
+            }
+            else
+            {
+                loggedUserId = MainWindow.loggedInUserAlice;
+                this.SwitchUserButton.Content = "Switch to Bob (User 2)";
+            }
+            
+            SessionContext.GetInstance().UserId = loggedUserId;
         }
     }
 }
