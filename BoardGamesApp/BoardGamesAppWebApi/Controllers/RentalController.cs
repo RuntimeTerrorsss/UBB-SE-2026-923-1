@@ -1,28 +1,35 @@
-﻿using BookingBoardGames.Src.Repositories;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using BookingBoardGames.Src.Repositories;
+
 
 [ApiController]
 [Route("api/rentals")]
 public class RentalsController : ControllerBase
 {
-    private readonly IRentalRepository repository;
+    private readonly IRentalRepository repo;
 
-    public RentalsController(IRentalRepository repository)
+    public RentalsController(IRentalRepository repo)
     {
-        this.repository = repository;
+        this.repo = repo;
     }
 
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
-    {
-        var rental = repository.GetById(id);
-        return Ok(rental);
-    }
+        => Ok(repo.GetById(id));
 
     [HttpPost]
-    public IActionResult Add(Rental rental)
+    public IActionResult AddRental(Rental rental)
     {
-        repository.AddRental(rental);
+        repo.AddRental(rental);
         return Ok();
     }
+
+    [HttpGet("unavailable/{gameId}")]
+    public IActionResult GetUnavailable(int gameId)
+        => Ok(repo.GetUnavailableTimeRanges(gameId));
+
+    [HttpGet("check")]
+    public IActionResult Check(DateTime start, DateTime end, int gameId)
+        => Ok(repo.CheckGameAvailability(start, end, gameId));
 }

@@ -33,34 +33,51 @@ namespace BookingBoardGames
         {
             this.InitializeComponent();
 
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseSqlServer(DatabaseConfig.ResolveConnectionString())
-                .Options;
+            // -------------------------
+            // HTTP REPOSITORIES ONLY
+            // -------------------------
+            UserRepository = new UserRepositoryHttp();
+            GameRepository = new GamesRepositoryHttp();
+            RentalRepository = new RentalRepositoryHttp();
+            PaymentRepository = new PaymentRepositoryHttp();
+            HistoryRepository = new RepositoryPaymentHttp();
+            ConversationRepository = new ConversationRepositoryHttp(); // dacă există
 
-            AppDbContext = new AppDbContext(options);
-
-            // Repositories
-            UserRepository = new UserRepository(AppDbContext);
-            GameRepository = new GamesRepository(AppDbContext);
-            RentalRepository = new RentalRepository(AppDbContext);
-            PaymentRepository = new PaymentRepository(AppDbContext);
-            HistoryRepository = new RepositoryPayment(AppDbContext);
-            ConversationRepository = new ConversationRepository(AppDbContext);
-
-            // Services
+            // -------------------------
+            // SERVICES
+            // -------------------------
             GlobalGeographicalService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
-            CardPaymentService = new CardPaymentService((PaymentRepository)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
-            MapService = new MapService();
-            ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
-            CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);
-            BookingService = new BookingService(GameRepository, RentalRepository, UserRepository);
-            SearchAndFilterService = new SearchAndFilterService(GameRepository, UserRepository, RentalRepository, GlobalGeographicalService);
-        }
 
-        // AppDbContext
-        public static AppDbContext? AppDbContext { get; private set; }
+            CardPaymentService = new CardPaymentService(
+                PaymentRepository,
+                UserRepository,
+                ReceiptService,
+                RentalService);
+
+            MapService = new MapService();
+
+            ServicePayment = new ServicePayment(
+                HistoryRepository,
+                ReceiptService);
+
+            CashPaymentService = new CashPaymentService(
+                PaymentRepository,
+                new CashPaymentMapper(),
+                ReceiptService);
+
+            BookingService = new BookingService(
+                GameRepository,
+                RentalRepository,
+                UserRepository);
+
+            SearchAndFilterService = new SearchAndFilterService(
+                GameRepository,
+                UserRepository,
+                RentalRepository,
+                GlobalGeographicalService);
+        }
 
         // Repositories
         public static IUserRepository? UserRepository { get; private set; }

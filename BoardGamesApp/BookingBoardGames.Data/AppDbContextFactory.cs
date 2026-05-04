@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Data.SqlClient;
+using BoardGamesAppWebApi.Data;
 
 namespace BookingBoardGames.Data
 {

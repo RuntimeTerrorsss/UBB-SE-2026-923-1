@@ -35,17 +35,14 @@ namespace BookingBoardGames.Src.DTO
     public class GameDTO : INotifyPropertyChanged
     {
         /// <summary>
-        /// Bits of the image data are stored in the Image property, but this GameImage property is used for UI binding.
-        /// </summary>
-        private BitmapImage? gameImage;
-
-        /// <summary>
         /// Occurs when a property value changes.
         /// </summary>
         /// <remarks>This event is typically raised by classes that implement the INotifyPropertyChanged
         /// interface to notify subscribers that a property value has changed. Handlers receive the name of the property
         /// that changed in the PropertyChangedEventArgs parameter.</remarks>
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public byte[]? GameImage;
 
         /// <summary>
         /// Gets or sets the unique identifier for the game.
@@ -85,12 +82,12 @@ namespace BookingBoardGames.Src.DTO
         /// <summary>
         /// Gets or sets the image associated with the game.
         /// </summary>
-        public BitmapImage? GameImage
+        public byte[]? GameImage
         {
-            get => this.gameImage;
+            get => this.Image;
             set
             {
-                this.gameImage = value;
+                this.Image = value;
                 this.OnPropertyChanged(nameof(this.GameImage));
             }
         }

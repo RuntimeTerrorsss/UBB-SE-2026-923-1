@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
 using Microsoft.EntityFrameworkCore;
+using BoardGamesAppWebApi.Data;
 
 namespace BookingBoardGames.Src.Repositories
 {

@@ -15,7 +15,7 @@ namespace BookingBoardGames.Src.Services
         private readonly IRentalService rentalService;
 
         public CardPaymentService(
-            PaymentRepository paymentRepository,
+            PaymentRepositoryHttp paymentRepository,
             IUserRepository userRepository,
             ReceiptService receiptService,
             IRentalService rentalService)

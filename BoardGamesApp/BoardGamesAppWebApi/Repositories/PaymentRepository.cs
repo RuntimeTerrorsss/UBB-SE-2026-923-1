@@ -5,7 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Data;
+using BookingBoardGames.Src.DTO;
+using BoardGamesAppWebApi.Data;
 
 namespace BookingBoardGames.Src.Repositories
 {

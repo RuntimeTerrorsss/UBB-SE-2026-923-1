@@ -5,11 +5,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Data;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Shared;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Src.DTO;
+using BoardGamesAppWebApi.Data;
 
 /// <summary>
 /// Repository responsible for reading game/listing data from the database.
