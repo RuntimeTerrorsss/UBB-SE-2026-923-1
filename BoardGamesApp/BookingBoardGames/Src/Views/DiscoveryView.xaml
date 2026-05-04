@@ -125,8 +125,8 @@
                                         <Border Grid.Column="0"
                                                 CornerRadius="8,0,0,8">
                                             <Border.Background>
-                                                <ImageBrush ImageSource="{x:Bind GameImage, Mode=OneWay}"
-                                                            Stretch="UniformToFill"/>
+                                                <ImageBrush ImageSource="{x:Bind Image, Mode=OneWay}"
+                                                    Stretch="UniformToFill"/>
                                             </Border.Background>
                                         </Border>
 
@@ -190,7 +190,7 @@
                                         <Border Grid.Column="0"
                                                 CornerRadius="8,0,0,8">
                                             <Border.Background>
-                                                <ImageBrush ImageSource="{x:Bind GameImage, Mode=OneWay}"
+                                                <ImageBrush ImageSource="{x:Bind Image, Mode=OneWay}"
                                                             Stretch="UniformToFill"/>
                                             </Border.Background>
                                         </Border>
