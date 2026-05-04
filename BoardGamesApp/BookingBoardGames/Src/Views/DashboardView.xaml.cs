@@ -39,5 +39,11 @@ namespace BookingBoardGames.Src.Views
             frame1.Navigate(typeof(ChatPageView), ((App)Application.Current).NoChatsUser);
             window1.Activate();
         }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.Frame.CanGoBack)
+                this.Frame.GoBack();
+        }
     }
 }
