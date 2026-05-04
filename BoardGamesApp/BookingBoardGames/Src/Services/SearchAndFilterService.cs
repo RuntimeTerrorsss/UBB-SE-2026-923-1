@@ -9,6 +9,8 @@ using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.Mapper;
+
 
 namespace BookingBoardGames.Src.Services
 {
@@ -79,7 +81,7 @@ namespace BookingBoardGames.Src.Services
                     {
                         GameId = filteredGame.Id,
                         Name = filteredGame.Name,
-                        Image = filteredGame.Image,
+                        Image = GameImageMapper.GetImageUrl(filteredGame.Name),
                         Price = filteredGame.PricePerDay,
                         City = gameOwner != null ? gameOwner.City : string.Empty,
                         MaximumPlayerNumber = filteredGame.MaximumPlayerNumber,
@@ -393,7 +395,7 @@ namespace BookingBoardGames.Src.Services
             {
                 GameId = gameEntity.Id,
                 Name = gameEntity.Name,
-                Image = gameEntity.Image,
+                Image = GameImageMapper.GetImageUrl(gameEntity.Name),
                 Price = gameEntity.PricePerDay,
                 City = gameOwnerEntity?.City ?? string.Empty,
                 MaximumPlayerNumber = gameEntity.MaximumPlayerNumber,

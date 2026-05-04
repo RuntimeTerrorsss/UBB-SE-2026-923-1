@@ -16,62 +16,71 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- SEARCH BAR -->
-        <Border Grid.Row="0"
-                Padding="16"
-                CornerRadius="8"
-                BorderBrush="LightGray"
-                BorderThickness="1">
 
-            <Grid ColumnSpacing="8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Spacing="8">
 
-                <StackPanel Grid.Column="0" Spacing="6">
-                    <TextBlock Text="Game name"/>
-                    <TextBox x:Name="GameTextBox"
+            <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Spacing="8">
+                <Button Content="Dashboard" Click="DashboardButton_Click"/>
+                <Button Content="Chat" Click="ChatButton_Click"/>
+            </StackPanel>
+
+            <Border Padding="16"
+            CornerRadius="8"
+            BorderBrush="LightGray"
+            BorderThickness="1">
+
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Spacing="6">
+                        <TextBlock Text="Game name"/>
+                        <TextBox x:Name="GameTextBox"
                              PlaceholderText="Enter game name"
                              Text="{Binding Filter.Name, Mode=TwoWay}"/>
-                </StackPanel>
+                    </StackPanel>
 
-                <StackPanel Grid.Column="1" Spacing="6">
-                    <TextBlock Text="City"/>
-                    <AutoSuggestBox PlaceholderText="Enter city"
+                    <StackPanel Grid.Column="1" Spacing="6">
+                        <TextBlock Text="City"/>
+                        <AutoSuggestBox PlaceholderText="Enter city"
                                     Text="{x:Bind ViewModel.CitySearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     ItemsSource="{x:Bind ViewModel.CitySuggestions, Mode=OneWay}" />
-                </StackPanel>
+                    </StackPanel>
 
-                <StackPanel Grid.Column="2" Spacing="6">
-                    <TextBlock Text="Start date"/>
-                    <CalendarDatePicker x:Name="StartDatePicker"
+                    <StackPanel Grid.Column="2" Spacing="6">
+                        <TextBlock Text="Start date"/>
+                        <CalendarDatePicker x:Name="StartDatePicker"
                         PlaceholderText="Choose a date"
                         MinDate="{Binding MinStartDate}"
                         DateFormat="{}{month.full} {day.integer}, {year.full}"
                         Date="{Binding SelectedStartDate, Mode=TwoWay}"/>
-                </StackPanel>
+                    </StackPanel>
 
-                <StackPanel Grid.Column="3" Spacing="6">
-                    <TextBlock Text="End date"/>
-                    <CalendarDatePicker x:Name="EndDatePicker"
+                    <StackPanel Grid.Column="3" Spacing="6">
+                        <TextBlock Text="End date"/>
+                        <CalendarDatePicker x:Name="EndDatePicker"
                         PlaceholderText="Choose a date"
                         DateFormat="{}{month.full} {day.integer}, {year.full}"
                         Date="{Binding SelectedEndDate, Mode=TwoWay}"
                         CalendarViewDayItemChanging="EndDatePicker_DayItemChanging"
                         IsEnabled="{Binding IsEndDateEnabled}"/>
-                </StackPanel>
+                    </StackPanel>
 
-                <Button Grid.Column="4"
+                    <Button Grid.Column="4"
                         Content="Filter"
                         Height="40"
                         VerticalAlignment="Bottom"
                         Command="{Binding SearchCommand}"/>
-            </Grid>
-        </Border>
+                </Grid>
+            </Border>
+        </StackPanel>
 
         <!-- RESULTS -->
         <ScrollViewer x:Name="MainScrollViewer"
@@ -116,8 +125,8 @@
                                         <Border Grid.Column="0"
                                                 CornerRadius="8,0,0,8">
                                             <Border.Background>
-                                                <ImageBrush ImageSource="{x:Bind GameImage, Mode=OneWay}"
-                                                            Stretch="UniformToFill"/>
+                                                <ImageBrush ImageSource="{x:Bind Image, Mode=OneWay}"
+                                                    Stretch="UniformToFill"/>
                                             </Border.Background>
                                         </Border>
 
@@ -181,7 +190,7 @@
                                         <Border Grid.Column="0"
                                                 CornerRadius="8,0,0,8">
                                             <Border.Background>
-                                                <ImageBrush ImageSource="{x:Bind GameImage, Mode=OneWay}"
+                                                <ImageBrush ImageSource="{x:Bind Image, Mode=OneWay}"
                                                             Stretch="UniformToFill"/>
                                             </Border.Background>
                                         </Border>

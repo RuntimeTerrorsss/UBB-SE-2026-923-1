@@ -14,7 +14,6 @@ using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Shared;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace BookingBoardGames.Src.ViewModels
 {
@@ -47,10 +46,6 @@ namespace BookingBoardGames.Src.ViewModels
         private readonly InterfaceSearchAndFilterService searchService;
         private readonly InterfaceGeographicalService geographicalService;
 
-        /// <summary>Cache of loaded BitmapImages keyed by game ID.</summary>
-        private readonly Dictionary<int, BitmapImage?> gameImages = new();
-
-        private BitmapImage? selectedGameImage;
         private string citySearchText = string.Empty;
         private int currentPage = FirstPage;
         private GameDTO? selectedGame;
@@ -75,9 +70,6 @@ namespace BookingBoardGames.Src.ViewModels
 
         /// <summary>Gets or sets the collection of games currently visible on the active page. Bound directly to the UI list/grid.</summary>
         public ObservableCollection<GameDTO> VisibleGames { get; set; } = new();
-
-        /// <summary>Gets the images.</summary>
-        public Dictionary<int, BitmapImage?> GameImages => this.gameImages;
 
         /// <summary>Gets today's date as a <see cref="DateTimeOffset"/>, used as the minimum selectable date in date pickers.</summary>
         public DateTimeOffset Today => DateTimeOffset.Now.Date;
@@ -139,17 +131,6 @@ namespace BookingBoardGames.Src.ViewModels
                         }
                     }
                 }
-            }
-        }
-
-        /// <summary>Gets or sets the bitmap image associated with the most recently selected game. Bound to an image preview control.</summary>
-        public BitmapImage? SelectedGameImage
-        {
-            get => this.selectedGameImage;
-            set
-            {
-                this.selectedGameImage = value;
-                this.OnPropertyChanged(nameof(this.SelectedGameImage));
             }
         }
 
@@ -327,15 +308,6 @@ namespace BookingBoardGames.Src.ViewModels
                 {
                     if (selectedGameObject is GameDTO selectedGameDto)
                     {
-                        if (this.GameImages.TryGetValue(selectedGameDto.GameId, out var gameImage))
-                        {
-                            this.SelectedGameImage = gameImage;
-                        }
-                        else
-                        {
-                            this.SelectedGameImage = null;
-                        }
-
                         this.SelectGame(selectedGameDto.GameId);
                     }
                 }
@@ -824,9 +796,8 @@ namespace BookingBoardGames.Src.ViewModels
 
         /// <summary>
         /// Slices <see cref="Games"/> to the current page window, populates <see cref="VisibleGames"/>,
-        /// and asynchronously loads any missing game images.
         /// </summary>
-        private async void RefreshPage()
+        private void RefreshPage()
         {
             try
             {
@@ -841,15 +812,6 @@ namespace BookingBoardGames.Src.ViewModels
                 {
                     this.VisibleGames.Add(gameItem);
                 }
-
-                foreach (var gameItem in pageListings)
-                {
-                    if (gameItem.Image != null && gameItem.GameImage == null)
-                    {
-                        await this.LoadGameImage(gameItem);
-                    }
-                }
-
                 this.OnPropertyChanged(nameof(this.VisibleGames));
             }
             catch (Exception ex)
@@ -868,26 +830,6 @@ namespace BookingBoardGames.Src.ViewModels
             catch (Exception ex)
             {
                 this.RaiseError($"Could not go back. {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Converts <paramref name="gameDTO"/>'s raw image bytes to a <see cref="BitmapImage"/>
-        /// and stores the result in both <see cref="GameDTO.GameImage"/> and <see cref="gameImages"/>.
-        /// On failure the image is set to <c>null</c> rather than propagating the exception.
-        /// </summary>
-        /// <param name="gameDTO">The game whose image should be loaded.</param>
-        private async Task LoadGameImage(GameDTO gameDTO)
-        {
-            try
-            {
-                gameDTO.GameImage = await GameImage.ToBitmapImage(gameDTO.Image);
-                this.gameImages[gameDTO.GameId] = gameDTO.GameImage;
-            }
-            catch
-            {
-                gameDTO.GameImage = null;
-                this.gameImages[gameDTO.GameId] = null;
             }
         }
 
