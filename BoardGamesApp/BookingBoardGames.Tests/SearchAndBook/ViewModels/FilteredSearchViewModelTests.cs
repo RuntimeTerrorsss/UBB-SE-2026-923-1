@@ -389,11 +389,11 @@ public class FilteredSearchViewModelTests
         return (sut, searchService, geoService, errors);
     }
 
-    private static GameDTO CreateGameDto(int id, string name, decimal price, string city, int maximumPlayers, int minimumPlayers)
+    private static GameDTO CreateGameDto(int Id, string name, decimal price, string city, int maximumPlayers, int minimumPlayers)
     {
         return new GameDTO
         {
-            GameId = id,
+            GameId = Id,
             Name = name,
             Price = price,
             City = city,
@@ -507,7 +507,7 @@ public class FilteredSearchViewModelTests
         var (sut, _, _, errors) = CreateSut();
 
         int? selectedId = null;
-        sut.OnGameSelectedRequest += id => selectedId = id;
+        sut.OnGameSelectedRequest += Id => selectedId = Id;
 
         var game = CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2);
 
@@ -530,3 +530,8 @@ public class FilteredSearchViewModelTests
         Assert.NotEmpty(sut.NoResultsMessage);
     }
 }
+
+
+
+
+

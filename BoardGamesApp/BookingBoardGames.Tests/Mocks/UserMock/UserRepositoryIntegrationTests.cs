@@ -1,3 +1,8 @@
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames;
+using BookingBoardGames;
+using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 using Microsoft.Data.SqlClient;
 using Xunit;
@@ -19,7 +24,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         {
             int testUid = 8881;
             SetupTestUser(testUid, "TestUser1", 100.0m);
-            var service = new UserRepository();
+            var service = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
 
             try
             {
@@ -39,7 +44,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         [Fact]
         public void GetById_UserDoesNotExist_ReturnsNull()
         {
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var user = userRepository.GetById(-999);
 
             Assert.Null(user);
@@ -50,7 +55,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         {
             int testUid = 8882;
             SetupTestUser(testUid, "TestUser2", 50.0m);
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var newAddress = new Address("Moldova", "Chisinau", "Stefan cel Mare", "10");
 
             try
@@ -71,7 +76,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         [Fact]
         public void SaveAddress_UserDoesNotExist_DoesNotThrow()
         {
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var newAddress = new Address("Moldova", "Chisinau", "Stefan cel Mare", "10");
 
             var exception = Record.Exception(() => userRepository.SaveAddress(-999, newAddress));
@@ -85,7 +90,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
             int testUid = 8883;
             decimal initialBalance = 150.75m;
             SetupTestUser(testUid, "TestUser3", initialBalance);
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
 
             try
             {
@@ -101,7 +106,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         [Fact]
         public void GetUserBalance_UserDoesNotExist_ReturnsZero()
         {
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             decimal balance = userRepository.GetUserBalance(-999);
 
             Assert.Equal(0m, balance);
@@ -112,7 +117,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         {
             int testUid = 8884;
             SetupTestUser(testUid, "TestUser4", 0.0m);
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             decimal updatedBalance = 99.99m;
 
             try
@@ -161,3 +166,8 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         }
     }
 }
+
+
+
+
+

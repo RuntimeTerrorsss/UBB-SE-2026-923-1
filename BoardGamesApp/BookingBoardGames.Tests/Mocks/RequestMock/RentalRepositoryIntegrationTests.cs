@@ -1,4 +1,9 @@
 using BookingBoardGames.Src.Repositories;
+using BookingBoardGames;
+using BookingBoardGames;
+using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data;
+using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.DTO;
 using System;
@@ -31,27 +36,27 @@ namespace BookingBoardGames.Tests.Mocks.RequestMock
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    new SqlCommand($"DELETE FROM Request WHERE GameId = {gid}", connection).ExecuteNonQuery();
+                    new SqlCommand($"DELETE FROM Rental WHERE GameId = {gid}", connection).ExecuteNonQuery();
                     new SqlCommand($"DELETE FROM Game WHERE gid = {gid}", connection).ExecuteNonQuery();
                     new SqlCommand("SET IDENTITY_INSERT Game ON", connection).ExecuteNonQuery();
 
-                    var sqlCommand = new SqlCommand("INSERT INTO Game (gid, Name, PricePerDay) VALUES (@id, 'Test Game', @price)", connection);
-                    sqlCommand.Parameters.AddWithValue("@id", gid);
+                    var sqlCommand = new SqlCommand("INSERT INTO Game (gid, Name, PricePerDay) VALUES (@Id, 'Test Game', @price)", connection);
+                    sqlCommand.Parameters.AddWithValue("@Id", gid);
                     sqlCommand.Parameters.AddWithValue("@price", 25.50m);
                     sqlCommand.ExecuteNonQuery();
 
                     new SqlCommand("SET IDENTITY_INSERT Game OFF", connection).ExecuteNonQuery();
                 }
 
-                // Setup Request
+                // Setup Rental
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    new SqlCommand($"DELETE FROM Request WHERE rid = {rid}", connection).ExecuteNonQuery();
-                    new SqlCommand("SET IDENTITY_INSERT Request ON", connection).ExecuteNonQuery();
+                    new SqlCommand($"DELETE FROM Rental WHERE rid = {rid}", connection).ExecuteNonQuery();
+                    new SqlCommand("SET IDENTITY_INSERT Rental ON", connection).ExecuteNonQuery();
 
                     var sqlCommand = new SqlCommand(
-                        @"INSERT INTO Request (rid, GameId, ClientId, OwnerId, StartDate, EndDate) 
+                        @"INSERT INTO Rental (rid, GameId, ClientId, OwnerId, StartDate, EndDate) 
                         VALUES (@rid, @gid, 0, 0, @start, @end)",
                         connection);
                     sqlCommand.Parameters.AddWithValue("@rid", rid);
@@ -60,22 +65,22 @@ namespace BookingBoardGames.Tests.Mocks.RequestMock
                     sqlCommand.Parameters.AddWithValue("@end", end);
                     sqlCommand.ExecuteNonQuery();
 
-                    new SqlCommand("SET IDENTITY_INSERT Request OFF", connection).ExecuteNonQuery();
+                    new SqlCommand("SET IDENTITY_INSERT Rental OFF", connection).ExecuteNonQuery();
                 }
 
-                var RentalRepository = new RentalRepository().GetById(rid);
+                var RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>())).GetById(rid);
 
                 Assert.NotNull(RentalRepository);
                 Assert.Equal(
                     new { Id = rid, GameId = gid, StartDate = start, EndDate = end },
-                    new { RentalRepository.Id, RentalRepository.GameId, RentalRepository.StartDate, RentalRepository.EndDate });
+                    new { RentalRepository.RequestId, RentalRepository.GameId, RentalRepository.StartDate, RentalRepository.EndDate });
             }
             finally
             {
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    new SqlCommand($"DELETE FROM Request WHERE rid = {rid}", connection).ExecuteNonQuery();
+                    new SqlCommand($"DELETE FROM Rental WHERE rid = {rid}", connection).ExecuteNonQuery();
                     new SqlCommand($"DELETE FROM Game WHERE gid = {gid}", connection).ExecuteNonQuery();
                 }
             }
@@ -84,10 +89,15 @@ namespace BookingBoardGames.Tests.Mocks.RequestMock
         [Fact]
         public void GetById_RequestDoesNotExist_ReturnsNull()
         {
-            var RentalRepository = new RentalRepository();
-            var request = RentalRepository.GetById(-999);
+            var RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            var Rental = RentalRepository.GetById(-999);
 
-            Assert.Null(request);
+            Assert.Null(Rental);
         }
     }
 }
+
+
+
+
+

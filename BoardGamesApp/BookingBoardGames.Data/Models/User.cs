@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,7 +19,8 @@ public class User
         CreatedAt = DateTime.UtcNow;
     }
 
-    public User()
+    public User(int id, string username, string country, string city, string street, string streetNumber, string displayName, string avatarUrl, decimal balance) { Id = id; Username = username; Country = country; City = city; Street = street; StreetNumber = streetNumber; DisplayName = displayName; AvatarUrl = avatarUrl; Balance = balance; } 
+    public User() 
     {
     }
 

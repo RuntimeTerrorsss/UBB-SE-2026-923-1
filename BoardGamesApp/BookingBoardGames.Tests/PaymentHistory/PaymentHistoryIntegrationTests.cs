@@ -1,3 +1,9 @@
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames;
+using BookingBoardGames;
+using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data;
 using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Src.Shared;
 using BookingBoardGames.Src.Repositories;
@@ -23,12 +29,12 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void CalculateTotalAmount_NonEmptyDatabase_ReturnsValidDataAndPositiveTotal()
         {
-            RepositoryPayment repositoryPayment = new RepositoryPayment();
-            UserRepository userRepository = new UserRepository();
-            GameRepository gameRepository = new GameRepository();
-            RequestRepository requestRepository = new RequestRepository();
-            RequestService requestService = new RequestService(requestRepository, gameRepository);
-            ReceiptService receiptService = new ReceiptService(userRepository, requestService, gameRepository);
+            RepositoryPayment repositoryPayment = new RepositoryPayment(null);
+            UserRepository userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalRepository RentalRepository = new RentalRepository(null);
+            RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
+            ReceiptService receiptService = new ReceiptService(userRepository, RentalService, GamesRepository);
 
             servicePayment = new ServicePayment(repositoryPayment, receiptService);
 
@@ -42,12 +48,12 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void GetReceiptDocumentPath_ForFilteredPayments_ReturnsValidPathAndCorrectResults()
         {
-            RepositoryPayment repositoryPayment = new RepositoryPayment();
-            UserRepository userRepository = new UserRepository();
-            GameRepository gameRepository = new GameRepository();
-            RequestRepository requestRepository = new RequestRepository();
-            RequestService requestService = new RequestService(requestRepository, gameRepository);
-            ReceiptService receiptService = new ReceiptService(userRepository, requestService, gameRepository);
+            RepositoryPayment repositoryPayment = new RepositoryPayment(null);
+            UserRepository userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalRepository RentalRepository = new RentalRepository(null);
+            RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
+            ReceiptService receiptService = new ReceiptService(userRepository, RentalService, GamesRepository);
 
             servicePayment = new ServicePayment(repositoryPayment, receiptService);
 
@@ -59,3 +65,9 @@ namespace BookingBoardGames.Tests.PaymentHistory
         }
     }
 }
+
+
+
+
+
+

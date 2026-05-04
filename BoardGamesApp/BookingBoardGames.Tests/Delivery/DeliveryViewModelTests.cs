@@ -1,4 +1,5 @@
 using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -114,7 +115,7 @@ namespace BookingBoardGames.Tests.Delivery
         [Fact]
         public void SubmitDelivery_IsSaveAddressAndUserNotNull_SavesAddress()
         {
-            fakeUserService.UserToReturn = new User(1, "name", "Romania", "Cluj", "street", "no");
+            fakeUserService.UserToReturn = new User("name", "name", "name@example.com", "hash", "Cluj", "Romania");
             fakeValidator.ErrorsToReturn = new Dictionary<string, string>();
 
             var deliveryViewModel = new DeliveryViewModel(1, fakeMapService, fakeUserService, fakeValidator);
@@ -130,7 +131,7 @@ namespace BookingBoardGames.Tests.Delivery
         [Fact]
         public void SubmitDelivery_IsSaveAddressFalse_DoesNotSaveAddress()
         {
-            fakeUserService.UserToReturn = new User(1, "name", "Romania", "Cluj", "street", "no");
+            fakeUserService.UserToReturn = new User("name", "name", "name@example.com", "hash", "Cluj", "Romania");
             fakeValidator.ErrorsToReturn = new Dictionary<string, string>();
 
             var deliveryViewModel = new DeliveryViewModel(1, fakeMapService, fakeUserService, fakeValidator);
@@ -260,7 +261,7 @@ namespace BookingBoardGames.Tests.Delivery
         [Fact]
         public void Initialize_ValidUser_UpdatesCurrentAddress()
         {
-            fakeUserService.UserToReturn = new User(2, "name", "Romania", "Sibiu", "Strada Mare", "5");
+            fakeUserService.UserToReturn = new User("name", "name", "name@example.com", "hash", "Sibiu", "Romania");
 
             deliveryViewModel.Initialize(2);
 
@@ -295,15 +296,14 @@ namespace BookingBoardGames.Tests.Delivery
             public User UserToReturn { get; set; } = null;
             public bool SaveAddressCalled { get; set; } = false;
 
-    public User GetGameById(int id) => throw new System.NotImplementedException();
     public System.Collections.Generic.List<User> GetAll() => throw new System.NotImplementedException();
 
-            public User GetById(int id)
+            public User GetById(int Id)
             {
                 return UserToReturn;
             }
 
-            public void SaveAddress(int id, Address address)
+            public void SaveAddress(int Id, Address address)
             {
                 SaveAddressCalled = true;
             }
@@ -329,3 +329,7 @@ namespace BookingBoardGames.Tests.Delivery
         }
     }
 }
+
+
+
+

@@ -1,4 +1,4 @@
-﻿// <copyright file="DatabaseBootstrap.cs" company="PlaceholderCompany">
+// <copyright file="DatabaseBootstrap.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -179,6 +179,11 @@ namespace BookingBoardGames
                 System.Diagnostics.Debug.WriteLine($"Database initialization failed: {exception.Message}");
                 System.Diagnostics.Debug.WriteLine(exception.StackTrace);
             }
+        }
+
+        public static string GetAppConnection()
+        {
+            return "Server=(localdb)\\MSSQLLocalDB;Database=MergedBoardGamesDb;Trusted_Connection=True;TrustServerCertificate=True;";
         }
 
         private static string FindProjectRoot(string startPath)

@@ -37,7 +37,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
 
             receiptServiceMock
                 .Setup(service => service.GenerateReceiptRelativePath(It.IsAny<int>()))
-                .Returns((int paymentId) => $"receipts\\receipt_{paymentId}_test.pdf");
+                .Returns((int PaymentId) => $"receipts\\receipt_{PaymentId}_test.pdf");
 
             receiptServiceMock
                 .Setup(service => service.GetReceiptDocument(It.IsAny<Payment>()))
@@ -49,9 +49,9 @@ namespace BookingBoardGames.Tests.PaymentHistory
             );
         }
 
-        private HistoryPayment MakePayment(int paymentId, string gameName, string ownerName, string method, decimal amount, DateTime? date = null)
+        private HistoryPayment MakePayment(int PaymentId, string gameName, string ownerName, string method, decimal amount, DateTime? date = null)
         {
-            var createdPayment = new HistoryPayment(paymentId, 1, 1, 2, method, amount)
+            var createdPayment = new HistoryPayment(PaymentId, 1, 1, 2, method, amount)
             {
                 GameName = gameName,
                 OwnerName = ownerName,
@@ -380,3 +380,8 @@ namespace BookingBoardGames.Tests.PaymentHistory
         }
     }
 }
+
+
+
+
+

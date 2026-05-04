@@ -9,7 +9,7 @@ namespace BookingBoardGames.Tests.Mocks.GameMock
         {
             var expected = new { Id = 1, Name = "Catan", PricePerDay = 10.5m };
             
-            var game = new Game(expected.Id, expected.Name, expected.PricePerDay);
+            var game = new Game(expected.Name, expected.PricePerDay, 2, 4, "Description", 1);
             var actualGame = new { game.Id, game.Name, game.PricePerDay };
 
             Assert.Equal(expected, actualGame);
@@ -18,7 +18,7 @@ namespace BookingBoardGames.Tests.Mocks.GameMock
         [Fact]
         public void Game_PropertyUpdates_SetsPropertiesCorrectly()
         {
-            var game = new Game(1, "OldName", 5.0m);
+            var game = new Game(5.0m, 2, 4, "Description", 1, 2, 4, "Description", 1);
             game.Id = 2;
             game.Name = "NewName";
             game.PricePerDay = 15.0m;
@@ -30,3 +30,8 @@ namespace BookingBoardGames.Tests.Mocks.GameMock
         }
     }
 }
+
+
+
+
+

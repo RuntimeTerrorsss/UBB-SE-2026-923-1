@@ -1,3 +1,9 @@
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames;
+using BookingBoardGames;
+using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data;
 using BookingBoardGames.Src.Mapper;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
@@ -18,7 +24,7 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void AddCashPayment_UsingPaymentCommonRepository_PersistsCashPaymentAndReturnsIdentifier()
         {
-            var paymentRepository = new PaymentRepository();
+            var paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var cashPaymentService = BuildCashPaymentService(paymentRepository);
             var cashPaymentDataTransferObject = BuildCashPaymentDataTransferObject();
             var paymentIdentifier = -1;
@@ -60,7 +66,7 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void GetCashPayment_AfterPersistingPayment_ReturnsMatchingDataTransferObject()
         {
-            var paymentRepository = new PaymentRepository();
+            var paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var cashPaymentService = BuildCashPaymentService(paymentRepository);
             var cashPaymentDataTransferObject = BuildCashPaymentDataTransferObject();
             var paymentIdentifier = -1;
@@ -99,7 +105,7 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void ConfirmDelivery_AfterPersistingPayment_SetsBuyerConfirmationDate()
         {
-            var paymentRepository = new PaymentRepository();
+            var paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var cashPaymentService = BuildCashPaymentService(paymentRepository);
             var paymentIdentifier = -1;
 
@@ -131,11 +137,11 @@ namespace BookingBoardGames.Tests.PaymentCash
 
         private static ICashPaymentService BuildCashPaymentService(IPaymentRepository paymentRepository)
         {
-            var userRepository = new UserRepository();
-            var gameRepository = new GameRepository();
-            var requestRepository = new RequestRepository();
-            var requestService = new RequestService(requestRepository, gameRepository);
-            var receiptService = new ReceiptService(userRepository, requestService, gameRepository);
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            var RentalRepository = new RentalRepository(null);
+            var RentalService = new RentalService(RentalRepository, GamesRepository);
+            var receiptService = new ReceiptService(userRepository, RentalService, GamesRepository);
             var cashPaymentMapper = new CashPaymentMapper();
 
             return new CashPaymentService(paymentRepository, cashPaymentMapper, receiptService);
@@ -152,3 +158,9 @@ namespace BookingBoardGames.Tests.PaymentCash
         }
     }
 }
+
+
+
+
+
+

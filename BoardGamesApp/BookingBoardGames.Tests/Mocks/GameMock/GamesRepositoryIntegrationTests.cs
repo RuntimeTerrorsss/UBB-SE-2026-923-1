@@ -1,12 +1,16 @@
+using BookingBoardGames;
+using BookingBoardGames;
+using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data;
 using System;
 using Microsoft.Data.SqlClient;
 using Xunit;
 
-public class GameRepositoryIntegrationTests
+public class GamesRepositoryIntegrationTests
 {
     private readonly string connectionString;
 
-    public GameRepositoryIntegrationTests()
+    public GamesRepositoryIntegrationTests()
     {
         DatabaseBootstrap.Initialize();
         connectionString = DatabaseBootstrap.GetAppConnection();
@@ -28,20 +32,20 @@ public class GameRepositoryIntegrationTests
             {
                 connection.Open();
 
-                var deleteOld = new SqlCommand("DELETE FROM Game WHERE gid = @id", connection);
-                deleteOld.Parameters.AddWithValue("@id", testId);
+                var deleteOld = new SqlCommand("DELETE FROM Game WHERE gid = @Id", connection);
+                deleteOld.Parameters.AddWithValue("@Id", testId);
                 deleteOld.ExecuteNonQuery();
 
                 new SqlCommand("SET IDENTITY_INSERT Game ON", connection).ExecuteNonQuery();
                 var insert = new SqlCommand(
-                    "INSERT INTO Game (gid, Name, PricePerDay) VALUES (@id, 'TestGame', 15)", connection);
-                insert.Parameters.AddWithValue("@id", testId);
+                    "INSERT INTO Game (gid, Name, PricePerDay) VALUES (@Id, 'TestGame', 15)", connection);
+                insert.Parameters.AddWithValue("@Id", testId);
                 insert.ExecuteNonQuery();
                 new SqlCommand("SET IDENTITY_INSERT Game OFF", connection).ExecuteNonQuery();
             }
 
-            var gameRepository = new GameRepository();
-            var game = gameRepository.GetById(testId);
+            var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            var game = GamesRepository.GetById(testId);
 
             Assert.NotNull(game);
             Assert.Equal(
@@ -53,8 +57,8 @@ public class GameRepositoryIntegrationTests
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                var delete = new SqlCommand("DELETE FROM Game WHERE gid = @id", connection);
-                delete.Parameters.AddWithValue("@id", testId);
+                var delete = new SqlCommand("DELETE FROM Game WHERE gid = @Id", connection);
+                delete.Parameters.AddWithValue("@Id", testId);
                 delete.ExecuteNonQuery();
             }
         }
@@ -63,8 +67,8 @@ public class GameRepositoryIntegrationTests
     [Fact]
     public void GetById_GameDoesNotExist_ReturnsNull()
     {
-        var gameRepository = new GameRepository();
-        var game = gameRepository.GetById(-999);
+        var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+        var game = GamesRepository.GetById(-999);
 
         Assert.Null(game);
     }
@@ -81,22 +85,22 @@ public class GameRepositoryIntegrationTests
             {
                 connection.Open();
 
-                var deleteOld = new SqlCommand("DELETE FROM Game WHERE gid = @id", connection);
-                deleteOld.Parameters.AddWithValue("@id", testId);
+                var deleteOld = new SqlCommand("DELETE FROM Game WHERE gid = @Id", connection);
+                deleteOld.Parameters.AddWithValue("@Id", testId);
                 deleteOld.ExecuteNonQuery();
 
                 new SqlCommand("SET IDENTITY_INSERT Game ON", connection).ExecuteNonQuery();
                 var insert = new SqlCommand(
-                    "INSERT INTO Game (gid, Name, PricePerDay) VALUES (@id, 'PriceTestGame', @price)", connection);
-                insert.Parameters.AddWithValue("@id", testId);
+                    "INSERT INTO Game (gid, Name, PricePerDay) VALUES (@Id, 'PriceTestGame', @price)", connection);
+                insert.Parameters.AddWithValue("@Id", testId);
                 insert.Parameters.AddWithValue("@price", expectedPrice);
                 insert.ExecuteNonQuery();
                 new SqlCommand("SET IDENTITY_INSERT Game OFF", connection).ExecuteNonQuery();
             }
 
-            var gameRepository = new GameRepository();
+            var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
 
-            decimal actualPrice = gameRepository.GetPriceGameById(testId);
+            decimal actualPrice = GamesRepository.GetPriceGameById(testId);
 
             Assert.Equal(expectedPrice, actualPrice);
         }
@@ -105,8 +109,8 @@ public class GameRepositoryIntegrationTests
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                var delete = new SqlCommand("DELETE FROM Game WHERE gid = @id", connection);
-                delete.Parameters.AddWithValue("@id", testId);
+                var delete = new SqlCommand("DELETE FROM Game WHERE gid = @Id", connection);
+                delete.Parameters.AddWithValue("@Id", testId);
                 delete.ExecuteNonQuery();
             }
         }
@@ -115,9 +119,14 @@ public class GameRepositoryIntegrationTests
     [Fact]
     public void GetPriceGameById_GameDoesNotExist_ReturnsZero()
     {
-        var gameRepository = new GameRepository();
-        var price = gameRepository.GetPriceGameById(-999);
+        var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+        var price = GamesRepository.GetPriceGameById(-999);
 
         Assert.Equal(0m, price);
     }
 }
+
+
+
+
+

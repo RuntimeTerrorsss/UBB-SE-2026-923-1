@@ -235,7 +235,7 @@ public class GameDetailsViewModelTests
             MinimumNrPlayers = 2,
             MaximumNumberPlayers = 4,
             Description = "desc",
-            UserId = 1,
+            Id = 1,
             DisplayName = "Owner"
         };
     }
@@ -249,7 +249,7 @@ public class GameDetailsViewModelTests
     {
         return new User
         {
-            UserId = 1,
+            Id = 1,
             Username = "user",
             DisplayName = "User",
             Email = "test@test.com",
@@ -259,3 +259,7 @@ public class GameDetailsViewModelTests
         };
     }
 }
+
+
+
+

@@ -1,6 +1,10 @@
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
 using System.Reflection;
+using System.Linq;
+using System.Collections.Generic;
+using System;
+using Xunit;
 
 namespace BookingBoardGames.Tests.SearchAndBook.Services;
 
@@ -15,10 +19,10 @@ public class GeographicalServiceTests
 
         var result = sut.GetCityDetails("Cluj-Napoca");
 
-        Assert.True(result.isFound);
-        Assert.Equal("Cluj-Napoca", result.cityName);
-        Assert.Equal(46.7712, result.latitude);
-        Assert.Equal(23.6236, result.longitude);
+        Assert.True(result.IsFound);
+        Assert.Equal("Cluj-Napoca", result.CityName);
+        Assert.Equal(46.7712, result.Latitude);
+        Assert.Equal(23.6236, result.Longitude);
     }
 
     [Fact]
@@ -28,10 +32,10 @@ public class GeographicalServiceTests
 
         var result = sut.GetCityDetails("NonExistentCity");
 
-        Assert.False(result.isFound);
-        Assert.Equal("", result.cityName);
-        Assert.Equal(0, result.latitude);
-        Assert.Equal(0, result.longitude);
+        Assert.False(result.IsFound);
+        Assert.Equal("", result.CityName);
+        Assert.Equal(0, result.Latitude);
+        Assert.Equal(0, result.Longitude);
     }
 
     [Fact]
@@ -42,8 +46,8 @@ public class GeographicalServiceTests
 
         var result = sut.GetCityDetails("Timișoara");
 
-        Assert.True(result.isFound);
-        Assert.Equal("Timișoara", result.cityName);
+        Assert.True(result.IsFound);
+        Assert.Equal("Timișoara", result.CityName);
     }
 
     [Fact]
@@ -54,8 +58,8 @@ public class GeographicalServiceTests
 
         var result = sut.GetCityDetails("Cluj-Napoca");
 
-        Assert.True(result.isFound);
-        Assert.Equal("Cluj-Napoca", result.cityName);
+        Assert.True(result.IsFound);
+        Assert.Equal("Cluj-Napoca", result.CityName);
     }
 
     [Fact]
@@ -66,8 +70,8 @@ public class GeographicalServiceTests
 
         var result = sut.GetCityDetails("BRASOV");
 
-        Assert.True(result.isFound);
-        Assert.Equal("Brașov", result.cityName);
+        Assert.True(result.IsFound);
+        Assert.Equal("Brașov", result.CityName);
     }
 
     [Fact]
@@ -78,8 +82,8 @@ public class GeographicalServiceTests
 
         var result = sut.GetCityDetails("  Iași  ");
 
-        Assert.True(result.isFound);
-        Assert.Equal("Iași", result.cityName);
+        Assert.True(result.IsFound);
+        Assert.Equal("Iași", result.CityName);
     }
 
     [Fact]
@@ -213,7 +217,7 @@ public class GeographicalServiceTests
             ["klausenburg"]  = city
         });
 
-        var result = sut.GetCitySuggestions("u"); 
+        var result = sut.GetCitySuggestions("u");
 
         Assert.Single(result);
         Assert.Equal("Cluj-Napoca", result[0]);
@@ -236,7 +240,7 @@ public class GeographicalServiceTests
     private static void InjectCities(GeographicalService service, Dictionary<string, City> lookup)
     {
         var field = typeof(GeographicalService)
-            .GetField("_cityLookupByNormalizedName", BindingFlags.NonPublic | BindingFlags.Instance)!;
+            .GetField("cityLookupByNormalizedName", BindingFlags.NonPublic | BindingFlags.Instance)!;
 
         var existing = (Dictionary<string, City>)field.GetValue(service)!;
         foreach (var kvp in lookup)
@@ -259,3 +263,8 @@ public class GeographicalServiceTests
         };
     }
 }
+
+
+
+
+

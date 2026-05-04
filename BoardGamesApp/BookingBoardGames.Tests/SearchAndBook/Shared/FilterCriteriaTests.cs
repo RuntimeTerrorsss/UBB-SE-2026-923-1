@@ -17,7 +17,7 @@ public class FilterCriteriaTests
             MaximumPrice = 50m,
             PlayerCount = 4,
             SortOption = SortOption.PriceAscending,
-            UserId = 7,
+            Id = 7,
         };
 
         criteria.Reset();
@@ -28,7 +28,7 @@ public class FilterCriteriaTests
         Assert.Null(criteria.MaximumPrice);
         Assert.Null(criteria.PlayerCount);
         Assert.Equal(SortOption.None, criteria.SortOption);
-        Assert.Null(criteria.UserId);
+        Assert.Null(criteria.Id);
     }
 
     [Fact]
@@ -87,3 +87,8 @@ public class FilterCriteriaTests
         Assert.False(result);
     }
 }
+
+
+
+
+

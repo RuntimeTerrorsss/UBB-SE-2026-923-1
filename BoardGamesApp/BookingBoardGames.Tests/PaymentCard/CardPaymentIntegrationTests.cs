@@ -1,3 +1,9 @@
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames;
+using BookingBoardGames;
+using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data;
 using System;
 using Xunit;
 using BookingBoardGames.Src.Services;
@@ -16,17 +22,17 @@ namespace BookingBoardGames.Tests.PaymentCard
         [Fact]
         public void AddCardPayment_ValidPipeline_ReturnsNotNullResult()
         {
-            PaymentRepository paymentRepository = new PaymentRepository();
-            UserRepository userService = new UserRepository();
-            GameRepository gameRepository = new GameRepository();
-            RequestRepository requestRepository = new RequestRepository();
-            RequestService requestService = new RequestService(requestRepository, gameRepository);
-            ReceiptService receiptService = new ReceiptService(userService, requestService, gameRepository);
-            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, requestService);
+            PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalRepository RentalRepository = new RentalRepository(null);
+            RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
+            ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
+            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, RentalService);
 
             int clientIdentifier = 5;
             int ownerIdentifier = 2;
-            int requestIdentifier = 5;
+            int RequestIdentifier = 5;
             decimal paymentPrice = 15m;
 
             decimal currentClientBalance = userService.GetUserBalance(clientIdentifier);
@@ -34,7 +40,7 @@ namespace BookingBoardGames.Tests.PaymentCard
 
             try
             {
-                var resultDataTransferObject = cardPaymentService.AddCardPayment(requestIdentifier, clientIdentifier, ownerIdentifier, paymentPrice);
+                var resultDataTransferObject = cardPaymentService.AddCardPayment(RequestIdentifier, clientIdentifier, ownerIdentifier, paymentPrice);
                 Assert.NotNull(resultDataTransferObject);
             }
             finally
@@ -47,17 +53,17 @@ namespace BookingBoardGames.Tests.PaymentCard
         [Fact]
         public void AddCardPayment_ValidPipeline_ReturnsCardPaymentMethod()
         {
-            PaymentRepository paymentRepository = new PaymentRepository();
-            UserRepository userService = new UserRepository();
-            GameRepository gameRepository = new GameRepository();
-            RequestRepository requestRepository = new RequestRepository();
-            RequestService requestService = new RequestService(requestRepository, gameRepository);
-            ReceiptService receiptService = new ReceiptService(userService, requestService, gameRepository);
-            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, requestService);
+            PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalRepository RentalRepository = new RentalRepository(null);
+            RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
+            ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
+            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, RentalService);
 
             int clientIdentifier = 5;
             int ownerIdentifier = 2;
-            int requestIdentifier = 5;
+            int RequestIdentifier = 5;
             decimal paymentPrice = 15m;
             string expectedPaymentMethod = "CARD";
 
@@ -66,7 +72,7 @@ namespace BookingBoardGames.Tests.PaymentCard
 
             try
             {
-                var resultDataTransferObject = cardPaymentService.AddCardPayment(requestIdentifier, clientIdentifier, ownerIdentifier, paymentPrice);
+                var resultDataTransferObject = cardPaymentService.AddCardPayment(RequestIdentifier, clientIdentifier, ownerIdentifier, paymentPrice);
                 Assert.Equal(expectedPaymentMethod, resultDataTransferObject.PaymentMethod);
             }
             finally
@@ -79,17 +85,17 @@ namespace BookingBoardGames.Tests.PaymentCard
         [Fact]
         public void GetCardPayment_ValidTransaction_ReturnsNotNull()
         {
-            PaymentRepository paymentRepository = new PaymentRepository();
-            UserRepository userService = new UserRepository();
-            GameRepository gameRepository = new GameRepository();
-            RequestRepository requestRepository = new RequestRepository();
-            RequestService requestService = new RequestService(requestRepository, gameRepository);
-            ReceiptService receiptService = new ReceiptService(userService, requestService, gameRepository);
-            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, requestService);
+            PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalRepository RentalRepository = new RentalRepository(null);
+            RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
+            ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
+            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, RentalService);
 
             int clientIdentifier = 5;
             int ownerIdentifier = 2;
-            int requestIdentifier = 5;
+            int RequestIdentifier = 5;
             decimal paymentPrice = 15m;
 
             decimal currentClientBalance = userService.GetUserBalance(clientIdentifier);
@@ -97,7 +103,7 @@ namespace BookingBoardGames.Tests.PaymentCard
 
             try
             {
-                var resultDataTransferObject = cardPaymentService.AddCardPayment(requestIdentifier, clientIdentifier, ownerIdentifier, paymentPrice);
+                var resultDataTransferObject = cardPaymentService.AddCardPayment(RequestIdentifier, clientIdentifier, ownerIdentifier, paymentPrice);
                 var retrievedPayment = cardPaymentService.GetCardPayment(resultDataTransferObject.TransactionIdentifier);
                 Assert.NotNull(retrievedPayment);
             }
@@ -111,17 +117,17 @@ namespace BookingBoardGames.Tests.PaymentCard
         [Fact]
         public void GetCardPayment_ValidTransaction_ReturnsCorrectAmount()
         {
-            PaymentRepository paymentRepository = new PaymentRepository();
-            UserRepository userService = new UserRepository();
-            GameRepository gameRepository = new GameRepository();
-            RequestRepository requestRepository = new RequestRepository();
-            RequestService requestService = new RequestService(requestRepository, gameRepository);
-            ReceiptService receiptService = new ReceiptService(userService, requestService, gameRepository);
-            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, requestService);
+            PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalRepository RentalRepository = new RentalRepository(null);
+            RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
+            ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
+            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, RentalService);
 
             int clientIdentifier = 5;
             int ownerIdentifier = 2;
-            int requestIdentifier = 5;
+            int RequestIdentifier = 5;
             decimal paymentPrice = 15m;
 
             decimal currentClientBalance = userService.GetUserBalance(clientIdentifier);
@@ -129,7 +135,7 @@ namespace BookingBoardGames.Tests.PaymentCard
 
             try
             {
-                var resultDataTransferObject = cardPaymentService.AddCardPayment(requestIdentifier, clientIdentifier, ownerIdentifier, paymentPrice);
+                var resultDataTransferObject = cardPaymentService.AddCardPayment(RequestIdentifier, clientIdentifier, ownerIdentifier, paymentPrice);
                 var retrievedPayment = cardPaymentService.GetCardPayment(resultDataTransferObject.TransactionIdentifier);
                 Assert.Equal(paymentPrice, retrievedPayment.Amount);
             }
@@ -143,17 +149,17 @@ namespace BookingBoardGames.Tests.PaymentCard
         [Fact]
         public void GetCardPayment_ValidTransaction_ReturnsCorrectClientIdentifier()
         {
-            PaymentRepository paymentRepository = new PaymentRepository();
-            UserRepository userService = new UserRepository();
-            GameRepository gameRepository = new GameRepository();
-            RequestRepository requestRepository = new RequestRepository();
-            RequestService requestService = new RequestService(requestRepository, gameRepository);
-            ReceiptService receiptService = new ReceiptService(userService, requestService, gameRepository);
-            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, requestService);
+            PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalRepository RentalRepository = new RentalRepository(null);
+            RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
+            ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
+            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, RentalService);
 
             int clientIdentifier = 5;
             int ownerIdentifier = 2;
-            int requestIdentifier = 5;
+            int RequestIdentifier = 5;
             decimal paymentPrice = 15m;
 
             decimal currentClientBalance = userService.GetUserBalance(clientIdentifier);
@@ -161,7 +167,7 @@ namespace BookingBoardGames.Tests.PaymentCard
 
             try
             {
-                var resultDataTransferObject = cardPaymentService.AddCardPayment(requestIdentifier, clientIdentifier, ownerIdentifier, paymentPrice);
+                var resultDataTransferObject = cardPaymentService.AddCardPayment(RequestIdentifier, clientIdentifier, ownerIdentifier, paymentPrice);
                 var retrievedPayment = cardPaymentService.GetCardPayment(resultDataTransferObject.TransactionIdentifier);
                 Assert.Equal(clientIdentifier, retrievedPayment.ClientIdentifier);
             }
@@ -175,20 +181,25 @@ namespace BookingBoardGames.Tests.PaymentCard
         [Fact]
         public void AddCardPayment_InsufficientFunds_ThrowsException()
         {
-            PaymentRepository paymentRepository = new PaymentRepository();
-            UserRepository userService = new UserRepository();
-            GameRepository gameRepository = new GameRepository();
-            RequestRepository requestRepository = new RequestRepository();
-            RequestService requestService = new RequestService(requestRepository, gameRepository);
-            ReceiptService receiptService = new ReceiptService(userService, requestService, gameRepository);
-            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, requestService);
+            PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalRepository RentalRepository = new RentalRepository(null);
+            RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
+            ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
+            CardPaymentService cardPaymentService = new CardPaymentService(paymentRepository, userService, receiptService, RentalService);
 
             int lowBalanceClientIdentifier = 8;
             int ownerIdentifier = 2;
-            int requestIdentifier = 5;
+            int RequestIdentifier = 5;
             decimal paymentPrice = 15m;
 
-            Assert.Throws<Exception>(() => cardPaymentService.AddCardPayment(requestIdentifier, lowBalanceClientIdentifier, ownerIdentifier, paymentPrice));
+            Assert.Throws<Exception>(() => cardPaymentService.AddCardPayment(RequestIdentifier, lowBalanceClientIdentifier, ownerIdentifier, paymentPrice));
         }
     }
 }
+
+
+
+
+

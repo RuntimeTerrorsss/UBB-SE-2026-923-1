@@ -1,3 +1,4 @@
+using BookingBoardGames.Src.Repositories;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             mockCardPaymentService = new Mock<CardPaymentService>(null, null, null, null);
             mockUserService = new Mock<UserRepository>();
 
-            int requestIdentifier = 1;
+            int RequestIdentifier = 1;
             string gameName = "Catan";
             int clientIdentifier = 2;
             int ownerIdentifier = 3;
@@ -31,19 +32,19 @@ namespace BookingBoardGames.Tests.PaymentCard
             int daysToAdd = 2;
 
             mockCardPaymentService.Setup(cardPaymentServiceMock => cardPaymentServiceMock.GetRequestDataTransferObject(It.IsAny<int>()))
-                .Returns(new RequestDataTransferObject(requestIdentifier, gameName, clientIdentifier, ownerIdentifier, ownerName, clientName, DateTime.Now, DateTime.Now.AddDays(daysToAdd), paymentPrice));
+                .Returns(new RentalDataTransferObject(RequestIdentifier, gameName, clientIdentifier, ownerIdentifier, ownerName, clientName, DateTime.Now, DateTime.Now.AddDays(daysToAdd), paymentPrice));
         }
 
         private CardPaymentViewModel CreateViewModel()
         {
-            int requestIdentifier = 1;
+            int RequestIdentifier = 1;
             string deliveryAddress = "123 Main St";
             int bookingMessageIdentifier = 10;
 
             return new CardPaymentViewModel(
                 mockCardPaymentService.Object,
                 mockUserService.Object,
-                requestIdentifier,
+                RequestIdentifier,
                 deliveryAddress,
                 bookingMessageIdentifier,
                 null);
@@ -363,3 +364,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         public override void Send(SendOrPostCallback sendCallback, object threadState) => sendCallback(threadState);
     }
 }
+
+
+
+
