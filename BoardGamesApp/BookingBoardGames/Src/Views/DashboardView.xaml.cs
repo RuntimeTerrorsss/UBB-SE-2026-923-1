@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Views.ChatViews;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -22,7 +23,12 @@ namespace BookingBoardGames.Src.Views
 
         private void ChatButton_Click(object sender, RoutedEventArgs e)
         {
-            App.ConversationRepository?.CreateConversation(3, 1);
+            if (App.ConversationRepository is { } conversationRepository && App.UserRepository is { } userRepository)
+            {
+                var conversationService = new ConversationService(conversationRepository, 3, userRepository);
+                conversationService.CreateConversation(3, 1);
+            }
+
             var window1 = new Window();
             var frame1 = new Frame();
             window1.Content = frame1;

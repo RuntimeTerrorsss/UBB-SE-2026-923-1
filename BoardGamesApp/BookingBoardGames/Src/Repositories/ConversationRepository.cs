@@ -1,4 +1,4 @@
-﻿// <copyright file="ConversationRepository.cs" company="PlaceholderCompany">
+// <copyright file="ConversationRepository.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingBoardGames.Src.Repositories
@@ -15,7 +14,6 @@ namespace BookingBoardGames.Src.Repositories
     public class ConversationRepository : IConversationRepository
     {
         private readonly AppDbContext context;
-        private readonly Dictionary<int, IConversationService> subscribers = new Dictionary<int, IConversationService>();
 
         public ConversationRepository(AppDbContext appContext)
         {
@@ -47,6 +45,14 @@ namespace BookingBoardGames.Src.Repositories
             return found;
         }
 
+        public IReadOnlyList<int> GetParticipantUserIds(int conversationId)
+        {
+            return this.context.ConversationParticipants
+                .Where(participant => participant.ConversationId == conversationId)
+                .Select(participant => participant.UserId)
+                .ToList();
+        }
+
         public int CreateConversation(int senderId, int receiverId)
         {
             var conversation = new Conversation
@@ -62,39 +68,30 @@ namespace BookingBoardGames.Src.Repositories
             this.context.Conversations.Add(conversation);
             this.context.SaveChanges();
 
-            var persisted = this.context.Conversations
-                .Include(c => c.Participants)
-                .Include(c => c.Messages)
-                .First(c => c.ConversationId == conversation.ConversationId);
-
-            this.NotifySubscribersAboutNewConversation(persisted);
-
             return conversation.ConversationId;
         }
 
-        public void HandleNewMessage(Message message)
+        public Message HandleNewMessage(Message message)
         {
             message.MessageId = 0;
             this.context.Messages.Add(message);
             this.context.SaveChanges();
 
-            var persisted = this.context.Messages
+            return this.context.Messages
                 .Include(m => m.Sender)
                 .Include(m => m.Receiver)
                 .Include(m => m.Conversation)
                 .First(m => m.MessageId == message.MessageId);
-
-            this.NotifySubscribersAboutMessage(persisted);
         }
 
-        public void HandleMessageUpdate(Message message)
+        public Message? HandleMessageUpdate(Message message)
         {
             var tracked = this.context.Messages
                 .FirstOrDefault(m => m.MessageId == message.MessageId);
 
             if (tracked is null)
             {
-                return;
+                return null;
             }
 
             this.context.Entry(tracked).CurrentValues.SetValues(message);
@@ -114,13 +111,11 @@ namespace BookingBoardGames.Src.Repositories
 
             this.context.SaveChanges();
 
-            var persisted = this.context.Messages
+            return this.context.Messages
                 .Include(m => m.Sender)
                 .Include(m => m.Receiver)
                 .Include(m => m.Conversation)
                 .First(m => m.MessageId == message.MessageId);
-
-            this.NotifySubscribersAboutMessageUpdate(persisted);
         }
 
         public void HandleReadReceipt(ReadReceiptDTO readReceipt)
@@ -137,11 +132,9 @@ namespace BookingBoardGames.Src.Repositories
 
             participant.LastMessageReadTime = readReceipt.ReceiptTimeStamp;
             this.context.SaveChanges();
-
-            this.NotifySubscribersAboutReadReceipt(readReceipt);
         }
 
-        public void HandleRentalRequestFinalization(int messageId)
+        public Message? HandleRentalRequestFinalization(int messageId)
         {
             var rentalMessage = this.context.Messages
                 .OfType<RentalRequestMessage>()
@@ -149,23 +142,21 @@ namespace BookingBoardGames.Src.Repositories
 
             if (rentalMessage is null)
             {
-                return;
+                return null;
             }
 
             rentalMessage.IsRequestResolved = true;
             rentalMessage.IsRequestAccepted = true;
             this.context.SaveChanges();
 
-            var persisted = this.context.Messages
+            return this.context.Messages
                 .Include(m => m.Sender)
                 .Include(m => m.Receiver)
                 .Include(m => m.Conversation)
                 .First(m => m.MessageId == messageId);
-
-            this.NotifySubscribersAboutMessageUpdate(persisted);
         }
 
-        public void CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
+        public Message? CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
             var parent = this.context.Messages
                 .OfType<RentalRequestMessage>()
@@ -173,7 +164,7 @@ namespace BookingBoardGames.Src.Repositories
 
             if (parent is null)
             {
-                return;
+                return null;
             }
 
             var cashMessage = new CashAgreementMessage
@@ -191,75 +182,11 @@ namespace BookingBoardGames.Src.Repositories
             this.context.Messages.Add(cashMessage);
             this.context.SaveChanges();
 
-            var persisted = this.context.Messages
+            return this.context.Messages
                 .Include(m => m.Sender)
                 .Include(m => m.Receiver)
                 .Include(m => m.Conversation)
                 .First(m => m.MessageId == cashMessage.MessageId);
-
-            this.NotifySubscribersAboutMessage(persisted);
-        }
-
-        public void Subscribe(int userId, IConversationService observer)
-        {
-            this.subscribers[userId] = observer;
-        }
-
-        public void Unsubscribe(int userId)
-        {
-            this.subscribers.Remove(userId);
-        }
-
-        public void NotifySubscribersAboutMessage(Message message)
-        {
-            foreach (int userId in this.GetParticipantUserIds(message.ConversationId))
-            {
-                if (this.subscribers.TryGetValue(userId, out IConversationService? observer))
-                {
-                    observer.OnMessageReceived(message);
-                }
-            }
-        }
-
-        public void NotifySubscribersAboutMessageUpdate(Message message)
-        {
-            foreach (int userId in this.GetParticipantUserIds(message.ConversationId))
-            {
-                if (this.subscribers.TryGetValue(userId, out IConversationService? observer))
-                {
-                    observer.OnMessageUpdateReceived(message);
-                }
-            }
-        }
-
-        public void NotifySubscribersAboutNewConversation(Conversation conversation)
-        {
-            foreach (int userId in conversation.Participants.Select(p => p.UserId))
-            {
-                if (this.subscribers.TryGetValue(userId, out IConversationService? observer))
-                {
-                    observer.OnConversationReceived(conversation);
-                }
-            }
-        }
-
-        public void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
-        {
-            foreach (int userId in this.GetParticipantUserIds(readReceipt.ConversationId))
-            {
-                if (this.subscribers.TryGetValue(userId, out IConversationService? observer))
-                {
-                    observer.OnReadReceiptReceived(readReceipt);
-                }
-            }
-        }
-
-        private List<int> GetParticipantUserIds(int conversationId)
-        {
-            return this.context.ConversationParticipants
-                .Where(participant => participant.ConversationId == conversationId)
-                .Select(participant => participant.UserId)
-                .ToList();
         }
     }
 }

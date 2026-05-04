@@ -48,6 +48,7 @@ namespace BookingBoardGames
             ConversationRepository = new ConversationRepository(AppDbContext);
 
             // Services
+            ConversationNotifier = new ConversationNotifier();
             GlobalGeographicalService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
@@ -76,6 +77,8 @@ namespace BookingBoardGames
         public static IConversationRepository? ConversationRepository { get; private set; }
 
         // Services
+        public static IConversationNotifier? ConversationNotifier { get; private set; }
+
         public static InterfaceGeographicalService? GlobalGeographicalService { get; private set; }
 
         public static IRentalService? RentalService { get; private set; }
