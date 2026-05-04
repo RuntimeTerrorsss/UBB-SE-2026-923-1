@@ -8,6 +8,8 @@ using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Shared;
 using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.Views.ChatViews;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
@@ -82,6 +84,18 @@ namespace BookingBoardGames.Src.Views
                     args.Item.IsBlackout = true;
                 }
             }
+        }
+
+        private void ChatButton_Click(object sender, RoutedEventArgs e)
+        {
+            var app = (App)Application.Current;
+            this.Frame.Navigate(typeof(ChatPageView), app.NoChatsUser);
+        }
+
+        private void DashboardButton_Click(object sender, RoutedEventArgs e)
+        {
+            var app = (App)Application.Current;
+            this.Frame.Navigate(typeof(DashboardView), app.DashboardUser);
         }
     }
 }
