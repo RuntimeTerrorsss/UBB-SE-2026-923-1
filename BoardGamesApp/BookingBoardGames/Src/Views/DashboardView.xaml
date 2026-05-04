@@ -8,11 +8,11 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 	mc:Ignorable="d">
 
-	<StackPanel
+    <StackPanel
 		HorizontalAlignment="Center"
 		VerticalAlignment="Center"
 		Spacing="20">
-		<TextBlock
+        <TextBlock
 			HorizontalAlignment="Center"
 			Style="{StaticResource TitleTextBlockStyle}"
 			Text="Admin Panel" />
@@ -37,5 +37,6 @@
 			Click="SeeEmptyChat_Click"
 			Content="See an Empty Chat"
 			FontSize="16" />
+        <Button Content=" Back" Click="BackButton_Click" HorizontalAlignment="Right"/>
 	</StackPanel>
 </Page>

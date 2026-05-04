@@ -66,5 +66,11 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
             this.Initialize(this.currentUserId);
         }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.Frame.CanGoBack)
+                this.Frame.GoBack();
+        }
     }
 }
