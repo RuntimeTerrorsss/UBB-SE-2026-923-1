@@ -28,7 +28,7 @@ public class FilterCriteriaTests
         Assert.Null(criteria.MaximumPrice);
         Assert.Null(criteria.PlayerCount);
         Assert.Equal(SortOption.None, criteria.SortOption);
-        Assert.Null(criteria.Id);
+        Assert.Null(criteria.UserId);
     }
 
     [Fact]

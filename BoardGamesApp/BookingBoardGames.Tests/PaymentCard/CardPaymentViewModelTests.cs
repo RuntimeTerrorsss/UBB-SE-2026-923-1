@@ -24,6 +24,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             mockUserService = new Mock<UserRepository>();
 
             int RequestIdentifier = 1;
+            int gameIdentifier = 1;
             string gameName = "Catan";
             int clientIdentifier = 2;
             int ownerIdentifier = 3;
@@ -33,7 +34,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             int daysToAdd = 2;
 
             mockCardPaymentService.Setup(cardPaymentServiceMock => cardPaymentServiceMock.GetRequestDataTransferObject(It.IsAny<int>()))
-                .Returns(new RentalDataTransferObject(RequestIdentifier, gameName, clientIdentifier, ownerIdentifier, ownerName, clientName, DateTime.Now, DateTime.Now.AddDays(daysToAdd), paymentPrice));
+                .Returns(new RentalDataTransferObject(RequestIdentifier, gameIdentifier, gameName, ownerIdentifier, clientName, clientIdentifier, ownerName, DateTime.Now, DateTime.Now.AddDays(daysToAdd), paymentPrice));
         }
 
         private CardPaymentViewModel CreateViewModel()

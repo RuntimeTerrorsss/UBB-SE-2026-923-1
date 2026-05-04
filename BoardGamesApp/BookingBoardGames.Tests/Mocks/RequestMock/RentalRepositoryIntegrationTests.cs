@@ -72,8 +72,8 @@ namespace BookingBoardGames.Tests.Mocks.RequestMock
 
                 Assert.NotNull(RentalRepository);
                 Assert.Equal(
-                    new { Id = rid, GameId = gid, StartDate = start, EndDate = end },
-                    new { RentalRepository.RequestId, RentalRepository.GameId, RentalRepository.StartDate, RentalRepository.EndDate });
+                    new { RentalId = rid, GameId = gid, StartDate = start, EndDate = end },
+                    new { RentalRepository.RentalId, RentalRepository.GameId, RentalRepository.StartDate, RentalRepository.EndDate });
             }
             finally
             {

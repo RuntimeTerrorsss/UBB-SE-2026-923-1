@@ -107,7 +107,7 @@ public class RentalServiceUnitTests
     {
         var Rental = new Rental(TestRequestId, TestGameId, TestClientId, TestOwnerId, TestStartDate, TestEndDate);
         mockRentalRepository.Setup(r => r.GetById(TestRequestId)).Returns(Rental);
-        mockGamesRepository.Setup(g => g.GetById(TestGameId)).Returns((Game)null);
+        mockGamesRepository.Setup(g => g.GetGameById(TestGameId)).Returns((Game)null);
 
         var resultedRental = RentalService.GetGameName(TestRequestId);
 

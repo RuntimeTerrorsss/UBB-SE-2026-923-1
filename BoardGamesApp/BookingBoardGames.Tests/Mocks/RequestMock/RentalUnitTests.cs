@@ -15,8 +15,8 @@ namespace BookingBoardGames.Tests.Mocks.RequestMock
             var end = new DateTime(2023, 1, 5);
             var Rental = new Rental(1, 2, 3, 4, start, end);
 
-            var expectedRequest = new { Id = 1, GameId = 2, ClientId = 3, OwnerId = 4, StartDate = start, EndDate = end };
-            var actualRequest = new { Rental.RequestId, Rental.GameId, Rental.ClientId, Rental.OwnerId, Rental.StartDate, Rental.EndDate };
+            var expectedRequest = new { RentalId = 1, GameId = 2, ClientId = 3, OwnerId = 4, StartDate = start, EndDate = end };
+            var actualRequest = new { Rental.RentalId, Rental.GameId, Rental.ClientId, Rental.OwnerId, Rental.StartDate, Rental.EndDate };
 
             Assert.Equal(expectedRequest, actualRequest);
         }
@@ -28,15 +28,15 @@ namespace BookingBoardGames.Tests.Mocks.RequestMock
             var end = new DateTime(2023, 1, 5);
             var Rental = new Rental(0, 0, 0, 0, DateTime.MinValue, DateTime.MaxValue);
             
-            Rental.Id = 1;
+            Rental.RentalId = 1;
             Rental.GameId = 2;
             Rental.ClientId = 3;
             Rental.OwnerId = 4;
             Rental.StartDate = start;
             Rental.EndDate = end;
 
-            var expectedRequest = new { Id = 1, GameId = 2, ClientId = 3, OwnerId = 4, StartDate = start, EndDate = end };
-            var actualRequest = new { Rental.RequestId, Rental.GameId, Rental.ClientId, Rental.OwnerId, Rental.StartDate, Rental.EndDate };
+            var expectedRequest = new { RentalId = 1, GameId = 2, ClientId = 3, OwnerId = 4, StartDate = start, EndDate = end };
+            var actualRequest = new { Rental.RentalId, Rental.GameId, Rental.ClientId, Rental.OwnerId, Rental.StartDate, Rental.EndDate };
 
             Assert.Equal(expectedRequest, actualRequest);
         }
