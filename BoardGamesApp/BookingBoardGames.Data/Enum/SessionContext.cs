@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace BookingBoardGames.Src.Shared
+namespace BookingBoardGames.Data.Enum
 {
     /// <summary>
     /// Provides a context for managing the current user's session state, including authentication status and user

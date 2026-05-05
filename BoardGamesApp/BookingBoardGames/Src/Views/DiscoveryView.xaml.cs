@@ -3,10 +3,10 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Shared;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BoardGamesAppWebApi.Data;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BoardGamesAppWebApi.Repositories
 {
     public class RentalRepository : IRentalRepository
     {

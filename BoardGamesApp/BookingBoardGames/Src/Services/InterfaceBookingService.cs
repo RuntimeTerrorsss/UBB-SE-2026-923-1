@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
 
 namespace BookingBoardGames.Src.Services
 {

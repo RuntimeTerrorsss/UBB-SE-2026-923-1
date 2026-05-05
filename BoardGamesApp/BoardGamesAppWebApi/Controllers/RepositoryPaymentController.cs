@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Repositories;
 
 
 [ApiController]

@@ -5,10 +5,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Constants;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Repositories;
 
 namespace BookingBoardGames.Src.Services
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace BoardGamesAppWebApi.Data
+namespace BookingBoardGames.Data
 {
     public class AppDbContext : DbContext
     {

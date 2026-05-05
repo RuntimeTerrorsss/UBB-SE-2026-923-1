@@ -8,9 +8,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Data.Constants;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.ViewModels

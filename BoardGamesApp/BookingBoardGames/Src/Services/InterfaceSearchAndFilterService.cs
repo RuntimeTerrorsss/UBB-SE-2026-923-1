@@ -4,8 +4,8 @@
 
 using System;
 using System.Collections.Generic;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
 
 namespace BookingBoardGames.Src.Services
 {

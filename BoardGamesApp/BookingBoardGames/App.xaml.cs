@@ -4,7 +4,8 @@
 
 using System;
 using System.Diagnostics;
-using BookingBoardGames.Data;
+using BookingBoardGames.Data.Repositories;
+using BookingBoardGames.Src.HttpRepositories;
 using BookingBoardGames.Src.Mapper;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
@@ -41,11 +42,12 @@ namespace BookingBoardGames
             RentalRepository = new RentalRepositoryHttp();
             PaymentRepository = new PaymentRepositoryHttp();
             HistoryRepository = new RepositoryPaymentHttp();
-            ConversationRepository = new ConversationRepositoryHttp(); // dacă există
+            ConversationRepository = new ConversationRepositoryHttp();
 
             // -------------------------
             // SERVICES
             // -------------------------
+            ConversationNotifier = new ConversationNotifier();
             GlobalGeographicalService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
@@ -93,6 +95,8 @@ namespace BookingBoardGames
         public static IConversationRepository? ConversationRepository { get; private set; }
 
         // Services
+        public static IConversationNotifier? ConversationNotifier { get; private set; }
+
         public static InterfaceGeographicalService? GlobalGeographicalService { get; private set; }
 
         public static IRentalService? RentalService { get; private set; }

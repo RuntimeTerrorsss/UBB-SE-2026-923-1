@@ -1,4 +1,4 @@
-using BookingBoardGames.Src.Repositories;
+using BoardGamesAppWebApi.Repositories
 
 var builder = WebApplication.CreateBuilder(args);
 

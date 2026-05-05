@@ -8,7 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Data.Enum;
 using Windows.Storage;
 
 namespace BookingBoardGames.Src.Services

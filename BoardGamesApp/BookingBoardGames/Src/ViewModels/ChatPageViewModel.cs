@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Repositories;
 using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.ViewModels;

@@ -7,10 +7,10 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using BookingBoardGames.Data.Constants;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Repositories;
 using BookingBoardGames.Src.Commands;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.ViewModels

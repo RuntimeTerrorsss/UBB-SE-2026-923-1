@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Repositories;
+using BookingBoardGames.Data.Repositories;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Src.HttpRepositories
 {
     public class PaymentRepositoryHttp : IPaymentRepository
     {

@@ -4,12 +4,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Repositories;
-
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Repositories;
+using BookingBoardGames.Data.Repositories;
 
 namespace BookingBoardGames.Src.Services
 {
@@ -18,6 +17,7 @@ namespace BookingBoardGames.Src.Services
         private IConversationRepository ConversationRepository { get; set; }
 
         private IUserRepository userRepository;
+        private IConversationNotifier notifier;
 
         private int UserId { get; set; }
 
@@ -28,19 +28,53 @@ namespace BookingBoardGames.Src.Services
         public event Action<ReadReceiptDTO> ActionReadReceiptProcessed;
 
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
-        
+
         public ConversationService(IConversationRepository conversationRepo, int userIdInput)
-            : this(conversationRepo, userIdInput, App.UserRepository)
+            : this(conversationRepo, userIdInput, App.UserRepository, ResolveNotifier())
         {
         }
 
         public ConversationService(IConversationRepository conversationRepo, int userIdInput, IUserRepository userRepo)
+            : this(conversationRepo, userIdInput, userRepo, ResolveNotifier())
+        {
+        }
+
+        public ConversationService(IConversationRepository conversationRepo, int userIdInput, IUserRepository userRepo, IConversationNotifier conversationNotifier)
         {
             this.UserId = userIdInput;
             this.ConversationRepository = conversationRepo;
             this.userRepository = userRepo;
+            this.notifier = conversationNotifier;
 
-            this.ConversationRepository.Subscribe(this.UserId, this);
+            this.notifier.Register(this.UserId, this);
+        }
+
+        private static IConversationNotifier ResolveNotifier()
+        {
+            return App.ConversationNotifier ?? new ConversationNotifier();
+        }
+
+        private void NotifySubscribersAboutMessage(Message message)
+        {
+            IReadOnlyList<int> participants = this.ConversationRepository.GetParticipantUserIds(message.ConversationId);
+            this.notifier.NotifyMessage(participants, message);
+        }
+
+        private void NotifySubscribersAboutMessageUpdate(Message message)
+        {
+            IReadOnlyList<int> participants = this.ConversationRepository.GetParticipantUserIds(message.ConversationId);
+            this.notifier.NotifyMessageUpdate(participants, message);
+        }
+
+        private void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
+        {
+            IReadOnlyList<int> participants = this.ConversationRepository.GetParticipantUserIds(readReceipt.ConversationId);
+            this.notifier.NotifyReadReceipt(participants, readReceipt);
+        }
+
+        private void NotifySubscribersAboutNewConversation(Conversation conversation)
+        {
+            this.notifier.NotifyNewConversation(conversation);
         }
 
         public List<ConversationDTO> FetchConversations()
@@ -69,21 +103,36 @@ namespace BookingBoardGames.Src.Services
 
         public void SendMessage(MessageDataTransferObject message)
         {
-            this.ConversationRepository.HandleNewMessage(this.MessageDTOToMessage(message));
+            Message persisted = this.ConversationRepository.HandleNewMessage(this.MessageDTOToMessage(message));
+            this.NotifySubscribersAboutMessage(persisted);
+        }
+
+        public int CreateConversation(int senderId, int receiverId)
+        {
+            int conversationId = this.ConversationRepository.CreateConversation(senderId, receiverId);
+            Conversation createdConversation = this.ConversationRepository.GetConversationById(conversationId);
+            this.NotifySubscribersAboutNewConversation(createdConversation);
+            return conversationId;
         }
 
         public void UpdateMessage(MessageDataTransferObject message)
         {
-            this.ConversationRepository.HandleMessageUpdate(this.MessageDTOToMessage(message));
+            Message? persisted = this.ConversationRepository.HandleMessageUpdate(this.MessageDTOToMessage(message));
+            if (persisted != null)
+            {
+                this.NotifySubscribersAboutMessageUpdate(persisted);
+            }
         }
 
         public void SendReadReceipt(ConversationDTO conversation)
         {
-            this.ConversationRepository.HandleReadReceipt(new ReadReceiptDTO(
+            var readReceipt = new ReadReceiptDTO(
                 conversation.Id,
                 this.UserId,
                 conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId,
-                DateTime.Now));
+                DateTime.Now);
+            this.ConversationRepository.HandleReadReceipt(readReceipt);
+            this.NotifySubscribersAboutReadReceipt(readReceipt);
         }
 
         public void OnCardPaymentSelected(int messageId)
@@ -99,12 +148,20 @@ namespace BookingBoardGames.Src.Services
 
         private void FinalizeRentalRequest(int messageId)
         {
-            this.ConversationRepository.HandleRentalRequestFinalization(messageId);
+            Message? updated = this.ConversationRepository.HandleRentalRequestFinalization(messageId);
+            if (updated != null)
+            {
+                this.NotifySubscribersAboutMessageUpdate(updated);
+            }
         }
 
         private void SendCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
-            this.ConversationRepository.CreateCashAgreementMessage(messageIdOfParentRentalRequestMessage, paymentId);
+            Message? created = this.ConversationRepository.CreateCashAgreementMessage(messageIdOfParentRentalRequestMessage, paymentId);
+            if (created != null)
+            {
+                this.NotifySubscribersAboutMessage(created);
+            }
         }
 
         public void OnMessageReceived(Message message)

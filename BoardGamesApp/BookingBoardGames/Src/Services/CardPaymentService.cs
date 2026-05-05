@@ -3,9 +3,10 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Constants;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Repositories;
+using BookingBoardGames.Src.HttpRepositories;
 
 namespace BookingBoardGames.Src.Services
 {

@@ -9,8 +9,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
 using Microsoft.UI.Xaml.Controls;
 
 namespace BookingBoardGames.Src.ViewModels;

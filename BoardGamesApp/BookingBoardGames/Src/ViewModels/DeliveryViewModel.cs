@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Repositories;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Src.Validators;
 

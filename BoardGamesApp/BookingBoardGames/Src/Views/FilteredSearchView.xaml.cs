@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;

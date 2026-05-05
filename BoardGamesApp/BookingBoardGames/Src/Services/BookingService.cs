@@ -3,8 +3,8 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Repositories;
 
 namespace BookingBoardGames.Src.Services;
 /// <summary>

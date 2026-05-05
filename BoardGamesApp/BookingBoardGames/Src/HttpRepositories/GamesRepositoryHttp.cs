@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Repositories;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Src.HttpRepositories
 {
     public class GamesRepositoryHttp : InterfaceGamesRepository
     {

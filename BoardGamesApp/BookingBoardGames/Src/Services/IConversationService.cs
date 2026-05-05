@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
 
 namespace BookingBoardGames.Src.Services
 {

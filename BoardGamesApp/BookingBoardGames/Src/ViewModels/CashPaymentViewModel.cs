@@ -2,8 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Repositories;
 using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.ViewModels

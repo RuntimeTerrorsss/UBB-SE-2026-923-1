@@ -2,9 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Src.Enum;
-
-namespace BookingBoardGames.Src.Shared;
+namespace BookingBoardGames.Data.Enum;
 
 /// <summary>
 /// Represents the criteria used for searching and filtering games.

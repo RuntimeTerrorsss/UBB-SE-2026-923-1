@@ -7,10 +7,10 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Src.Commands;
-using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Shared;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 

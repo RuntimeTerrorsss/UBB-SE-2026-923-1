@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BookingBoardGames.Src.DTO
+namespace BookingBoardGames.Data.DTO
 {
     public class PagedResult<T>
     {

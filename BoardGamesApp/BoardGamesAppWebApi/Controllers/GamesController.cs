@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Repositories;
+using BookingBoardGames.Data.Shared;
 
 [ApiController]
 [Route("api/games")]

@@ -5,10 +5,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
 using BoardGamesAppWebApi.Data;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BoardGamesAppWebApi.Repositories
 {
     public class PaymentRepository : IPaymentRepository
     {

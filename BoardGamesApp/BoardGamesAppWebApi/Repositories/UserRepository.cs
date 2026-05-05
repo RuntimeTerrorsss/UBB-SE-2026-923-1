@@ -8,7 +8,7 @@ using BookingBoardGames.Data;
 using Microsoft.EntityFrameworkCore;
 using BoardGamesAppWebApi.Data;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BoardGamesAppWebApi.Repositories
 {
     public class UserRepository : IUserRepository
     {

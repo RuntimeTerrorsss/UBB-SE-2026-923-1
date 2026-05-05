@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Src.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;

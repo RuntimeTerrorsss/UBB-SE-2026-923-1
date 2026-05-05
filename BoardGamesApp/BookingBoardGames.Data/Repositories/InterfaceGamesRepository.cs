@@ -3,9 +3,9 @@
 // </copyright>
 
 using System.Collections.Generic;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Enum;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Data.Repositories
 {
     /// <summary>
     /// Defines the repository operations for managing Game entities.

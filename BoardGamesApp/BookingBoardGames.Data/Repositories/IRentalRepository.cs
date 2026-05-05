@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Data.Repositories
 {
     public interface IRentalRepository
     {

@@ -6,14 +6,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Repositories;
+using BookingBoardGames.Data.Shared;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
 using BoardGamesAppWebApi.Data;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BoardGamesAppWebApi.Repositories
 {
     public class ConversationRepository : IConversationRepository
     {

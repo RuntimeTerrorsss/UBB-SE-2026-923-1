@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Data.Repositories
 {
     public interface IUserRepository : IRepository<User>
     {
