@@ -17,25 +17,14 @@ namespace BookingBoardGames
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        public static int loggedInUserAlice = 1;
+        public static int loggedInUserBob = 2;
+
         public MainWindow()
         {
             this.InitializeComponent();
 
             this.RootFrame.Navigate(typeof(DiscoveryView));
-
-            var window1 = new Window();
-            var frame1 = new Frame();
-            window1.Content = frame1;
-            frame1.Navigate(typeof(ChatPageView), 1); // user id 1
-            window1.Title = "Alice";
-            window1.Activate();
-
-            var window2 = new Window();
-            var frame2 = new Frame();
-            window2.Content = frame2;
-            frame2.Navigate(typeof(ChatPageView), 2); // user id 2
-            window2.Title = "Bob";
-            window2.Activate();
 
             this.Closed += this.MainWindow_Closed;
         }

@@ -1,4 +1,4 @@
-﻿// <copyright file="DiscoveryViewModel.cs" company="PlaceholderCompany">
+// <copyright file="DiscoveryViewModel.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -56,6 +56,8 @@ namespace BookingBoardGames.Src.ViewModels
             this.NextPageCommand = new RelayCommand(_ => this.GoToNextPage());
             this.PreviousPageCommand = new RelayCommand(_ => this.GoToPreviousPage());
             this.SearchCommand = new RelayCommand(_ => this.SearchGamesByFilter(this.Filter));
+
+            SessionContext.GetInstance().OnUserChanged += this.LoadPaginatedDiscoveryFeed;
 
             try
             {
@@ -274,7 +276,7 @@ namespace BookingBoardGames.Src.ViewModels
         /// <summary>
         /// Loads paginated discovery feed and updates UI properties.
         /// </summary>
-        public async void LoadPaginatedDiscoveryFeed()
+        public void LoadPaginatedDiscoveryFeed()
         {
             try
             {
@@ -286,9 +288,6 @@ namespace BookingBoardGames.Src.ViewModels
                 this.OtherAvailableGames = discoveryFeedResult.Others;
                 this.ShowOthersHeader = this.OtherAvailableGames.Any();
                 this.totalAvailableGamesCount = discoveryFeedResult.TotalAvailableGamesCount;
-
-                await this.LoadImagesForGames(this.AvailableTonightGames);
-                await this.LoadImagesForGames(this.OtherAvailableGames);
 
                 this.OnPropertyChanged(nameof(this.TotalPages));
                 this.OnPropertyChanged(nameof(this.AvailableTonightGames));
@@ -403,31 +402,6 @@ namespace BookingBoardGames.Src.ViewModels
             catch (Exception ex)
             {
                 this.OnErrorOccurred?.Invoke($"Could not update availability range. {ex.Message}");
-            }
-        }
-
-        private async Task LoadImagesForGames(IEnumerable<GameDTO> gamesToLoadImagesFor)
-        {
-            try
-            {
-                foreach (var game in gamesToLoadImagesFor)
-                {
-                    if (game.Image != null && game.GameImage == null)
-                    {
-                        try
-                        {
-                            game.GameImage = await GameImage.ToBitmapImage(game.Image);
-                        }
-                        catch (Exception ex)
-                        {
-                            this.OnErrorOccurred?.Invoke($"Could not load an image for a game. {ex.Message}");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                this.OnErrorOccurred?.Invoke($"Could not load game images. {ex.Message}");
             }
         }
 

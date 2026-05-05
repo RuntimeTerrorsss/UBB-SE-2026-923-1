@@ -1,12 +1,10 @@
-﻿// <copyright file="IConversationRepository.cs" company="PlaceholderCompany">
+// <copyright file="IConversationRepository.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.Repositories
 {
@@ -16,28 +14,18 @@ namespace BookingBoardGames.Src.Repositories
 
         Conversation GetConversationById(int conversationId);
 
-        void HandleNewMessage(Message message);
+        IReadOnlyList<int> GetParticipantUserIds(int conversationId);
 
-        void HandleMessageUpdate(Message message);
+        Message HandleNewMessage(Message message);
+
+        Message? HandleMessageUpdate(Message message);
 
         void HandleReadReceipt(ReadReceiptDTO readReceipt);
 
         int CreateConversation(int senderId, int receiverId);
 
-        void HandleRentalRequestFinalization(int messageId);
+        Message? HandleRentalRequestFinalization(int messageId);
 
-        void CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId);
-
-        void Subscribe(int userId, IConversationService observer);
-
-        void Unsubscribe(int userId);
-
-        void NotifySubscribersAboutMessage(Message message);
-
-        void NotifySubscribersAboutMessageUpdate(Message message);
-
-        void NotifySubscribersAboutNewConversation(Conversation conversation);
-
-        void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt);
+        Message? CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId);
     }
 }

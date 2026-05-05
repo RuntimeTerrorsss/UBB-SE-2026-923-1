@@ -16,14 +16,23 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- SEARCH BAR -->
-        <Border Grid.Row="0"
-                Padding="16"
-                CornerRadius="8"
-                BorderBrush="LightGray"
-                BorderThickness="1">
+        
+        <StackPanel Grid.Row="0" Spacing="8">
 
-            <Grid ColumnSpacing="8">
+            <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Spacing="8">
+                <Button x:Name="SwitchUserButton" Content="Switch to Bob (User 2)" Click="SwitchUserButton_Click"/>
+                <Button Content="Dashboard" Click="DashboardButton_Click"/>
+                <Button Content="Chat" Click="ChatButton_Click"/>
+            </StackPanel>
+
+            <Border Padding="16"
+            CornerRadius="8"
+            BorderBrush="LightGray"
+            BorderThickness="1">
+
+                <Grid ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
@@ -72,6 +81,7 @@
                         Command="{Binding SearchCommand}"/>
             </Grid>
         </Border>
+        </StackPanel>
 
         <!-- RESULTS -->
         <ScrollViewer x:Name="MainScrollViewer"
@@ -116,8 +126,8 @@
                                         <Border Grid.Column="0"
                                                 CornerRadius="8,0,0,8">
                                             <Border.Background>
-                                                <ImageBrush ImageSource="{x:Bind GameImage, Mode=OneWay}"
-                                                            Stretch="UniformToFill"/>
+                                                <ImageBrush ImageSource="{x:Bind Image, Mode=OneWay}"
+                                                    Stretch="UniformToFill"/>
                                             </Border.Background>
                                         </Border>
 
@@ -181,7 +191,7 @@
                                         <Border Grid.Column="0"
                                                 CornerRadius="8,0,0,8">
                                             <Border.Background>
-                                                <ImageBrush ImageSource="{x:Bind GameImage, Mode=OneWay}"
+                                                <ImageBrush ImageSource="{x:Bind Image, Mode=OneWay}"
                                                             Stretch="UniformToFill"/>
                                             </Border.Background>
                                         </Border>

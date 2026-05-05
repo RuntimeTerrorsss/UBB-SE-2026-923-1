@@ -57,5 +57,17 @@ namespace BookingBoardGames.Src.Services
         /// <param name="selectedTimeRange">The time range for which to calculate the number of days.</param>
         /// <returns>The total number of days within the specified time range.</returns>
         int CalculateNumberOfDaysInAGivenTimeRange(TimeRange selectedTimeRange);
+
+        /// <summary>
+        /// Adds a new booking for the specified game and owner within the given time range.    
+        /// </summary>
+        /// <remarks>If the specified time range overlaps with an existing booking for the same game, the
+        /// booking will not be added. Ensure that the time range is valid and available before calling this
+        /// method.</remarks>
+        /// <param name="gameId">The unique identifier of the game to be booked. Must correspond to an existing game.</param>
+        /// <param name="ownerId">The unique identifier of the owner making the booking. Must correspond to a valid user.</param>
+        /// <param name="timeRange">The time range for which the booking is requested. The range must not overlap with existing bookings for the
+        /// same game.</param>
+        void AddBooking(int gameId, int ownerId, TimeRange timeRange);
     }
 }

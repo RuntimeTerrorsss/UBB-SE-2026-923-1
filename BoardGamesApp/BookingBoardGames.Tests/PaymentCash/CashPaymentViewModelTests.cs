@@ -34,7 +34,6 @@ namespace BookingBoardGames.Tests.PaymentCash
             var cashPaymentService = new Mock<ICashPaymentService>();
             cashPaymentService.Setup(cashPaymentServiceDependency => cashPaymentServiceDependency.AddCashPayment(It.IsAny<CashPaymentDataTransferObject>())).Returns(999);
             var conversationRepository = new Mock<IConversationRepository>();
-            conversationRepository.Setup(conversationRepositoryService => conversationRepositoryService.Subscribe(It.IsAny<int>(), It.IsAny<IConversationService>()));
             var conversationUserRepository = new Mock<IUserRepository>();
             var conversationService = new ConversationService(
                 conversationRepository.Object,
@@ -87,7 +86,6 @@ namespace BookingBoardGames.Tests.PaymentCash
                 .Callback<CashPaymentDataTransferObject>(cashPaymentDataTransferObject => addedCashPaymentDataTransferObject = cashPaymentDataTransferObject)
                 .Returns(1);
             var conversationRepository = new Mock<IConversationRepository>();
-            conversationRepository.Setup(conversationRepositoryService => conversationRepositoryService.Subscribe(It.IsAny<int>(), It.IsAny<IConversationService>()));
             var conversationUserRepository = new Mock<IUserRepository>();
             var conversationService = new ConversationService(
                 conversationRepository.Object,
@@ -144,7 +142,6 @@ namespace BookingBoardGames.Tests.PaymentCash
             var cashPaymentService = new Mock<ICashPaymentService>();
             cashPaymentService.Setup(cashPaymentServiceDependency => cashPaymentServiceDependency.AddCashPayment(It.IsAny<CashPaymentDataTransferObject>())).Returns(returnedPaymentId);
             var conversationRepository = new Mock<IConversationRepository>();
-            conversationRepository.Setup(conversationRepositoryService => conversationRepositoryService.Subscribe(It.IsAny<int>(), It.IsAny<IConversationService>()));
             var conversationUserRepository = new Mock<IUserRepository>();
             var conversationService = new ConversationService(
                 conversationRepository.Object,

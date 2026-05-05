@@ -34,7 +34,7 @@
                        FontWeight="Bold"
                        VerticalAlignment="Center"/>
         </Grid>
-
+        
         <!-- ERROR BANNER -->
         <InfoBar Grid.Row="1"
                  Title="Error"
@@ -141,7 +141,7 @@
 
                 </StackPanel>
             </ScrollViewer>
-
+            <!-- Is prost! P.S. Cipicu-->
             <!-- ===== RIGHT SIDE (Booking Panel) ===== -->
             <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="16">

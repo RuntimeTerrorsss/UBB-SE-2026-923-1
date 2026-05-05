@@ -144,4 +144,31 @@ public class BookingService : InterfaceBookingService
         int days = (selectedTimeRange.EndTime - selectedTimeRange.StartTime).Days + MinimumValidDayCount;
         return days < MinimumValidDayCount ? MinimumValidDayCount : days;
     }
+
+    public void AddBooking(int gameId, int userId, TimeRange timeRange)
+    {
+        try
+        {
+            var game = this.gamesRepository.GetGameById(gameId);
+            if (game == null)
+            {
+                throw new InvalidOperationException($"Game with id {gameId} was not found.");
+            }
+
+            var rental = new Rental(
+                startDate: timeRange.StartTime,
+                endDate: timeRange.EndTime,
+                gameId: gameId,
+                clientId: userId,
+                ownerId: game.OwnerId,
+                totalPrice: this.CalculateTotalPriceForRentingASpecificGame(game.PricePerDay, timeRange)
+            );
+
+            this.rentalsRepository.AddRental(rental);
+        }
+        catch (Exception exception)
+        {
+            throw new InvalidOperationException($"Failed to add booking for game {gameId}.", exception);
+        }
+    }
 }

@@ -162,7 +162,7 @@
 
                                         <Border.Background>
                                             <ImageBrush
-                                                ImageSource="{x:Bind GameImage, Mode=OneWay}"
+                                                ImageSource="{x:Bind Image, Mode=OneWay}"
                                                 Stretch="UniformToFill"/>
                                         </Border.Background>
                                     </Border>

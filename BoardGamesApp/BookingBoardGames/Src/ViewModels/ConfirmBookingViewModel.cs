@@ -233,6 +233,9 @@ namespace BookingBoardGames.Src.ViewModels
         {
             try
             {
+                this.bookingService.AddBooking(this.GameAndUserDetails.GameId, this.GameAndUserDetails.UserId, this.SelectedTimeRange);
+                this.UnavailableTimeRanges = this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
+                this.OnPropertyChanged(nameof(this.UnavailableTimeRanges));
                 this.OnConfirmBookingRequested?.Invoke();
             }
             catch (Exception exception)
