@@ -78,10 +78,10 @@ namespace BookingBoardGames.Src.Repositories
             this.context.SaveChanges();
 
             return this.context.Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Receiver)
-                .Include(m => m.Conversation)
-                .First(m => m.MessageId == message.MessageId);
+                .Include(newMessage => newMessage.Sender)
+                .Include(newMessage => newMessage.Receiver)
+                .Include(newMessage => newMessage.Conversation)
+                .First(newMessage => newMessage.MessageId == message.MessageId);
         }
 
         public Message? HandleMessageUpdate(Message message)
@@ -112,18 +112,18 @@ namespace BookingBoardGames.Src.Repositories
             this.context.SaveChanges();
 
             return this.context.Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Receiver)
-                .Include(m => m.Conversation)
-                .First(m => m.MessageId == message.MessageId);
+                .Include(newMessage => newMessage.Sender)
+                .Include(newMessage => newMessage.Receiver)
+                .Include(newMessage => newMessage.Conversation)
+                .First(newMessage => newMessage.MessageId == message.MessageId);
         }
 
         public void HandleReadReceipt(ReadReceiptDTO readReceipt)
         {
             var participant = this.context.ConversationParticipants
                 .FirstOrDefault(
-                    p => p.ConversationId == readReceipt.ConversationId
-                         && p.UserId == readReceipt.ReaderId);
+                    receiverParticipant => receiverParticipant.ConversationId == readReceipt.ConversationId
+                         && receiverParticipant.UserId == readReceipt.ReaderId);
 
             if (participant is null)
             {
@@ -138,7 +138,7 @@ namespace BookingBoardGames.Src.Repositories
         {
             var rentalMessage = this.context.Messages
                 .OfType<RentalRequestMessage>()
-                .FirstOrDefault(m => m.MessageId == messageId);
+                .FirstOrDefault(requestMessage => requestMessage.MessageId == messageId);
 
             if (rentalMessage is null)
             {
@@ -150,10 +150,10 @@ namespace BookingBoardGames.Src.Repositories
             this.context.SaveChanges();
 
             return this.context.Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Receiver)
-                .Include(m => m.Conversation)
-                .First(m => m.MessageId == messageId);
+                .Include(requestMessage => requestMessage.Sender)
+                .Include(requestMessage => requestMessage.Receiver)
+                .Include(requestMessage => requestMessage.Conversation)
+                .First(requestMessage => requestMessage.MessageId == messageId);
         }
 
         public Message? CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
