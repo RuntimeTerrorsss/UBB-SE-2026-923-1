@@ -45,11 +45,19 @@ public sealed partial class ConfirmBookingView : Page
             return;
         }
 
-        //var gameRepository = new GamesRepository();
-        //var rentalRepository = new RentalsRepository();
-        //var userRepository = new UsersRepository();
-        //var service = new BookingService(gameRepository, rentalRepository, userRepository);
         var viewModel = new ConfirmBookingViewModel(App.BookingService, bookingDTO, range);
+
+        viewModel.OnErrorOccurred += async (message) =>
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "Error",
+                Content = message,
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot,
+            };
+            await dialog.ShowAsync();
+        };
 
         viewModel.OnGoBackRequested += () =>
         {
@@ -202,6 +210,8 @@ public sealed partial class ConfirmBookingView : Page
 
     private void OnMessageUserClicked(object sender, RoutedEventArgs eventArgs)
     {
-        // to be connected later
+        var viewModel = (ConfirmBookingViewModel)this.DataContext;
+        int currentUserId = BookingBoardGames.Src.Shared.SessionContext.GetInstance().UserId;
+        this.Frame.Navigate(typeof(ChatViews.ChatPageView), (currentUserId, viewModel.GameAndUserDetails.UserId));
     }
 }

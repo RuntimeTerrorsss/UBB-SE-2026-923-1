@@ -31,6 +31,8 @@ namespace BookingBoardGames.Src.ViewModels
         private string? ownerImageUrl;
         private BookingDTO gameAndUserDetail;
 
+        public event Action<int, int>? OnChatWithOwnerRequested;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GameDetailsViewModel"/> class.
         /// </summary>
@@ -181,7 +183,11 @@ namespace BookingBoardGames.Src.ViewModels
         /// <summary>
         /// Gets the command to initiate the booking process for the selected game.
         /// </summary>
-        public ICommand ChatWithOwnerCommand => new RelayCommand(_ => { /* later */ });
+        public ICommand ChatWithOwnerCommand => new RelayCommand(_ =>
+        {
+            int currentUserId = SessionContext.GetInstance().UserId;
+            OnChatWithOwnerRequested?.Invoke(currentUserId, this.GameAndUserDetails.UserId);
+        });
 
         /// <summary>
         /// Checks if the game is available for a given time range.

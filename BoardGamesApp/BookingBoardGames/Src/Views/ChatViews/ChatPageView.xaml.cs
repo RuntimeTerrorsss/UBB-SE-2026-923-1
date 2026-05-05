@@ -59,6 +59,41 @@ namespace BookingBoardGames.Src.Views.ChatViews
             };
         }
 
+        private void AutoSelectConversationWithUser(int otherUserId)
+        {
+            var conversations = this.chatPageViewModel.ConversationService.FetchConversations();
+            var existing = conversations.FirstOrDefault(c =>
+                c.Participants.Any(p => p.UserId == otherUserId));
+
+            if (existing != null)
+            {
+                var preview = this.chatPageViewModel.LeftPanelModelView.Conversations
+                    .FirstOrDefault(c => c.ConversationId == existing.Id);
+                if (preview != null)
+                {
+                    this.chatPageViewModel.LeftPanelModelView.SelectedConversation = preview;
+                }
+            }
+            else
+            {
+                this.chatPageViewModel.ConversationService.CreateConversation(this.currentUserId, otherUserId);
+
+                var updatedConversations = this.chatPageViewModel.ConversationService.FetchConversations();
+                var newConversation = updatedConversations.FirstOrDefault(c =>
+                    c.Participants.Any(p => p.UserId == otherUserId));
+
+                if (newConversation != null)
+                {
+                    var preview = this.chatPageViewModel.LeftPanelModelView.Conversations
+                        .FirstOrDefault(c => c.ConversationId == newConversation.Id);
+                    if (preview != null)
+                    {
+                        this.chatPageViewModel.LeftPanelModelView.SelectedConversation = preview;
+                    }
+                }
+            }
+        }
+
         private void ProceedToPaymentClick(object sender, (int UserId, int RequestId, int MessageId) paymentArguments)
         {
             var deliveryWindow = new Window();
@@ -71,9 +106,18 @@ namespace BookingBoardGames.Src.Views.ChatViews
         protected override void OnNavigatedTo(NavigationEventArgs navigationEventArgs)
         {
             base.OnNavigatedTo(navigationEventArgs);
-            this.currentUserId = (int)navigationEventArgs.Parameter;
 
-            this.Initialize(this.currentUserId);
+            if (navigationEventArgs.Parameter is ValueTuple<int, int> tuple)
+            {
+                this.currentUserId = tuple.Item1;
+                this.Initialize(this.currentUserId);
+                this.AutoSelectConversationWithUser(tuple.Item2);
+            }
+            else if (navigationEventArgs.Parameter is int userId)
+            {
+                this.currentUserId = userId;
+                this.Initialize(this.currentUserId);
+            }
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

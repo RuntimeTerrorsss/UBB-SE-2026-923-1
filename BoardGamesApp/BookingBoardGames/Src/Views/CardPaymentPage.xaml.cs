@@ -16,9 +16,9 @@ namespace BookingBoardGames.Src.Views
 {
     public sealed partial class CardPaymentPage : Page
     {
-        public CardPaymentViewModel PaymentViewModel { get; set; }
-
         private Window activeCurrentWindow;
+
+        public CardPaymentViewModel PaymentViewModel { get; set; }
 
         public CardPaymentPage()
         {
@@ -81,7 +81,7 @@ namespace BookingBoardGames.Src.Views
                 Content = "By completing this payment you agree to our refund policy. " +
                                  "Rentals are non-refundable once the rental period has started.",
                 CloseButtonText = "Close",
-                XamlRoot = this.XamlRoot
+                XamlRoot = this.XamlRoot,
             };
             await termsDialog.ShowAsync();
         }

@@ -44,10 +44,10 @@ namespace BookingBoardGames.Src.Views
                 return;
             }
 
-            //var gameRepository = new GamesRepository();
-            //var rentalRepository = new RentalsRepository();
-            //var userRepository = new UsersRepository();
-            //var service = new BookingService(gameRepository, rentalRepository, userRepository);
+            // var gameRepository = new GamesRepository();
+            // var rentalRepository = new RentalsRepository();
+            // var userRepository = new UsersRepository();
+            // var service = new BookingService(gameRepository, rentalRepository, userRepository);
             var viewModel = new GameDetailsViewModel(App.BookingService, gameId);
 
             viewModel.OnGoBackRequested += () =>
@@ -77,6 +77,11 @@ namespace BookingBoardGames.Src.Views
             };
 
             this.DataContext = viewModel;
+
+            viewModel.OnChatWithOwnerRequested += (currentUserId, ownerUserId) =>
+            {
+                this.Frame.Navigate(typeof(ChatViews.ChatPageView), (currentUserId, ownerUserId));
+            };
         }
 
         private void OnBackClicked(object sender, RoutedEventArgs eventArgs)
