@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
+
 namespace BookingBoardGames
 {
     //TODO: rename repositoryPayment and PaymentRepository, finish conversation repo
@@ -22,6 +23,8 @@ namespace BookingBoardGames
     /// </summary>
     public partial class App : Application
     {
+        public static readonly string BaseApiUrl = "http://localhost:5000/api/";
+        public static readonly System.Net.Http.HttpClient Client = new System.Net.Http.HttpClient { BaseAddress = new Uri(BaseApiUrl) };
         private Window? window;
 
         /// <summary>
@@ -32,7 +35,6 @@ namespace BookingBoardGames
         public App()
         {
             this.InitializeComponent();
-
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseSqlServer(DatabaseConfig.ResolveConnectionString())
                 .Options;

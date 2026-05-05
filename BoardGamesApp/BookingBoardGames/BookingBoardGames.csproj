@@ -60,9 +60,13 @@
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="BookingBoardGames\Src\Repositories\" />
     <Folder Include="Src\Interfaces\" />
     <Folder Include="Src\ViewModels\ChatViewModels\" />
     <Folder Include="Src\Views\ChatViews\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BookingBoardgamesILoveBan\BookingBoardgamesILoveBan.csproj" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BookingBoardGames.Data\BookingBoardGames.Data.csproj" />

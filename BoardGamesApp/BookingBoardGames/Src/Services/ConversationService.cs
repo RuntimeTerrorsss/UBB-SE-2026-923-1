@@ -5,6 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
@@ -14,9 +16,6 @@ namespace BookingBoardGames.Src.Services
 {
     public class ConversationService : IConversationService
     {
-        private IConversationRepository ConversationRepository { get; set; }
-        
-        private IUserRepository userRepository;
         private IConversationNotifier notifier;
 
         private int UserId { get; set; }
@@ -42,8 +41,6 @@ namespace BookingBoardGames.Src.Services
         public ConversationService(IConversationRepository conversationRepo, int userIdInput, IUserRepository userRepo, IConversationNotifier conversationNotifier)
         {
             this.UserId = userIdInput;
-            this.ConversationRepository = conversationRepo;
-            this.userRepository = userRepo;
             this.notifier = conversationNotifier;
 
             this.notifier.Register(this.UserId, this);
@@ -56,19 +53,19 @@ namespace BookingBoardGames.Src.Services
 
         private void NotifySubscribersAboutMessage(Message message)
         {
-            IReadOnlyList<int> participants = this.ConversationRepository.GetParticipantUserIds(message.ConversationId);
+            var participants = App.Client.GetFromJsonAsync<List<int>>($"conversation/{message.ConversationId}/participants").GetAwaiter().GetResult();
             this.notifier.NotifyMessage(participants, message);
         }
 
         private void NotifySubscribersAboutMessageUpdate(Message message)
         {
-            IReadOnlyList<int> participants = this.ConversationRepository.GetParticipantUserIds(message.ConversationId);
+            var participants = App.Client.GetFromJsonAsync<List<int>>($"conversation/{message.ConversationId}/participants").GetAwaiter().GetResult();
             this.notifier.NotifyMessageUpdate(participants, message);
         }
 
         private void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
         {
-            IReadOnlyList<int> participants = this.ConversationRepository.GetParticipantUserIds(readReceipt.ConversationId);
+            var participants = App.Client.GetFromJsonAsync<List<int>>($"conversation/{readReceipt.ConversationId}/participants").GetAwaiter().GetResult();
             this.notifier.NotifyReadReceipt(participants, readReceipt);
         }
 
@@ -81,7 +78,10 @@ namespace BookingBoardGames.Src.Services
         {
             List<ConversationDTO> conversationList = new List<ConversationDTO>();
 
-            foreach (var conversation in this.ConversationRepository.GetConversationsForUser(this.UserId))
+            var conversations = App.Client.GetFromJsonAsync<List<Conversation>>($"conversation/user/{this.UserId}").GetAwaiter().GetResult()
+                                ?? new List<Conversation>();
+
+            foreach (var conversation in conversations)
             {
                 conversationList.Add(this.ConversationToConversationDTO(conversation));
             }
@@ -92,36 +92,43 @@ namespace BookingBoardGames.Src.Services
         public string GetOtherUserNameByConversationDTO(ConversationDTO conversation)
         {
             int otherUserId = conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId;
-            var user = this.userRepository.GetById(otherUserId);
+            var user = App.Client.GetFromJsonAsync<User>($"users/{otherUserId}").GetAwaiter().GetResult();
             return user?.Username ?? "Unknown User";
         }
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
         {
-            return this.userRepository.GetById(message.SenderId == this.UserId ? message.ReceiverId : message.SenderId).Username ?? "Unknown User";
+            int id = message.SenderId == this.UserId ? message.ReceiverId : message.SenderId;
+            var user = App.Client.GetFromJsonAsync<User>($"users/{id}").GetAwaiter().GetResult();
+            return user?.Username ?? "Unknown User";
         }
 
         public void SendMessage(MessageDataTransferObject message)
         {
-            Message persisted = this.ConversationRepository.HandleNewMessage(this.MessageDTOToMessage(message));
+            var response = App.Client.PostAsJsonAsync("conversation/messages", message).GetAwaiter().GetResult();
+            var persistedDto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
+            if (persistedDto is null) return;
+            var persisted = this.MessageDTOToMessage(persistedDto);
             this.NotifySubscribersAboutMessage(persisted);
         }
 
         public int CreateConversation(int senderId, int receiverId)
         {
-            int conversationId = this.ConversationRepository.CreateConversation(senderId, receiverId);
-            Conversation createdConversation = this.ConversationRepository.GetConversationById(conversationId);
-            this.NotifySubscribersAboutNewConversation(createdConversation);
-            return conversationId;
+            var response = App.Client.PostAsJsonAsync("conversation", new { SenderId = senderId, ReceiverId = receiverId }).GetAwaiter().GetResult();
+            var conversation = response.Content.ReadFromJsonAsync<Conversation>().GetAwaiter().GetResult();
+            if (conversation is null) return -1;
+            this.NotifySubscribersAboutNewConversation(conversation);
+            return conversation.ConversationId;
         }
 
         public void UpdateMessage(MessageDataTransferObject message)
         {
-            Message? persisted = this.ConversationRepository.HandleMessageUpdate(this.MessageDTOToMessage(message));
-            if (persisted != null)
-            {
-                this.NotifySubscribersAboutMessageUpdate(persisted);
-            }
+            var response = App.Client.PutAsJsonAsync("conversation/messages", message).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode) return;
+            var persistedDto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
+            if (persistedDto is null) return;
+            var persisted = this.MessageDTOToMessage(persistedDto);
+            this.NotifySubscribersAboutMessageUpdate(persisted);
         }
 
         public void SendReadReceipt(ConversationDTO conversation)
@@ -131,7 +138,7 @@ namespace BookingBoardGames.Src.Services
                 this.UserId,
                 conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId,
                 DateTime.Now);
-            this.ConversationRepository.HandleReadReceipt(readReceipt);
+            App.Client.PostAsJsonAsync("conversation/readreceipt", readReceipt).GetAwaiter().GetResult();
             this.NotifySubscribersAboutReadReceipt(readReceipt);
         }
 
@@ -148,20 +155,22 @@ namespace BookingBoardGames.Src.Services
 
         private void FinalizeRentalRequest(int messageId)
         {
-            Message? updated = this.ConversationRepository.HandleRentalRequestFinalization(messageId);
-            if (updated != null)
-            {
-                this.NotifySubscribersAboutMessageUpdate(updated);
-            }
+            var response = App.Client.PostAsync($"conversation/rental/finalize/{messageId}", null).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode) return;
+            var updatedDto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
+            if (updatedDto is null) return;
+            var updated = this.MessageDTOToMessage(updatedDto);
+            this.NotifySubscribersAboutMessageUpdate(updated);
         }
 
         private void SendCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
-            Message? created = this.ConversationRepository.CreateCashAgreementMessage(messageIdOfParentRentalRequestMessage, paymentId);
-            if (created != null)
-            {
-                this.NotifySubscribersAboutMessage(created);
-            }
+            var response = App.Client.PostAsync($"conversation/cash/{messageIdOfParentRentalRequestMessage}/{paymentId}", null).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode) return;
+            var createdDto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
+            if (createdDto is null) return;
+            var created = this.MessageDTOToMessage(createdDto);
+            this.NotifySubscribersAboutMessage(created);
         }
 
         public void OnMessageReceived(Message message)
