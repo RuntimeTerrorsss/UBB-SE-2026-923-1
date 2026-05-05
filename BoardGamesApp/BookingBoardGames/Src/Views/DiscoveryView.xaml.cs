@@ -83,5 +83,15 @@ namespace BookingBoardGames.Src.Views
                 }
             }
         }
+        private void DashboardButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(DashboardView));
+        }
+
+        private void ChatButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            int currentUserId = ((App)Microsoft.UI.Xaml.Application.Current).DashboardUser;
+            this.Frame.Navigate(typeof(ChatViews.ChatPageView), currentUserId);
+        }
     }
 }

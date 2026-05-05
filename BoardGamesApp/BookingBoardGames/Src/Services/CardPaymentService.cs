@@ -1,4 +1,4 @@
-﻿// <copyright file="CardPaymentService.cs" company="PlaceholderCompany">
+// <copyright file="CardPaymentService.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -16,9 +16,9 @@ namespace BookingBoardGames.Src.Services
         private readonly IRentalService rentalService;
 
         public CardPaymentService(
-            PaymentRepositoryHttp paymentRepository,
+            IPaymentRepository paymentRepository,
             IUserRepository userRepository,
-            ReceiptService receiptService,
+            IReceiptService receiptService,
             IRentalService rentalService)
             : base(paymentRepository, receiptService)
         {

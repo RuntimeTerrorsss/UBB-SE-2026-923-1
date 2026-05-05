@@ -1,4 +1,4 @@
-using BoardGamesAppWebApi.Repositories
+using BoardGamesAppWebApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
