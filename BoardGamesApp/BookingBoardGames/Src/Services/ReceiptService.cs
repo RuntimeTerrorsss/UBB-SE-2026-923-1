@@ -8,6 +8,8 @@ using BookingBoardGames.Src.Constants;
 using BookingBoardGames.Src.Repositories;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
+using BookingBoardGames.Data.Interfaces;
+using System.Threading.Tasks;
 
 namespace BookingBoardGames.Src.Services
 {
@@ -229,9 +231,9 @@ namespace BookingBoardGames.Src.Services
                    $"Date Issued: {issuedDate}";
         }
 
-        private string BuildRequestInfo(Payment payment, Rental request)
+        private async Task<string> BuildRequestInfo(Payment payment, Rental request)
         {
-            var requestedGame = this.gameRepository.GetGameById(request.GameId);
+            var requestedGame = await this.gameRepository.GetGameById(request.GameId);
             var client = this.userRepository.GetById(payment.ClientId);
             var owner = this.userRepository.GetById(payment.OwnerId);
 
