@@ -138,11 +138,11 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
             {
                 connection.Open();
 
-                new SqlCommand($"DELETE FROM [User] WHERE uid = {uid}", connection).ExecuteNonQuery();
-                new SqlCommand("SET IDENTITY_INSERT [User] ON", connection).ExecuteNonQuery();
+                new SqlCommand($"DELETE FROM [Users] WHERE uid = {uid}", connection).ExecuteNonQuery();
+                new SqlCommand("SET IDENTITY_INSERT [Users] ON", connection).ExecuteNonQuery();
 
                 var sqlCommand = new SqlCommand(
-                    @"INSERT INTO [User] (uid, UserName, DisplayName, Country, City, Street, StreetNumber, AvatarUrl, Balance) 
+                    @"INSERT INTO [Users] (uid, UserName, DisplayName, Country, City, Street, StreetNumber, AvatarUrl, Balance) 
                     VALUES (@uid, @un, @dn, 'Romania', 'Iasi', 'Street', '1', 'url', @balance)",
                     connection);
 
@@ -152,7 +152,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
                 sqlCommand.Parameters.AddWithValue("@balance", balance);
 
                 sqlCommand.ExecuteNonQuery();
-                new SqlCommand("SET IDENTITY_INSERT [User] OFF", connection).ExecuteNonQuery();
+                new SqlCommand("SET IDENTITY_INSERT [Users] OFF", connection).ExecuteNonQuery();
             }
         }
 
@@ -161,7 +161,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                new SqlCommand($"DELETE FROM [User] WHERE uid = {uid}", connection).ExecuteNonQuery();
+                new SqlCommand($"DELETE FROM [Users] WHERE uid = {uid}", connection).ExecuteNonQuery();
             }
         }
     }

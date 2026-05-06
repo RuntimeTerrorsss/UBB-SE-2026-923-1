@@ -51,7 +51,7 @@ namespace BookingBoardGames.Tests.Receipt
         {
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "BookingBoardGames",
+                "BookingBoardgames",
                 relativePath.TrimStart('\\', '/'));
         }
 

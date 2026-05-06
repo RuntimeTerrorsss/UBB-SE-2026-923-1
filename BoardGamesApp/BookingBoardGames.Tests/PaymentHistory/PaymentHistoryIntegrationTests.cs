@@ -29,10 +29,10 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void CalculateTotalAmount_NonEmptyDatabase_ReturnsValidDataAndPositiveTotal()
         {
-            RepositoryPayment repositoryPayment = new RepositoryPayment(null);
+            RepositoryPayment repositoryPayment = new RepositoryPayment(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             UserRepository userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            RentalRepository RentalRepository = new RentalRepository(null);
+            RentalRepository RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
             ReceiptService receiptService = new ReceiptService(userRepository, RentalService, GamesRepository);
 
@@ -48,10 +48,10 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void GetReceiptDocumentPath_ForFilteredPayments_ReturnsValidPathAndCorrectResults()
         {
-            RepositoryPayment repositoryPayment = new RepositoryPayment(null);
+            RepositoryPayment repositoryPayment = new RepositoryPayment(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             UserRepository userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            RentalRepository RentalRepository = new RentalRepository(null);
+            RentalRepository RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
             ReceiptService receiptService = new ReceiptService(userRepository, RentalService, GamesRepository);
 

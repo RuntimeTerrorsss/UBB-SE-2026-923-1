@@ -139,7 +139,7 @@ namespace BookingBoardGames.Tests.PaymentCash
         {
             var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            var RentalRepository = new RentalRepository(null);
+            var RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var RentalService = new RentalService(RentalRepository, GamesRepository);
             var receiptService = new ReceiptService(userRepository, RentalService, GamesRepository);
             var cashPaymentMapper = new CashPaymentMapper();
@@ -150,7 +150,7 @@ namespace BookingBoardGames.Tests.PaymentCash
         private static CashPaymentDataTransferObject BuildCashPaymentDataTransferObject()
         {
             return new CashPaymentDataTransferObject(
-                paymentId: -1,
+                paymentId: 0,
                 requestId: 1,
                 clientId: 1,
                 ownerId: 2,
