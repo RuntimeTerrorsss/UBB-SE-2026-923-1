@@ -47,7 +47,7 @@ namespace BookingBoardGames
             RentalRepository = new RentalRepository(AppDbContext);
             PaymentRepository = new PaymentRepository(AppDbContext);
             HistoryRepository = new RepositoryPayment(AppDbContext);
-            ConversationRepository = new ConversationRepository(AppDbContext);
+            ConversationRepository = new ConversationRepository();
 
             // Services
             ConversationNotifier = new ConversationNotifier();
