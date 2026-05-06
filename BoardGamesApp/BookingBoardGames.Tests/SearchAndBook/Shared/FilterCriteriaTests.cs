@@ -1,5 +1,6 @@
-using SearchAndBook.Domain;
-using SearchAndBook.Shared;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
 
 namespace BookingBoardGames.Tests.SearchAndBook.Shared;
 
@@ -86,3 +87,8 @@ public class FilterCriteriaTests
         Assert.False(result);
     }
 }
+
+
+
+
+

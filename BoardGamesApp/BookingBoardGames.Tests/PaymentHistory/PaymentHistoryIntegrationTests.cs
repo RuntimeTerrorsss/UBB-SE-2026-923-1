@@ -1,10 +1,14 @@
-﻿using BookingBoardgamesILoveBan.Src.Mocks.GameMock;
-using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Enums;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Repository;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Service;
-using BookingBoardgamesILoveBan.Src.Receipt.Service;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames;
+using BookingBoardGames;
+using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,12 +29,12 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void CalculateTotalAmount_NonEmptyDatabase_ReturnsValidDataAndPositiveTotal()
         {
-            RepositoryPayment repositoryPayment = new RepositoryPayment();
-            UserRepository userRepository = new UserRepository();
-            GameRepository gameRepository = new GameRepository();
-            RequestRepository requestRepository = new RequestRepository();
-            RequestService requestService = new RequestService(requestRepository, gameRepository);
-            ReceiptService receiptService = new ReceiptService(userRepository, requestService, gameRepository);
+            RepositoryPayment repositoryPayment = new RepositoryPayment(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserRepository userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalRepository RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
+            ReceiptService receiptService = new ReceiptService(userRepository, RentalService, GamesRepository);
 
             servicePayment = new ServicePayment(repositoryPayment, receiptService);
 
@@ -44,12 +48,12 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void GetReceiptDocumentPath_ForFilteredPayments_ReturnsValidPathAndCorrectResults()
         {
-            RepositoryPayment repositoryPayment = new RepositoryPayment();
-            UserRepository userRepository = new UserRepository();
-            GameRepository gameRepository = new GameRepository();
-            RequestRepository requestRepository = new RequestRepository();
-            RequestService requestService = new RequestService(requestRepository, gameRepository);
-            ReceiptService receiptService = new ReceiptService(userRepository, requestService, gameRepository);
+            RepositoryPayment repositoryPayment = new RepositoryPayment(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserRepository userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalRepository RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
+            ReceiptService receiptService = new ReceiptService(userRepository, RentalService, GamesRepository);
 
             servicePayment = new ServicePayment(repositoryPayment, receiptService);
 
@@ -61,3 +65,9 @@ namespace BookingBoardGames.Tests.PaymentHistory
         }
     }
 }
+
+
+
+
+
+

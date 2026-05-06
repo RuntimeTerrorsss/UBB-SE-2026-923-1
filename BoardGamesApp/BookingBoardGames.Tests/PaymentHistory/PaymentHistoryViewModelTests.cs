@@ -1,7 +1,8 @@
-﻿using BookingBoardgamesILoveBan.Src.PaymentHistory.DTO;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Enums;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Service;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.ViewModel;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.ViewModels;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -477,3 +478,8 @@ namespace BookingBoardGames.Tests.PaymentHistory
         }
     }
 }
+
+
+
+
+

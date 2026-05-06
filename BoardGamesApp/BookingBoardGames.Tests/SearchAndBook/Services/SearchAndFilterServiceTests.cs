@@ -1,8 +1,15 @@
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Repositories;
 using Moq;
-using SearchAndBook.Domain;
-using SearchAndBook.Repositories;
-using SearchAndBook.Services;
-using SearchAndBook.Shared;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
 namespace BookingBoardGames.Tests.SearchAndBook.Services;
 
@@ -162,8 +169,8 @@ public class SearchAndFilterServiceTests
         };
         var range = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
 
-        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range, 1)).Returns(true);
-        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range, 2)).Returns(false);
+        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range.StartTime, range.EndTime, 1)).Returns(true);
+        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range.StartTime, range.EndTime, 2)).Returns(false);
 
         var result = sut.ApplyFilters(games, new FilterCriteria { AvailabilityRange = range });
 
@@ -205,7 +212,7 @@ public class SearchAndFilterServiceTests
         gamesRepository.Setup(repository => repository.GetGamesByFilter(It.IsAny<FilterCriteria>()))
             .Throws(new Exception("boom"));
 
-        var exception = Assert.Throws<InvalidOperationException>(() => sut.SearchGamesByFilter(new FilterCriteria()));
+        var exception = Assert.Throws<InvalidOperationException>(() => sut.SearchGamesByFilter(new FilterCriteria()));    
 
         Assert.Equal("Failed to search for games.", exception.Message);
         Assert.IsType<Exception>(exception.InnerException);
@@ -282,13 +289,13 @@ public class SearchAndFilterServiceTests
 
     private static SearchAndFilterService CreateSut(
         out Mock<InterfaceGamesRepository> gamesRepository,
-        out Mock<InterfaceUsersRepository> usersRepository,
-        out Mock<InterfaceRentalsRepository> rentalsRepository,
+        out Mock<IUserRepository> usersRepository,
+        out Mock<IRentalRepository> rentalsRepository,
         out Mock<InterfaceGeographicalService> geographicalService)
     {
         gamesRepository = new Mock<InterfaceGamesRepository>(MockBehavior.Loose);
-        usersRepository = new Mock<InterfaceUsersRepository>(MockBehavior.Loose);
-        rentalsRepository = new Mock<InterfaceRentalsRepository>(MockBehavior.Loose);
+        usersRepository = new Mock<IUserRepository>(MockBehavior.Loose);
+        rentalsRepository = new Mock<IRentalRepository>(MockBehavior.Loose);
         geographicalService = new Mock<InterfaceGeographicalService>(MockBehavior.Loose);
 
         geographicalService
@@ -296,12 +303,16 @@ public class SearchAndFilterServiceTests
             .Returns((false, string.Empty, 0, 0));
 
         rentalsRepository
-            .Setup(repository => repository.CheckGameAvailability(It.IsAny<TimeRange>(), It.IsAny<int>()))
+            .Setup(repository => repository.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>()))
             .Returns(true);
 
         usersRepository
             .Setup(repository => repository.GetGameById(It.IsAny<int>()))
-            .Returns(new User { City = string.Empty });
+            .Returns(new User("owner", "owner display", "owner@test.com", "hash", string.Empty, "RO"));
+
+        usersRepository
+            .Setup(repository => repository.GetGameById(It.IsAny<int>()))
+            .Returns(new User("owner", "owner display", "owner@test.com", "hash", string.Empty, "RO"));
 
         return new SearchAndFilterService(
             gamesRepository.Object,
@@ -310,11 +321,11 @@ public class SearchAndFilterServiceTests
             geographicalService.Object);
     }
 
-    private static GameDTO CreateGameDto(int id, string name, decimal price, string city, int maximumPlayers, int minimumPlayers)
+    private static GameDTO CreateGameDto(int Id, string name, decimal price, string city, int maximumPlayers, int minimumPlayers)
     {
         return new GameDTO
         {
-            GameId = id,
+            GameId = Id,
             Name = name,
             Price = price,
             City = city,
@@ -323,31 +334,19 @@ public class SearchAndFilterServiceTests
         };
     }
 
-    private static Game CreateGame(int id, int ownerId, string name, decimal price, int maximumPlayers, int minimumPlayers)
+    private static Game CreateGame(int Id, int ownerId, string name, decimal price, int maximumPlayers, int minimumPlayers)
     {
-        return new Game
+        return new Game(price, minimumPlayers, maximumPlayers, "Description", ownerId, 2, 4, "Description", 1)
         {
-            GameId = id,
-            OwnerId = ownerId,
-            Name = name,
-            Price = price,
-            MaximumPlayerNumber = maximumPlayers,
-            MinimumPlayerNumber = minimumPlayers,
-            Description = "Description",
+            Id = Id
         };
     }
 
-    private static User CreateUser(int id, string city)
+    private static User CreateUser(int Id, string city)
     {
-        return new User
+        return new User("user", "User", "user@example.com", "hash", city, "RO")
         {
-            UserId = id,
-            Username = "user",
-            DisplayName = "User",
-            Email = "user@example.com",
-            PasswordHash = "hash",
-            City = city,
-            Country = "RO",
+            Id = Id
         };
     }
 
@@ -427,8 +426,8 @@ public class SearchAndFilterServiceTests
 
         var range = new TimeRange(DateTime.Now, DateTime.Now.AddDays(1));
 
-        rentalsRepo.Setup(r => r.CheckGameAvailability(range, 1)).Returns(true);
-        rentalsRepo.Setup(r => r.CheckGameAvailability(range, 2)).Returns(false);
+        rentalsRepo.Setup(r => r.CheckGameAvailability(range.StartTime, range.EndTime, 1)).Returns(true);
+        rentalsRepo.Setup(r => r.CheckGameAvailability(range.StartTime, range.EndTime, 2)).Returns(false);
 
         var games = new[]
         {
@@ -508,3 +507,8 @@ public class SearchAndFilterServiceTests
         Assert.True(game.MaximumPlayerNumber > 0);
     }
 }
+
+
+
+
+

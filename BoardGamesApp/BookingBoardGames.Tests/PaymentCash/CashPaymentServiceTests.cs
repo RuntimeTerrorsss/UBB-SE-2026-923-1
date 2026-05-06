@@ -1,10 +1,8 @@
-using BookingBoardgamesILoveBan.Src.PaymentCash.Mapper;
-using BookingBoardgamesILoveBan.Src.PaymentCash.Model;
-using BookingBoardgamesILoveBan.Src.PaymentCash.Service;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Constants;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
-using BookingBoardgamesILoveBan.Src.PaymentCommon.Repository;
-using BookingBoardgamesILoveBan.Src.Receipt.Service;
+using BookingBoardGames.Src.Mapper;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Constants;
+using BookingBoardGames.Src.Repositories;
 using Moq;
 
 namespace BookingBoardGames.Tests.PaymentCash
@@ -12,31 +10,31 @@ namespace BookingBoardGames.Tests.PaymentCash
     public class CashPaymentServiceTests
     {
         [Fact]
-        public void AddCashPayment_ReturnsIdentifierFromPaymentRepository()
+        public void AddCashPayment_ReturnsIdentifierFromPaymentRepository()    
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            paymentMapperMock.Setup(cashPaymentMapper => cashPaymentMapper.TurnDataTransferObjectIntoEntity(It.IsAny<CashPaymentDataTransferObject>()))
-                .Returns((CashPaymentDataTransferObject _) => new Payment(1, 2, 3, 4, 10m, "CASH"));
+            paymentMapperMock.Setup(cashPaymentMapper => cashPaymentMapper.TurnDataTransferObjectIntoEntity(It.IsAny<CashPaymentDataTransferObject>()))       
+                .Returns((CashPaymentDataTransferObject _) => new Payment(10m, 2, 3, 4) { TransactionIdentifier = 1, PaymentMethod = "CASH" });
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.AddPayment(It.IsAny<Payment>())).Returns(42);
             var service = new CashPaymentService(paymentRepositoryMock.Object, paymentMapperMock.Object, receiptServiceMock.Object);
             var dataTransferObject = new CashPaymentDataTransferObject(1, 2, 3, 4, 15m);
 
-            var paymentId = service.AddCashPayment(dataTransferObject);
+            var PaymentId = service.AddCashPayment(dataTransferObject);        
 
-            Assert.Equal(42, paymentId);
+            Assert.Equal(42, PaymentId);
         }
 
         [Fact]
         public void AddCashPayment_PassesSuppliedDtoToMapper()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var dto = new CashPaymentDataTransferObject(1, 2, 3, 4, 15m);
+            var dto = new CashPaymentDataTransferObject(1, 2, 3, 4, 15m);      
             paymentMapperMock.Setup(cashPaymentMapper => cashPaymentMapper.TurnDataTransferObjectIntoEntity(dto))
-                .Returns(() => new Payment(1, 2, 3, 4, 15m, "CASH"));
+                .Returns(() => new Payment(15m, 2, 3, 4) { TransactionIdentifier = 1, PaymentMethod = "CASH" });
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.AddPayment(It.IsAny<Payment>())).Returns(1);
             var service = new CashPaymentService(paymentRepositoryMock.Object, paymentMapperMock.Object, receiptServiceMock.Object);
 
@@ -46,19 +44,19 @@ namespace BookingBoardGames.Tests.PaymentCash
         }
 
         [Fact]
-        public void AddCashPayment_PersistsMappedPaymentWithCompletedState()
+        public void AddCashPayment_PersistsMappedPaymentWithCompletedState()   
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var mapped = new Payment(9, 8, 7, 6, 20m, "CASH");
+            var mapped = new Payment(20m, 8, 7, 6) { TransactionIdentifier = 9, PaymentMethod = "CASH" };
             paymentMapperMock.Setup(cashPaymentMapper => cashPaymentMapper.TurnDataTransferObjectIntoEntity(It.IsAny<CashPaymentDataTransferObject>())).Returns(mapped);
             Payment? added = null;
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.AddPayment(It.IsAny<Payment>()))
-                .Callback<Payment>(paymentEntity => added = paymentEntity)
+                .Callback<Payment>(paymentEntity => added = paymentEntity)     
                 .Returns(1);
             var service = new CashPaymentService(paymentRepositoryMock.Object, paymentMapperMock.Object, receiptServiceMock.Object);
-            var dto = new CashPaymentDataTransferObject(1, 2, 3, 4, 15m);
+            var dto = new CashPaymentDataTransferObject(1, 2, 3, 4, 15m);      
 
             service.AddCashPayment(dto);
 
@@ -90,10 +88,10 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void GetCashPayment_ReturnsDtoProducedByMapperForStoredPayment()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var stored = new Payment(10, 11, 12, 13, 14m, "CASH");
+            var stored = new Payment(14m, 11, 12, 13) { TransactionIdentifier = 10, PaymentMethod = "CASH" };
             var expectedDto = new CashPaymentDataTransferObject(20, 21, 22, 23, 24m);
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifier(10)).Returns(stored);
             paymentMapperMock.Setup(cashPaymentMapper => cashPaymentMapper.TurnEntityIntoDataTransferObject(stored)).Returns(expectedDto);
@@ -105,12 +103,12 @@ namespace BookingBoardGames.Tests.PaymentCash
         }
 
         [Fact]
-        public void GetCashPayment_LoadsPaymentByIdentifierFromRepository()
+        public void GetCashPayment_LoadsPaymentByIdentifierFromRepository()    
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var stored = new Payment(10, 11, 12, 13, 14m, "CASH");
+            var stored = new Payment(14m, 11, 12, 13) { TransactionIdentifier = 10, PaymentMethod = "CASH" };
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifier(55)).Returns(stored);
             paymentMapperMock.Setup(cashPaymentMapper => cashPaymentMapper.TurnEntityIntoDataTransferObject(stored)).Returns(new CashPaymentDataTransferObject(1, 1, 1, 1, 1m));
             var service = new CashPaymentService(paymentRepositoryMock.Object, paymentMapperMock.Object, receiptServiceMock.Object);
@@ -121,13 +119,15 @@ namespace BookingBoardGames.Tests.PaymentCash
         }
 
         [Fact]
-        public void ConfirmDelivery_RecordsBuyerConfirmationOnPayment()
+        public void ConfirmDelivery_RecordsBuyerConfirmationOnPayment()        
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(1, 5, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 5, 2, 3)
             {
+                TransactionIdentifier = 1,
+                PaymentMethod = "CASH",
                 DateConfirmedSeller = null,
                 DateConfirmedBuyer = null,
             };
@@ -153,11 +153,13 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void ConfirmDelivery_WhenOnlyBuyerHasConfirmed_DoesNotGenerateReceipt()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(1, 5, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 5, 2, 3)
             {
+                TransactionIdentifier = 1,
+                PaymentMethod = "CASH",
                 DateConfirmedSeller = null,
                 DateConfirmedBuyer = null,
             };
@@ -172,11 +174,13 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void ConfirmDelivery_WhenBothPartiesAlreadyConfirmed_GeneratesReceiptForRentalRequest()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(2, 42, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 42, 2, 3)
             {
+                TransactionIdentifier = 2,
+                PaymentMethod = "CASH",
                 DateConfirmedSeller = DateTime.Now.AddMinutes(-1),
                 DateConfirmedBuyer = null,
             };
@@ -191,10 +195,10 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void ConfirmDelivery_PersistsUpdatedPayment()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(1, 5, 2, 3, 10m, "CASH");
+            var payment = new Payment(10m, 5, 2, 3) { TransactionIdentifier = 1, PaymentMethod = "CASH" };
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifier(1)).Returns(payment);
             var service = new CashPaymentService(paymentRepositoryMock.Object, paymentMapperMock.Object, receiptServiceMock.Object);
 
@@ -204,13 +208,15 @@ namespace BookingBoardGames.Tests.PaymentCash
         }
 
         [Fact]
-        public void ConfirmPayment_RecordsSellerConfirmationOnPayment()
+        public void ConfirmPayment_RecordsSellerConfirmationOnPayment()        
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(3, 8, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 8, 2, 3)
             {
+                TransactionIdentifier = 3,
+                PaymentMethod = "CASH",
                 DateConfirmedBuyer = null,
                 DateConfirmedSeller = null,
             };
@@ -236,10 +242,10 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void ConfirmPayment_WhenOnlySellerHasConfirmed_DoesNotGenerateReceipt()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(3, 8, 2, 3, 10m, "CASH");
+            var payment = new Payment(10m, 8, 2, 3) { TransactionIdentifier = 3, PaymentMethod = "CASH" };
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifier(3)).Returns(payment);
             var service = new CashPaymentService(paymentRepositoryMock.Object, paymentMapperMock.Object, receiptServiceMock.Object);
 
@@ -251,11 +257,13 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void ConfirmPayment_WhenBothPartiesAlreadyConfirmed_GeneratesReceiptForRentalRequest()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(4, 71, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 71, 2, 3)
             {
+                TransactionIdentifier = 4,
+                PaymentMethod = "CASH",
                 DateConfirmedBuyer = DateTime.Now.AddMinutes(-1),
                 DateConfirmedSeller = null,
             };
@@ -270,10 +278,10 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void ConfirmPayment_PersistsUpdatedPayment()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(3, 8, 2, 3, 10m, "CASH");
+            var payment = new Payment(10m, 8, 2, 3) { TransactionIdentifier = 3, PaymentMethod = "CASH" };
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifier(3)).Returns(payment);
             var service = new CashPaymentService(paymentRepositoryMock.Object, paymentMapperMock.Object, receiptServiceMock.Object);
 
@@ -285,11 +293,13 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void IsAllConfirmed_WhenBothConfirmationDatesAreSet_ReturnsTrue()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(5, 9, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 9, 2, 3)
             {
+                TransactionIdentifier = 5,
+                PaymentMethod = "CASH",
                 DateConfirmedBuyer = DateTime.Now,
                 DateConfirmedSeller = DateTime.Now,
             };
@@ -304,11 +314,13 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void IsAllConfirmed_WhenBothConfirmationDatesAreSet_SetsStateToConfirmed()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(5, 9, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 9, 2, 3)
             {
+                TransactionIdentifier = 5,
+                PaymentMethod = "CASH",
                 DateConfirmedBuyer = DateTime.Now,
                 DateConfirmedSeller = DateTime.Now,
             };
@@ -323,11 +335,13 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void IsAllConfirmed_WhenSellerConfirmationIsMissing_ReturnsFalse()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(6, 9, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 9, 2, 3)
             {
+                TransactionIdentifier = 6,
+                PaymentMethod = "CASH",
                 DateConfirmedBuyer = DateTime.Now,
                 DateConfirmedSeller = null,
             };
@@ -342,11 +356,13 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void IsDeliveryConfirmed_WhenBuyerConfirmationExists_ReturnsTrue()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(7, 9, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 9, 2, 3)
             {
+                TransactionIdentifier = 7,
+                PaymentMethod = "CASH",
                 DateConfirmedBuyer = DateTime.Now,
             };
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifier(7)).Returns(payment);
@@ -358,11 +374,13 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void IsDeliveryConfirmed_WhenBuyerConfirmationIsMissing_ReturnsFalse()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(8, 9, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 9, 2, 3)
             {
+                TransactionIdentifier = 8,
+                PaymentMethod = "CASH",
                 DateConfirmedBuyer = null,
             };
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifier(8)).Returns(payment);
@@ -374,11 +392,13 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void IsPaymentConfirmed_WhenSellerConfirmationExists_ReturnsTrue()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(9, 9, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 9, 2, 3)
             {
+                TransactionIdentifier = 9,
+                PaymentMethod = "CASH",
                 DateConfirmedSeller = DateTime.Now,
             };
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifier(9)).Returns(payment);
@@ -390,11 +410,13 @@ namespace BookingBoardGames.Tests.PaymentCash
         [Fact]
         public void IsPaymentConfirmed_WhenSellerConfirmationIsMissing_ReturnsFalse()
         {
-            var paymentRepositoryMock = new Mock<IPaymentRepository>();
+            var paymentRepositoryMock = new Mock<IPaymentRepository>();        
             var paymentMapperMock = new Mock<ICashPaymentMapper>();
             var receiptServiceMock = new Mock<IReceiptService>();
-            var payment = new Payment(10, 9, 2, 3, 10m, "CASH")
+            var payment = new Payment(10m, 9, 2, 3)
             {
+                TransactionIdentifier = 10,
+                PaymentMethod = "CASH",
                 DateConfirmedSeller = null,
             };
             paymentRepositoryMock.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifier(10)).Returns(payment);
@@ -404,3 +426,8 @@ namespace BookingBoardGames.Tests.PaymentCash
         }
     }
 }
+
+
+
+
+

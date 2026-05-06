@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,8 +16,7 @@ public class Rental
         TotalPrice = totalPrice;
     }
 
-    public Rental()
-    {
+    public Rental(int rentalId, int gameId, int clientId, int ownerId, DateTime startDate, DateTime endDate) { RentalId = rentalId; GameId = gameId; ClientId = clientId; OwnerId = ownerId; StartDate = startDate; EndDate = endDate; } public Rental() {
     }
 
     [Key]

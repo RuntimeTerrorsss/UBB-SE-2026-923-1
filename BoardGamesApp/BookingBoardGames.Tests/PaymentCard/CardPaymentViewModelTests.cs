@@ -1,28 +1,34 @@
-﻿using System;
+using BookingBoardGames.Src.Repositories;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Moq;
-using BookingBoardgamesILoveBan.Src.PaymentCard.ViewModel;
-using BookingBoardgamesILoveBan.Src.PaymentCard.Service;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
+using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {
     public class CardPaymentViewModelTests
     {
-        private readonly Mock<CardPaymentService> mockCardPaymentService;
-        private readonly Mock<UserRepository> mockUserService;
+        private readonly Mock<ICardPaymentService> mockCardPaymentService;
+        private readonly Mock<IUserRepository> mockUserService;
+        private readonly Mock<IConversationRepository> mockConversationRepository;
+        private readonly ConversationService realConversationService;
 
         public CardPaymentViewModelTests()
         {
             SynchronizationContext.SetSynchronizationContext(new TestSyncContext());
 
-            mockCardPaymentService = new Mock<CardPaymentService>(null, null, null, null);
-            mockUserService = new Mock<UserRepository>();
+            mockCardPaymentService = new Mock<ICardPaymentService>();
+            mockUserService = new Mock<IUserRepository>();
+            mockConversationRepository = new Mock<IConversationRepository>();
+            realConversationService = new ConversationService(mockConversationRepository.Object, 1, mockUserService.Object);
 
-            int requestIdentifier = 1;
+            int RequestIdentifier = 1;
+            int gameIdentifier = 1;
             string gameName = "Catan";
             int clientIdentifier = 2;
             int ownerIdentifier = 3;
@@ -32,22 +38,22 @@ namespace BookingBoardGames.Tests.PaymentCard
             int daysToAdd = 2;
 
             mockCardPaymentService.Setup(cardPaymentServiceMock => cardPaymentServiceMock.GetRequestDataTransferObject(It.IsAny<int>()))
-                .Returns(new RequestDataTransferObject(requestIdentifier, gameName, clientIdentifier, ownerIdentifier, ownerName, clientName, DateTime.Now, DateTime.Now.AddDays(daysToAdd), paymentPrice));
+                .Returns(new RentalDataTransferObject(RequestIdentifier, gameIdentifier, gameName, clientIdentifier, clientName, ownerIdentifier, ownerName, DateTime.Now, DateTime.Now.AddDays(daysToAdd), paymentPrice));
         }
 
         private CardPaymentViewModel CreateViewModel()
         {
-            int requestIdentifier = 1;
+            int RequestIdentifier = 1;
             string deliveryAddress = "123 Main St";
             int bookingMessageIdentifier = 10;
 
             return new CardPaymentViewModel(
                 mockCardPaymentService.Object,
                 mockUserService.Object,
-                requestIdentifier,
+                RequestIdentifier,
                 deliveryAddress,
                 bookingMessageIdentifier,
-                null);
+                realConversationService);
         }
 
         [Fact]
@@ -203,11 +209,12 @@ namespace BookingBoardGames.Tests.PaymentCard
         }
 
         [Fact]
-        public void ConversationService_Get_ReturnsNull()
+        public void ConversationService_Get_ReturnsNonNull()
         {
             CardPaymentViewModel cardPaymentViewModel = CreateViewModel();
 
-            Assert.Null(cardPaymentViewModel.ConversationService);
+            Assert.NotNull(cardPaymentViewModel.ConversationService);
+            Assert.Same(realConversationService, cardPaymentViewModel.ConversationService);
         }
 
         [Fact]
@@ -364,3 +371,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         public override void Send(SendOrPostCallback sendCallback, object threadState) => sendCallback(threadState);
     }
 }
+
+
+
+

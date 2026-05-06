@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,8 +16,7 @@ public class Game
         IsActive = true;
     }
 
-    public Game()
-    {
+    public Game(decimal p1, int p2, int p3, string p4, int p5, int p6, int p7, string p8, int p9) { Id = p5; Name = p4; PricePerDay = p1; MinimumPlayerNumber = p2; MaximumPlayerNumber = p3; Description = p8; OwnerId = p9; } public Game() {
     }
 
     [Key]

@@ -1,10 +1,12 @@
-﻿using System;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardgamesILoveBan.Src.Chat.DTO;
-using BookingBoardgamesILoveBan.Src.Chat.ViewModel;
-using BookingBoardgamesILoveBan.Src.Enum;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
 using Moq;
 using Xunit;
 
@@ -22,10 +24,13 @@ namespace BookingBoardGames.Tests.Chat
             string testCity = "city";
             string testStreet = "street";
             string testStreetNumber = "streetNumber";
+            string testDisplayName = "displayName";
+            string testProfilePictureUrl = "url";
+            decimal testBalance = 0m;
 
             userServiceMock
                 .Setup(userRepository => userRepository.GetById(It.IsAny<int>()))
-                .Returns(new User(defaultUserId, testName, testCountry, testCity, testStreet, testStreetNumber));
+                .Returns(new User(defaultUserId, testName, testCountry, testCity, testStreet, testStreetNumber, testDisplayName, testProfilePictureUrl, testBalance));
             return new LeftPanelViewModel();
         }
 
@@ -38,21 +43,22 @@ namespace BookingBoardGames.Tests.Chat
             string testCity = "city";
             string testStreet = "street";
             string testStreetNumber = "streetNumber";
+            string testDisplayName = "displayName";
+            string testAvatarUrl = "url";
+            decimal testBalance = 0m;
 
             serviceMock.Setup(userRepository => userRepository.GetById(It.IsAny<int>()))
-                .Returns(new User(defaultUserId, testName, testCountry, testCity, testStreet, testStreetNumber));
+                .Returns(new User(defaultUserId, testName, testCountry, testCity, testStreet, testStreetNumber, testDisplayName, testAvatarUrl, testBalance));
 
             return serviceMock.Object;
         }
 
-        private ConversationDataTransferObject CreateConversation(int targetConversationId = 1)
+        private ConversationDTO CreateConversation(int targetConversationId = 1)
         {
             int firstParticipantId = 1;
             int secondParticipantId = 2;
 
-            return new ConversationDataTransferObject(
-                targetConversationId,
-                new[] { firstParticipantId, secondParticipantId },
+            return new ConversationDTO(targetConversationId, new List<ConversationParticipant> { new ConversationParticipant(targetConversationId, firstParticipantId), new ConversationParticipant(targetConversationId, secondParticipantId) },
                 new List<MessageDataTransferObject>(),
                 new Dictionary<int, DateTime>
                 {
@@ -106,7 +112,7 @@ namespace BookingBoardGames.Tests.Chat
             string updatedContent = "updated";
 
             viewModel.HandleIncomingMessage(originalMessage, senderName, userServiceMock.Object);
-            viewModel.HandleIncomingMessage(originalMessage with { content = updatedContent }, senderName, userServiceMock.Object);
+            viewModel.HandleIncomingMessage(originalMessage with { Content = updatedContent }, senderName, userServiceMock.Object);
 
             Assert.Single(viewModel.Conversations);
             Assert.Equal(updatedContent, viewModel.Conversations.First().LastMessageText);
@@ -150,7 +156,7 @@ namespace BookingBoardGames.Tests.Chat
             string searchString = "John";
 
             viewModel.HandleIncomingMessage(CreateMessage(), firstSenderName, userServiceMock.Object);
-            viewModel.HandleIncomingMessage(CreateMessage() with { conversationId = alternativeConversationId }, secondSenderName, userServiceMock.Object);
+            viewModel.HandleIncomingMessage(CreateMessage() with { ConversationId = alternativeConversationId }, secondSenderName, userServiceMock.Object);
 
             viewModel.SearchText = searchString;
 
@@ -267,7 +273,7 @@ namespace BookingBoardGames.Tests.Chat
             viewModel.HandleIncomingMessage(message, senderName, userServiceMock.Object);
             var targetConversation = viewModel.Conversations.First();
             viewModel.SelectedConversation = targetConversation;
-            viewModel.HandleIncomingMessage(message with { content = newContent }, senderName, userServiceMock.Object);
+            viewModel.HandleIncomingMessage(message with { Content = newContent }, senderName, userServiceMock.Object);
 
             Assert.Equal(expectedZeroUnreadCount, targetConversation.UnreadCount);
         }
@@ -284,9 +290,7 @@ namespace BookingBoardGames.Tests.Chat
             string senderName = "John";
             string expectedText = "hello";
 
-            var conversation = new ConversationDataTransferObject(
-                targetConversationId,
-                new[] { firstParticipantId, secondParticipantId },
+            var conversation = new ConversationDTO(targetConversationId, new List<ConversationParticipant> { new ConversationParticipant(targetConversationId, firstParticipantId), new ConversationParticipant(targetConversationId, secondParticipantId) },
                 new List<MessageDataTransferObject> { message },
                 new Dictionary<int, DateTime>
                 {
@@ -300,7 +304,7 @@ namespace BookingBoardGames.Tests.Chat
             var previewModel = viewModel.Conversations.First();
 
             Assert.Equal(expectedText, previewModel.LastMessageText);
-            Assert.Equal(message.sentAt, previewModel.Timestamp);
+            Assert.Equal(message.SentAt, previewModel.Timestamp);
         }
 
         [Fact]
@@ -312,7 +316,7 @@ namespace BookingBoardGames.Tests.Chat
             int timeAddedMinutes = 1;
 
             var firstMessage = CreateMessage();
-            var secondMessage = CreateMessage(secondConversationId) with { sentAt = DateTime.Now.AddMinutes(timeAddedMinutes) };
+            var secondMessage = CreateMessage(secondConversationId) with { SentAt = DateTime.Now.AddMinutes(timeAddedMinutes) };
 
             viewModel.HandleIncomingMessage(firstMessage, "A", userServiceMock.Object);
             viewModel.HandleIncomingMessage(secondMessage, "B", userServiceMock.Object);
@@ -393,3 +397,7 @@ namespace BookingBoardGames.Tests.Chat
         }
     }
 }
+
+
+
+

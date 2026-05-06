@@ -1,13 +1,11 @@
-﻿using System;
+using BookingBoardGames.Src.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardgamesILoveBan.Src.Chat.DTO;
-using BookingBoardgamesILoveBan.Src.Chat.Model;
-using BookingBoardgamesILoveBan.Src.Chat.Repository;
-using BookingBoardgamesILoveBan.Src.Chat.Service;
-using BookingBoardgamesILoveBan.Src.Enum;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
-using BookingBoardgamesILoveBan.Src.Model;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Enum;
 using Moq;
 using Xunit;
 
@@ -22,28 +20,24 @@ namespace BookingBoardGames.Tests.Chat
         public ConversationServiceTests()
         {
             int currentUserId = 1;
-            int defaultBalance = 0;
+            decimal defaultBalance = 0;
             string testDisplayName = "display";
             string testCountry = "RO";
             string testCity = "Sibiu";
-            string testStreet = "street";
-            string testStreetNumber = "1";
 
             conversationRepositoryMock = new Mock<IConversationRepository>();
+            conversationRepositoryMock.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).Returns(new List<int>());
             userRepositoryMock = new Mock<IUserRepository>();
 
             userRepositoryMock
                 .Setup(userRepository => userRepository.GetById(It.IsAny<int>()))
                 .Returns((int userIdentifier) => new User(
-                    userIdentifier,
                     "user" + userIdentifier,
                     testDisplayName,
-                    testCountry,
+                    "email@test.com",
+                    "hash",
                     testCity,
-                    testStreet,
-                    testStreetNumber,
-                    string.Empty,
-                    defaultBalance));
+                    testCountry) { Id = userIdentifier, Balance = defaultBalance });
 
             conversationService = new ConversationService(
                 conversationRepositoryMock.Object,
@@ -95,17 +89,18 @@ namespace BookingBoardGames.Tests.Chat
             int firstParticipantId = 1;
             int secondParticipantId = 2;
 
-            var testConversation = new Conversation(
-                targetConversationId,
-                new int[] { firstParticipantId, secondParticipantId },
-                new List<Message>(),
-                new Dictionary<int, DateTime>
-                {
-                    { firstParticipantId, DateTime.Now },
-                    { secondParticipantId, DateTime.Now }
-                });
+            var participants = new List<ConversationParticipant>
+            {
+                new ConversationParticipant(targetConversationId, firstParticipantId),
+                new ConversationParticipant(targetConversationId, secondParticipantId)
+            };
 
-            conversationRepositoryMock.Setup(repository => repository.GetConversationsForUser(firstParticipantId))
+            var testConversation = new Conversation(participants)
+            {
+                ConversationId = targetConversationId
+            };
+
+            conversationRepositoryMock.Setup(repository => repository.GetConversationsForUser(firstParticipantId))        
                      .Returns(new List<Conversation> { testConversation });
 
             var resultList = conversationService.FetchConversations();
@@ -117,30 +112,10 @@ namespace BookingBoardGames.Tests.Chat
         [Fact]
         public void SendMessage_ValidInput_CallsRepositoryHandleNewMessage()
         {
-            int defaultMessageId = 1;
-            int targetConversationId = 1;
-            int senderIdentifier = 1;
-            int receiverIdentifier = 2;
-            int missingIdentifier = -1;
-            string textContent = "hello";
+            var messageDataTransferObject = CreateTextDTO();
+            var message = new TextMessage { ConversationId = 1, MessageId = 1, Conversation = null!, Sender = null!, Receiver = null! };
 
-            var messageDataTransferObject = new MessageDataTransferObject(
-                defaultMessageId,
-                targetConversationId,
-                senderIdentifier,
-                receiverIdentifier,
-                DateTime.Now,
-                textContent,
-                MessageType.MessageText,
-                string.Empty,
-                false,
-                false,
-                false,
-                false,
-                missingIdentifier,
-                missingIdentifier);
-
-            conversationRepositoryMock.Setup(repository => repository.HandleNewMessage(It.IsAny<Message>()));
+            conversationRepositoryMock.Setup(repository => repository.HandleNewMessage(It.IsAny<Message>())).Returns(message);
 
             conversationService.SendMessage(messageDataTransferObject);
 
@@ -166,9 +141,15 @@ namespace BookingBoardGames.Tests.Chat
             int firstParticipantId = 1;
             int secondParticipantId = 2;
 
-            var conversationDataTransferObject = new ConversationDataTransferObject(
+            var participants = new List<ConversationParticipant>
+            {
+                new ConversationParticipant(targetConversationId, firstParticipantId),
+                new ConversationParticipant(targetConversationId, secondParticipantId)
+            };
+
+            var conversationDataTransferObject = new ConversationDTO(
                 targetConversationId,
-                new int[] { firstParticipantId, secondParticipantId },
+                participants,
                 new List<MessageDataTransferObject>(),
                 new Dictionary<int, DateTime>
                 {
@@ -176,11 +157,11 @@ namespace BookingBoardGames.Tests.Chat
                     { secondParticipantId, DateTime.Now }
                 });
 
-            conversationRepositoryMock.Setup(repository => repository.HandleReadReceipt(It.IsAny<ReadReceipt>()));
+            conversationRepositoryMock.Setup(repository => repository.HandleReadReceipt(It.IsAny<ReadReceiptDTO>()));        
 
             conversationService.SendReadReceipt(conversationDataTransferObject);
 
-            conversationRepositoryMock.Verify(repository => repository.HandleReadReceipt(It.IsAny<ReadReceipt>()), Times.Once);
+            conversationRepositoryMock.Verify(repository => repository.HandleReadReceipt(It.IsAny<ReadReceiptDTO>()), Times.Once);
         }
 
         [Fact]
@@ -190,9 +171,15 @@ namespace BookingBoardGames.Tests.Chat
             int currentUserId = 1;
             int externalUserId = 2;
 
-            var conversationDataTransferObject = new ConversationDataTransferObject(
+            var participants = new List<ConversationParticipant>
+            {
+                new ConversationParticipant(targetConversationId, currentUserId),
+                new ConversationParticipant(targetConversationId, externalUserId)
+            };
+
+            var conversationDataTransferObject = new ConversationDTO(
                 targetConversationId,
-                new int[] { currentUserId, externalUserId },
+                participants,
                 new List<MessageDataTransferObject>(),
                 new Dictionary<int, DateTime>
                 {
@@ -200,16 +187,16 @@ namespace BookingBoardGames.Tests.Chat
                     { externalUserId, DateTime.Now }
                 });
 
-            ReadReceipt capturedReceipt = null;
+            ReadReceiptDTO capturedReceipt = null;
 
             conversationRepositoryMock
-                .Setup(repository => repository.HandleReadReceipt(It.IsAny<ReadReceipt>()))
-                .Callback<ReadReceipt>(receiptObject => capturedReceipt = receiptObject);
+                .Setup(repository => repository.HandleReadReceipt(It.IsAny<ReadReceiptDTO>()))
+                .Callback<ReadReceiptDTO>(receiptObject => capturedReceipt = receiptObject);
 
             conversationService.SendReadReceipt(conversationDataTransferObject);
 
-            Assert.Equal(currentUserId, capturedReceipt.messageReaderId);
-            Assert.Equal(externalUserId, capturedReceipt.messageReceiverId);
+            Assert.Equal(currentUserId, capturedReceipt.ReaderId);
+            Assert.Equal(externalUserId, capturedReceipt.ReceiverId);
         }
 
         [Fact]
@@ -221,12 +208,19 @@ namespace BookingBoardGames.Tests.Chat
             int receiverIdentifier = 2;
             string textContent = "hello";
 
-            var textMessage = new TextMessage(defaultMessageId, targetConversationId, senderIdentifier, receiverIdentifier, DateTime.Now, textContent);
+            var textMessage = new TextMessage(targetConversationId, senderIdentifier, receiverIdentifier, textContent)
+            {
+                MessageId = defaultMessageId,
+                MessageSentTime = DateTime.Now,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
 
             var messageDataTransferObject = conversationService.MessageToMessageDTO(textMessage);
 
-            Assert.Equal(MessageType.MessageText, messageDataTransferObject.type);
-            Assert.Equal(textContent, messageDataTransferObject.content);
+            Assert.Equal(MessageType.MessageText, messageDataTransferObject.Type);
+            Assert.Equal(textContent, messageDataTransferObject.Content);
         }
 
         [Fact]
@@ -248,7 +242,14 @@ namespace BookingBoardGames.Tests.Chat
             int receiverIdentifier = 2;
             string textContent = "hi";
 
-            var newTextMessage = new TextMessage(defaultMessageId, targetConversationId, senderIdentifier, receiverIdentifier, DateTime.Now, textContent);
+            var newTextMessage = new TextMessage(targetConversationId, senderIdentifier, receiverIdentifier, textContent)
+            {
+                MessageId = defaultMessageId,
+                MessageSentTime = DateTime.Now,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
 
             bool eventInvoked = false;
 
@@ -266,11 +267,16 @@ namespace BookingBoardGames.Tests.Chat
             int firstParticipantId = 1;
             int secondParticipantId = 2;
 
-            var testConversation = new Conversation(
-                targetConversationId,
-                new int[] { firstParticipantId, secondParticipantId },
-                new List<Message>(),
-                new Dictionary<int, DateTime> { { firstParticipantId, DateTime.Now }, { secondParticipantId, DateTime.Now } });
+            var participants = new List<ConversationParticipant>
+            {
+                new ConversationParticipant(targetConversationId, firstParticipantId),
+                new ConversationParticipant(targetConversationId, secondParticipantId)
+            };
+
+            var testConversation = new Conversation(participants)
+            {
+                ConversationId = targetConversationId
+            };
 
             bool eventInvoked = false;
 
@@ -288,7 +294,7 @@ namespace BookingBoardGames.Tests.Chat
             int readerIdentifier = 1;
             int receiverIdentifier = 2;
 
-            var testReadReceipt = new ReadReceipt(targetConversationId, readerIdentifier, receiverIdentifier, DateTime.Now);
+            var testReadReceipt = new ReadReceiptDTO(targetConversationId, readerIdentifier, receiverIdentifier, DateTime.Now);
 
             bool eventInvoked = false;
 
@@ -308,7 +314,14 @@ namespace BookingBoardGames.Tests.Chat
             int receiverIdentifier = 2;
             string textContent = "hi";
 
-            var updatedMessage = new TextMessage(defaultMessageId, targetConversationId, senderIdentifier, receiverIdentifier, DateTime.Now, textContent);
+            var updatedMessage = new TextMessage(targetConversationId, senderIdentifier, receiverIdentifier, textContent)
+            {
+                MessageId = defaultMessageId,
+                MessageSentTime = DateTime.Now,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
 
             bool eventInvoked = false;
 
@@ -369,9 +382,15 @@ namespace BookingBoardGames.Tests.Chat
                 .Setup(userRepository => userRepository.GetById(It.IsAny<int>()))
                 .Returns((User)null);
 
-            var conversationDataTransferObject = new ConversationDataTransferObject(
+            var participants = new List<ConversationParticipant>
+            {
+                new ConversationParticipant(targetConversationId, firstParticipantId),
+                new ConversationParticipant(targetConversationId, secondParticipantId)
+            };
+
+            var conversationDataTransferObject = new ConversationDTO(
                 targetConversationId,
-                new int[] { firstParticipantId, secondParticipantId },
+                participants,
                 new List<MessageDataTransferObject>(),
                 new Dictionary<int, DateTime>
                 {
@@ -379,7 +398,7 @@ namespace BookingBoardGames.Tests.Chat
                     { secondParticipantId, DateTime.Now }
                 });
 
-            var resultName = conversationService.GetOtherUserNameByConversationDTO(conversationDataTransferObject);
+            var resultName = conversationService.GetOtherUserNameByConversationDTO(conversationDataTransferObject);       
 
             Assert.Equal(expectedUnknownUser, resultName);
         }
@@ -393,12 +412,19 @@ namespace BookingBoardGames.Tests.Chat
             int receiverIdentifier = 2;
             string testImageName = "img.png";
 
-            var testImageMessage = new ImageMessage(defaultMessageId, targetConversationId, senderIdentifier, receiverIdentifier, DateTime.Now, testImageName);
+            var testImageMessage = new ImageMessage(targetConversationId, senderIdentifier, receiverIdentifier, testImageName)
+            {
+                MessageId = defaultMessageId,
+                MessageSentTime = DateTime.Now,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
 
             var messageDataTransferObject = conversationService.MessageToMessageDTO(testImageMessage);
 
-            Assert.Equal(MessageType.MessageImage, messageDataTransferObject.type);
-            Assert.Equal(testImageName, messageDataTransferObject.imageUrl);
+            Assert.Equal(MessageType.MessageImage, messageDataTransferObject.Type);
+            Assert.Equal(testImageName, messageDataTransferObject.ImageUrl);
         }
 
         [Fact]
@@ -409,24 +435,23 @@ namespace BookingBoardGames.Tests.Chat
             int sellerIdentifier = 1;
             int buyerIdentifier = 2;
             int testPaymentId = 55;
-            string textContent = "cash";
-            bool isResolved = false;
-            bool isAcceptedByBuyer = true;
-            bool isAcceptedBySeller = false;
 
-            var testCashAgreement = new CashAgreementMessage(
-                defaultMessageId, targetConversationId, sellerIdentifier, buyerIdentifier,
-                testPaymentId,
-                DateTime.Now,
-                textContent,
-                isResolved,
-                isAcceptedByBuyer,
-                isAcceptedBySeller);
+            var testCashAgreement = new CashAgreementMessage(targetConversationId, sellerIdentifier, buyerIdentifier, testPaymentId)
+            {
+                MessageId = defaultMessageId,
+                MessageSentTime = DateTime.Now,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!,
+                IsCashAgreementResolved = false,
+                IsCashAgreementAcceptedByBuyer = true,
+                IsCashAgreementAcceptedBySeller = false
+            };
 
             var messageDataTransferObject = conversationService.MessageToMessageDTO(testCashAgreement);
 
-            Assert.Equal(MessageType.MessageCashAgreement, messageDataTransferObject.type);
-            Assert.Equal(testPaymentId, messageDataTransferObject.paymentId);
+            Assert.Equal(MessageType.MessageCashAgreement, messageDataTransferObject.Type);
+            Assert.Equal(testPaymentId, messageDataTransferObject.PaymentId);
         }
 
         [Fact]
@@ -438,21 +463,22 @@ namespace BookingBoardGames.Tests.Chat
             int receiverIdentifier = 2;
             string textContent = "rent";
             int testRequestId = 99;
-            bool isResolved = false;
-            bool isAccepted = true;
 
-            var testRentalRequest = new RentalRequestMessage(
-                defaultMessageId, targetConversationId, senderIdentifier, receiverIdentifier,
-                DateTime.Now,
-                textContent,
-                testRequestId,
-                isResolved,
-                isAccepted);
+            var testRentalRequest = new RentalRequestMessage(targetConversationId, senderIdentifier, receiverIdentifier, testRequestId, textContent)
+            {
+                MessageId = defaultMessageId,
+                MessageSentTime = DateTime.Now,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!,
+                IsRequestResolved = false,
+                IsRequestAccepted = true
+            };
 
             var messageDataTransferObject = conversationService.MessageToMessageDTO(testRentalRequest);
 
-            Assert.Equal(MessageType.MessageRentalRequest, messageDataTransferObject.type);
-            Assert.Equal(testRequestId, messageDataTransferObject.requestId);
+            Assert.Equal(MessageType.MessageRentalRequest, messageDataTransferObject.Type);
+            Assert.Equal(testRequestId, messageDataTransferObject.RequestId);
         }
 
         [Fact]
@@ -460,14 +486,23 @@ namespace BookingBoardGames.Tests.Chat
         {
             int defaultMessageId = 1;
             int targetConversationId = 1;
+            int senderIdentifier = 1;
+            int receiverIdentifier = 2;
             string systemContent = "system";
 
-            var testSystemMessage = new SystemMessage(defaultMessageId, targetConversationId, DateTime.Now, systemContent);
+            var testSystemMessage = new SystemMessage(targetConversationId, senderIdentifier, receiverIdentifier, systemContent)
+            {
+                MessageId = defaultMessageId,
+                MessageSentTime = DateTime.Now,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
 
             var messageDataTransferObject = conversationService.MessageToMessageDTO(testSystemMessage);
 
-            Assert.Equal(MessageType.MessageSystem, messageDataTransferObject.type);
-            Assert.Equal(systemContent, messageDataTransferObject.content);
+            Assert.Equal(MessageType.MessageSystem, messageDataTransferObject.Type);
+            Assert.Equal(systemContent, messageDataTransferObject.Content);
         }
 
         [Fact]
@@ -482,8 +517,8 @@ namespace BookingBoardGames.Tests.Chat
             string expectedResultName = "user2";
 
             var messageDataTransferObject = new MessageDataTransferObject(
-                defaultMessageId, targetConversationId, senderIdentifier, receiverIdentifier, DateTime.Now, textContent,
-                MessageType.MessageText, string.Empty, false, false, false, false, missingIdentifier, missingIdentifier
+                defaultMessageId, targetConversationId, senderIdentifier, receiverIdentifier, DateTime.Now, textContent,  
+                MessageType.MessageText, string.Empty, false, false, false, false, missingIdentifier, missingIdentifier   
             );
 
             var resultName = conversationService.GetOtherUserNameByMessageDTO(messageDataTransferObject);
@@ -495,7 +530,7 @@ namespace BookingBoardGames.Tests.Chat
         public void MessageDTOToMessage_ImageMessage_MapsCorrectly()
         {
             string testImageName = "img.png";
-            var messageDataTransferObject = CreateTextDTO() with { type = MessageType.MessageImage, imageUrl = testImageName };
+            var messageDataTransferObject = CreateTextDTO() with { Type = MessageType.MessageImage, ImageUrl = testImageName };
 
             var domainMessage = conversationService.MessageDTOToMessage(messageDataTransferObject);
 
@@ -505,7 +540,7 @@ namespace BookingBoardGames.Tests.Chat
         [Fact]
         public void MessageDTOToMessage_RentalRequest_MapsCorrectly()
         {
-            var messageDataTransferObject = CreateTextDTO() with { type = MessageType.MessageRentalRequest };
+            var messageDataTransferObject = CreateTextDTO() with { Type = MessageType.MessageRentalRequest };
 
             var domainMessage = conversationService.MessageDTOToMessage(messageDataTransferObject);
 
@@ -515,7 +550,7 @@ namespace BookingBoardGames.Tests.Chat
         [Fact]
         public void MessageDTOToMessage_CashAgreement_MapsCorrectly()
         {
-            var messageDataTransferObject = CreateTextDTO() with { type = MessageType.MessageCashAgreement };
+            var messageDataTransferObject = CreateTextDTO() with { Type = MessageType.MessageCashAgreement };
 
             var domainMessage = conversationService.MessageDTOToMessage(messageDataTransferObject);
 
@@ -525,7 +560,7 @@ namespace BookingBoardGames.Tests.Chat
         [Fact]
         public void MessageDTOToMessage_SystemMessage_MapsCorrectly()
         {
-            var messageDataTransferObject = CreateTextDTO() with { type = MessageType.MessageSystem };
+            var messageDataTransferObject = CreateTextDTO() with { Type = MessageType.MessageSystem };
 
             var domainMessage = conversationService.MessageDTOToMessage(messageDataTransferObject);
 
@@ -541,37 +576,32 @@ namespace BookingBoardGames.Tests.Chat
             int defaultMessageId = 1;
             string textContent = "hi";
 
-            var testConversation = new Conversation(
-                targetConversationId,
-                new[] { firstParticipantId, secondParticipantId },
-                new List<Message> { new TextMessage(defaultMessageId, targetConversationId, firstParticipantId, secondParticipantId, DateTime.Now, textContent) },
-                new Dictionary<int, DateTime>
-                {
-                    { firstParticipantId, DateTime.Now },
-                    { secondParticipantId, DateTime.Now }
-                }
-            );
+            var participants = new List<ConversationParticipant>
+            {
+                new ConversationParticipant(targetConversationId, firstParticipantId),
+                new ConversationParticipant(targetConversationId, secondParticipantId)
+            };
 
-            var conversationDataTransferObject = conversationService.ConversationToConversationDTO(testConversation);
+            var testConversation = new Conversation(participants)
+            {
+                ConversationId = targetConversationId,
+                Messages = new List<Message> 
+                { 
+                    new TextMessage(targetConversationId, firstParticipantId, secondParticipantId, textContent) 
+                    { 
+                        MessageId = defaultMessageId,
+                        MessageSentTime = DateTime.Now,
+                        Conversation = null!,
+                        Sender = null!,
+                        Receiver = null!
+                    } 
+                }
+            };
+
+            var conversationDataTransferObject = conversationService.ConversationToConversationDTO(testConversation);     
 
             Assert.Equal(targetConversationId, conversationDataTransferObject.Id);
             Assert.Single(conversationDataTransferObject.MessageList);
-        }
-
-        [Fact]
-        public void ReadReceiptToReadReceiptDTO_ValidReceipt_MapsCorrectly()
-        {
-            int targetConversationId = 1;
-            int readerIdentifier = 1;
-            int receiverIdentifier = 2;
-
-            var testReadReceipt = new ReadReceipt(targetConversationId, readerIdentifier, receiverIdentifier, DateTime.Now);
-
-            var receiptDataTransferObject = conversationService.ReadReceiptToReadReceiptDTO(testReadReceipt);
-
-            Assert.Equal(targetConversationId, receiptDataTransferObject.conversationId);
-            Assert.Equal(readerIdentifier, receiptDataTransferObject.readerId);
-            Assert.Equal(receiverIdentifier, receiptDataTransferObject.receiverId);
         }
 
         [Fact]
@@ -584,10 +614,21 @@ namespace BookingBoardGames.Tests.Chat
             int thirdParticipantId = 3;
             int expectedConversationCount = 2;
 
+            var participants1 = new List<ConversationParticipant>
+            {
+                new ConversationParticipant(firstConversationId, firstParticipantId),
+                new ConversationParticipant(firstConversationId, secondParticipantId)
+            };
+            var participants2 = new List<ConversationParticipant>
+            {
+                new ConversationParticipant(secondConversationId, firstParticipantId),
+                new ConversationParticipant(secondConversationId, thirdParticipantId)
+            };
+
             var testConversationList = new List<Conversation>
             {
-                new Conversation(firstConversationId, new[] {firstParticipantId, secondParticipantId}, new List<Message>(), new Dictionary<int, DateTime>()),
-                new Conversation(secondConversationId, new[] {firstParticipantId, thirdParticipantId}, new List<Message>(), new Dictionary<int, DateTime>())
+                new Conversation(participants1) { ConversationId = firstConversationId },
+                new Conversation(participants2) { ConversationId = secondConversationId }
             };
 
             conversationRepositoryMock.Setup(repository => repository.GetConversationsForUser(firstParticipantId)).Returns(testConversationList);
@@ -598,3 +639,8 @@ namespace BookingBoardGames.Tests.Chat
         }
     }
 }
+
+
+
+
+

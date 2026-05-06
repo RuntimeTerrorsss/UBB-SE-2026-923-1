@@ -1,4 +1,3 @@
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
 using Xunit;
 
 namespace BookingBoardGames.Tests.Mocks.UserMock
@@ -8,7 +7,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         [Fact]
         public void User_ShortConstructor_SetsPropertiesCorrectly()
         {
-            var user = new User(1, "testuser", "Romania", "Cluj", "Street", "5");
+            var user = new User("testuser", "testuser", "testuser@example.com", "hash", "Cluj", "Romania") { Id = 1, Street = "Street", StreetNumber = "5", AvatarUrl = "" };
 
             var expectedUser = new { Id = 1, Username = "testuser", Country = "Romania", City = "Cluj", Street = "Street", StreetNumber = "5", DisplayName = "testuser", AvatarUrl = "", Balance = 0m };
             var actualUser = new { user.Id, user.Username, user.Country, user.City, user.Street, user.StreetNumber, user.DisplayName, user.AvatarUrl, user.Balance };
@@ -19,7 +18,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         [Fact]
         public void User_FullConstructor_SetsPropertiesCorrectly()
         {
-            var user = new User(2, "fulluser", "Display", "Moldova", "Chisinau", "Main", "10", "http://avatar", 50.5m);
+            var user = new User("fulluser", "Display", "fulluser@example.com", "hash", "Chisinau", "Moldova") { Id = 2, Street = "Main", StreetNumber = "10", AvatarUrl = "http://avatar", Balance = 50.5m };
 
             var expectedUser = new { Id = 2, Username = "fulluser", Country = "Moldova", City = "Chisinau", Street = "Main", StreetNumber = "10", DisplayName = "Display", AvatarUrl = "http://avatar", Balance = 50.5m };
             var actualUser = new { user.Id, user.Username, user.Country, user.City, user.Street, user.StreetNumber, user.DisplayName, user.AvatarUrl, user.Balance };
@@ -30,7 +29,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         [Fact]
         public void User_PropertyUpdates_SetsPropertiesCorrectly()
         {
-            var user = new User(1, "old", "ro", "city", "st", "1");
+            var user = new User("old", "old", "old@example.com", "hash", "city", "ro");
             user.Id = 3;
             user.Username = "new";
             user.DisplayName = "newDisplay";
@@ -48,3 +47,8 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         }
     }
 }
+
+
+
+
+

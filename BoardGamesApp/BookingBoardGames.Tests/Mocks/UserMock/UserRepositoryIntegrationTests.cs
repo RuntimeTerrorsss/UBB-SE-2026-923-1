@@ -1,5 +1,9 @@
-using BookingBoardgamesILoveBan.Src.Delivery.Model;
-using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames;
+using BookingBoardGames;
+using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data;
+using BookingBoardGames.Src.DTO;
 using Microsoft.Data.SqlClient;
 using Xunit;
 
@@ -20,7 +24,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         {
             int testUid = 8881;
             SetupTestUser(testUid, "TestUser1", 100.0m);
-            var service = new UserRepository();
+            var service = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
 
             try
             {
@@ -40,7 +44,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         [Fact]
         public void GetById_UserDoesNotExist_ReturnsNull()
         {
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var user = userRepository.GetById(-999);
 
             Assert.Null(user);
@@ -51,7 +55,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         {
             int testUid = 8882;
             SetupTestUser(testUid, "TestUser2", 50.0m);
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var newAddress = new Address("Moldova", "Chisinau", "Stefan cel Mare", "10");
 
             try
@@ -72,7 +76,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         [Fact]
         public void SaveAddress_UserDoesNotExist_DoesNotThrow()
         {
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var newAddress = new Address("Moldova", "Chisinau", "Stefan cel Mare", "10");
 
             var exception = Record.Exception(() => userRepository.SaveAddress(-999, newAddress));
@@ -86,7 +90,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
             int testUid = 8883;
             decimal initialBalance = 150.75m;
             SetupTestUser(testUid, "TestUser3", initialBalance);
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
 
             try
             {
@@ -102,7 +106,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         [Fact]
         public void GetUserBalance_UserDoesNotExist_ReturnsZero()
         {
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             decimal balance = userRepository.GetUserBalance(-999);
 
             Assert.Equal(0m, balance);
@@ -113,7 +117,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
         {
             int testUid = 8884;
             SetupTestUser(testUid, "TestUser4", 0.0m);
-            var userRepository = new UserRepository();
+            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             decimal updatedBalance = 99.99m;
 
             try
@@ -134,12 +138,12 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
             {
                 connection.Open();
 
-                new SqlCommand($"DELETE FROM [User] WHERE uid = {uid}", connection).ExecuteNonQuery();
-                new SqlCommand("SET IDENTITY_INSERT [User] ON", connection).ExecuteNonQuery();
+                new SqlCommand($"DELETE FROM users WHERE id = {uid}", connection).ExecuteNonQuery();
+                new SqlCommand("SET IDENTITY_INSERT users ON", connection).ExecuteNonQuery();
 
                 var sqlCommand = new SqlCommand(
-                    @"INSERT INTO [User] (uid, UserName, DisplayName, Country, City, Street, StreetNumber, AvatarUrl, Balance) 
-                    VALUES (@uid, @un, @dn, 'Romania', 'Iasi', 'Street', '1', 'url', @balance)",
+                    @"INSERT INTO users (id, username, display_name, country, city, street, street_number, avatar_url, balance, email, password_hash, is_suspended, created_at) 
+                    VALUES (@uid, @un, @dn, 'Romania', 'Iasi', 'Street', '1', 'url', @balance, 'test@example.com', 'hash', 0, GETDATE())",
                     connection);
 
                 sqlCommand.Parameters.AddWithValue("@uid", uid);
@@ -148,7 +152,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
                 sqlCommand.Parameters.AddWithValue("@balance", balance);
 
                 sqlCommand.ExecuteNonQuery();
-                new SqlCommand("SET IDENTITY_INSERT [User] OFF", connection).ExecuteNonQuery();
+                new SqlCommand("SET IDENTITY_INSERT users OFF", connection).ExecuteNonQuery();
             }
         }
 
@@ -157,8 +161,13 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                new SqlCommand($"DELETE FROM [User] WHERE uid = {uid}", connection).ExecuteNonQuery();
+                new SqlCommand($"DELETE FROM users WHERE id = {uid}", connection).ExecuteNonQuery();
             }
         }
     }
 }
+
+
+
+
+

@@ -1,8 +1,14 @@
-﻿using Moq;
-using SearchAndBook.Domain;
-using SearchAndBook.Repositories;
-using SearchAndBook.Services;
-using SearchAndBook.Shared;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Repositories;
+using Moq;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Enum;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
 namespace BookingBoardGames.Tests.SearchAndBook.Services;
 
@@ -23,15 +29,15 @@ public class BookingServiceTests
 
         var expected = new BookingDTO
         {
-            GameId = game.GameId,
+            GameId = game.Id,
             Name = game.Name,
             Image = game.Image,
-            Price = game.Price,
+            Price = game.PricePerDay,
             City = owner.City,
             MinimumNrPlayers = game.MinimumPlayerNumber,
             MaximumNumberPlayers = game.MaximumPlayerNumber,
             Description = game.Description,
-            UserId = owner.UserId,
+            UserId = owner.Id,
             DisplayName = owner.DisplayName,
             IsSuspended = owner.IsSuspended,
             AvatarUrl = owner.AvatarUrl,
@@ -48,7 +54,7 @@ public class BookingServiceTests
 
         gamesRepository.Setup(repository => repository.GetGameById(1)).Returns((Game?)null);
 
-        var exception = Assert.Throws<InvalidOperationException>(() => sut.GetBookingInformationForSpecificGame(1));
+        var exception = Assert.Throws<InvalidOperationException>(() => sut.GetBookingInformationForSpecificGame(1));      
 
         Assert.Equal("Failed to retrieve details for game 1.", exception.Message);
         Assert.IsType<InvalidOperationException>(exception.InnerException);
@@ -64,7 +70,7 @@ public class BookingServiceTests
         gamesRepository.Setup(repository => repository.GetGameById(1)).Returns(game);
         usersRepository.Setup(repository => repository.GetGameById(10)).Returns((User?)null);
 
-        var exception = Assert.Throws<InvalidOperationException>(() => sut.GetBookingInformationForSpecificGame(1));
+        var exception = Assert.Throws<InvalidOperationException>(() => sut.GetBookingInformationForSpecificGame(1));      
 
         Assert.Equal("Failed to retrieve details for game 1.", exception.Message);
         Assert.IsType<InvalidOperationException>(exception.InnerException);
@@ -109,7 +115,7 @@ public class BookingServiceTests
         var sut = CreateSut(out _, out var rentalsRepository, out _);
         var range = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
 
-        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range, 1)).Returns(true);
+        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range.StartTime, range.EndTime, 1)).Returns(true);
 
         var result = sut.CheckGameAvailability(1, range);
 
@@ -122,7 +128,7 @@ public class BookingServiceTests
         var sut = CreateSut(out _, out var rentalsRepository, out _);
         var range = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
 
-        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range, 1)).Returns(false);
+        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range.StartTime, range.EndTime, 1)).Returns(false);
 
         var result = sut.CheckGameAvailability(1, range);
 
@@ -135,7 +141,7 @@ public class BookingServiceTests
         var sut = CreateSut(out _, out var rentalsRepository, out _);
         var range = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
 
-        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range, 1))
+        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range.StartTime, range.EndTime, 1))
             .Throws(new Exception("boom"));
 
         var exception = Assert.Throws<InvalidOperationException>(() => sut.CheckGameAvailability(1, range));
@@ -190,12 +196,15 @@ public class BookingServiceTests
 
     private static BookingService CreateSut(
         out Mock<InterfaceGamesRepository> gamesRepository,
-        out Mock<InterfaceRentalsRepository> rentalsRepository,
-        out Mock<InterfaceUsersRepository> usersRepository)
+        out Mock<IRentalRepository> rentalsRepository,
+        out Mock<IUserRepository> usersRepository)
     {
         gamesRepository = new Mock<InterfaceGamesRepository>(MockBehavior.Loose);
-        rentalsRepository = new Mock<InterfaceRentalsRepository>(MockBehavior.Loose);
-        usersRepository = new Mock<InterfaceUsersRepository>(MockBehavior.Loose);
+        rentalsRepository = new Mock<IRentalRepository>(MockBehavior.Loose);
+        usersRepository = new Mock<IUserRepository>(MockBehavior.Loose);
+
+        usersRepository.Setup(r => r.GetGameById(It.IsAny<int>()))
+            .Returns((int id) => new User("owner", "Owner Name", "owner@test.com", "hash", "Cluj", "RO") { Id = id });
 
         return new BookingService(
             gamesRepository.Object,
@@ -212,15 +221,9 @@ public class BookingServiceTests
         int minimumPlayers,
         string description)
     {
-        return new Game
+        return new Game(name, price, minimumPlayers, maximumPlayers, description, ownerId)
         {
-            GameId = gameId,
-            OwnerId = ownerId,
-            Name = name,
-            Price= price,
-            MaximumPlayerNumber = maximumPlayers,
-            MinimumPlayerNumber = minimumPlayers,
-            Description = description,
+            Id = gameId,
             Image = new byte[] { 1, 2, 3 },
             IsActive = true
         };
@@ -228,18 +231,16 @@ public class BookingServiceTests
 
     private static User CreateUser(int userId, string displayName, string city)
     {
-        return new User
+        return new User("owner", displayName, "owner@example.com", "hash", city, "RO")
         {
-            UserId = userId,
-            Username = "owner",
-            DisplayName = displayName,
-            Email = "owner@example.com",
-            PasswordHash = "hash",
-            City = city,
-            Country = "RO",
+            Id = userId,
             AvatarUrl = "https://example.com/avatar.png",
             CreatedAt = new DateTime(2025, 1, 1),
             IsSuspended = false
         };
     }
 }
+
+
+
+
