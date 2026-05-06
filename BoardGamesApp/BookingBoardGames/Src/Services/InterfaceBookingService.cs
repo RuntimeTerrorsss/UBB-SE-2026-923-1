@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
 using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Src.Services
@@ -19,7 +20,7 @@ namespace BookingBoardGames.Src.Services
         /// <exception cref="InvalidOperationException">
         /// Thrown when the game or its owner cannot be isfound, or when retrieval fails.
         /// </exception>
-        BookingDTO GetBookingInformationForSpecificGame(int gameId);
+        Task<BookingDTO> GetBookingInformationForSpecificGame(int gameId);
 
         /// <summary>
         /// Retrieves all unavailable time rentaltimeranges for a specific game.
@@ -68,6 +69,6 @@ namespace BookingBoardGames.Src.Services
         /// <param name="ownerId">The unique identifier of the owner making the booking. Must correspond to a valid user.</param>
         /// <param name="timeRange">The time range for which the booking is requested. The range must not overlap with existing bookings for the
         /// same game.</param>
-        void AddBooking(int gameId, int ownerId, TimeRange timeRange);
+        Task AddBooking(int gameId, int ownerId, TimeRange timeRange);
     }
 }

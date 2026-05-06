@@ -5,6 +5,8 @@
 using System;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Interfaces;
+using System.Threading.Tasks;
 
 namespace BookingBoardGames.Src.Services;
 /// <summary>
@@ -40,11 +42,11 @@ public class BookingService : InterfaceBookingService
     /// <param name="gameId">The unique identifier of the game.</param>
     /// <returns>A <see cref="BookingDTO"/> containing the game and owner details.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the game or its owner cannot be isfound.</exception>
-    public BookingDTO GetBookingInformationForSpecificGame(int gameId)
+    public async Task<BookingDTO> GetBookingInformationForSpecificGame(int gameId)
     {
         try
         {
-            var bookedGame = this.gamesRepository.GetGameById(gameId);
+            var bookedGame = await this.gamesRepository.GetGameById(gameId);
             if (bookedGame == null)
             {
                 throw new InvalidOperationException($"Game with id {gameId} was not isfound.");
@@ -145,11 +147,11 @@ public class BookingService : InterfaceBookingService
         return days < MinimumValidDayCount ? MinimumValidDayCount : days;
     }
 
-    public void AddBooking(int gameId, int userId, TimeRange timeRange)
+    public async Task AddBooking(int gameId, int userId, TimeRange timeRange)
     {
         try
         {
-            var game = this.gamesRepository.GetGameById(gameId);
+            var game = await this.gamesRepository.GetGameById(gameId);
             if (game == null)
             {
                 throw new InvalidOperationException($"Game with id {gameId} was not found.");
