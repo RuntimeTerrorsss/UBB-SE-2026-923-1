@@ -87,7 +87,7 @@ namespace BookingBoardGames.Src.Repositories
         public Message? HandleMessageUpdate(Message message)
         {
             var tracked = this.context.Messages
-                .FirstOrDefault(m => m.MessageId == message.MessageId);
+                .FirstOrDefault(newmessage => newmessage.MessageId == message.MessageId);
 
             if (tracked is null)
             {
@@ -160,7 +160,7 @@ namespace BookingBoardGames.Src.Repositories
         {
             var parent = this.context.Messages
                 .OfType<RentalRequestMessage>()
-                .FirstOrDefault(m => m.MessageId == messageIdOfParentRentalRequestMessage);
+                .FirstOrDefault(paymentMessage => paymentMessage.MessageId == messageIdOfParentRentalRequestMessage);
 
             if (parent is null)
             {
@@ -183,10 +183,10 @@ namespace BookingBoardGames.Src.Repositories
             this.context.SaveChanges();
 
             return this.context.Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Receiver)
-                .Include(m => m.Conversation)
-                .First(m => m.MessageId == cashMessage.MessageId);
+                .Include(message => message.Sender)
+                .Include(message => message.Receiver)
+                .Include(message => message.Conversation)
+                .First(message => message.MessageId == cashMessage.MessageId);
         }
     }
 }
