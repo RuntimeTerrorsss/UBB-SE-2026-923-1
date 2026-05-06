@@ -18,6 +18,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.EnsureCreated();
+    BookingBoardGames.Api.DatabaseSeeder.Seed(dbContext);
+}
 
 app.UseSwagger();
 app.UseSwaggerUI();

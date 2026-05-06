@@ -2,7 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
+[JsonDerivedType(typeof(TextMessage), typeDiscriminator: "text")]
+[JsonDerivedType(typeof(ImageMessage), typeDiscriminator: "image")]
+[JsonDerivedType(typeof(SystemMessage), typeDiscriminator: "system")]
+[JsonDerivedType(typeof(RentalRequestMessage), typeDiscriminator: "rental")]
+[JsonDerivedType(typeof(CashAgreementMessage), typeDiscriminator: "cash")]
 [Table("messages")]
 public abstract class Message
 {

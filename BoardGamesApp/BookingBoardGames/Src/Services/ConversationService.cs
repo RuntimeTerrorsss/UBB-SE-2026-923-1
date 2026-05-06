@@ -21,11 +21,8 @@ namespace BookingBoardGames.Src.Services
         private int UserId { get; set; }
 
         public event Action<MessageDataTransferObject, string> ActionMessageProcessed;
-
         public event Action<ConversationDTO, string> ActionConversationProcessed;
-
         public event Action<ReadReceiptDTO> ActionReadReceiptProcessed;
-
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
 
         public ConversationService(IConversationRepository conversationRepo, int userIdInput)
@@ -54,19 +51,19 @@ namespace BookingBoardGames.Src.Services
         private void NotifySubscribersAboutMessage(Message message)
         {
             var participants = App.Client.GetFromJsonAsync<List<int>>($"conversation/{message.ConversationId}/participants").GetAwaiter().GetResult();
-            this.notifier.NotifyMessage(participants, message);
+            if (participants != null) this.notifier.NotifyMessage(participants, message);
         }
 
         private void NotifySubscribersAboutMessageUpdate(Message message)
         {
             var participants = App.Client.GetFromJsonAsync<List<int>>($"conversation/{message.ConversationId}/participants").GetAwaiter().GetResult();
-            this.notifier.NotifyMessageUpdate(participants, message);
+            if (participants != null) this.notifier.NotifyMessageUpdate(participants, message);
         }
 
         private void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
         {
             var participants = App.Client.GetFromJsonAsync<List<int>>($"conversation/{readReceipt.ConversationId}/participants").GetAwaiter().GetResult();
-            this.notifier.NotifyReadReceipt(participants, readReceipt);
+            if (participants != null) this.notifier.NotifyReadReceipt(participants, readReceipt);
         }
 
         private void NotifySubscribersAboutNewConversation(Conversation conversation)
@@ -105,29 +102,64 @@ namespace BookingBoardGames.Src.Services
 
         public void SendMessage(MessageDataTransferObject message)
         {
-            var response = App.Client.PostAsJsonAsync("conversation/messages", message).GetAwaiter().GetResult();
-            var persistedDto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
-            if (persistedDto is null) return;
-            var persisted = this.MessageDTOToMessage(persistedDto);
-            this.NotifySubscribersAboutMessage(persisted);
+            try
+            {
+                var response = App.Client.PostAsJsonAsync("conversation/messages", message).GetAwaiter().GetResult();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var persistedDto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
+                    if (persistedDto != null)
+                    {
+                        var persisted = this.MessageDTOToMessage(persistedDto);
+
+                        var participants = new List<int> { message.SenderId, message.ReceiverId };
+                        this.notifier.NotifyMessage(participants, persisted);
+                    }
+                }
+                else
+                {
+                    var errorText = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    System.Diagnostics.Debug.WriteLine($"\n❌ API REJECTED MESSAGE: {response.StatusCode} | {errorText}\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"\n❌ SEND MESSAGE CRASHED: {ex.Message}\n");
+            }
         }
 
         public int CreateConversation(int senderId, int receiverId)
         {
-            var response = App.Client.PostAsJsonAsync("conversation", new { SenderId = senderId, ReceiverId = receiverId }).GetAwaiter().GetResult();
-            var conversation = response.Content.ReadFromJsonAsync<Conversation>().GetAwaiter().GetResult();
-            if (conversation is null) return -1;
-            this.NotifySubscribersAboutNewConversation(conversation);
-            return conversation.ConversationId;
+            var response = App.Client.PostAsync($"conversation/create/{senderId}/{receiverId}", null).GetAwaiter().GetResult();
+
+   
+            if (!response.IsSuccessStatusCode)
+            {
+                System.Diagnostics.Debug.WriteLine($"API Error creating conversation: {response.StatusCode}");
+                return -1;
+            }
+
+            var responseString = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+            if (int.TryParse(responseString, out int conversationId))
+            {
+                return conversationId;
+            }
+
+            return -1;
         }
 
         public void UpdateMessage(MessageDataTransferObject message)
         {
-            var response = App.Client.PutAsJsonAsync("conversation/messages", message).GetAwaiter().GetResult();
+            var msg = this.MessageDTOToMessage(message);
+
+            var response = App.Client.PutAsJsonAsync("conversation/message", msg).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode) return;
-            var persistedDto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
-            if (persistedDto is null) return;
-            var persisted = this.MessageDTOToMessage(persistedDto);
+
+            var persisted = response.Content.ReadFromJsonAsync<Message>().GetAwaiter().GetResult();
+            if (persisted is null) return;
+
             this.NotifySubscribersAboutMessageUpdate(persisted);
         }
 
@@ -138,7 +170,8 @@ namespace BookingBoardGames.Src.Services
                 this.UserId,
                 conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId,
                 DateTime.Now);
-            App.Client.PostAsJsonAsync("conversation/readreceipt", readReceipt).GetAwaiter().GetResult();
+
+            App.Client.PostAsJsonAsync("conversation/read-receipt", readReceipt).GetAwaiter().GetResult();
             this.NotifySubscribersAboutReadReceipt(readReceipt);
         }
 
@@ -155,21 +188,23 @@ namespace BookingBoardGames.Src.Services
 
         private void FinalizeRentalRequest(int messageId)
         {
-            var response = App.Client.PostAsync($"conversation/rental/finalize/{messageId}", null).GetAwaiter().GetResult();
+            var response = App.Client.PutAsync($"conversation/finalize-rental/{messageId}", null).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode) return;
-            var updatedDto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
-            if (updatedDto is null) return;
-            var updated = this.MessageDTOToMessage(updatedDto);
+
+            var updated = response.Content.ReadFromJsonAsync<Message>().GetAwaiter().GetResult();
+            if (updated is null) return;
+
             this.NotifySubscribersAboutMessageUpdate(updated);
         }
 
         private void SendCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
-            var response = App.Client.PostAsync($"conversation/cash/{messageIdOfParentRentalRequestMessage}/{paymentId}", null).GetAwaiter().GetResult();
+            var response = App.Client.PostAsync($"conversation/cash-agreement/{messageIdOfParentRentalRequestMessage}/{paymentId}", null).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode) return;
-            var createdDto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
-            if (createdDto is null) return;
-            var created = this.MessageDTOToMessage(createdDto);
+
+            var created = response.Content.ReadFromJsonAsync<Message>().GetAwaiter().GetResult();
+            if (created is null) return;
+
             this.NotifySubscribersAboutMessage(created);
         }
 

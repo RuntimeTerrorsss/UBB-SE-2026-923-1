@@ -309,20 +309,20 @@ namespace BookingBoardGamesWeb.Controllers
         }
 
         public record MessageDto(
-            int Id,
-            int ConversationId,
-            int SenderId,
-            int ReceiverId,
-            DateTime SentAt,
-            string Content,
-            MessageType Type,
-            string ImageUrl,
-            bool IsResolved,
-            bool IsAccepted,
-            bool IsAcceptedByBuyer,
-            bool IsAcceptedBySeller,
-            int RequestId,
-            int PaymentId);
+     int Id,
+     int ConversationId,
+     int SenderId,
+     int ReceiverId,
+     DateTime SentAt,
+     string? Content,
+     MessageType Type,
+     string? ImageUrl,   
+     bool IsResolved,
+     bool IsAccepted,
+     bool IsAcceptedByBuyer,
+     bool IsAcceptedBySeller,
+     int RequestId,
+     int PaymentId);
 
         public enum MessageType
         {
