@@ -13,15 +13,19 @@ namespace BookingBoardGames.Tests.PaymentCard
 {
     public class CardPaymentViewModelTests
     {
-        private readonly Mock<CardPaymentService> mockCardPaymentService;
-        private readonly Mock<UserRepository> mockUserService;
+        private readonly Mock<ICardPaymentService> mockCardPaymentService;
+        private readonly Mock<IUserRepository> mockUserService;
+        private readonly Mock<IConversationRepository> mockConversationRepository;
+        private readonly ConversationService realConversationService;
 
         public CardPaymentViewModelTests()
         {
             SynchronizationContext.SetSynchronizationContext(new TestSyncContext());
 
-            mockCardPaymentService = new Mock<CardPaymentService>(null, null, null, null);
-            mockUserService = new Mock<UserRepository>();
+            mockCardPaymentService = new Mock<ICardPaymentService>();
+            mockUserService = new Mock<IUserRepository>();
+            mockConversationRepository = new Mock<IConversationRepository>();
+            realConversationService = new ConversationService(mockConversationRepository.Object, 1, mockUserService.Object);
 
             int RequestIdentifier = 1;
             int gameIdentifier = 1;
@@ -34,7 +38,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             int daysToAdd = 2;
 
             mockCardPaymentService.Setup(cardPaymentServiceMock => cardPaymentServiceMock.GetRequestDataTransferObject(It.IsAny<int>()))
-                .Returns(new RentalDataTransferObject(RequestIdentifier, gameIdentifier, gameName, ownerIdentifier, clientName, clientIdentifier, ownerName, DateTime.Now, DateTime.Now.AddDays(daysToAdd), paymentPrice));
+                .Returns(new RentalDataTransferObject(RequestIdentifier, gameIdentifier, gameName, clientIdentifier, clientName, ownerIdentifier, ownerName, DateTime.Now, DateTime.Now.AddDays(daysToAdd), paymentPrice));
         }
 
         private CardPaymentViewModel CreateViewModel()
@@ -49,7 +53,7 @@ namespace BookingBoardGames.Tests.PaymentCard
                 RequestIdentifier,
                 deliveryAddress,
                 bookingMessageIdentifier,
-                null);
+                realConversationService);
         }
 
         [Fact]
@@ -205,11 +209,12 @@ namespace BookingBoardGames.Tests.PaymentCard
         }
 
         [Fact]
-        public void ConversationService_Get_ReturnsNull()
+        public void ConversationService_Get_ReturnsNonNull()
         {
             CardPaymentViewModel cardPaymentViewModel = CreateViewModel();
 
-            Assert.Null(cardPaymentViewModel.ConversationService);
+            Assert.NotNull(cardPaymentViewModel.ConversationService);
+            Assert.Same(realConversationService, cardPaymentViewModel.ConversationService);
         }
 
         [Fact]

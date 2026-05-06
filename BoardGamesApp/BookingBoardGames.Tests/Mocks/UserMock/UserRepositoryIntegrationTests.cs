@@ -138,12 +138,12 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
             {
                 connection.Open();
 
-                new SqlCommand($"DELETE FROM [Users] WHERE uid = {uid}", connection).ExecuteNonQuery();
-                new SqlCommand("SET IDENTITY_INSERT [Users] ON", connection).ExecuteNonQuery();
+                new SqlCommand($"DELETE FROM users WHERE id = {uid}", connection).ExecuteNonQuery();
+                new SqlCommand("SET IDENTITY_INSERT users ON", connection).ExecuteNonQuery();
 
                 var sqlCommand = new SqlCommand(
-                    @"INSERT INTO [Users] (uid, UserName, DisplayName, Country, City, Street, StreetNumber, AvatarUrl, Balance) 
-                    VALUES (@uid, @un, @dn, 'Romania', 'Iasi', 'Street', '1', 'url', @balance)",
+                    @"INSERT INTO users (id, username, display_name, country, city, street, street_number, avatar_url, balance, email, password_hash, is_suspended, created_at) 
+                    VALUES (@uid, @un, @dn, 'Romania', 'Iasi', 'Street', '1', 'url', @balance, 'test@example.com', 'hash', 0, GETDATE())",
                     connection);
 
                 sqlCommand.Parameters.AddWithValue("@uid", uid);
@@ -152,7 +152,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
                 sqlCommand.Parameters.AddWithValue("@balance", balance);
 
                 sqlCommand.ExecuteNonQuery();
-                new SqlCommand("SET IDENTITY_INSERT [Users] OFF", connection).ExecuteNonQuery();
+                new SqlCommand("SET IDENTITY_INSERT users OFF", connection).ExecuteNonQuery();
             }
         }
 
@@ -161,7 +161,7 @@ namespace BookingBoardGames.Tests.Mocks.UserMock
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                new SqlCommand($"DELETE FROM [Users] WHERE uid = {uid}", connection).ExecuteNonQuery();
+                new SqlCommand($"DELETE FROM users WHERE id = {uid}", connection).ExecuteNonQuery();
             }
         }
     }

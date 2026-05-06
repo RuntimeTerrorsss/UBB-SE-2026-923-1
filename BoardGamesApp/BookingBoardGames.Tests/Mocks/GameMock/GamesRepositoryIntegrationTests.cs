@@ -32,16 +32,16 @@ public class GamesRepositoryIntegrationTests
             {
                 connection.Open();
 
-                var deleteOld = new SqlCommand("DELETE FROM Game WHERE gid = @Id", connection);
+                var deleteOld = new SqlCommand("DELETE FROM Games WHERE Id = @Id", connection);
                 deleteOld.Parameters.AddWithValue("@Id", testId);
                 deleteOld.ExecuteNonQuery();
 
-                new SqlCommand("SET IDENTITY_INSERT Game ON", connection).ExecuteNonQuery();
+                new SqlCommand("SET IDENTITY_INSERT Games ON", connection).ExecuteNonQuery();
                 var insert = new SqlCommand(
-                    "INSERT INTO Game (gid, Name, PricePerDay) VALUES (@Id, 'TestGame', 15)", connection);
+                    "INSERT INTO games (id, name, price, minimum_player_number, maximum_player_number, description, is_active, owner_id) VALUES (@Id, 'TestGame', 15, 1, 4, 'Test Description', 1, 1)", connection);
                 insert.Parameters.AddWithValue("@Id", testId);
                 insert.ExecuteNonQuery();
-                new SqlCommand("SET IDENTITY_INSERT Game OFF", connection).ExecuteNonQuery();
+                new SqlCommand("SET IDENTITY_INSERT Games OFF", connection).ExecuteNonQuery();
             }
 
             var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
@@ -57,7 +57,7 @@ public class GamesRepositoryIntegrationTests
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                var delete = new SqlCommand("DELETE FROM Game WHERE gid = @Id", connection);
+                var delete = new SqlCommand("DELETE FROM Games WHERE Id = @Id", connection);
                 delete.Parameters.AddWithValue("@Id", testId);
                 delete.ExecuteNonQuery();
             }
@@ -85,17 +85,17 @@ public class GamesRepositoryIntegrationTests
             {
                 connection.Open();
 
-                var deleteOld = new SqlCommand("DELETE FROM Game WHERE gid = @Id", connection);
+                var deleteOld = new SqlCommand("DELETE FROM Games WHERE Id = @Id", connection);
                 deleteOld.Parameters.AddWithValue("@Id", testId);
                 deleteOld.ExecuteNonQuery();
 
-                new SqlCommand("SET IDENTITY_INSERT Game ON", connection).ExecuteNonQuery();
+                new SqlCommand("SET IDENTITY_INSERT Games ON", connection).ExecuteNonQuery();
                 var insert = new SqlCommand(
-                    "INSERT INTO Game (gid, Name, PricePerDay) VALUES (@Id, 'PriceTestGame', @price)", connection);
+                    "INSERT INTO games (id, name, price, minimum_player_number, maximum_player_number, description, is_active, owner_id) VALUES (@Id, 'PriceTestGame', @price, 1, 4, 'Test Description', 1, 1)", connection);
                 insert.Parameters.AddWithValue("@Id", testId);
                 insert.Parameters.AddWithValue("@price", expectedPrice);
                 insert.ExecuteNonQuery();
-                new SqlCommand("SET IDENTITY_INSERT Game OFF", connection).ExecuteNonQuery();
+                new SqlCommand("SET IDENTITY_INSERT Games OFF", connection).ExecuteNonQuery();
             }
 
             var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
@@ -109,7 +109,7 @@ public class GamesRepositoryIntegrationTests
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                var delete = new SqlCommand("DELETE FROM Game WHERE gid = @Id", connection);
+                var delete = new SqlCommand("DELETE FROM Games WHERE Id = @Id", connection);
                 delete.Parameters.AddWithValue("@Id", testId);
                 delete.ExecuteNonQuery();
             }
