@@ -209,10 +209,10 @@ public class GameDetailsViewModelTests
     {
         var bookingService = new Mock<InterfaceBookingService>(MockBehavior.Loose);
 
-        bookingService.Setup(s => s.GetBookingInformationForSpecificGame(It.IsAny<int>()))
+        bookingService.Setup(bookingService => bookingService.GetBookingInformationForSpecificGame(It.IsAny<int>()))
             .Returns(CreateDto());
 
-        bookingService.Setup(s => s.GetUnavailableTimeRanges(It.IsAny<int>()))
+        bookingService.Setup(bookingService => bookingService.GetUnavailableTimeRanges(It.IsAny<int>()))
             .Returns(Array.Empty<TimeRange>());
 
         var SystemUnderTesting = new GameDetailsViewModel(bookingService.Object, 1);
