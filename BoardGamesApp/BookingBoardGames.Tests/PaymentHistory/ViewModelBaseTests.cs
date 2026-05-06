@@ -9,7 +9,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
 {
     public class ViewModelBaseTests
     {
-        // ================================ class ======================================
         private class TestViewModel : ViewModelBase // it is an abstract class
         {
             private string name;
@@ -82,7 +81,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Null(exception);
         }
 
-        // ================================ SetProperty ======================================
         [Fact]
         public void SetProperty_NewValue_ReturnsTrue()
         {

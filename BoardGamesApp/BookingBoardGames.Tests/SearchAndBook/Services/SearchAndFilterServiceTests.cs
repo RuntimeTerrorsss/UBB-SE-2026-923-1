@@ -1,15 +1,8 @@
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Repositories;
 using Moq;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
+using SearchAndBook.Domain;
+using SearchAndBook.Repositories;
+using SearchAndBook.Services;
+using SearchAndBook.Shared;
 
 namespace BookingBoardGames.Tests.SearchAndBook.Services;
 
@@ -18,14 +11,14 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenNameFilterIsProvided_ReturnsCaseInsensitiveMatches()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
         var games = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
             CreateGameDto(2, "Azul", 15m, "Iasi", 4, 2),
         };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { Name = "cat" });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { Name = "cat" });
 
         Assert.Single(result);
         Assert.Equal(1, result[0].GameId);
@@ -34,14 +27,14 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenMaximumPriceFilterIsProvided_ReturnsGamesWithinBudget()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
         var games = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
             CreateGameDto(2, "Azul", 15m, "Iasi", 4, 2),
         };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { MaximumPrice = 15m });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { MaximumPrice = 15m });
 
         Assert.Single(result);
         Assert.Equal(2, result[0].GameId);
@@ -50,14 +43,14 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenPlayerCountFilterIsProvided_ReturnsGamesWithEnoughPlayers()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
         var games = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
             CreateGameDto(2, "Azul", 15m, "Iasi", 3, 2),
         };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { PlayerCount = 4 });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { PlayerCount = 4 });
 
         Assert.Single(result);
         Assert.Equal(1, result[0].GameId);
@@ -66,14 +59,14 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenCityFilterIsProvided_ReturnsGamesFromMatchingCity()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
         var games = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
             CreateGameDto(2, "Azul", 15m, "Iasi", 4, 2),
         };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { City = "cluj" });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { City = "cluj" });
 
         Assert.Single(result);
         Assert.Equal(1, result[0].GameId);
@@ -82,7 +75,7 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenPriceAscendingSortIsProvided_ReturnsCheapestFirst()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
         var games = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
@@ -90,7 +83,7 @@ public class SearchAndFilterServiceTests
             CreateGameDto(3, "Root", 10m, "Brasov", 4, 2),
         };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { SortOption = SortOption.PriceAscending });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { SortOption = SortOption.PriceAscending });
 
         Assert.Equal(new[] { 3, 2, 1 }, result.Select(game => game.GameId));
     }
@@ -98,7 +91,7 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenPriceDescendingSortIsProvided_ReturnsMostExpensiveFirst()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
         var games = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
@@ -106,7 +99,7 @@ public class SearchAndFilterServiceTests
             CreateGameDto(3, "Root", 10m, "Brasov", 4, 2),
         };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { SortOption = SortOption.PriceDescending });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { SortOption = SortOption.PriceDescending });
 
         Assert.Equal(new[] { 1, 2, 3 }, result.Select(game => game.GameId));
     }
@@ -114,7 +107,7 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenLocationSortIsProvided_OrdersByDistanceAndCachesCityLookups()
     {
-        var sut = CreateSut(out _, out _, out _, out var geoService);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out var geoService);
         var games = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Paris", 4, 2),
@@ -126,7 +119,7 @@ public class SearchAndFilterServiceTests
         geoService.Setup(service => service.GetCityDetails("Paris")).Returns((true, "Paris", 0, 1));
         geoService.Setup(service => service.GetCityDetails("Lyon")).Returns((true, "Lyon", 0, 2));
 
-        var result = sut.ApplyFilters(
+        var result = SystemUnderTesting.ApplyFilters(
             games,
             new FilterCriteria { City = "Brussels", SortOption = SortOption.Location });
 
@@ -139,7 +132,7 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenLocationSortIsProvidedWithUnknownCity_KeepsOriginalOrder()
     {
-        var sut = CreateSut(out _, out _, out _, out var geoService);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out var geoService);
         var games = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Paris", 4, 2),
@@ -148,7 +141,7 @@ public class SearchAndFilterServiceTests
 
         geoService.Setup(service => service.GetCityDetails("Unknown")).Returns((false, string.Empty, 0, 0));
 
-        var result = sut.ApplyFilters(
+        var result = SystemUnderTesting.ApplyFilters(
             games,
             new FilterCriteria { City = "Unknown", SortOption = SortOption.Location });
 
@@ -161,7 +154,7 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenAvailabilityRangeFilterIsProvided_UsesRentalsRepository()
     {
-        var sut = CreateSut(out _, out _, out var rentalsRepository, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out var rentalsRepository, out _);
         var games = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
@@ -169,10 +162,10 @@ public class SearchAndFilterServiceTests
         };
         var range = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
 
-        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range.StartTime, range.EndTime, 1)).Returns(true);
-        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range.StartTime, range.EndTime, 2)).Returns(false);
+        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range, 1)).Returns(true);
+        rentalsRepository.Setup(repository => repository.CheckGameAvailability(range, 2)).Returns(false);
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { AvailabilityRange = range });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { AvailabilityRange = range });
 
         Assert.Single(result);
         Assert.Equal(1, result[0].GameId);
@@ -181,7 +174,7 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void SearchGamesByFilter_WhenLocationSortIsProvided_ClearsCityForRepositoryAndRestoresItAfterwards()
     {
-        var sut = CreateSut(out var gamesRepository, out var usersRepository, out _, out var geoService);
+        var SystemUnderTesting = CreateSystemUnderTesting(out var gamesRepository, out var usersRepository, out _, out var geoService);
         var filter = new FilterCriteria { City = "Brussels", SortOption = SortOption.Location };
         var owner = CreateUser(1, "Paris");
         var games = new List<Game>
@@ -197,7 +190,7 @@ public class SearchAndFilterServiceTests
         geoService.Setup(service => service.GetCityDetails("Brussels")).Returns((true, "Brussels", 0, 0));
         geoService.Setup(service => service.GetCityDetails("Paris")).Returns((true, "Paris", 0, 1));
 
-        var result = sut.SearchGamesByFilter(filter);
+        var result = SystemUnderTesting.SearchGamesByFilter(filter);
 
         Assert.Equal("Brussels", filter.City);
         Assert.Equal(2, result.Length);
@@ -208,11 +201,11 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void SearchGamesByFilter_WhenRepositoryFails_ThrowsInvalidOperationException()
     {
-        var sut = CreateSut(out var gamesRepository, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out var gamesRepository, out _, out _, out _);
         gamesRepository.Setup(repository => repository.GetGamesByFilter(It.IsAny<FilterCriteria>()))
             .Throws(new Exception("boom"));
 
-        var exception = Assert.Throws<InvalidOperationException>(() => sut.SearchGamesByFilter(new FilterCriteria()));    
+        var exception = Assert.Throws<InvalidOperationException>(() => SystemUnderTesting.SearchGamesByFilter(new FilterCriteria()));
 
         Assert.Equal("Failed to search for games.", exception.Message);
         Assert.IsType<Exception>(exception.InnerException);
@@ -222,9 +215,9 @@ public class SearchAndFilterServiceTests
     [MemberData(nameof(DateRangeData))]
     public void IsValidDateRange_WhenCalled_ReturnsExpectedResult(DateTime? start, DateTime? end, bool expected)
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
 
-        var result = sut.IsValidDateRange(start, end);
+        var result = SystemUnderTesting.IsValidDateRange(start, end);
 
         Assert.Equal(expected, result);
     }
@@ -242,9 +235,9 @@ public class SearchAndFilterServiceTests
     [MemberData(nameof(PlayerCountData))]
     public void IsValidPlayersCount_WhenCalled_ReturnsExpectedResult(int? players, bool expected)
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
 
-        var result = sut.IsValidPlayersCount(players);
+        var result = SystemUnderTesting.IsValidPlayersCount(players);
 
         Assert.Equal(expected, result);
     }
@@ -260,12 +253,12 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void UpdateFilterFromUI_WhenValidInputIsProvided_PopulatesFilterValues()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
         var filter = new FilterCriteria();
         var startDate = new DateTime(2026, 1, 1);
         var endDate = new DateTime(2026, 1, 2);
 
-        sut.UpdateFilterFromUI(filter, 19.99, 3, startDate, endDate);
+        SystemUnderTesting.UpdateFilterFromUI(filter, 19.99, 3, startDate, endDate);
 
         Assert.Equal(19.99m, filter.MaximumPrice);
         Assert.Equal(3, filter.PlayerCount);
@@ -277,25 +270,25 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void UpdateFilterFromUI_WhenInvalidDateRangeIsProvided_ClearsAvailabilityRange()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
         var filter = new FilterCriteria();
 
-        sut.UpdateFilterFromUI(filter, 0, 0, new DateTime(2026, 1, 2), new DateTime(2026, 1, 1));
+        SystemUnderTesting.UpdateFilterFromUI(filter, 0, 0, new DateTime(2026, 1, 2), new DateTime(2026, 1, 1));
 
         Assert.Null(filter.MaximumPrice);
         Assert.Null(filter.PlayerCount);
         Assert.Null(filter.AvailabilityRange);
     }
 
-    private static SearchAndFilterService CreateSut(
+    private static SearchAndFilterService CreateSystemUnderTesting(
         out Mock<InterfaceGamesRepository> gamesRepository,
-        out Mock<IUserRepository> usersRepository,
-        out Mock<IRentalRepository> rentalsRepository,
+        out Mock<InterfaceUsersRepository> usersRepository,
+        out Mock<InterfaceRentalsRepository> rentalsRepository,
         out Mock<InterfaceGeographicalService> geographicalService)
     {
         gamesRepository = new Mock<InterfaceGamesRepository>(MockBehavior.Loose);
-        usersRepository = new Mock<IUserRepository>(MockBehavior.Loose);
-        rentalsRepository = new Mock<IRentalRepository>(MockBehavior.Loose);
+        usersRepository = new Mock<InterfaceUsersRepository>(MockBehavior.Loose);
+        rentalsRepository = new Mock<InterfaceRentalsRepository>(MockBehavior.Loose);
         geographicalService = new Mock<InterfaceGeographicalService>(MockBehavior.Loose);
 
         geographicalService
@@ -303,16 +296,12 @@ public class SearchAndFilterServiceTests
             .Returns((false, string.Empty, 0, 0));
 
         rentalsRepository
-            .Setup(repository => repository.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>()))
+            .Setup(repository => repository.CheckGameAvailability(It.IsAny<TimeRange>(), It.IsAny<int>()))
             .Returns(true);
 
         usersRepository
             .Setup(repository => repository.GetGameById(It.IsAny<int>()))
-            .Returns(new User("owner", "owner display", "owner@test.com", "hash", string.Empty, "RO"));
-
-        usersRepository
-            .Setup(repository => repository.GetGameById(It.IsAny<int>()))
-            .Returns(new User("owner", "owner display", "owner@test.com", "hash", string.Empty, "RO"));
+            .Returns(new User { City = string.Empty });
 
         return new SearchAndFilterService(
             gamesRepository.Object,
@@ -321,11 +310,11 @@ public class SearchAndFilterServiceTests
             geographicalService.Object);
     }
 
-    private static GameDTO CreateGameDto(int Id, string name, decimal price, string city, int maximumPlayers, int minimumPlayers)
+    private static GameDTO CreateGameDto(int id, string name, decimal price, string city, int maximumPlayers, int minimumPlayers)
     {
         return new GameDTO
         {
-            GameId = Id,
+            GameId = id,
             Name = name,
             Price = price,
             City = city,
@@ -334,33 +323,45 @@ public class SearchAndFilterServiceTests
         };
     }
 
-    private static Game CreateGame(int Id, int ownerId, string name, decimal price, int maximumPlayers, int minimumPlayers)
+    private static Game CreateGame(int id, int ownerId, string name, decimal price, int maximumPlayers, int minimumPlayers)
     {
-        return new Game(price, minimumPlayers, maximumPlayers, "Description", ownerId, 2, 4, "Description", 1)
+        return new Game
         {
-            Id = Id
+            GameId = id,
+            OwnerId = ownerId,
+            Name = name,
+            Price = price,
+            MaximumPlayerNumber = maximumPlayers,
+            MinimumPlayerNumber = minimumPlayers,
+            Description = "Description",
         };
     }
 
-    private static User CreateUser(int Id, string city)
+    private static User CreateUser(int id, string city)
     {
-        return new User("user", "User", "user@example.com", "hash", city, "RO")
+        return new User
         {
-            Id = Id
+            UserId = id,
+            Username = "user",
+            DisplayName = "User",
+            Email = "user@example.com",
+            PasswordHash = "hash",
+            City = city,
+            Country = "RO",
         };
     }
 
     [Fact]
     public void ApplyFilters_WhenNoResultsMatch_ReturnsEmpty()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
 
         var games = new[]
         {
         CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
     };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { Name = "zzz" });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { Name = "zzz" });
 
         Assert.Empty(result);
     }
@@ -368,7 +369,7 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenMultipleListingsExistForSameGame_AllowsMultipleListings()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
 
         var games = new[]
         {
@@ -376,7 +377,7 @@ public class SearchAndFilterServiceTests
         CreateGameDto(2, "Catan", 25m, "Cluj", 4, 2),
     };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { Name = "cat" });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { Name = "cat" });
 
         Assert.Equal(2, result.Length);
     }
@@ -384,7 +385,7 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenPartialMatchIsProvided_ReturnsMatchingGames()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
 
         var games = new[]
         {
@@ -392,7 +393,7 @@ public class SearchAndFilterServiceTests
         CreateGameDto(2, "Chess", 10m, "Cluj", 2, 2),
     };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { Name = "poly" });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { Name = "poly" });
 
         Assert.Single(result);
         Assert.Equal(1, result[0].GameId);
@@ -401,7 +402,7 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenAllCriteriaMustMatch_ReturnsMatchingGames()
     {
-        var sut = CreateSut(out _, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out _, out _);
 
         var games = new[]
         {
@@ -409,7 +410,7 @@ public class SearchAndFilterServiceTests
         CreateGameDto(2, "Catan", 50m, "Cluj", 4, 2),
     };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria
         {
             Name = "cat",
             MaximumPrice = 25m
@@ -422,12 +423,12 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void ApplyFilters_WhenAvailabilityRangeIsProvided_ReturnsOnlyAvailableGames()
     {
-        var sut = CreateSut(out _, out _, out var rentalsRepo, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out _, out _, out var rentalsRepository, out _);
 
         var range = new TimeRange(DateTime.Now, DateTime.Now.AddDays(1));
 
-        rentalsRepo.Setup(r => r.CheckGameAvailability(range.StartTime, range.EndTime, 1)).Returns(true);
-        rentalsRepo.Setup(r => r.CheckGameAvailability(range.StartTime, range.EndTime, 2)).Returns(false);
+        rentalsRepository.Setup(rentalsRepository => rentalsRepository.CheckGameAvailability(range, 1)).Returns(true);
+        rentalsRepository.Setup(rentalsRepository => rentalsRepository.CheckGameAvailability(range, 2)).Returns(false);
 
         var games = new[]
         {
@@ -435,7 +436,7 @@ public class SearchAndFilterServiceTests
         CreateGameDto(2, "Game2", 10m, "Cluj", 4, 2),
     };
 
-        var result = sut.ApplyFilters(games, new FilterCriteria { AvailabilityRange = range });
+        var result = SystemUnderTesting.ApplyFilters(games, new FilterCriteria { AvailabilityRange = range });
 
         Assert.Single(result);
         Assert.Equal(1, result[0].GameId);
@@ -444,14 +445,14 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void SearchGamesByFilter_WhenCalled_ResultContainsGameId()
     {
-        var sut = CreateSut(out var gamesRepo, out var usersRepo, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out var gameRepository, out var usersRepo, out _, out _);
 
-        gamesRepo.Setup(r => r.GetGamesByFilter(It.IsAny<FilterCriteria>()))
+        gameRepository.Setup(gameRepository => gameRepository.GetGamesByFilter(It.IsAny<FilterCriteria>()))
             .Returns(new List<Game> { CreateGame(1, 1, "Catan", 20m, 4, 2) });
 
-        usersRepo.Setup(r => r.GetGameById(1)).Returns(CreateUser(1, "Cluj"));
+        usersRepo.Setup(userRepository => userRepository.GetGameById(1)).Returns(CreateUser(1, "Cluj"));
 
-        var result = sut.SearchGamesByFilter(new FilterCriteria());
+        var result = SystemUnderTesting.SearchGamesByFilter(new FilterCriteria());
 
         Assert.True(result[0].GameId > 0);
     }
@@ -459,12 +460,12 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void SearchGamesByFilter_WhenCalled_DoesNotRequireAuthentication()
     {
-        var sut = CreateSut(out var gamesRepo, out _, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out var gameRepository, out _, out _, out _);
 
-        gamesRepo.Setup(r => r.GetGamesByFilter(It.IsAny<FilterCriteria>()))
+        gameRepository.Setup(r => r.GetGamesByFilter(It.IsAny<FilterCriteria>()))
             .Returns(new List<Game>());
 
-        var result = sut.SearchGamesByFilter(new FilterCriteria());
+        var result = SystemUnderTesting.SearchGamesByFilter(new FilterCriteria());
 
         Assert.NotNull(result);
     }
@@ -472,14 +473,14 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void SearchGamesByFilter_WhenCalled_ReturnsResults()
     {
-        var sut = CreateSut(out var gamesRepo, out var usersRepo, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out var gameRepository, out var usersRepository, out _, out _);
 
-        gamesRepo.Setup(r => r.GetGamesByFilter(It.IsAny<FilterCriteria>()))
+        gameRepository.Setup(gameRepository => gameRepository.GetGamesByFilter(It.IsAny<FilterCriteria>()))
             .Returns(new List<Game> { CreateGame(1, 1, "Catan", 20m, 4, 2) });
 
-        usersRepo.Setup(r => r.GetGameById(1)).Returns(CreateUser(1, "Cluj"));
+        usersRepository.Setup(usersRepository => usersRepository.GetGameById(1)).Returns(CreateUser(1, "Cluj"));
 
-        var result = sut.SearchGamesByFilter(new FilterCriteria());
+        var result = SystemUnderTesting.SearchGamesByFilter(new FilterCriteria());
 
         Assert.Single(result);
     }
@@ -487,17 +488,17 @@ public class SearchAndFilterServiceTests
     [Fact]
     public void SearchGamesByFilter_WhenCalled_ResultContainsRequiredFields()
     {
-        var sut = CreateSut(out var gamesRepo, out var usersRepo, out _, out _);
+        var SystemUnderTesting = CreateSystemUnderTesting(out var gameRepository, out var usersRepository, out _, out _);
 
-        gamesRepo.Setup(r => r.GetGamesByFilter(It.IsAny<FilterCriteria>()))
+        gameRepository.Setup(gameRepository => gameRepository.GetGamesByFilter(It.IsAny<FilterCriteria>()))
             .Returns(new List<Game>
             {
             CreateGame(1, 1, "Catan", 20m, 4, 2)
             });
 
-        usersRepo.Setup(r => r.GetGameById(1)).Returns(CreateUser(1, "Cluj"));
+        usersRepository.Setup(usersRepository => usersRepository.GetGameById(1)).Returns(CreateUser(1, "Cluj"));
 
-        var result = sut.SearchGamesByFilter(new FilterCriteria());
+        var result = SystemUnderTesting.SearchGamesByFilter(new FilterCriteria());
 
         var game = result.First();
 
@@ -507,8 +508,3 @@ public class SearchAndFilterServiceTests
         Assert.True(game.MaximumPlayerNumber > 0);
     }
 }
-
-
-
-
-

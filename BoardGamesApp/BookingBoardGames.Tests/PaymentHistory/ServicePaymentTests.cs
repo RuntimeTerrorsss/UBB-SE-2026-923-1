@@ -60,7 +60,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             return createdPayment;
         }
 
-        // ================================ GetAllPaymentsForUI ======================================
         [Fact]
         public void GetAllPaymentsForUI_EmptyRepository_ReturnsEmptyList()
         {
@@ -103,7 +102,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Equal("Unknown Owner", returnedPayments[0].ReceiverName);
         }
 
-        // ================================ CalculateTotalAmount ======================================
         [Fact]
         public void CalculateTotalAmount_NullInput_ReturnsZero()
         {
@@ -137,7 +135,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Equal(35.75m, totalAmount);
         }
 
-        // ================================ GetFilteredPayments ======================================
         [Fact]
         public void GetFilteredPayments_FilterByCard_ReturnsOnlyCardPayments()
         {
@@ -344,7 +341,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Equal(3, filteredPayments.PageNumber);
         }
 
-        // ================================ GetReceiptDocumentPath ======================================
         [Fact]
         public void GetReceiptDocumentPath_NullFilePath_GeneratesNewPath()
         {
