@@ -203,6 +203,9 @@ public class BookingServiceTests
         rentalsRepository = new Mock<IRentalRepository>(MockBehavior.Loose);
         usersRepository = new Mock<IUserRepository>(MockBehavior.Loose);
 
+        usersRepository.Setup(r => r.GetGameById(It.IsAny<int>()))
+            .Returns((int id) => new User("owner", "Owner Name", "owner@test.com", "hash", "Cluj", "RO") { Id = id });
+
         return new BookingService(
             gamesRepository.Object,
             rentalsRepository.Object,
@@ -218,7 +221,7 @@ public class BookingServiceTests
         int minimumPlayers,
         string description)
     {
-        return new Game(price, minimumPlayers, maximumPlayers, description, ownerId, 2, 4, "Description", 1)
+        return new Game(name, price, minimumPlayers, maximumPlayers, description, ownerId)
         {
             Id = gameId,
             Image = new byte[] { 1, 2, 3 },

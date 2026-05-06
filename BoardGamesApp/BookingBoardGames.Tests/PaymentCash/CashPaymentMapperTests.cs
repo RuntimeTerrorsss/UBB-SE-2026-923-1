@@ -43,7 +43,7 @@ namespace BookingBoardGames.Tests.PaymentCash
         public void ToDataTransferObject_MapsPaymentToDataTransferObject()
         {
             var cashPaymentMapper = new CashPaymentMapper();
-            var paymentEntity = new Payment(12.34m, 5, 7, 9);
+            var paymentEntity = new Payment(12.34m, 5, 7, 9) { TransactionIdentifier = 3 };
 
             var cashPaymentDataTransferObject = cashPaymentMapper.TurnEntityIntoDataTransferObject(paymentEntity);
 

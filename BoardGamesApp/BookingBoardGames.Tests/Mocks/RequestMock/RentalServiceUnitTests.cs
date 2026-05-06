@@ -16,7 +16,7 @@ public class RentalServiceUnitTests
     private const string TestGameName = "Chess";
     private static readonly DateTime TestStartDate = new DateTime(2023, 10, 01);
     private static readonly DateTime TestEndDate = new DateTime(2023, 10, 06);
-    private const int TestDays = 5;
+    private const int TestDays = 6;
     private const decimal TestExpectedPrice = TestPricePerDay * TestDays;
 
     private readonly Mock<IRentalRepository> mockRentalRepository;

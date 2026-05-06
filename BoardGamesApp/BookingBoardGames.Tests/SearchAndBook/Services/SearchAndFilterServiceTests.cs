@@ -310,6 +310,10 @@ public class SearchAndFilterServiceTests
             .Setup(repository => repository.GetById(It.IsAny<int>()))
             .Returns(new User("owner", "owner display", "owner@test.com", "hash", string.Empty, "RO"));
 
+        usersRepository
+            .Setup(repository => repository.GetGameById(It.IsAny<int>()))
+            .Returns(new User("owner", "owner display", "owner@test.com", "hash", string.Empty, "RO"));
+
         return new SearchAndFilterService(
             gamesRepository.Object,
             usersRepository.Object,

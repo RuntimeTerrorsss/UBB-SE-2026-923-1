@@ -26,6 +26,7 @@ namespace BookingBoardGames.Tests.Chat
             string testCity = "Sibiu";
 
             conversationRepositoryMock = new Mock<IConversationRepository>();
+            conversationRepositoryMock.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).Returns(new List<int>());
             userRepositoryMock = new Mock<IUserRepository>();
 
             userRepositoryMock
@@ -112,8 +113,9 @@ namespace BookingBoardGames.Tests.Chat
         public void SendMessage_ValidInput_CallsRepositoryHandleNewMessage()
         {
             var messageDataTransferObject = CreateTextDTO();
+            var message = new TextMessage { ConversationId = 1, MessageId = 1, Conversation = null!, Sender = null!, Receiver = null! };
 
-            conversationRepositoryMock.Setup(repository => repository.HandleNewMessage(It.IsAny<Message>()));
+            conversationRepositoryMock.Setup(repository => repository.HandleNewMessage(It.IsAny<Message>())).Returns(message);
 
             conversationService.SendMessage(messageDataTransferObject);
 

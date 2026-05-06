@@ -9,7 +9,7 @@ namespace BookingBoardGames.Tests.Mocks.GameMock
         {
             var expected = new { Id = 1, Name = "Catan", PricePerDay = 10.5m };
             
-            var game = new Game(expected.Name, expected.PricePerDay, 2, 4, "Description", 1);
+            var game = new Game(expected.Name, expected.PricePerDay, 2, 4, "Description", 1) { Id = 1 };
             var actualGame = new { game.Id, game.Name, game.PricePerDay };
 
             Assert.Equal(expected, actualGame);

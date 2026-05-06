@@ -53,7 +53,7 @@ namespace BookingBoardGames.Tests.PaymentCash
             var expected = new
             {
                 OwnerName = "lender",
-                GameName = "Azul",
+                GameName = "Description",
                 DeliveryAddress = delivery,
             };
             var actual = new
