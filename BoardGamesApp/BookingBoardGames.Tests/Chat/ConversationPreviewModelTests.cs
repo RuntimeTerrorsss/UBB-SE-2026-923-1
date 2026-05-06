@@ -1,5 +1,5 @@
-﻿using System;
-using BookingBoardgamesILoveBan.Src.Chat.ViewModel;
+using System;
+using BookingBoardGames.Src.ViewModels;
 using Xunit;
 
 namespace BookingBoardGames.Tests.Chat
@@ -148,3 +148,7 @@ namespace BookingBoardGames.Tests.Chat
         }
     }
 }
+
+
+
+

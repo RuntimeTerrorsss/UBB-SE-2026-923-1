@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using Xunit;
-using BookingBoardgamesILoveBan.Src.Chat.ViewModel;
-using BookingBoardgamesILoveBan.Src.Chat.DTO;
-using BookingBoardgamesILoveBan.Src.Enum;
+using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
 using Microsoft.UI.Xaml;
 
 namespace BookingBoardGames.Tests.Chat
@@ -45,7 +46,7 @@ namespace BookingBoardGames.Tests.Chat
         public void IsMine_SenderMatchesCurrentUser_ReturnsTrue()
         {
             int currentUserId = 1;
-            var messageData = CreateMessage() with { senderId = currentUserId };
+            var messageData = CreateMessage() with { SenderId = currentUserId };
 
             var viewModel = new MessageViewModel(messageData, currentUserId);
 
@@ -57,7 +58,7 @@ namespace BookingBoardGames.Tests.Chat
         {
             int currentUserId = 1;
             int externalUserId = 99;
-            var messageData = CreateMessage() with { senderId = externalUserId };
+            var messageData = CreateMessage() with { SenderId = externalUserId };
 
             var viewModel = new MessageViewModel(messageData, currentUserId);
 
@@ -146,7 +147,7 @@ namespace BookingBoardGames.Tests.Chat
         public void IsAccepted_MappedFromDTO_IsUpdatable()
         {
             int currentUserId = 1;
-            var messageData = CreateMessage() with { isAccepted = true };
+            var messageData = CreateMessage() with { IsAccepted = true };
 
             var viewModel = new MessageViewModel(messageData, currentUserId);
 
@@ -210,3 +211,7 @@ namespace BookingBoardGames.Tests.Chat
         }
     }
 }
+
+
+
+

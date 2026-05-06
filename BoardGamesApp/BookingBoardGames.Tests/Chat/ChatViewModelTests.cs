@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardgamesILoveBan.Src.Chat.DTO;
-using BookingBoardgamesILoveBan.Src.Chat.Model;
-using BookingBoardgamesILoveBan.Src.Chat.ViewModel;
-using BookingBoardgamesILoveBan.Src.Enum;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
 using Xunit;
 
 namespace BookingBoardGames.Tests.Chat
@@ -161,13 +162,13 @@ namespace BookingBoardGames.Tests.Chat
             var viewModel = CreateViewModel();
             int testUnreadCount = 0;
             int targetMessageId = 1;
-            bool isAccepted = true;
+            bool IsAccepted = true;
             viewModel.LoadConversation(CreateConversation(), new List<MessageDataTransferObject> { CreateMessage() }, testUnreadCount);
 
             bool eventInvoked = false;
             viewModel.BookingRequestUpdate += (messageIdentifier, conversationIdentifier, acceptStatus, resolveStatus) => eventInvoked = true;
 
-            viewModel.ResolveBookingRequest(targetMessageId, isAccepted);
+            viewModel.ResolveBookingRequest(targetMessageId, IsAccepted);
 
             Assert.True(eventInvoked);
         }
@@ -177,9 +178,9 @@ namespace BookingBoardGames.Tests.Chat
         {
             var viewModel = CreateViewModel();
             int missingMessageId = 999;
-            bool isAccepted = true;
+            bool IsAccepted = true;
 
-            Exception executionException = Record.Exception(() => viewModel.ResolveBookingRequest(missingMessageId, isAccepted));
+            Exception executionException = Record.Exception(() => viewModel.ResolveBookingRequest(missingMessageId, IsAccepted));
 
             Assert.Null(executionException);
         }
@@ -233,13 +234,13 @@ namespace BookingBoardGames.Tests.Chat
             var viewModel = CreateViewModel();
             int targetMessageId = 1;
             int targetConversationId = 1;
-            bool isAccepted = true;
-            bool isResolved = false;
+            bool IsAccepted = true;
+            bool IsResolved = false;
 
             bool eventInvoked = false;
             viewModel.BookingRequestUpdate += (messageIdentifier, conversationIdentifier, acceptStatus, resolveStatus) => eventInvoked = true;
 
-            viewModel.RaiseBookingRequestUpdate(targetMessageId, targetConversationId, isAccepted, isResolved);
+            viewModel.RaiseBookingRequestUpdate(targetMessageId, targetConversationId, IsAccepted, IsResolved);
 
             Assert.True(eventInvoked);
         }
@@ -325,7 +326,7 @@ namespace BookingBoardGames.Tests.Chat
 
             var originalMessage = CreateMessage();
             var duplicateMessage = CreateMessage();
-            duplicateMessage = duplicateMessage with { sentAt = originalMessage.sentAt.AddMilliseconds(timeDelayMilliseconds) };
+            duplicateMessage = duplicateMessage with { SentAt = originalMessage.SentAt.AddMilliseconds(timeDelayMilliseconds) };
 
             viewModel.HandleIncomingMessage(originalMessage);
             viewModel.HandleIncomingMessage(duplicateMessage);
@@ -334,3 +335,7 @@ namespace BookingBoardGames.Tests.Chat
         }
     }
 }
+
+
+
+

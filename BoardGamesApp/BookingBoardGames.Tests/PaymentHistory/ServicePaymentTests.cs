@@ -1,10 +1,11 @@
-﻿using BookingBoardgamesILoveBan.Src.PaymentCommon.Model;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.DTO;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Enums;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Model;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Repository;
-using BookingBoardgamesILoveBan.Src.PaymentHistory.Service;
-using BookingBoardgamesILoveBan.Src.Receipt.Service;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Services;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
 
             receiptServiceMock
                 .Setup(service => service.GenerateReceiptRelativePath(It.IsAny<int>()))
-                .Returns((int paymentId) => $"receipts\\receipt_{paymentId}_test.pdf");
+                .Returns((int PaymentId) => $"receipts\\receipt_{PaymentId}_test.pdf");
 
             receiptServiceMock
                 .Setup(service => service.GetReceiptDocument(It.IsAny<Payment>()))
@@ -48,12 +49,12 @@ namespace BookingBoardGames.Tests.PaymentHistory
             );
         }
 
-        private HistoryPayment MakePayment(int paymentId, string gameName, string ownerName, string method, decimal amount, DateTime? date = null)
+        private HistoryPayment MakePayment(int PaymentId, string gameName, string ownerName, string method, decimal amount, DateTime? date = null)
         {
-            var createdPayment = new HistoryPayment(paymentId, 1, 1, 2, method, amount)
+            var createdPayment = new HistoryPayment(amount, 1, 1, 2, gameName, ownerName)
             {
-                GameName = gameName,
-                OwnerName = ownerName,
+                TransactionIdentifier = PaymentId,
+                PaymentMethod = method,
                 DateOfTransaction = date ?? DateTime.Now
             };
             return createdPayment;
@@ -343,7 +344,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void GetReceiptDocumentPath_NullFilePath_GeneratesNewPath()
         {
-            var payment = new HistoryPayment(1, 1, 1, 2, "Card", 50) { ReceiptFilePath = null };
+            var payment = new HistoryPayment(1, 1, 1, 2, "Card", "Owner") { TransactionIdentifier = 1, ReceiptFilePath = null };
             var payments = new List<HistoryPayment> { payment };
             InitializeService(payments);
 
@@ -355,7 +356,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void GetReceiptDocumentPath_FilePathWithoutBackslashes_AddsBackslashes()
         {
-            var payment = new HistoryPayment(1, 1, 1, 2, "Card", 50) { ReceiptFilePath = "receipt_1_test.pdf" };
+            var payment = new HistoryPayment(1, 1, 1, 2, "Card", "Owner") { TransactionIdentifier = 1, ReceiptFilePath = "receipt_1_test.pdf" };
             var payments = new List<HistoryPayment> { payment };
             InitializeService(payments);
 
@@ -366,7 +367,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void GetReceiptDocumentPath_FilePathWithBackslashes_ReturnsDocument()
         {
-            var payment = new HistoryPayment(1, 1, 1, 2, "Card", 50) { ReceiptFilePath = "receipts\\receipt_1_test.pdf" };
+            var payment = new HistoryPayment(1, 1, 1, 2, "Card", "Owner") { TransactionIdentifier = 1, ReceiptFilePath = "receipts\\receipt_1_test.pdf" };
             var payments = new List<HistoryPayment> { payment };
             InitializeService(payments);
 
@@ -375,3 +376,8 @@ namespace BookingBoardGames.Tests.PaymentHistory
         }
     }
 }
+
+
+
+
+

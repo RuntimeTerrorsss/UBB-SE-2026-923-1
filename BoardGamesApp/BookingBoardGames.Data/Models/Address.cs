@@ -28,4 +28,9 @@ public class Address
 
     [Column("street_number")]
     public string StreetNumber { get; set; } = string.Empty;
+
+    public override string ToString()
+    {
+        return $"{Street} {StreetNumber}, {City}, {Country}";
+    }
 }

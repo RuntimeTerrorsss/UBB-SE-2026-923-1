@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using Microsoft.UI.Xaml;
 using Xunit;
-using BookingBoardgamesILoveBan.Src.PaymentCard.Converters;
+using BookingBoardGames.Src.Converters;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {
@@ -119,3 +119,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         }
     }
 }
+
+
+
+
