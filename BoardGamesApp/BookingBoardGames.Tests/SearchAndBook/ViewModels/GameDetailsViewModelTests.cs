@@ -11,11 +11,11 @@ public class GameDetailsViewModelTests
     [Fact]
     public void Constructor_ServiceReturnsData_SetsPropertiesCorrectly()
     {
-        var (sut, _, messages) = CreateSut();
+        var (SystemUnderTesting, _, messages) = CreateSystemUnderTesting();
 
-        Assert.False(sut.HasError);
-        Assert.NotNull(sut.GameAndUserDetails);
-        Assert.NotNull(sut.UnavailableTimeRanges);
+        Assert.False(SystemUnderTesting.HasError);
+        Assert.NotNull(SystemUnderTesting.GameAndUserDetails);
+        Assert.NotNull(SystemUnderTesting.UnavailableTimeRanges);
         Assert.Empty(messages);
     }
 
@@ -23,23 +23,23 @@ public class GameDetailsViewModelTests
     public void Constructor_ServiceThrowsException_SetsErrorAndRaisesMessage()
     {
         var bookingService = new Mock<InterfaceBookingService>();
-        bookingService.Setup(s => s.GetBookingInformationForSpecificGame(It.IsAny<int>()))
+        bookingService.Setup(bookingService => bookingService.GetBookingInformationForSpecificGame(It.IsAny<int>()))
             .Throws(new Exception("boom"));
 
         var messages = new List<string>();
-        var sut = new GameDetailsViewModel(bookingService.Object, 1);
-        sut.OnMessageRequested += messages.Add;
+        var SystemUnderTesting = new GameDetailsViewModel(bookingService.Object, 1);
+        SystemUnderTesting.OnMessageRequested += messages.Add;
 
-        Assert.True(sut.HasError);
-        Assert.Empty(sut.UnavailableTimeRanges);
+        Assert.True(SystemUnderTesting.HasError);
+        Assert.Empty(SystemUnderTesting.UnavailableTimeRanges);
     }
 
     [Fact]
     public void CheckGameAvailability_RangeIsNull_ReturnsFalse()
     {
-        var (sut, _, _) = CreateSut();
+        var (SystemUnderTesting, _, _) = CreateSystemUnderTesting();
 
-        var result = sut.CheckGameAvailability(null!);
+        var result = SystemUnderTesting.CheckGameAvailability(null!);
 
         Assert.False(result);
     }
@@ -47,12 +47,12 @@ public class GameDetailsViewModelTests
     [Fact]
     public void CheckGameAvailability_ServiceReturnsTrue_ReturnsTrue()
     {
-        var (sut, bookingService, _) = CreateSut();
+        var (SystemUnderTesting, bookingService, _) = CreateSystemUnderTesting();
 
         var range = CreateRange();
-        bookingService.Setup(s => s.CheckGameAvailability(It.IsAny<int>(), range)).Returns(true);
+        bookingService.Setup(bookingService => bookingService.CheckGameAvailability(It.IsAny<int>(), range)).Returns(true);
 
-        var result = sut.CheckGameAvailability(range);
+        var result = SystemUnderTesting.CheckGameAvailability(range);
 
         Assert.True(result);
     }
@@ -60,13 +60,13 @@ public class GameDetailsViewModelTests
     [Fact]
     public void CheckGameAvailability_ServiceThrowsException_ReturnsFalseAndRaisesMessage()
     {
-        var (sut, bookingService, messages) = CreateSut();
+        var (SystemUnderTesting, bookingService, messages) = CreateSystemUnderTesting();
 
         var range = CreateRange();
-        bookingService.Setup(s => s.CheckGameAvailability(It.IsAny<int>(), range))
+        bookingService.Setup(bookingService => bookingService.CheckGameAvailability(It.IsAny<int>(), range))
             .Throws(new Exception("boom"));
 
-        var result = sut.CheckGameAvailability(range);
+        var result = SystemUnderTesting.CheckGameAvailability(range);
 
         Assert.False(result);
         Assert.Single(messages);
@@ -75,54 +75,54 @@ public class GameDetailsViewModelTests
     [Fact]
     public void CalculatePrice_ValidRange_ReturnsCorrectTotal()
     {
-        var (sut, bookingService, _) = CreateSut();
+        var (SystemUnderTesting, bookingService, _) = CreateSystemUnderTesting();
 
         var range = CreateRange();
-        bookingService.Setup(s => s.CalculateTotalPriceForRentingASpecificGame(It.IsAny<decimal>(), range))
+        bookingService.Setup(bookingService => bookingService.CalculateTotalPriceForRentingASpecificGame(It.IsAny<decimal>(), range))
             .Returns(100);
 
-        var result = sut.CalculatePrice(range);
+        var result = SystemUnderTesting.CalculatePrice(range);
 
         Assert.Equal(100, result);
-        Assert.Equal(100, sut.TotalPrice);
+        Assert.Equal(100, SystemUnderTesting.TotalPrice);
     }
 
     [Fact]
     public void CalculatePrice_RangeIsNull_ReturnsZeroAndRaisesMessage()
     {
-        var (sut, _, messages) = CreateSut();
+        var (SystemUnderTesting, _, messages) = CreateSystemUnderTesting();
 
-        var result = sut.CalculatePrice(null!);
+        var result = SystemUnderTesting.CalculatePrice(null!);
 
         Assert.Equal(0, result);
-        Assert.Equal(0, sut.TotalPrice);
+        Assert.Equal(0, SystemUnderTesting.TotalPrice);
         Assert.Single(messages);
     }
 
     [Fact]
     public void CalculatePrice_ServiceThrowsException_ReturnsZeroAndRaisesMessage()
     {
-        var (sut, bookingService, messages) = CreateSut();
+        var (SystemUnderTesting, bookingService, messages) = CreateSystemUnderTesting();
 
         var range = CreateRange();
-        bookingService.Setup(s => s.CalculateTotalPriceForRentingASpecificGame(It.IsAny<decimal>(), range))
+        bookingService.Setup(bookingService => bookingService.CalculateTotalPriceForRentingASpecificGame(It.IsAny<decimal>(), range))
             .Throws(new Exception("boom"));
 
-        var result = sut.CalculatePrice(range);
+        var result = SystemUnderTesting.CalculatePrice(range);
 
         Assert.Equal(0, result);
-        Assert.Equal(0, sut.TotalPrice);
+        Assert.Equal(0, SystemUnderTesting.TotalPrice);
         Assert.Single(messages);
     }
 
     [Fact]
     public void StartBooking_UserNotLoggedIn_RaisesMessage()
     {
-        var (sut, _, messages) = CreateSut();
+        var (SystemUnderTesting, _, messages) = CreateSystemUnderTesting();
 
         SessionContext.GetInstance().Clear();
 
-        sut.StartBooking(CreateRange());
+        SystemUnderTesting.StartBooking(CreateRange());
 
         Assert.Single(messages);
         Assert.Contains("User not logged in", messages[0]);
@@ -131,11 +131,11 @@ public class GameDetailsViewModelTests
     [Fact]
     public void StartBooking_RangeIsNull_RaisesMessage()
     {
-        var (sut, _, messages) = CreateSut();
+        var (SystemUnderTesting, _, messages) = CreateSystemUnderTesting();
 
         SessionContext.GetInstance().Populate(CreateUser());
 
-        sut.StartBooking(null!);
+        SystemUnderTesting.StartBooking(null!);
 
         Assert.Single(messages);
     }
@@ -143,21 +143,21 @@ public class GameDetailsViewModelTests
     [Fact]
     public void StartBooking_ValidRange_RaisesStartBookingEvent()
     {
-        var (sut, _, _) = CreateSut();
+        var (SystemUnderTesting, _, _) = CreateSystemUnderTesting();
 
         SessionContext.GetInstance().Populate(CreateUser());
 
         BookingDTO? dto = null;
         TimeRange? rangeResult = null;
 
-        sut.OnStartBookingRequested += (d, r) =>
+        SystemUnderTesting.OnStartBookingRequested += (BookingDTO, TimeRange) =>
         {
-            dto = d;
-            rangeResult = r;
+            dto = BookingDTO;
+            rangeResult = TimeRange;
         };
 
         var range = CreateRange();
-        sut.StartBooking(range);
+        SystemUnderTesting.StartBooking(range);
 
         Assert.NotNull(dto);
         Assert.Equal(range, rangeResult);
@@ -166,12 +166,12 @@ public class GameDetailsViewModelTests
     [Fact]
     public void GoBack_Invoked_RaisesEvent()
     {
-        var (sut, _, _) = CreateSut();
+        var (SystemUnderTesting, _, _) = CreateSystemUnderTesting();
 
         bool called = false;
-        sut.OnGoBackRequested += () => called = true;
+        SystemUnderTesting.OnGoBackRequested += () => called = true;
 
-        sut.GoBack();
+        SystemUnderTesting.GoBack();
 
         Assert.True(called);
     }
@@ -179,9 +179,9 @@ public class GameDetailsViewModelTests
     [Fact]
     public void BookCommand_InvalidParameter_RaisesMessage()
     {
-        var (sut, _, messages) = CreateSut();
+        var (SystemUnderTesting, _, messages) = CreateSystemUnderTesting();
 
-        sut.BookCommand.Execute("invalid");
+        SystemUnderTesting.BookCommand.Execute("invalid");
 
         Assert.Single(messages);
         Assert.Contains("Invalid booking interval", messages[0]);
@@ -190,22 +190,22 @@ public class GameDetailsViewModelTests
     [Fact]
     public void BookCommand_ValidParameter_StartsBooking()
     {
-        var (sut, _, _) = CreateSut();
+        var (SystemUnderTesting, _, _) = CreateSystemUnderTesting();
 
         SessionContext.GetInstance().Populate(CreateUser());
 
         bool called = false;
-        sut.OnStartBookingRequested += (_, _) => called = true;
+        SystemUnderTesting.OnStartBookingRequested += (_, _) => called = true;
 
         var range = CreateRange();
-        sut.BookCommand.Execute(range);
+        SystemUnderTesting.BookCommand.Execute(range);
 
         Assert.True(called);
     }
 
 
-    private static (GameDetailsViewModel Sut, Mock<InterfaceBookingService> BookingService, List<string> Messages)
-        CreateSut()
+    private static (GameDetailsViewModel SystemUnderTesting, Mock<InterfaceBookingService> BookingService, List<string> Messages)
+        CreateSystemUnderTesting()
     {
         var bookingService = new Mock<InterfaceBookingService>(MockBehavior.Loose);
 
@@ -215,12 +215,12 @@ public class GameDetailsViewModelTests
         bookingService.Setup(s => s.GetUnavailableTimeRanges(It.IsAny<int>()))
             .Returns(Array.Empty<TimeRange>());
 
-        var sut = new GameDetailsViewModel(bookingService.Object, 1);
+        var SystemUnderTesting = new GameDetailsViewModel(bookingService.Object, 1);
 
         var messages = new List<string>();
-        sut.OnMessageRequested += messages.Add;
+        SystemUnderTesting.OnMessageRequested += messages.Add;
 
-        return (sut, bookingService, messages);
+        return (SystemUnderTesting, bookingService, messages);
     }
 
     private static BookingDTO CreateDto()

@@ -11,7 +11,7 @@ public class FilteredSearchViewModelTests
     [Fact]
     public void LoadSearchResults_WithValidFilter_ReturnsResultsFromSearchService()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
         var results = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
@@ -20,72 +20,72 @@ public class FilteredSearchViewModelTests
 
         searchService.Setup(service => service.SearchGamesByFilter(It.IsAny<FilterCriteria>())).Returns(results);
 
-        sut.LoadSearchResults(new FilterCriteria());
+        SystemUnderTesting.LoadSearchResults(new FilterCriteria());
 
         Assert.Empty(errors);
-        Assert.Equal(results, sut.BaseResults);
-        Assert.Equal(results, sut.DisplayedResults);
-        Assert.Equal(2, sut.VisibleGames.Count);
-        Assert.False(sut.HasNoResults);
+        Assert.Equal(results, SystemUnderTesting.BaseResults);
+        Assert.Equal(results, SystemUnderTesting.DisplayedResults);
+        Assert.Equal(2, SystemUnderTesting.VisibleGames.Count);
+        Assert.False(SystemUnderTesting.HasNoResults);
     }
 
     [Fact]
     public void LoadSearchResults_WhenServiceThrowsException_RaisesErrorAndClearsResults()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
         searchService.Setup(service => service.SearchGamesByFilter(It.IsAny<FilterCriteria>())).Throws(new Exception("boom"));
 
-        sut.LoadSearchResults(new FilterCriteria());
+        SystemUnderTesting.LoadSearchResults(new FilterCriteria());
 
         Assert.Single(errors);
         Assert.Contains("Could not load search results.", errors[0]);
-        Assert.Empty(sut.BaseResults);
-        Assert.Empty(sut.DisplayedResults);
-        Assert.Empty(sut.VisibleGames);
-        Assert.True(sut.HasNoResults);
+        Assert.Empty(SystemUnderTesting.BaseResults);
+        Assert.Empty(SystemUnderTesting.DisplayedResults);
+        Assert.Empty(SystemUnderTesting.VisibleGames);
+        Assert.True(SystemUnderTesting.HasNoResults);
     }
 
     [Fact]
     public void LoadDiscoveryResults_WithValidResults_ReturnsProvidedResults()
     {
-        var (sut, _, _, errors) = CreateSut();
+        var (SystemUnderTesting, _, _, errors) = CreateSystemUnderTesting();
         var results = new[] { CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2) };
 
-        sut.LoadDiscoveryResults(results);
+        SystemUnderTesting.LoadDiscoveryResults(results);
 
         Assert.Empty(errors);
-        Assert.Equal(results, sut.BaseResults);
-        Assert.Equal(results, sut.DisplayedResults);
-        Assert.Single(sut.VisibleGames);
-        Assert.False(sut.HasNoResults);
+        Assert.Equal(results, SystemUnderTesting.BaseResults);
+        Assert.Equal(results, SystemUnderTesting.DisplayedResults);
+        Assert.Single(SystemUnderTesting.VisibleGames);
+        Assert.False(SystemUnderTesting.HasNoResults);
     }
 
     [Fact]
     public void ApplyFilters_WithValidDateRange_DelegatesToSearchService()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
         var results = new[] { CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2) };
-        sut.LoadDiscoveryResults(new[] { CreateGameDto(2, "Azul", 15m, "Iasi", 4, 2) });
-        sut.CurrentFilter.AvailabilityRange = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
+        SystemUnderTesting.LoadDiscoveryResults(new[] { CreateGameDto(2, "Azul", 15m, "Iasi", 4, 2) });
+        SystemUnderTesting.CurrentFilter.AvailabilityRange = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
         searchService.Setup(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>())).Returns(results);
 
-        sut.ApplyFilters();
+        SystemUnderTesting.ApplyFilters();
 
         Assert.Empty(errors);
-        Assert.Equal(results, sut.DisplayedResults);
-        Assert.Single(sut.VisibleGames);
+        Assert.Equal(results, SystemUnderTesting.DisplayedResults);
+        Assert.Single(SystemUnderTesting.VisibleGames);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Once);
     }
 
     [Fact]
     public void ApplyFilters_WithInvalidDateRange_RaisesErrorAndSkipsSearch()
     {
-        var (sut, searchService, _, errors) = CreateSut();
-        sut.LoadDiscoveryResults(new[] { CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2) });
-        sut.CurrentFilter.AvailabilityRange = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
+        SystemUnderTesting.LoadDiscoveryResults(new[] { CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2) });
+        SystemUnderTesting.CurrentFilter.AvailabilityRange = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
         searchService.Setup(service => service.IsValidDateRange(It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(false);
 
-        sut.ApplyFilters();
+        SystemUnderTesting.ApplyFilters();
 
         Assert.Single(errors);
         Assert.Contains("Please select a valid date range.", errors[0]);
@@ -95,22 +95,22 @@ public class FilteredSearchViewModelTests
     [Fact]
     public void ApplySelectedUiFilters_WithValidValues_UpdatesFilterAndAppliesResults()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
         var results = new[] { CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2) };
         searchService.Setup(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>())).Returns(results);
 
-        sut.SelectedMaximumPrice = 12.5;
-        sut.SelectedMinimumPlayers = 3;
-        sut.SelectedStartDate = new DateTimeOffset(new DateTime(2026, 1, 1));
-        sut.SelectedEndDate = new DateTimeOffset(new DateTime(2026, 1, 2));
+        SystemUnderTesting.SelectedMaximumPrice = 12.5;
+        SystemUnderTesting.SelectedMinimumPlayers = 3;
+        SystemUnderTesting.SelectedStartDate = new DateTimeOffset(new DateTime(2026, 1, 1));
+        SystemUnderTesting.SelectedEndDate = new DateTimeOffset(new DateTime(2026, 1, 2));
 
-        sut.ApplySelectedUiFilters();
+        SystemUnderTesting.ApplySelectedUiFilters();
 
         Assert.Empty(errors);
-        Assert.Equal(12.5m, sut.CurrentFilter.MaximumPrice);
-        Assert.Equal(3, sut.CurrentFilter.PlayerCount);
-        Assert.NotNull(sut.CurrentFilter.AvailabilityRange);
-        Assert.Equal(results, sut.DisplayedResults);
+        Assert.Equal(12.5m, SystemUnderTesting.CurrentFilter.MaximumPrice);
+        Assert.Equal(3, SystemUnderTesting.CurrentFilter.PlayerCount);
+        Assert.NotNull(SystemUnderTesting.CurrentFilter.AvailabilityRange);
+        Assert.Equal(results, SystemUnderTesting.DisplayedResults);
         searchService.Verify(service => service.UpdateFilterFromUI(It.IsAny<FilterCriteria>(), 12.5, 3, It.IsAny<DateTime?>(), It.IsAny<DateTime?>()), Times.Once);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Once);
     }
@@ -118,11 +118,11 @@ public class FilteredSearchViewModelTests
     [Fact]
     public void ApplySelectedUiFilters_WithInvalidPlayers_RaisesValidationError()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
         searchService.Setup(service => service.IsValidPlayersCount(It.IsAny<int?>())).Returns(false);
 
-        sut.SelectedMinimumPlayers = -1;
-        sut.ApplySelectedUiFilters();
+        SystemUnderTesting.SelectedMinimumPlayers = -1;
+        SystemUnderTesting.ApplySelectedUiFilters();
 
         Assert.Single(errors);
         Assert.Contains("Please enter valid filter values.", errors[0]);
@@ -133,157 +133,157 @@ public class FilteredSearchViewModelTests
     [Fact]
     public void RemoveNameFilter_WhenCalled_ClearsNameAndReappliesFilters()
     {
-        var (sut, searchService, _, errors) = CreateSut();
-        sut.CurrentFilter.Name = "Catan";
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
+        SystemUnderTesting.CurrentFilter.Name = "Catan";
 
-        sut.RemoveNameFilter();
+        SystemUnderTesting.RemoveNameFilter();
 
         Assert.Empty(errors);
-        Assert.Null(sut.CurrentFilter.Name);
+        Assert.Null(SystemUnderTesting.CurrentFilter.Name);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Once);
     }
 
     [Fact]
     public void RemoveCityFilter_WhenCalled_ClearsCityAndReappliesFilters()
     {
-        var (sut, searchService, _, errors) = CreateSut();
-        sut.CurrentFilter.City = "Cluj";
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
+        SystemUnderTesting.CurrentFilter.City = "Cluj";
 
-        sut.RemoveCityFilter();
+        SystemUnderTesting.RemoveCityFilter();
 
         Assert.Empty(errors);
-        Assert.Null(sut.CurrentFilter.City);
+        Assert.Null(SystemUnderTesting.CurrentFilter.City);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Once);
     }
 
     [Fact]
     public void RemovePriceFilter_WhenCalled_ClearsPriceAndReappliesFilters()
     {
-        var (sut, searchService, _, errors) = CreateSut();
-        sut.CurrentFilter.MaximumPrice = 12m;
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
+        SystemUnderTesting.CurrentFilter.MaximumPrice = 12m;
 
-        sut.RemovePriceFilter();
+        SystemUnderTesting.RemovePriceFilter();
 
         Assert.Empty(errors);
-        Assert.Null(sut.CurrentFilter.MaximumPrice);
+        Assert.Null(SystemUnderTesting.CurrentFilter.MaximumPrice);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Once);
     }
 
     [Fact]
     public void RemovePlayersFilter_WhenCalled_ClearsPlayerCountAndReappliesFilters()
     {
-        var (sut, searchService, _, errors) = CreateSut();
-        sut.CurrentFilter.PlayerCount = 3;
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
+        SystemUnderTesting.CurrentFilter.PlayerCount = 3;
 
-        sut.RemovePlayersFilter();
+        SystemUnderTesting.RemovePlayersFilter();
 
         Assert.Empty(errors);
-        Assert.Null(sut.CurrentFilter.PlayerCount);
+        Assert.Null(SystemUnderTesting.CurrentFilter.PlayerCount);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Once);
     }
 
     [Fact]
     public void RemoveDateFilter_WhenCalled_ClearsAvailabilityRangeAndReappliesFilters()
     {
-        var (sut, searchService, _, errors) = CreateSut();
-        sut.CurrentFilter.AvailabilityRange = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
+        SystemUnderTesting.CurrentFilter.AvailabilityRange = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
 
-        sut.RemoveDateFilter();
+        SystemUnderTesting.RemoveDateFilter();
 
         Assert.Empty(errors);
-        Assert.Null(sut.CurrentFilter.AvailabilityRange);
+        Assert.Null(SystemUnderTesting.CurrentFilter.AvailabilityRange);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Once);
     }
 
     [Fact]
     public void SetPriceAscendingSort_WhenCalled_SetsSortOptionAndReappliesFilters()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
 
-        sut.SetPriceAscendingSort();
+        SystemUnderTesting.SetPriceAscendingSort();
 
         Assert.Empty(errors);
-        Assert.Equal(SortOption.PriceAscending, sut.CurrentFilter.SortOption);
+        Assert.Equal(SortOption.PriceAscending, SystemUnderTesting.CurrentFilter.SortOption);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Once);
     }
 
     [Fact]
     public void SetPriceDescendingSort_WhenCalled_SetsSortOptionAndReappliesFilters()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
 
-        sut.SetPriceDescendingSort();
+        SystemUnderTesting.SetPriceDescendingSort();
 
         Assert.Empty(errors);
-        Assert.Equal(SortOption.PriceDescending, sut.CurrentFilter.SortOption);
+        Assert.Equal(SortOption.PriceDescending, SystemUnderTesting.CurrentFilter.SortOption);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Once);
     }
 
     [Fact]
     public void ClearSorting_WhenCalled_ResetsSortOptionAndReappliesFilters()
     {
-        var (sut, searchService, _, errors) = CreateSut();
-        sut.CurrentFilter.SortOption = SortOption.PriceDescending;
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
+        SystemUnderTesting.CurrentFilter.SortOption = SortOption.PriceDescending;
 
-        sut.ClearSorting();
+        SystemUnderTesting.ClearSorting();
 
         Assert.Empty(errors);
-        Assert.Equal(SortOption.None, sut.CurrentFilter.SortOption);
+        Assert.Equal(SortOption.None, SystemUnderTesting.CurrentFilter.SortOption);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Once);
     }
 
     [Fact]
     public void ClearAllFilters_WhenCalled_ResetsSelectionsAndRestoresBaseResults()
     {
-        var (sut, _, _, errors) = CreateSut();
+        var (SystemUnderTesting, _, _, errors) = CreateSystemUnderTesting();
         var baseResults = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
             CreateGameDto(2, "Azul", 15m, "Iasi", 4, 2),
         };
-        sut.LoadDiscoveryResults(baseResults);
-        sut.CurrentFilter.Name = "Catan";
-        sut.CurrentFilter.City = "Cluj";
-        sut.CurrentFilter.AvailabilityRange = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
-        sut.CurrentFilter.MaximumPrice = 12m;
-        sut.CurrentFilter.PlayerCount = 3;
-        sut.CurrentFilter.SortOption = SortOption.PriceAscending;
-        sut.SelectedMaximumPrice = 12;
-        sut.SelectedMinimumPlayers = 3;
-        sut.SelectedStartDate = new DateTimeOffset(new DateTime(2026, 1, 1));
-        sut.SelectedEndDate = new DateTimeOffset(new DateTime(2026, 1, 2));
-        sut.CitySearchText = "Cluj";
-        sut.LocationError = "error";
+        SystemUnderTesting.LoadDiscoveryResults(baseResults);
+        SystemUnderTesting.CurrentFilter.Name = "Catan";
+        SystemUnderTesting.CurrentFilter.City = "Cluj";
+        SystemUnderTesting.CurrentFilter.AvailabilityRange = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2));
+        SystemUnderTesting.CurrentFilter.MaximumPrice = 12m;
+        SystemUnderTesting.CurrentFilter.PlayerCount = 3;
+        SystemUnderTesting.CurrentFilter.SortOption = SortOption.PriceAscending;
+        SystemUnderTesting.SelectedMaximumPrice = 12;
+        SystemUnderTesting.SelectedMinimumPlayers = 3;
+        SystemUnderTesting.SelectedStartDate = new DateTimeOffset(new DateTime(2026, 1, 1));
+        SystemUnderTesting.SelectedEndDate = new DateTimeOffset(new DateTime(2026, 1, 2));
+        SystemUnderTesting.CitySearchText = "Cluj";
+        SystemUnderTesting.LocationError = "error";
 
-        sut.ClearAllFilters();
+        SystemUnderTesting.ClearAllFilters();
 
         Assert.Empty(errors);
-        Assert.Null(sut.CurrentFilter.Name);
-        Assert.Equal(string.Empty, sut.CurrentFilter.City);
-        Assert.Null(sut.CurrentFilter.AvailabilityRange);
-        Assert.Null(sut.CurrentFilter.MaximumPrice);
-        Assert.Null(sut.CurrentFilter.PlayerCount);
-        Assert.Equal(SortOption.None, sut.CurrentFilter.SortOption);
-        Assert.Equal(0, sut.SelectedMaximumPrice);
-        Assert.Equal(0, sut.SelectedMinimumPlayers);
-        Assert.Null(sut.SelectedStartDate);
-        Assert.Null(sut.SelectedEndDate);
-        Assert.Equal(string.Empty, sut.CitySearchText);
-        Assert.Equal(string.Empty, sut.LocationError);
-        Assert.Equal(baseResults, sut.DisplayedResults);
-        Assert.Equal(baseResults, sut.VisibleGames);
+        Assert.Null(SystemUnderTesting.CurrentFilter.Name);
+        Assert.Equal(string.Empty, SystemUnderTesting.CurrentFilter.City);
+        Assert.Null(SystemUnderTesting.CurrentFilter.AvailabilityRange);
+        Assert.Null(SystemUnderTesting.CurrentFilter.MaximumPrice);
+        Assert.Null(SystemUnderTesting.CurrentFilter.PlayerCount);
+        Assert.Equal(SortOption.None, SystemUnderTesting.CurrentFilter.SortOption);
+        Assert.Equal(0, SystemUnderTesting.SelectedMaximumPrice);
+        Assert.Equal(0, SystemUnderTesting.SelectedMinimumPlayers);
+        Assert.Null(SystemUnderTesting.SelectedStartDate);
+        Assert.Null(SystemUnderTesting.SelectedEndDate);
+        Assert.Equal(string.Empty, SystemUnderTesting.CitySearchText);
+        Assert.Equal(string.Empty, SystemUnderTesting.LocationError);
+        Assert.Equal(baseResults, SystemUnderTesting.DisplayedResults);
+        Assert.Equal(baseResults, SystemUnderTesting.VisibleGames);
     }
 
     [Fact]
     public void ApplySortOnly_WithClosestToMeWithoutCity_ShowsLocationError()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
 
-        sut.SelectedSortOption = "Closest to me";
+        SystemUnderTesting.SelectedSortOption = "Closest to me";
 
         Assert.Empty(errors);
-        Assert.Equal("Please enter a city to measure from.", sut.LocationError);
-        Assert.Null(sut.SelectedSortOption);
+        Assert.Equal("Please enter a city to measure from.", SystemUnderTesting.LocationError);
+        Assert.Null(SystemUnderTesting.SelectedSortOption);
         searchService.Verify(service => service.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()), Times.Never);
         searchService.Verify(service => service.SearchGamesByFilter(It.IsAny<FilterCriteria>()), Times.Never);
     }
@@ -291,29 +291,29 @@ public class FilteredSearchViewModelTests
     [Fact]
     public void SearchGamesByFilter_WithValidSelectedDates_LoadsResults()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
         var results = new[] { CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2) };
         searchService.Setup(service => service.SearchGamesByFilter(It.IsAny<FilterCriteria>())).Returns(results);
-        sut.SelectedStartDate = new DateTimeOffset(new DateTime(2026, 1, 1));
-        sut.SelectedEndDate = new DateTimeOffset(new DateTime(2026, 1, 2));
+        SystemUnderTesting.SelectedStartDate = new DateTimeOffset(new DateTime(2026, 1, 1));
+        SystemUnderTesting.SelectedEndDate = new DateTimeOffset(new DateTime(2026, 1, 2));
 
-        sut.SearchGamesByFilter(new FilterCriteria());
+        SystemUnderTesting.SearchGamesByFilter(new FilterCriteria());
 
         Assert.Empty(errors);
-        Assert.Equal(results, sut.BaseResults);
-        Assert.Equal(results, sut.DisplayedResults);
+        Assert.Equal(results, SystemUnderTesting.BaseResults);
+        Assert.Equal(results, SystemUnderTesting.DisplayedResults);
         searchService.Verify(service => service.SearchGamesByFilter(It.IsAny<FilterCriteria>()), Times.Once);
     }
 
     [Fact]
     public void SearchGamesByFilter_WithInvalidSelectedDates_RaisesError()
     {
-        var (sut, searchService, _, errors) = CreateSut();
-        sut.SelectedStartDate = new DateTimeOffset(new DateTime(2026, 1, 2));
-        sut.SelectedEndDate = new DateTimeOffset(new DateTime(2026, 1, 1));
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
+        SystemUnderTesting.SelectedStartDate = new DateTimeOffset(new DateTime(2026, 1, 2));
+        SystemUnderTesting.SelectedEndDate = new DateTimeOffset(new DateTime(2026, 1, 1));
         searchService.Setup(service => service.IsValidDateRange(It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(false);
 
-        sut.SearchGamesByFilter(new FilterCriteria());
+        SystemUnderTesting.SearchGamesByFilter(new FilterCriteria());
 
         Assert.Single(errors);
         Assert.Contains("Please select a valid date range.", errors[0]);
@@ -323,7 +323,7 @@ public class FilteredSearchViewModelTests
     [Fact]
     public void Initialize_WithExistingFilter_CopiesStateAndSearches()
     {
-        var (sut, searchService, geoService, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, geoService, errors) = CreateSystemUnderTesting();
         var results = new[] { CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2) };
         searchService.Setup(service => service.SearchGamesByFilter(It.IsAny<FilterCriteria>())).Returns(results);
         geoService.Setup(service => service.GetCitySuggestions("Cl")).Returns(new List<string> { "Cluj", "Cluj-Napoca" });
@@ -333,31 +333,31 @@ public class FilteredSearchViewModelTests
             AvailabilityRange = new TimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 2)),
         };
 
-        sut.Initialize(filter);
+        SystemUnderTesting.Initialize(filter);
 
         Assert.Empty(errors);
-        Assert.Equal("Cl", sut.CitySearchText);
-        Assert.NotNull(sut.SelectedStartDate);
-        Assert.NotNull(sut.SelectedEndDate);
-        Assert.Equal(results, sut.DisplayedResults);
+        Assert.Equal("Cl", SystemUnderTesting.CitySearchText);
+        Assert.NotNull(SystemUnderTesting.SelectedStartDate);
+        Assert.NotNull(SystemUnderTesting.SelectedEndDate);
+        Assert.Equal(results, SystemUnderTesting.DisplayedResults);
         searchService.Verify(service => service.SearchGamesByFilter(filter), Times.Once);
     }
 
     [Fact]
     public void CitySearchText_WithTwoCharacters_LoadsSuggestions()
     {
-        var (sut, _, geoService, errors) = CreateSut();
+        var (SystemUnderTesting, _, geoService, errors) = CreateSystemUnderTesting();
         geoService.Setup(service => service.GetCitySuggestions("Cl")).Returns(new List<string> { "Cluj", "Cluj-Napoca" });
 
-        sut.CitySearchText = "Cl";
+        SystemUnderTesting.CitySearchText = "Cl";
 
         Assert.Empty(errors);
-        Assert.Equal("Cl", sut.CurrentFilter.City);
-        Assert.Equal(new[] { "Cluj", "Cluj-Napoca" }, sut.CitySuggestions);
+        Assert.Equal("Cl", SystemUnderTesting.CurrentFilter.City);
+        Assert.Equal(new[] { "Cluj", "Cluj-Napoca" }, SystemUnderTesting.CitySuggestions);
         geoService.Verify(service => service.GetCitySuggestions("Cl"), Times.Once);
     }
 
-    private static (FilteredSearchViewModel Sut, Mock<InterfaceSearchAndFilterService> SearchService, Mock<InterfaceGeographicalService> GeoService, List<string> Errors) CreateSut()
+    private static (FilteredSearchViewModel SystemUnderTesting, Mock<InterfaceSearchAndFilterService> SearchService, Mock<InterfaceGeographicalService> GeoService, List<string> Errors) CreateSystemUnderTesting()
     {
         var searchService = new Mock<InterfaceSearchAndFilterService>(MockBehavior.Loose);
         searchService.Setup(service => service.IsValidDateRange(It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(true);
@@ -381,11 +381,11 @@ public class FilteredSearchViewModelTests
         geoService.Setup(service => service.GetCitySuggestions(It.IsAny<string>())).Returns(new List<string>());
         geoService.Setup(service => service.GetCityDetails(It.IsAny<string>())).Returns((false, string.Empty, 0, 0));
 
-        var sut = new FilteredSearchViewModel(searchService.Object, geoService.Object);
+        var SystemUnderTesting = new FilteredSearchViewModel(searchService.Object, geoService.Object);
         var errors = new List<string>();
-        sut.OnErrorOccurred += errors.Add;
+        SystemUnderTesting.OnErrorOccurred += errors.Add;
 
-        return (sut, searchService, geoService, errors);
+        return (SystemUnderTesting, searchService, geoService, errors);
     }
 
     private static GameDTO CreateGameDto(int id, string name, decimal price, string city, int maximumPlayers, int minimumPlayers)
@@ -404,7 +404,7 @@ public class FilteredSearchViewModelTests
     [Fact]
     public void ApplyFilters_WithAvailableGames_ShowsOnlyAvailableGames()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
 
         var baseGames = new[]
         {
@@ -417,22 +417,22 @@ public class FilteredSearchViewModelTests
         baseGames[0]
     };
 
-        sut.LoadDiscoveryResults(baseGames);
+        SystemUnderTesting.LoadDiscoveryResults(baseGames);
 
-        searchService.Setup(s => s.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()))
+        searchService.Setup(searchService => searchService.ApplyFilters(It.IsAny<GameDTO[]>(), It.IsAny<FilterCriteria>()))
             .Returns(filtered);
 
-        sut.ApplyFilters();
+        SystemUnderTesting.ApplyFilters();
 
         Assert.Empty(errors);
-        Assert.Single(sut.VisibleGames);
-        Assert.Equal(1, sut.VisibleGames.First().GameId);
+        Assert.Single(SystemUnderTesting.VisibleGames);
+        Assert.Equal(1, SystemUnderTesting.VisibleGames.First().GameId);
     }
 
     [Fact]
     public void LoadSearchResults_WithDuplicateGameListings_AllowsMultipleListings()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
 
         var results = new[]
         {
@@ -440,79 +440,79 @@ public class FilteredSearchViewModelTests
         CreateGameDto(2, "Catan", 25m, "Cluj", 4, 2),
     };
 
-        searchService.Setup(s => s.SearchGamesByFilter(It.IsAny<FilterCriteria>()))
+        searchService.Setup(searchService => searchService.SearchGamesByFilter(It.IsAny<FilterCriteria>()))
             .Returns(results);
 
-        sut.LoadSearchResults(new FilterCriteria());
+        SystemUnderTesting.LoadSearchResults(new FilterCriteria());
 
         Assert.Empty(errors);
-        Assert.Equal(2, sut.VisibleGames.Count);
+        Assert.Equal(2, SystemUnderTesting.VisibleGames.Count);
     }
 
     [Fact]
     public void LoadSearchResults_WithManyResults_ShowsSubset()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
 
         var results = Enumerable.Range(1, 50)
             .Select(i => CreateGameDto(i, "Game", 10m, "Cluj", 4, 2))
             .ToArray();
 
-        searchService.Setup(s => s.SearchGamesByFilter(It.IsAny<FilterCriteria>()))
+        searchService.Setup(searchService => searchService.SearchGamesByFilter(It.IsAny<FilterCriteria>()))
             .Returns(results);
 
-        sut.LoadSearchResults(new FilterCriteria());
+        SystemUnderTesting.LoadSearchResults(new FilterCriteria());
 
         Assert.Empty(errors);
-        Assert.True(sut.VisibleGames.Count <= results.Length);
+        Assert.True(SystemUnderTesting.VisibleGames.Count <= results.Length);
     }
 
     [Fact]
     public void GamesShown_WhenNavigating_ContainsValidGameIds()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
 
         var results = new[]
         {
         CreateGameDto(10, "Catan", 20m, "Cluj", 4, 2),
     };
 
-        searchService.Setup(s => s.SearchGamesByFilter(It.IsAny<FilterCriteria>()))
+        searchService.Setup(searchService => searchService.SearchGamesByFilter(It.IsAny<FilterCriteria>()))
             .Returns(results);
 
-        sut.LoadSearchResults(new FilterCriteria());
+        SystemUnderTesting.LoadSearchResults(new FilterCriteria());
 
         Assert.Empty(errors);
-        Assert.True(sut.VisibleGames.First().GameId > 0);
+        Assert.True(SystemUnderTesting.VisibleGames.First().GameId > 0);
     }
 
     [Fact]
     public void LoadSearchResults_WhenCalled_DoesNotRequireUserAuthentication()
     {
-        var (sut, searchService, _, errors) = CreateSut();
+        var (SystemUnderTesting, searchService, _, errors) = CreateSystemUnderTesting();
 
-        searchService.Setup(s => s.SearchGamesByFilter(It.IsAny<FilterCriteria>()))
+        searchService.Setup(searchService => searchService.SearchGamesByFilter(It.IsAny<FilterCriteria>()))
             .Returns(Array.Empty<GameDTO>());
 
-        sut.LoadSearchResults(new FilterCriteria());
+        SystemUnderTesting.LoadSearchResults(new FilterCriteria());
 
         Assert.Empty(errors);
-        Assert.NotNull(sut.VisibleGames);
+        Assert.NotNull(SystemUnderTesting.VisibleGames);
     }
 
     [Fact]
     public void SelectGame_WhenCalled_RaisesNavigationEvent()
     {
-        var (sut, _, _, errors) = CreateSut();
+        var (SystemUnderTesting, _, _, errors) = CreateSystemUnderTesting();
 
         int? selectedId = null;
-        sut.OnGameSelectedRequest += id => selectedId = id;
+        SystemUnderTesting.OnGameSelectedRequest += id => selectedId = id;
 
         var game = CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2);
 
-        sut.VisibleGames.Add(game);
+        SystemUnderTesting.VisibleGames.Add(game);
 
-        sut.SelectGame(game.GameId);
+        SystemUnderTesting.SelectGame(game.GameId);
 
         Assert.Empty(errors);
         Assert.Equal(1, selectedId);
@@ -521,11 +521,11 @@ public class FilteredSearchViewModelTests
     [Fact]
     public void NoResultsMessage_WhenNoGames_ShowsMessage()
     {
-        var (sut, _, _, _) = CreateSut();
+        var (SystemUnderTesting, _, _, _) = CreateSystemUnderTesting();
 
-        sut.LoadDiscoveryResults(Array.Empty<GameDTO>());
+        SystemUnderTesting.LoadDiscoveryResults(Array.Empty<GameDTO>());
 
-        Assert.True(sut.HasNoResults);
-        Assert.NotEmpty(sut.NoResultsMessage);
+        Assert.True(SystemUnderTesting.HasNoResults);
+        Assert.NotEmpty(SystemUnderTesting.NoResultsMessage);
     }
 }

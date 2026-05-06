@@ -269,12 +269,11 @@ namespace BookingBoardGames.Tests.PaymentCard
             var fakeUserClient = new BookingBoardgamesILoveBan.Src.Mocks.UserMock.User(3, "Client", "RO", "Cluj", "St.", "1");
             var fakeUserOwner = new BookingBoardgamesILoveBan.Src.Mocks.UserMock.User(4, "Owner", "RO", "Cluj", "St.", "1");
 
-            mockRequestService.Setup(r => r.GetRequestById(requestIdentifier)).Returns(fakeRequest);
-            mockRequestService.Setup(r => r.GetGameName(fakeRequest.Id)).Returns("TestGame");
-            mockRequestService.Setup(r => r.GetRequestPrice(fakeRequest.Id)).Returns(50.0m);
-            mockUserService.Setup(u => u.GetById(fakeRequest.ClientId)).Returns(fakeUserClient);
-            mockUserService.Setup(u => u.GetById(fakeRequest.OwnerId)).Returns(fakeUserOwner);
-
+            mockRequestService.Setup(requestService => requestService.GetRequestById(requestIdentifier)).Returns(fakeRequest);
+            mockRequestService.Setup(requestService => requestService.GetGameName(fakeRequest.Id)).Returns("TestGame");
+            mockRequestService.Setup(requestService => requestService.GetRequestPrice(fakeRequest.Id)).Returns(50.0m);
+            mockUserService.Setup(userService => userService.GetById(fakeRequest.ClientId)).Returns(fakeUserClient);
+            mockUserService.Setup(userService => userService.GetById(fakeRequest.OwnerId)).Returns(fakeUserOwner);
             var resultDataTransferObject = cardPaymentService.GetRequestDataTransferObject(requestIdentifier);
 
             Assert.NotNull(resultDataTransferObject);

@@ -12,7 +12,7 @@ public class SearchAndFilterServiceIntegrationTests
     public void ApplyFilters_WithMultipleCriteria_AppliesFiltersCorrectly()
     {
         var rentalsRepository = new InMemoryRentalsRepository();
-        var service = CreateSut(rentalsRepository, new InMemoryGeographicalService());
+        var service = CreateSystemUnderTesting(rentalsRepository, new InMemoryGeographicalService());
         var games = new[]
         {
             CreateGameDto(1, "Catan", 20m, "Cluj", 4, 2),
@@ -297,7 +297,7 @@ public class SearchAndFilterServiceIntegrationTests
 
     
 
-    private static SearchAndFilterService CreateSut(IInMemoryRentalsRepository rentalsRepository, InMemoryGeographicalService geographicalService)
+    private static SearchAndFilterService CreateSystemUnderTesting(IInMemoryRentalsRepository rentalsRepository, InMemoryGeographicalService geographicalService)
     {
         return new SearchAndFilterService(
             new InMemoryGamesRepository(Array.Empty<Game>()),
@@ -369,9 +369,9 @@ public class SearchAndFilterServiceIntegrationTests
         public List<Game> GetGamesForFeedAvailableTonight(int userId)
         {
             var range = new TimeRange(DateTime.Today, DateTime.Today.AddDays(1));
-            return _games.Where(g =>
-                g.IsActive &&
-                (_rentalsRepository == null || _rentalsRepository.CheckGameAvailability(range, g.GameId))
+            return _games.Where(game =>
+                game.IsActive &&
+                (_rentalsRepository == null || _rentalsRepository.CheckGameAvailability(range, game.GameId))
             ).ToList();
         }
 
@@ -438,11 +438,11 @@ public class SearchAndFilterServiceIntegrationTests
 
     public sealed class InMemoryGeographicalService : InterfaceGeographicalService
     {
-        private readonly Dictionary<string, (double lat, double lon)> _cities = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, (double latitude, double longitude)> _cities = new(StringComparer.OrdinalIgnoreCase);
 
-        public void SetCity(string name, double lat, double lon)
+        public void SetCity(string name, double latitude, double longitude)
         {
-            _cities[name] = (lat, lon);
+            _cities[name] = (latitude, longitude);
         }
 
         public Task InitializeAsync()
@@ -454,7 +454,7 @@ public class SearchAndFilterServiceIntegrationTests
         {
             if (_cities.TryGetValue(cityName, out var coordinates))
             {
-                return (true, cityName, coordinates.lat, coordinates.lon);
+                return (true, cityName, coordinates.latitude, coordinates.longitude);
             }
 
             return (false, string.Empty, 0, 0);
