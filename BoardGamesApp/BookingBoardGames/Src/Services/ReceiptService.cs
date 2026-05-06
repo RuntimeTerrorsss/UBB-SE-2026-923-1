@@ -282,14 +282,14 @@ namespace BookingBoardGames.Src.Services
         /// </summary>
         /// <param name="payment">transaction with relevant transaction data</param>
         /// <returns>pdf content text</returns>
-        private string[] GetReceiptContent(Payment payment)
+        private async Task<string[]> GetReceiptContent(Payment payment)
         {
             var request = this.rentalService.GetRentalById(payment.RequestId);
 
             return new[]
             {
                 this.BuildHeader(payment),
-                this.BuildRequestInfo(payment, request),
+                await this.BuildRequestInfo(payment, request),
                 this.BuildPaymentDetails(payment),
                 this.BuildConfirmation(payment),
                 this.BuildSummary(),
