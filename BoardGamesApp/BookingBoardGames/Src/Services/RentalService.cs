@@ -4,7 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Interfaces;
 
 namespace BookingBoardGames.Src.Services
 {
@@ -26,7 +28,7 @@ namespace BookingBoardGames.Src.Services
             return this.rentalRepository.GetById(rentalId);
         }
 
-        public decimal GetRentalPrice(int rentalId)
+        public async Task<decimal> GetRentalPrice(int rentalId)
         {
             var rental = this.rentalRepository.GetById(rentalId);
 
@@ -35,13 +37,13 @@ namespace BookingBoardGames.Src.Services
                 return 0m;
             }
 
-            var pricePerDay = this.gameRepository.GetPriceGameById(rental.GameId);
+            var pricePerDay = await this.gameRepository.GetPriceGameById(rental.GameId);
             var timeRange = new TimeRange(rental.StartDate, rental.EndDate);
 
             return this.CalculateTotalPriceForRentingASpecificGame(pricePerDay, timeRange);
         }
 
-        public string GetGameName(int rentalId)
+        public async Task<string> GetGameName(int rentalId)
         {
             var rental = this.rentalRepository.GetById(rentalId);
 
@@ -50,7 +52,7 @@ namespace BookingBoardGames.Src.Services
                 return "Unknown Rental";
             }
 
-            var game = this.gameRepository.GetGameById(rental.GameId);
+            var game = await this.gameRepository.GetGameById(rental.GameId);
 
             if (game == null)
             {
@@ -87,7 +89,7 @@ namespace BookingBoardGames.Src.Services
             return days < MinimumValidDayCount ? MinimumValidDayCount : days;
         }
 
-        public Rental CreateRental(int gameId, int clientId, int ownerId, DateTime startDate, DateTime endDate)
+        public async Task<Rental> CreateRental(int gameId, int clientId, int ownerId, DateTime startDate, DateTime endDate)
         {
             if (endDate < startDate)
             {
@@ -101,7 +103,7 @@ namespace BookingBoardGames.Src.Services
                 throw new InvalidOperationException("The game is not available for the selected period.");
             }
 
-            var pricePerDay = this.gameRepository.GetPriceGameById(gameId);
+            var pricePerDay = await this.gameRepository.GetPriceGameById(gameId);
             var timeRange = new TimeRange(startDate, endDate);
             var totalPrice = this.CalculateTotalPriceForRentingASpecificGame(pricePerDay, timeRange);
 
