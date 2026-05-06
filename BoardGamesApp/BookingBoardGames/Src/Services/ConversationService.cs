@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
@@ -15,7 +16,7 @@ namespace BookingBoardGames.Src.Services
     public class ConversationService : IConversationService
     {
         private IConversationRepository ConversationRepository { get; set; }
-        
+
         private IUserRepository userRepository;
         private IConversationNotifier notifier;
 
@@ -54,21 +55,21 @@ namespace BookingBoardGames.Src.Services
             return App.ConversationNotifier ?? new ConversationNotifier();
         }
 
-        private void NotifySubscribersAboutMessage(Message message)
+        private async Task NotifySubscribersAboutMessage(Message message)
         {
-            IReadOnlyList<int> participants = this.ConversationRepository.GetParticipantUserIds(message.ConversationId);
+            IReadOnlyList<int> participants = await this.ConversationRepository.GetParticipantUserIds(message.ConversationId);
             this.notifier.NotifyMessage(participants, message);
         }
 
-        private void NotifySubscribersAboutMessageUpdate(Message message)
+        private async Task NotifySubscribersAboutMessageUpdate(Message message)
         {
-            IReadOnlyList<int> participants = this.ConversationRepository.GetParticipantUserIds(message.ConversationId);
+            IReadOnlyList<int> participants = await this.ConversationRepository.GetParticipantUserIds(message.ConversationId);
             this.notifier.NotifyMessageUpdate(participants, message);
         }
 
-        private void NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
+        private async Task NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
         {
-            IReadOnlyList<int> participants = this.ConversationRepository.GetParticipantUserIds(readReceipt.ConversationId);
+            IReadOnlyList<int> participants = await this.ConversationRepository.GetParticipantUserIds(readReceipt.ConversationId);
             this.notifier.NotifyReadReceipt(participants, readReceipt);
         }
 
@@ -77,11 +78,11 @@ namespace BookingBoardGames.Src.Services
             this.notifier.NotifyNewConversation(conversation);
         }
 
-        public List<ConversationDTO> FetchConversations()
+        public async Task<List<ConversationDTO>> FetchConversations()
         {
             List<ConversationDTO> conversationList = new List<ConversationDTO>();
 
-            foreach (var conversation in this.ConversationRepository.GetConversationsForUser(this.UserId))
+            foreach (var conversation in await this.ConversationRepository.GetConversationsForUser(this.UserId))
             {
                 conversationList.Add(this.ConversationToConversationDTO(conversation));
             }
@@ -101,66 +102,66 @@ namespace BookingBoardGames.Src.Services
             return this.userRepository.GetById(message.SenderId == this.UserId ? message.ReceiverId : message.SenderId).Username ?? "Unknown User";
         }
 
-        public void SendMessage(MessageDataTransferObject message)
+        public async Task SendMessage(MessageDataTransferObject message)
         {
-            Message persisted = this.ConversationRepository.HandleNewMessage(this.MessageDTOToMessage(message));
-            this.NotifySubscribersAboutMessage(persisted);
+            Message persisted = await this.ConversationRepository.HandleNewMessage(this.MessageDTOToMessage(message));
+            await this.NotifySubscribersAboutMessage(persisted);
         }
 
-        public int CreateConversation(int senderId, int receiverId)
+        public async Task<int> CreateConversation(int senderId, int receiverId)
         {
-            int conversationId = this.ConversationRepository.CreateConversation(senderId, receiverId);
-            Conversation createdConversation = this.ConversationRepository.GetConversationById(conversationId);
+            int conversationId = await this.ConversationRepository.CreateConversation(senderId, receiverId);
+            Conversation createdConversation = await this.ConversationRepository.GetConversationById(conversationId);
             this.NotifySubscribersAboutNewConversation(createdConversation);
             return conversationId;
         }
 
-        public void UpdateMessage(MessageDataTransferObject message)
+        public async Task UpdateMessage(MessageDataTransferObject message)
         {
-            Message? persisted = this.ConversationRepository.HandleMessageUpdate(this.MessageDTOToMessage(message));
+            Message? persisted = await this.ConversationRepository.HandleMessageUpdate(this.MessageDTOToMessage(message));
             if (persisted != null)
             {
-                this.NotifySubscribersAboutMessageUpdate(persisted);
+                await this.NotifySubscribersAboutMessageUpdate(persisted);
             }
         }
 
-        public void SendReadReceipt(ConversationDTO conversation)
+        public async Task SendReadReceipt(ConversationDTO conversation)
         {
             var readReceipt = new ReadReceiptDTO(
                 conversation.Id,
                 this.UserId,
                 conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId,
                 DateTime.Now);
-            this.ConversationRepository.HandleReadReceipt(readReceipt);
-            this.NotifySubscribersAboutReadReceipt(readReceipt);
+            await this.ConversationRepository.HandleReadReceipt(readReceipt);
+            await this.NotifySubscribersAboutReadReceipt(readReceipt);
         }
 
-        public void OnCardPaymentSelected(int messageId)
+        public async Task OnCardPaymentSelected(int messageId)
         {
-            this.FinalizeRentalRequest(messageId);
+            await this.FinalizeRentalRequest(messageId);
         }
 
-        public void OnCashPaymentSelected(int messageId, int paymentId)
+        public async Task OnCashPaymentSelected(int messageId, int paymentId)
         {
-            this.FinalizeRentalRequest(messageId);
-            this.SendCashAgreementMessage(messageId, paymentId);
+            await this.FinalizeRentalRequest(messageId);
+            await this.SendCashAgreementMessage(messageId, paymentId);
         }
 
-        private void FinalizeRentalRequest(int messageId)
+        private async Task FinalizeRentalRequest(int messageId)
         {
-            Message? updated = this.ConversationRepository.HandleRentalRequestFinalization(messageId);
+            Message? updated = await this.ConversationRepository.HandleRentalRequestFinalization(messageId);
             if (updated != null)
             {
-                this.NotifySubscribersAboutMessageUpdate(updated);
+                await this.NotifySubscribersAboutMessageUpdate(updated);
             }
         }
 
-        private void SendCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
+        private async Task SendCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
-            Message? created = this.ConversationRepository.CreateCashAgreementMessage(messageIdOfParentRentalRequestMessage, paymentId);
+            Message? created = await this.ConversationRepository.CreateCashAgreementMessage(messageIdOfParentRentalRequestMessage, paymentId);
             if (created != null)
             {
-                this.NotifySubscribersAboutMessage(created);
+                await this.NotifySubscribersAboutMessage(created);
             }
         }
 
@@ -334,6 +335,5 @@ namespace BookingBoardGames.Src.Services
                 messages: messageDTOs,
                 lastRead: lastRead);
         }
-
     }
 }

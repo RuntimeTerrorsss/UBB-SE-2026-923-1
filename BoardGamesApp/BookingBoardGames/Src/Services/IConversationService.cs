@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Src.Services
@@ -18,13 +19,13 @@ namespace BookingBoardGames.Src.Services
 
         void OnReadReceiptReceived(ReadReceiptDTO readReceipt);
 
-        List<ConversationDTO> FetchConversations();
+        Task<List<ConversationDTO>> FetchConversations();
 
         string GetOtherUserNameByConversationDTO(ConversationDTO conversation);
 
-        void UpdateMessage(MessageDataTransferObject message);
+        Task UpdateMessage(MessageDataTransferObject message);
 
-        void SendMessage(MessageDataTransferObject message);
+        Task SendMessage(MessageDataTransferObject message);
 
         event Action<MessageDataTransferObject, string> ActionMessageProcessed;
 

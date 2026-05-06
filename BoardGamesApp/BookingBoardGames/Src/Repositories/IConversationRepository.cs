@@ -3,6 +3,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 
@@ -10,22 +11,22 @@ namespace BookingBoardGames.Src.Repositories
 {
     public interface IConversationRepository
     {
-        List<Conversation> GetConversationsForUser(int userId);
+        Task<List<Conversation>> GetConversationsForUser(int userId);
 
-        Conversation GetConversationById(int conversationId);
+        Task<Conversation> GetConversationById(int conversationId);
 
-        IReadOnlyList<int> GetParticipantUserIds(int conversationId);
+        Task<IReadOnlyList<int>> GetParticipantUserIds(int conversationId);
 
-        Message HandleNewMessage(Message message);
+        Task<Message> HandleNewMessage(Message message);
 
-        Message? HandleMessageUpdate(Message message);
+        Task<Message?> HandleMessageUpdate(Message message);
 
-        void HandleReadReceipt(ReadReceiptDTO readReceipt);
+        Task HandleReadReceipt(ReadReceiptDTO readReceipt);
 
-        int CreateConversation(int senderId, int receiverId);
+        Task<int> CreateConversation(int senderId, int receiverId);
 
-        Message? HandleRentalRequestFinalization(int messageId);
+        Task<Message?> HandleRentalRequestFinalization(int messageId);
 
-        Message? CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId);
+        Task<Message?> CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId);
     }
 }

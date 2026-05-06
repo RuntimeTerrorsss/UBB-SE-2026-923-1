@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -20,22 +21,22 @@ namespace BookingBoardGames.Src.Repositories
             this.context = appContext;
         }
 
-        public List<Conversation> GetConversationsForUser(int userId)
+        public async Task<List<Conversation>> GetConversationsForUser(int userId)
         {
-            return this.context.Conversations
+            return await this.context.Conversations
                 .AsNoTracking()
                 .Include(conversation => conversation.Participants)
                 .Include(conversation => conversation.Messages)
                 .Where(conversation => conversation.Participants.Any(participant => participant.UserId == userId))
-                .ToList();
+                .ToListAsync();
         }
 
-        public Conversation GetConversationById(int conversationId)
+        public async Task<Conversation> GetConversationById(int conversationId)
         {
-            var found = this.context.Conversations
+            var found = await this.context.Conversations
                 .Include(conversation => conversation.Participants)
                 .Include(conversation => conversation.Messages)
-                .FirstOrDefault(conversation => conversation.ConversationId == conversationId);
+                .FirstOrDefaultAsync(conversation => conversation.ConversationId == conversationId);
 
             if (found is null)
             {
@@ -45,15 +46,15 @@ namespace BookingBoardGames.Src.Repositories
             return found;
         }
 
-        public IReadOnlyList<int> GetParticipantUserIds(int conversationId)
+        public async Task<IReadOnlyList<int>> GetParticipantUserIds(int conversationId)
         {
-            return this.context.ConversationParticipants
+            return await this.context.ConversationParticipants
                 .Where(participant => participant.ConversationId == conversationId)
                 .Select(participant => participant.UserId)
-                .ToList();
+                .ToListAsync();
         }
 
-        public int CreateConversation(int senderId, int receiverId)
+        public async Task<int> CreateConversation(int senderId, int receiverId)
         {
             var conversation = new Conversation
             {
@@ -66,28 +67,28 @@ namespace BookingBoardGames.Src.Repositories
             };
 
             this.context.Conversations.Add(conversation);
-            this.context.SaveChanges();
+            await this.context.SaveChangesAsync();
 
             return conversation.ConversationId;
         }
 
-        public Message HandleNewMessage(Message message)
+        public async Task<Message> HandleNewMessage(Message message)
         {
             message.MessageId = 0;
             this.context.Messages.Add(message);
-            this.context.SaveChanges();
+            await this.context.SaveChangesAsync();
 
-            return this.context.Messages
+            return await this.context.Messages
                 .Include(newMessage => newMessage.Sender)
                 .Include(newMessage => newMessage.Receiver)
                 .Include(newMessage => newMessage.Conversation)
-                .First(newMessage => newMessage.MessageId == message.MessageId);
+                .FirstAsync(newMessage => newMessage.MessageId == message.MessageId);
         }
 
-        public Message? HandleMessageUpdate(Message message)
+        public async Task<Message?> HandleMessageUpdate(Message message)
         {
-            var tracked = this.context.Messages
-                .FirstOrDefault(newmessage => newmessage.MessageId == message.MessageId);
+            var tracked = await this.context.Messages
+                .FirstOrDefaultAsync(newmessage => newmessage.MessageId == message.MessageId);
 
             if (tracked is null)
             {
@@ -109,19 +110,19 @@ namespace BookingBoardGames.Src.Repositories
                 cashTracked.IsCashAgreementAcceptedBySeller = cashIncoming.IsCashAgreementAcceptedBySeller;
             }
 
-            this.context.SaveChanges();
+            await this.context.SaveChangesAsync();
 
-            return this.context.Messages
+            return await this.context.Messages
                 .Include(newMessage => newMessage.Sender)
                 .Include(newMessage => newMessage.Receiver)
                 .Include(newMessage => newMessage.Conversation)
-                .First(newMessage => newMessage.MessageId == message.MessageId);
+                .FirstAsync(newMessage => newMessage.MessageId == message.MessageId);
         }
 
-        public void HandleReadReceipt(ReadReceiptDTO readReceipt)
+        public async Task HandleReadReceipt(ReadReceiptDTO readReceipt)
         {
-            var participant = this.context.ConversationParticipants
-                .FirstOrDefault(
+            var participant = await this.context.ConversationParticipants
+                .FirstOrDefaultAsync(
                     receiverParticipant => receiverParticipant.ConversationId == readReceipt.ConversationId
                          && receiverParticipant.UserId == readReceipt.ReaderId);
 
@@ -131,14 +132,14 @@ namespace BookingBoardGames.Src.Repositories
             }
 
             participant.LastMessageReadTime = readReceipt.ReceiptTimeStamp;
-            this.context.SaveChanges();
+            await this.context.SaveChangesAsync();
         }
 
-        public Message? HandleRentalRequestFinalization(int messageId)
+        public async Task<Message?> HandleRentalRequestFinalization(int messageId)
         {
-            var rentalMessage = this.context.Messages
+            var rentalMessage = await this.context.Messages
                 .OfType<RentalRequestMessage>()
-                .FirstOrDefault(requestMessage => requestMessage.MessageId == messageId);
+                .FirstOrDefaultAsync(requestMessage => requestMessage.MessageId == messageId);
 
             if (rentalMessage is null)
             {
@@ -147,20 +148,20 @@ namespace BookingBoardGames.Src.Repositories
 
             rentalMessage.IsRequestResolved = true;
             rentalMessage.IsRequestAccepted = true;
-            this.context.SaveChanges();
+            await this.context.SaveChangesAsync();
 
-            return this.context.Messages
+            return await this.context.Messages
                 .Include(requestMessage => requestMessage.Sender)
                 .Include(requestMessage => requestMessage.Receiver)
                 .Include(requestMessage => requestMessage.Conversation)
-                .First(requestMessage => requestMessage.MessageId == messageId);
+                .FirstAsync(requestMessage => requestMessage.MessageId == messageId);
         }
 
-        public Message? CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
+        public async Task<Message?> CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
-            var parent = this.context.Messages
+            var parent = await this.context.Messages
                 .OfType<RentalRequestMessage>()
-                .FirstOrDefault(paymentMessage => paymentMessage.MessageId == messageIdOfParentRentalRequestMessage);
+                .FirstOrDefaultAsync(paymentMessage => paymentMessage.MessageId == messageIdOfParentRentalRequestMessage);
 
             if (parent is null)
             {
@@ -180,13 +181,13 @@ namespace BookingBoardGames.Src.Repositories
             };
 
             this.context.Messages.Add(cashMessage);
-            this.context.SaveChanges();
+            await this.context.SaveChangesAsync();
 
-            return this.context.Messages
+            return await this.context.Messages
                 .Include(message => message.Sender)
                 .Include(message => message.Receiver)
                 .Include(message => message.Conversation)
-                .First(message => message.MessageId == cashMessage.MessageId);
+                .FirstAsync(message => message.MessageId == cashMessage.MessageId);
         }
     }
 }
