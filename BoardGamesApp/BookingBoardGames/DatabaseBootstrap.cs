@@ -23,9 +23,19 @@ namespace BookingBoardGames
                 System.Diagnostics.Debug.WriteLine("Applying migrations and checking schema...");
                 context.Database.Migrate();
 
-                if (!context.Users.Any())
+                if (!context.Users.Any(u => u.Username == "henry_08"))
                 {
-                    System.Diagnostics.Debug.WriteLine("Database is empty. Injecting Mock Data...");
+                    System.Diagnostics.Debug.WriteLine("Database is missing Henry. Re-seeding...");
+
+                    // Clear existing data to ensure IDs start from 1 (this is aggressive but ensures test consistency)
+                    context.Database.ExecuteSqlRaw("DELETE FROM messages; DELETE FROM conversation_participants; DELETE FROM conversations; DELETE FROM payments; DELETE FROM rentals; DELETE FROM games; DELETE FROM users;");
+                    // Reset identity seeds if supported by the provider (SQL Server)
+                    context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('users', RESEED, 0);");
+                    context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('games', RESEED, 0);");
+                    context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('rentals', RESEED, 0);");
+                    context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('payments', RESEED, 0);");
+                    context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('conversations', RESEED, 0);");
+                    context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('messages', RESEED, 0);");
 
                     var systemUser = new User { Username = "System", DisplayName = "System", Email = "sys@sys.com", CreatedAt = DateTime.UtcNow };
                     var alice = new User { Username = "alice99", DisplayName = "Alice", Email = "alice@example.com", PasswordHash = "hash1", PhoneNumber = "0711111111", AvatarUrl = "https://i.pravatar.cc/150?u=alice", Balance = 150.00m, Street = "Aleea Godeanu", StreetNumber = "23-25", City = "Cluj-Napoca", Country = "Romania", CreatedAt = DateTime.UtcNow };
@@ -33,8 +43,11 @@ namespace BookingBoardGames
                     var carol = new User { Username = "carol_xo", DisplayName = "Carol", Email = "carol@example.com", PasswordHash = "hash3", PhoneNumber = "0733333333", AvatarUrl = "carol.jpg", Balance = 200.00m, Street = "Nicolae Titulescu", StreetNumber = "26", City = "Bucuresti", Country = "Romania", CreatedAt = DateTime.UtcNow };
                     var david = new User { Username = "dan_the_m", DisplayName = "Dan", Email = "david@example.com", PasswordHash = "hash4", PhoneNumber = "0744444444", AvatarUrl = "https://i.pravatar.cc/150?u=dan", Balance = 50.00m, Street = "Bulevardul Eroilor", StreetNumber = "4", City = "Timisoara", Country = "Romania", CreatedAt = DateTime.UtcNow };
                     var emma = new User { Username = "eva_plays", DisplayName = "Eva", Email = "emma@example.com", PasswordHash = "hash5", PhoneNumber = "0755555555", AvatarUrl = "https://i.pravatar.cc/150?u=eva", Balance = 320.00m, Street = "Strada Pacurari", StreetNumber = "88", City = "Iasi", Country = "Romania", CreatedAt = DateTime.UtcNow };
+                    var frank = new User { Username = "frank_06", DisplayName = "Frank", Email = "frank@example.com", PasswordHash = "hash6", PhoneNumber = "0766666666", AvatarUrl = "https://i.pravatar.cc/150?u=frank", Balance = 10.00m, Street = "Sunset Blvd", StreetNumber = "45", City = "Timisoara", Country = "Romania", CreatedAt = DateTime.UtcNow };
+                    var grace = new User { Username = "grace_07", DisplayName = "Grace", Email = "grace@example.com", PasswordHash = "hash7", PhoneNumber = "0777777777", AvatarUrl = "https://i.pravatar.cc/150?u=grace", Balance = 500.00m, Street = "Hill Road", StreetNumber = "3", City = "Iasi", Country = "Romania", CreatedAt = DateTime.UtcNow };
+                    var henry = new User { Username = "henry_08", DisplayName = "Henry", Email = "henry@example.com", PasswordHash = "hash8", PhoneNumber = "0788888888", AvatarUrl = "https://i.pravatar.cc/150?u=henry", Balance = 0.00m, Street = "Lake Street", StreetNumber = "19", City = "Brasov", Country = "Romania", CreatedAt = DateTime.UtcNow };
 
-                    context.Users.AddRange(systemUser, alice, bob, carol, david, emma);
+                    context.Users.AddRange(systemUser, alice, bob, carol, david, emma, frank, grace, henry);
                     context.SaveChanges();
 
                     var catan = new Game { Name = "Catan", PricePerDay = 1.99m, MinimumPlayerNumber = 3, MaximumPlayerNumber = 4, Description = "Trade and build on the island of Catan.", IsActive = true, Owner = alice };
@@ -43,15 +56,18 @@ namespace BookingBoardGames
                     var terraformingMars = new Game { Name = "Terraforming Mars", PricePerDay = 2.50m, MinimumPlayerNumber = 1, MaximumPlayerNumber = 5, Description = "Strategy game about developing Mars.", IsActive = false, Owner = carol };
                     var activity = new Game { Name = "Activity", PricePerDay = 0.50m, MinimumPlayerNumber = 3, MaximumPlayerNumber = 12, Description = "Party game.", IsActive = true, Owner = carol };
                     var chess = new Game { Name = "Chess", PricePerDay = 0.86m, MinimumPlayerNumber = 2, MaximumPlayerNumber = 2, Description = "Classic strategy.", IsActive = true, Owner = carol };
+                    var sevenWonders = new Game { Name = "7 Wonders", PricePerDay = 16.00m, MinimumPlayerNumber = 2, MaximumPlayerNumber = 7, Description = "Build a civilization.", IsActive = true, Owner = carol };
 
-                    context.Games.AddRange(catan, monopoly, carcassonne, terraformingMars, activity, chess);
+                    context.Games.AddRange(catan, monopoly, carcassonne, terraformingMars, activity, chess, sevenWonders);
                     context.SaveChanges();
 
                     var rental1 = new Rental { Game = catan, Client = bob, Owner = alice, StartDate = new DateTime(2026, 3, 1), EndDate = new DateTime(2026, 3, 7), TotalPrice = 11.94m };
                     var rental2 = new Rental { Game = activity, Client = bob, Owner = carol, StartDate = new DateTime(2026, 3, 10), EndDate = new DateTime(2026, 3, 15), TotalPrice = 2.50m };
                     var rental3 = new Rental { Game = chess, Client = david, Owner = carol, StartDate = new DateTime(2026, 3, 20), EndDate = new DateTime(2026, 3, 25), TotalPrice = 5.16m };
+                    var rental4 = new Rental { Game = sevenWonders, Client = david, Owner = carol, StartDate = new DateTime(2026, 6, 1), EndDate = new DateTime(2026, 6, 10), TotalPrice = 160.00m };
+                    var rental5 = new Rental { Game = sevenWonders, Client = frank, Owner = carol, StartDate = new DateTime(2026, 6, 15), EndDate = new DateTime(2026, 6, 18), TotalPrice = 48.00m };
 
-                    context.Rentals.AddRange(rental1, rental2, rental3);
+                    context.Rentals.AddRange(rental1, rental2, rental3, rental4, rental5);
                     context.SaveChanges();
 
                     var payment1 = new Payment { Request = rental1, Client = bob, Owner = alice, PaidAmount = 11.94m, PaymentMethod = "CARD", PaymentState = 1, DateOfTransaction = new DateTime(2026, 3, 1, 10, 0, 0), DateConfirmedBuyer = new DateTime(2026, 3, 1, 10, 0, 0) };
@@ -171,7 +187,7 @@ namespace BookingBoardGames
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("Database already populated. Skipping mock data generation.");
+                    System.Diagnostics.Debug.WriteLine("Database already populated with Henry. Skipping mock data generation.");
                 }
             }
             catch (Exception exception)

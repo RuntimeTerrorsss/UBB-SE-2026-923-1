@@ -41,7 +41,7 @@ namespace BookingBoardGames.Src.ViewModels
         public GameDetailsViewModel(InterfaceBookingService bookingService, int gameId)
         {
             this.bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
-            this.gameAndUserDetail = this.bookingService.GetBookingInformationForSpecificGame(gameId);
+            this.gameAndUserDetail = new BookingDTO();
             try
             {
                 this.GameAndUserDetails = this.bookingService.GetBookingInformationForSpecificGame(gameId);

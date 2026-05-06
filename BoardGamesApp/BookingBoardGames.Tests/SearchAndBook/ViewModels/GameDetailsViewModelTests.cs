@@ -21,15 +21,13 @@ public class GameDetailsViewModelTests
     }
 
     [Fact]
-    public void Constructor_ServiceThrowsException_SetsErrorAndRaisesMessage()
+    public void Constructor_ServiceThrowsException_SetsError()
     {
         var bookingService = new Mock<InterfaceBookingService>();
         bookingService.Setup(s => s.GetBookingInformationForSpecificGame(It.IsAny<int>()))
             .Throws(new Exception("boom"));
 
-        var messages = new List<string>();
         var sut = new GameDetailsViewModel(bookingService.Object, 1);
-        sut.OnMessageRequested += messages.Add;
 
         Assert.True(sut.HasError);
         Assert.Empty(sut.UnavailableTimeRanges);

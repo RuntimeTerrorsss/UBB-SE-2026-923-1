@@ -193,7 +193,7 @@ public class SearchAndFilterServiceTests
         gamesRepository.Setup(repository => repository.GetGamesByFilter(It.IsAny<FilterCriteria>()))
             .Callback<FilterCriteria>(criteria => Assert.Null(criteria.City))
             .Returns(games);
-        usersRepository.Setup(repository => repository.GetById(1)).Returns(owner);
+        usersRepository.Setup(repository => repository.GetGameById(1)).Returns(owner);
         geoService.Setup(service => service.GetCityDetails("Brussels")).Returns((true, "Brussels", 0, 0));
         geoService.Setup(service => service.GetCityDetails("Paris")).Returns((true, "Paris", 0, 1));
 
@@ -202,7 +202,7 @@ public class SearchAndFilterServiceTests
         Assert.Equal("Brussels", filter.City);
         Assert.Equal(2, result.Length);
         Assert.All(result, game => Assert.Equal("Paris", game.City));
-        usersRepository.Verify(repository => repository.GetById(1), Times.Once);
+        usersRepository.Verify(repository => repository.GetGameById(1), Times.Once);
     }
 
     [Fact]
@@ -307,7 +307,7 @@ public class SearchAndFilterServiceTests
             .Returns(true);
 
         usersRepository
-            .Setup(repository => repository.GetById(It.IsAny<int>()))
+            .Setup(repository => repository.GetGameById(It.IsAny<int>()))
             .Returns(new User("owner", "owner display", "owner@test.com", "hash", string.Empty, "RO"));
 
         usersRepository
@@ -449,7 +449,7 @@ public class SearchAndFilterServiceTests
         gamesRepo.Setup(r => r.GetGamesByFilter(It.IsAny<FilterCriteria>()))
             .Returns(new List<Game> { CreateGame(1, 1, "Catan", 20m, 4, 2) });
 
-        usersRepo.Setup(r => r.GetById(1)).Returns(CreateUser(1, "Cluj"));
+        usersRepo.Setup(r => r.GetGameById(1)).Returns(CreateUser(1, "Cluj"));
 
         var result = sut.SearchGamesByFilter(new FilterCriteria());
 
@@ -477,7 +477,7 @@ public class SearchAndFilterServiceTests
         gamesRepo.Setup(r => r.GetGamesByFilter(It.IsAny<FilterCriteria>()))
             .Returns(new List<Game> { CreateGame(1, 1, "Catan", 20m, 4, 2) });
 
-        usersRepo.Setup(r => r.GetById(1)).Returns(CreateUser(1, "Cluj"));
+        usersRepo.Setup(r => r.GetGameById(1)).Returns(CreateUser(1, "Cluj"));
 
         var result = sut.SearchGamesByFilter(new FilterCriteria());
 
@@ -495,7 +495,7 @@ public class SearchAndFilterServiceTests
             CreateGame(1, 1, "Catan", 20m, 4, 2)
             });
 
-        usersRepo.Setup(r => r.GetById(1)).Returns(CreateUser(1, "Cluj"));
+        usersRepo.Setup(r => r.GetGameById(1)).Returns(CreateUser(1, "Cluj"));
 
         var result = sut.SearchGamesByFilter(new FilterCriteria());
 
