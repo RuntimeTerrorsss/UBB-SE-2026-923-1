@@ -10,6 +10,7 @@ using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
+using BookingBoardGames.Data.Interfaces;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -43,7 +44,7 @@ namespace BookingBoardGames
 
             // Repositories
             UserRepository = new UserRepository(AppDbContext);
-            GameRepository = new GamesAPIProxy(AppDbContext);
+            GameRepository = new GamesAPIProxy(Client);
             RentalRepository = new RentalRepository(AppDbContext);
             PaymentRepository = new PaymentRepository(AppDbContext);
             HistoryRepository = new RepositoryPayment(AppDbContext);

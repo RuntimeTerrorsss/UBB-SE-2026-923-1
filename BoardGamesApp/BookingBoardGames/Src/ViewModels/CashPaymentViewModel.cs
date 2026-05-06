@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
@@ -47,21 +49,41 @@ namespace BookingBoardGames.Src.ViewModels
             this.conversationService = conversationService;
             this.rentalRequestMessageIdentifier = rentalRequestMessageIdentifier;
 
+            //Rental rentalRequest = this.rentalRequestService.GetRentalById(rentalRequestId);
+            //Game game = this.gameRepository.GetGameById(rentalRequest.GameId);
+            //User clientUser = this.userRepository.GetById(rentalRequest.ClientId);
+            //User ownerUser = this.userRepository.GetById(rentalRequest.OwnerId);
+
+            //this.OwnerName = ownerUser.Username;
+            //this.GameName = game.Name;
+            //this.DeliveryAddress = deliveryAddress;
+            //this.RequestDates = rentalRequest.StartDate.ToShortDateString() + DateRangeSeparator + rentalRequest.EndDate.ToShortDateString();
+
+            //decimal rentalPrice = this.rentalRequestService.GetRentalPrice(rentalRequestId);
+            //this.PaidAmount = rentalPrice.ToString();
+
+            //int createdPaymentIdentifier = this.cashPaymentService.AddCashPayment(
+            //    new CashPaymentDataTransferObject(NewPaymentPlaceholderId, rentalRequestId, clientUser.Id, ownerUser.Id, rentalPrice));
+            //this.conversationService.OnCashPaymentSelected(this.rentalRequestMessageIdentifier, createdPaymentIdentifier);
+        }
+
+        public async Task InitializeAsync(int rentalRequestId, string deliveryAddress)
+        {
             Rental rentalRequest = this.rentalRequestService.GetRentalById(rentalRequestId);
-            Game game = this.gameRepository.GetGameById(rentalRequest.GameId);
+            Game game = await this.gameRepository.GetGameById(rentalRequest.GameId);
             User clientUser = this.userRepository.GetById(rentalRequest.ClientId);
             User ownerUser = this.userRepository.GetById(rentalRequest.OwnerId);
 
             this.OwnerName = ownerUser.Username;
             this.GameName = game.Name;
-            this.DeliveryAddress = deliveryAddress;
             this.RequestDates = rentalRequest.StartDate.ToShortDateString() + DateRangeSeparator + rentalRequest.EndDate.ToShortDateString();
 
-            decimal rentalPrice = this.rentalRequestService.GetRentalPrice(rentalRequestId);
+            decimal rentalPrice = await this.rentalRequestService.GetRentalPrice(rentalRequestId);
             this.PaidAmount = rentalPrice.ToString();
 
             int createdPaymentIdentifier = this.cashPaymentService.AddCashPayment(
                 new CashPaymentDataTransferObject(NewPaymentPlaceholderId, rentalRequestId, clientUser.Id, ownerUser.Id, rentalPrice));
+
             this.conversationService.OnCashPaymentSelected(this.rentalRequestMessageIdentifier, createdPaymentIdentifier);
         }
     }
