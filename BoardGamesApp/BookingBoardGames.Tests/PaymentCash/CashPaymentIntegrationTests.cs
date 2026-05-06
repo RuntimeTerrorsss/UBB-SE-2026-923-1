@@ -138,7 +138,7 @@ namespace BookingBoardGames.Tests.PaymentCash
         private static ICashPaymentService BuildCashPaymentService(IPaymentRepository paymentRepository)
         {
             var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            var GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var RentalService = new RentalService(RentalRepository, GamesRepository);
             var receiptService = new ReceiptService(userRepository, RentalService, GamesRepository);

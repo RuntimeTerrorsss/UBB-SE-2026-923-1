@@ -24,7 +24,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         {
             PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalRepository RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
             ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
@@ -55,7 +55,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         {
             PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalRepository RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
             ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
@@ -87,7 +87,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         {
             PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalRepository RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
             ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
@@ -119,7 +119,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         {
             PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalRepository RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
             ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
@@ -151,7 +151,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         {
             PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            GamesRepository GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalRepository RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
             ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
@@ -184,7 +184,7 @@ namespace BookingBoardGames.Tests.PaymentCard
             var dbContext = new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>());
             PaymentRepository paymentRepository = new PaymentRepository(dbContext);
             UserRepository userService = new UserRepository(dbContext);
-            GamesRepository GamesRepository = new GamesRepository(dbContext);
+            GamesAPIProxy GamesRepository = new GamesAPIProxy(dbContext);
             RentalRepository RentalRepository = new RentalRepository(dbContext);
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
             ReceiptService receiptService = new ReceiptService(userService, RentalService, GamesRepository);
