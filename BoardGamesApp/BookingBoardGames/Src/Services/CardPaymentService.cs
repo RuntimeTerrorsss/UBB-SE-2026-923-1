@@ -4,9 +4,9 @@
 
 using System;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Constants;
 
 namespace BookingBoardGames.Data.Services
 {
