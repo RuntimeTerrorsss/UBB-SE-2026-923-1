@@ -19,7 +19,7 @@ namespace BookingBoardGames.Data.Services
         public CardPaymentService(
             IPaymentRepository paymentRepository,
             IUserRepository userRepository,
-            ReceiptService receiptService,
+            IReceiptService receiptService,
             IRentalService rentalService)
             : base(paymentRepository, receiptService)
         {

@@ -11,6 +11,7 @@ using BookingBoardGames.Data.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
