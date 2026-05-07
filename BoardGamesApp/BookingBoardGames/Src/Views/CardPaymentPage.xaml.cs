@@ -3,16 +3,16 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.Navigation;
-using BookingBoardGames.Src.ViewModels;
-using BookingBoardGames.Src.Views;
+using BookingBoardGames.Data.Navigation;
+using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Data.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Src.Views
+namespace BookingBoardGames.Data.Views
 {
     public sealed partial class CardPaymentPage : Page
     {
@@ -25,7 +25,7 @@ namespace BookingBoardGames.Src.Views
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
+        protected async override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
             base.OnNavigatedTo(navigationEventArguments);
             var bookingArguments = (BookingNavigationArguments)navigationEventArguments.Parameter;
@@ -37,6 +37,7 @@ namespace BookingBoardGames.Src.Views
                 bookingArguments.DeliveryAddress,
                 bookingArguments.BookingMessageIdentifier,
                 bookingArguments.ConversationService);
+            await this.PaymentViewModel.InitializeAsync();
 
             this.DataContext = this.PaymentViewModel;
             this.activeCurrentWindow = bookingArguments.CurrentWindow;

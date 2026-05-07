@@ -1,9 +1,9 @@
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.ViewModels;
 using Moq;
 
 namespace BookingBoardGames.Tests.PaymentCash

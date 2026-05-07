@@ -11,12 +11,13 @@ using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 
-namespace BookingBoardGames.Src.ViewModels;
+namespace BookingBoardGames.Data.ViewModels;
 
 public class ChatPageViewModel
 {
     private readonly int currentUserId;
     private readonly ConversationService conversationService;
+    private readonly IUserRepository userRepository;
     private readonly List<ConversationDTO> conversations = new();
 
     public ChatPageViewModel(int currentUser)
@@ -34,6 +35,7 @@ public class ChatPageViewModel
         this.LeftPanelModelView = new LeftPanelViewModel();
         this.ChatModelView = new ChatViewModel(currentUser);
         this.currentUserId = currentUser;
+        this.userRepository = userRepository;
 
         this.LeftPanelModelView.PropertyChanged += this.OnLeftPanelPropertyChanged;
         this.ChatModelView.MessageSent += this.OnMessageSent;
@@ -41,7 +43,17 @@ public class ChatPageViewModel
         this.ChatModelView.CashAgreementAccept += this.UpdateCashAgreement;
 
         this.conversationService = service;
-        this.conversations = this.conversationService.FetchConversations();
+
+        this.conversationService.ActionMessageProcessed += this.OnMessageReceived;
+        this.conversationService.ActionConversationProcessed += this.OnConversationReceived;
+        this.conversationService.ActionReadReceiptProcessed += this.OnReadReceiptReceived;
+        this.conversationService.ActionMessageUpdateProcessed += this.OnMessageUpdateReceived;
+    }
+
+    public async Task InitializeAsync()
+    {
+        var fetchedConversations = await this.conversationService.FetchConversations();
+        this.conversations.AddRange(fetchedConversations);
 
         foreach (var conversationItem in this.conversations)
         {
@@ -49,13 +61,8 @@ public class ChatPageViewModel
                 conversationItem,
                 this.conversationService.GetOtherUserNameByConversationDTO(conversationItem),
                 this.currentUserId,
-                userRepository);
+                this.userRepository);
         }
-
-        this.conversationService.ActionMessageProcessed += this.OnMessageReceived;
-        this.conversationService.ActionConversationProcessed += this.OnConversationReceived;
-        this.conversationService.ActionReadReceiptProcessed += this.OnReadReceiptReceived;
-        this.conversationService.ActionMessageUpdateProcessed += this.OnMessageUpdateReceived;
     }
 
     public LeftPanelViewModel LeftPanelModelView { get; }
@@ -91,22 +98,22 @@ public class ChatPageViewModel
         this.SendReadReceipt(matchedConversation);
     }
 
-    private void OnMessageSent(MessageDataTransferObject message)
+    private async void OnMessageSent(MessageDataTransferObject message)
     {
         var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
         int receiverUserId = matchedConversation.Participants.First(participantItem => participantItem.UserId != message.SenderId).UserId;
         message = message with { ReceiverId = receiverUserId };
-        this.conversationService.SendMessage(message);
+        await this.conversationService.SendMessage(message);
     }
 
-    private void SendReadReceipt(ConversationDTO conversation)
+    private async void SendReadReceipt(ConversationDTO conversation)
     {
-        this.conversationService.SendReadReceipt(conversation);
+        await this.conversationService.SendReadReceipt(conversation);
     }
 
-    private void OnSendMessageUpdate(MessageDataTransferObject message)
+    private async void OnSendMessageUpdate(MessageDataTransferObject message)
     {
-        this.conversationService.UpdateMessage(message);
+        await this.conversationService.UpdateMessage(message);
     }
 
     private void OnMessageReceived(MessageDataTransferObject message, string senderName)

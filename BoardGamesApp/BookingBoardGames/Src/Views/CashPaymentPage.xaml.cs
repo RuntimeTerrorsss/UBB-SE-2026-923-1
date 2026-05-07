@@ -2,14 +2,14 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Src.Navigation;
-using BookingBoardGames.Src.ViewModels;
-using BookingBoardGames.Src.Views;
+using BookingBoardGames.Data.Navigation;
+using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Data.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Src.Views
+namespace BookingBoardGames.Data.Views
 {
     public sealed partial class CashPaymentPage : Page
     {
@@ -22,7 +22,7 @@ namespace BookingBoardGames.Src.Views
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
@@ -37,6 +37,7 @@ namespace BookingBoardGames.Src.Views
                     booking.DeliveryAddress,
                     booking.BookingMessageIdentifier,
                     booking.ConversationService);
+                await this.PaymentViewModel.InitializeAsync(booking.RequestIdentifier, booking.DeliveryAddress);
 
                 this.DataContext = this.PaymentViewModel;
                 this.currentApplicationWindow = booking.CurrentWindow;

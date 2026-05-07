@@ -2,14 +2,14 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Shared;
-using BookingBoardGames.Src.Views.ChatViews;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Shared;
+using BookingBoardGames.Data.Views.ChatViews;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Src.Views
+namespace BookingBoardGames.Data.Views
 {
     public sealed partial class DashboardView : Page
     {

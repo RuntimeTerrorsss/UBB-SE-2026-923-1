@@ -4,12 +4,14 @@
 
 using System;
 using System.IO;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Constants;
+using BookingBoardGames.Data.Interfaces;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
+using BookingBoardGames.Data.Interfaces;
+using System.Threading.Tasks;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     public class ReceiptService : IReceiptService
     {
@@ -52,7 +54,7 @@ namespace BookingBoardGames.Src.Services
         /// <param name="selectedPayment">transaction for getting relative path to receipt</param>
         /// <returns>full path to existing or newly created pdf</returns>
         /// <exception cref="InvalidOperationException">receipt path of transaction is missing</exception>
-        public string GetReceiptDocument(Payment selectedPayment)
+        public async Task<string> GetReceiptDocument(Payment selectedPayment)
         {
             if (selectedPayment.ReceiptFilePath == null || selectedPayment.ReceiptFilePath == string.Empty)
             {
@@ -63,7 +65,7 @@ namespace BookingBoardGames.Src.Services
 
             if (!File.Exists(fullReceiptPath))
             {
-                return this.CreateReceipt(selectedPayment);
+                return await this.CreateReceipt(selectedPayment);
             }
 
             return fullReceiptPath;
@@ -141,7 +143,7 @@ namespace BookingBoardGames.Src.Services
             return currentYPosition;
         }
 
-        private double DrawAllSections(
+        private async Task<double> DrawAllSections(
             XGraphics graphicsContext,
             PdfPage pdfPage,
             XFont font,
@@ -149,7 +151,7 @@ namespace BookingBoardGames.Src.Services
             double currentXPosition,
             double currentYPosition)
         {
-            foreach (string textSection in this.GetReceiptContent(payment))
+            foreach (string textSection in await this.GetReceiptContent(payment))
             {
                 currentYPosition = this.DrawTextSection(
                     graphicsContext,
@@ -165,7 +167,7 @@ namespace BookingBoardGames.Src.Services
             return currentYPosition;
         }
 
-        private void DrawReceiptContent(
+        private async Task DrawReceiptContent(
             PdfDocument pdfDocument,
             PdfPage pdfPage,
             Payment payment)
@@ -180,7 +182,7 @@ namespace BookingBoardGames.Src.Services
             double currentXPosition = ReceiptServiceConstants.HorizontalMargin;
             double currentYPosition = ReceiptServiceConstants.VerticalStart;
 
-            currentYPosition = this.DrawAllSections(
+            currentYPosition = await this.DrawAllSections(
                 graphicsContext,
                 pdfPage,
                 font,
@@ -196,14 +198,14 @@ namespace BookingBoardGames.Src.Services
         /// <param name="payment">transaction for generating the content of pdf</param>
         /// <returns>full path to created pdf</returns>
         /// <exception cref="InvalidOperationException">receipt path of transaction is missing</exception>
-        private string CreateReceipt(Payment payment)
+        private async Task<string> CreateReceipt(Payment payment)
         {
             string documentPath = this.PrepareDocumentPath(payment);
 
             using var document = this.CreateDocument();
             var page = document.AddPage();
 
-            this.DrawReceiptContent(document, page, payment);
+            await this.DrawReceiptContent(document, page, payment);
             document.Save(documentPath);
 
             return documentPath;
@@ -229,9 +231,9 @@ namespace BookingBoardGames.Src.Services
                    $"Date Issued: {issuedDate}";
         }
 
-        private string BuildRequestInfo(Payment payment, Rental request)
+        private async Task<string> BuildRequestInfo(Payment payment, Rental request)
         {
-            var requestedGame = this.gameRepository.GetGameById(request.GameId);
+            var requestedGame = await this.gameRepository.GetGameById(request.GameId);
             var client = this.userRepository.GetById(payment.ClientId);
             var owner = this.userRepository.GetById(payment.OwnerId);
 
@@ -280,14 +282,14 @@ namespace BookingBoardGames.Src.Services
         /// </summary>
         /// <param name="payment">transaction with relevant transaction data</param>
         /// <returns>pdf content text</returns>
-        private string[] GetReceiptContent(Payment payment)
+        private async Task<string[]> GetReceiptContent(Payment payment)
         {
             var request = this.rentalService.GetRentalById(payment.RequestId);
 
             return new[]
             {
                 this.BuildHeader(payment),
-                this.BuildRequestInfo(payment, request),
+                await this.BuildRequestInfo(payment, request),
                 this.BuildPaymentDetails(payment),
                 this.BuildConfirmation(payment),
                 this.BuildSummary(),

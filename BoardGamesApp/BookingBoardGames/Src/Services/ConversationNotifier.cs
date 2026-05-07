@@ -4,9 +4,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     public class ConversationNotifier : IConversationNotifier
     {

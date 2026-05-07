@@ -3,9 +3,9 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Data.Enum;
 
-namespace BookingBoardGames.Src.DTO
+namespace BookingBoardGames.Data.DTO
 {
     public record MessageDataTransferObject(
         int Id,

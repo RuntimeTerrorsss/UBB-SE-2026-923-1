@@ -5,15 +5,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Shared;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Shared;
+using BookingBoardGames.Data.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Src.Views
+namespace BookingBoardGames.Data.Views
 {
     /// <summary>
     /// Provides the user interface for viewing detailed information about a game and selecting rental dates.
@@ -35,7 +35,7 @@ namespace BookingBoardGames.Src.Views
         /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
         /// </summary>
         /// <param name="eventArgs">Event data that can be examined by overriding code.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
+        protected async override void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
             base.OnNavigatedTo(eventArgs);
             SessionContext.GetInstance().UserId = 1;
@@ -49,6 +49,7 @@ namespace BookingBoardGames.Src.Views
             // var userRepository = new UsersRepository();
             // var service = new BookingService(gameRepository, rentalRepository, userRepository);
             var viewModel = new GameDetailsViewModel(App.BookingService, gameId);
+            await viewModel.InitializeAsync();
 
             viewModel.OnGoBackRequested += () =>
             {

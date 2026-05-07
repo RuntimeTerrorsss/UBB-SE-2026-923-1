@@ -1,7 +1,7 @@
-using BookingBoardGames.Src.Mapper;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.Mapper;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Constants;
+using BookingBoardGames.Data.DTO;
 
 namespace BookingBoardGames.Tests.PaymentCash
 {

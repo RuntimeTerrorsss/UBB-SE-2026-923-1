@@ -1,11 +1,11 @@
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Shared;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Shared;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Services;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -60,7 +60,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             return createdPayment;
         }
 
-        // ================================ GetAllPaymentsForUI ======================================
         [Fact]
         public void GetAllPaymentsForUI_EmptyRepository_ReturnsEmptyList()
         {
@@ -103,7 +102,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Equal("Unknown Owner", returnedPayments[0].ReceiverName);
         }
 
-        // ================================ CalculateTotalAmount ======================================
         [Fact]
         public void CalculateTotalAmount_NullInput_ReturnsZero()
         {
@@ -137,7 +135,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Equal(35.75m, totalAmount);
         }
 
-        // ================================ GetFilteredPayments ======================================
         [Fact]
         public void GetFilteredPayments_FilterByCard_ReturnsOnlyCardPayments()
         {
@@ -344,7 +341,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Equal(3, filteredPayments.PageNumber);
         }
 
-        // ================================ GetReceiptDocumentPath ======================================
         [Fact]
         public void GetReceiptDocumentPath_NullFilePath_GeneratesNewPath()
         {

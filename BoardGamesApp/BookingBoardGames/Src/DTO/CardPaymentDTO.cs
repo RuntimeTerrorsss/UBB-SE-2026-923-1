@@ -4,7 +4,7 @@
 
 using System;
 
-namespace BookingBoardGames.Src.DTO
+namespace BookingBoardGames.Data.DTO
 {
     public class CardPaymentDTO(
         int transactionIdentifier,

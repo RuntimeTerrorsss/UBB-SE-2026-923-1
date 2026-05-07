@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookingBoardGames.Src.Mapper
+namespace BookingBoardGames.Data.Mapper
 {
     public static class GameImageMapper
     {

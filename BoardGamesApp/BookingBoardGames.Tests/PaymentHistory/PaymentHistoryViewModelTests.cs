@@ -1,8 +1,8 @@
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Shared;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Shared;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.ViewModels;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -73,7 +73,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             };
         }
 
-        // ================================ Constructor ======================================
         [Fact]
         public void Constructor_WhenInitialized_LoadsFilterOptions()
         {
@@ -195,7 +194,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Equal(30, viewModel.TotalAmount);
         }
 
-        // ================================ SearchText ======================================
         [Fact]
         public void SearchText_WhenSet_UpdatesProperty()
         {
@@ -259,7 +257,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             }
         }
 
-        // ================================ OpenReceipt ======================================
         [Fact]
         public void OpenReceiptCommand_WhenInitialized_IsNotNull()
         {
@@ -296,9 +293,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             }
         }
 
-        // idk for existent
-
-        // ================================ SelectedFilterOption ======================================
         [Fact]
         public void SelectedFilterOption_WhenChanged_ResetsToPageOne()
         {
@@ -338,7 +332,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Equal("Catan", paymentHistoryViewModel.Payments[0].ProductName);
         }
 
-        // ================================ ApplyFilter ======================================
         [Fact]
         public void ApplyFilter_SelectedFilterIsNull_DoesNotCrash()
         {
@@ -346,7 +339,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             {
                 var viewModel = InitializeViewModel();
 
-                // set filter to null (break it intentionally)
                 typeof(PaymentHistoryViewModel).GetField("selectedFilterOption", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(viewModel, null);
 
                 viewModel.SearchText = "test";
@@ -368,7 +360,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Equal(30m, viewModel.TotalAmount);
         }
 
-        // ================================ SelectedPaymentMethod ======================================
         [Fact]
         public void SelectedPaymentMethod_WhenChanged_ResetsToPageOne()
         {
@@ -379,7 +370,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.Equal(1, viewModel.CurrentPage);
         }
 
-        // ================================ NextPageCommand ======================================
         [Fact]
         public void NextPageCommand_CanExecute_TrueWhenNotOnLastPage()
         {
@@ -424,7 +414,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.False(viewModel.NextPageCommand.CanExecute(null));
         }
 
-        // ================================ PreviousPageCommand ======================================
         [Fact]
         public void PreviousPageCommand_CanExecute_TrueWhenNotOnFirstPage()
         {
@@ -467,7 +456,6 @@ namespace BookingBoardGames.Tests.PaymentHistory
             Assert.False(viewModel.PreviousPageCommand.CanExecute(null));
         }
 
-        // ================================ TotalPages ======================================
         [Fact]
         public void TotalPages_WhenResultIsZero_DefaultsToOne()
         {

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.ViewModels;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Shared;
 using Xunit;
 
 namespace BookingBoardGames.Tests.Chat

@@ -4,25 +4,26 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     public interface IRentalService
     {
-        public Rental GetRentalById(int rentalId);
+        public Task<Rental> GetRentalById(int rentalId);
 
-        public decimal GetRentalPrice(int rentalId);
+        public Task<decimal> GetRentalPrice(int rentalId);
 
-        public string GetGameName(int rentalId);
+        public Task<string> GetGameName(int rentalId);
 
-        public List<TimeRange> GetUnavailableTimeRanges(int gameId);
+        public Task<List<TimeRange>> GetUnavailableTimeRanges(int gameId);
 
-        public bool CheckGameAvailability(int gameId, DateTime startDate, DateTime endDate);
+        public Task<bool> CheckGameAvailability(int gameId, DateTime startDate, DateTime endDate);
 
-        public decimal CalculateTotalPriceForRentingASpecificGame(decimal price, TimeRange timeRange);
+        public Task<decimal> CalculateTotalPriceForRentingASpecificGame(decimal price, TimeRange timeRange);
 
-        public int CalculateNumberOfDaysInAGivenTimeRange(TimeRange selectedTimeRange);
+        public Task<int> CalculateNumberOfDaysInAGivenTimeRange(TimeRange selectedTimeRange);
 
-        public Rental CreateRental(int gameId, int clientId, int ownerId, DateTime startDate, DateTime endDate);
+        public Task<Rental> CreateRental(int gameId, int clientId, int ownerId, DateTime startDate, DateTime endDate);
     }
 }

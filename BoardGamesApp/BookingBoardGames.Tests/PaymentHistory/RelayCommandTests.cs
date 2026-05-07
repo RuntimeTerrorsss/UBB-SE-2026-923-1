@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.ViewModels;
 
 namespace BookingBoardGames.Tests.PaymentHistory
 {
@@ -66,7 +66,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         {
             var command = new RelayCommand<int>(_ => { });
             bool eventFired = false;
-            command.CanExecuteChanged += (s, e) => eventFired = true;
+            command.CanExecuteChanged += (sender, eventArguments) => eventFired = true;
 
             command.RaiseCanExecuteChanged();
 
@@ -131,7 +131,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         {
             var command = new RelayCommandNoParam(() => { });
             bool eventFired = false;
-            command.CanExecuteChanged += (s, e) => eventFired = true;
+            command.CanExecuteChanged += (sender, eventArguments) => eventFired = true;
 
             command.RaiseCanExecuteChanged();
 
