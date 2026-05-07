@@ -1,7 +1,6 @@
 ﻿// <copyright file="GamesRepository.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,6 @@ using BookingBoardGames.Data;
 using BookingBoardGames.Data.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-
 /// <summary>
 /// Repository responsible for reading game/listing data from the database.
 /// Important:
@@ -28,60 +26,48 @@ using Microsoft.EntityFrameworkCore;
 public class GamesAPIProxy : InterfaceGamesRepository
 {
     private readonly HttpClient httpClient;
-
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
     };
-
     public GamesAPIProxy(HttpClient httpClient)
     {
         this.httpClient = httpClient;
     }
-
     public async Task<Game?> GetGameById(int gameId)
     {
         var response = await this.httpClient.GetAsync($"api/games/{gameId}");
-
         if (!response.IsSuccessStatusCode)
         {
             return null;
         }
-
         return await response.Content.ReadFromJsonAsync<Game>(JsonOptions);
     }
-
     public async Task<decimal> GetPriceGameById(int gameId)
     {
         var response = await this.httpClient.GetAsync($"api/games/{gameId}/price");
         response.EnsureSuccessStatusCode();
-
         var raw = await response.Content.ReadAsStringAsync();
         return decimal.Parse(raw, System.Globalization.CultureInfo.InvariantCulture);
     }
-
     public async Task<List<Game>> GetAll()
     {
         return await this.httpClient.GetFromJsonAsync<List<Game>>("api/games", JsonOptions)
                ?? new List<Game>();
     }
-
     public async Task<List<Game>> GetGamesByFilter(FilterCriteria filter)
     {
         var response = await this.httpClient.PostAsJsonAsync("api/games/search", filter, JsonOptions);
         response.EnsureSuccessStatusCode();
-
         return await response.Content.ReadFromJsonAsync<List<Game>>(JsonOptions)
                ?? new List<Game>();
     }
-
     public async Task<List<Game>> GetGamesForFeedAvailableTonight(int userId)
     {
         return await this.httpClient.GetFromJsonAsync<List<Game>>(
                    $"api/games/feed/tonight?userId={userId}", JsonOptions)
                ?? new List<Game>();
     }
-
     public async Task<List<Game>> GetRemainingGamesForFeed(int userId)
     {
         return await this.httpClient.GetFromJsonAsync<List<Game>>(

@@ -1,0 +1,31 @@
+// <copyright file="IConversationRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using BookingBoardGames.Data;
+
+namespace BookingBoardGames.Data.Interfaces
+{
+    public interface IConversationRepository
+    {
+        Task<List<Conversation>> GetConversationsForUser(int userId);
+
+        Task<Conversation> GetConversationById(int conversationId);
+
+        Task<IReadOnlyList<int>> GetParticipantUserIds(int conversationId);
+
+        Task<Message> HandleNewMessage(Message message);
+
+        Task<Message?> HandleMessageUpdate(Message message);
+
+        Task HandleReadReceipt(ReadReceiptDTO readReceipt);
+
+        Task<int> CreateConversation(int senderId, int receiverId);
+
+        Task<Message?> HandleRentalRequestFinalization(int messageId);
+
+        Task<Message?> CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId);
+    }
+}

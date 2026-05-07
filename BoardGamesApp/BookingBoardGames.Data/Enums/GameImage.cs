@@ -21,6 +21,7 @@ namespace BookingBoardGames.Data.Enum
         /// </summary>
         /// <param name="imageBytes">Raw image data (e.g. from database).</param>
         /// <returns>A BitmapImage usable in XAML, or null if input is empty.</returns>
+        /*
         public static async Task<BitmapImage?> ToBitmapImage(byte[]? imageBytes)
         {
             if (imageBytes == null || imageBytes.Length == 0)
@@ -38,4 +39,5 @@ namespace BookingBoardGames.Data.Enum
             return bitmap;
         }
     }
+        */
 }
