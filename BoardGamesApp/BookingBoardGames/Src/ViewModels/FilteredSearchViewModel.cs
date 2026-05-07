@@ -236,7 +236,7 @@ namespace BookingBoardGames.Src.ViewModels
                 {
                     this.selectedSortOption = value;
                     this.OnPropertyChanged(nameof(this.SelectedSortOption));
-                    this.ApplySortOnly();
+                    _ = this.ApplySortOnly();
                 }
             }
         }
@@ -626,7 +626,7 @@ namespace BookingBoardGames.Src.ViewModels
         /// calculate distances; otherwise <see cref="ApplyFilters"/> is called.
         /// Raises <see cref="LocationError"/> if "Closest to me" is chosen without a city.
         /// </summary>
-        public void ApplySortOnly()
+        public async Task ApplySortOnly()
         {
             try
             {
@@ -650,7 +650,7 @@ namespace BookingBoardGames.Src.ViewModels
 
                 if (this.CurrentFilter.SortOption == SortOption.Location)
                 {
-                    this.SearchGamesByFilter(this.CurrentFilter);
+                    await this.SearchGamesByFilter(this.CurrentFilter);
                 }
                 else
                 {
