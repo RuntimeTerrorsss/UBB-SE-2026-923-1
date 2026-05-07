@@ -6,16 +6,16 @@ using System;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Navigation;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Validators;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.Navigation;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Validators;
+using BookingBoardGames.Data.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Web.WebView2.Core;
 
-namespace BookingBoardGames.Src.Views
+namespace BookingBoardGames.Data.Views
 {
     public sealed partial class DeliveryView : Page
     {

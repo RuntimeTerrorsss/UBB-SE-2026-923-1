@@ -9,13 +9,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BookingBoardGames.Src.Commands;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Commands;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Shared;
 
-namespace BookingBoardGames.Src.ViewModels
+namespace BookingBoardGames.Data.ViewModels
 {
     /// <summary>
     /// ViewModel for the filtered search page.
@@ -236,7 +236,7 @@ namespace BookingBoardGames.Src.ViewModels
                 {
                     this.selectedSortOption = value;
                     this.OnPropertyChanged(nameof(this.SelectedSortOption));
-                    this.ApplySortOnly();
+                    _ = this.ApplySortOnly();
                 }
             }
         }
@@ -297,7 +297,7 @@ namespace BookingBoardGames.Src.ViewModels
             this.SelectedStartDate = null;
             this.SelectedEndDate = null;
 
-            this.SearchCommand = new RelayCommand(_ => this.SearchGamesByFilter(this.CurrentFilter));
+            this.SearchCommand = new RelayCommand(async _ => await this.SearchGamesByFilter(this.CurrentFilter));
             this.NextPageCommand = new RelayCommand(_ => this.NextPage());
             this.PreviousPageCommand = new RelayCommand(_ => this.PreviousPage());
             this.GoBackCommand = new RelayCommand(_ => this.GoBack());
@@ -327,7 +327,7 @@ namespace BookingBoardGames.Src.ViewModels
         /// </summary>
         /// <param name="initialFilter">The filter to apply on startup.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="initialFilter"/> is <c>null</c>.</exception>
-        public void Initialize(FilterCriteria initialFilter)
+        public async Task Initialize(FilterCriteria initialFilter)
         {
             try
             {
@@ -350,7 +350,7 @@ namespace BookingBoardGames.Src.ViewModels
                     this.SelectedEndDate = null;
                 }
 
-                this.SearchGamesByFilter(this.CurrentFilter);
+                await this.SearchGamesByFilter(this.CurrentFilter);
             }
             catch (Exception ex)
             {
@@ -364,11 +364,11 @@ namespace BookingBoardGames.Src.ViewModels
         /// Resets the page to the first page.
         /// </summary>
         /// <param name="searchCriteria">Criteria sent to the search service.</param>
-        public void LoadSearchResults(FilterCriteria searchCriteria)
+        public async Task LoadSearchResults(FilterCriteria searchCriteria)
         {
             try
             {
-                this.BaseResults = this.searchService.SearchGamesByFilter(searchCriteria) ?? Array.Empty<GameDTO>();
+                this.BaseResults = await this.searchService.SearchGamesByFilter(searchCriteria) ?? Array.Empty<GameDTO>();
                 this.DisplayedResults = this.BaseResults;
                 this.Games = this.DisplayedResults.ToList();
                 this.CurrentPage = FirstPage;
@@ -626,7 +626,7 @@ namespace BookingBoardGames.Src.ViewModels
         /// calculate distances; otherwise <see cref="ApplyFilters"/> is called.
         /// Raises <see cref="LocationError"/> if "Closest to me" is chosen without a city.
         /// </summary>
-        public void ApplySortOnly()
+        public async Task ApplySortOnly()
         {
             try
             {
@@ -650,7 +650,7 @@ namespace BookingBoardGames.Src.ViewModels
 
                 if (this.CurrentFilter.SortOption == SortOption.Location)
                 {
-                    this.SearchGamesByFilter(this.CurrentFilter);
+                    await this.SearchGamesByFilter(this.CurrentFilter);
                 }
                 else
                 {
@@ -688,7 +688,7 @@ namespace BookingBoardGames.Src.ViewModels
         /// </summary>
         /// <param name="filterCriteria">The filter criteria to pass to the search service.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="filterCriteria"/> is <c>null</c>.</exception>
-        public void SearchGamesByFilter(FilterCriteria filterCriteria)
+        public async Task SearchGamesByFilter(FilterCriteria filterCriteria)
         {
             try
             {
@@ -705,7 +705,7 @@ namespace BookingBoardGames.Src.ViewModels
                     return;
                 }
 
-                this.Games = this.searchService.SearchGamesByFilter(filterCriteria)?.ToList() ?? new List<GameDTO>();
+                this.Games = (await this.searchService.SearchGamesByFilter(filterCriteria))?.ToList() ?? new List<GameDTO>();
                 this.DisplayedResults = this.Games.ToArray();
                 this.BaseResults = this.DisplayedResults;
                 this.CurrentPage = FirstPage;

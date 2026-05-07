@@ -4,10 +4,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     public interface IConversationService
     {

@@ -5,9 +5,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Data.Interfaces
 {
     public interface IConversationRepository
     {

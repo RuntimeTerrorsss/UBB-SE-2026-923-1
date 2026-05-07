@@ -1,7 +1,7 @@
 using System;
 using Microsoft.UI.Xaml;
 using Xunit;
-using BookingBoardGames.Src.Converters;
+using BookingBoardGames.Data.Converters;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {

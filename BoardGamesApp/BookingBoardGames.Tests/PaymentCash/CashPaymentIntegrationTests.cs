@@ -1,16 +1,16 @@
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames;
 using BookingBoardGames;
 using Microsoft.EntityFrameworkCore;
 using BookingBoardGames.Data;
-using BookingBoardGames.Src.Mapper;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.Mapper;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Constants;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Services;
 
 namespace BookingBoardGames.Tests.PaymentCash
 {
@@ -138,8 +138,8 @@ namespace BookingBoardGames.Tests.PaymentCash
         private static ICashPaymentService BuildCashPaymentService(IPaymentRepository paymentRepository)
         {
             var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            var RentalRepository = new RentalRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            var GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            var RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var RentalService = new RentalService(RentalRepository, GamesRepository);
             var receiptService = new ReceiptService(userRepository, RentalService, GamesRepository);
             var cashPaymentMapper = new CashPaymentMapper();

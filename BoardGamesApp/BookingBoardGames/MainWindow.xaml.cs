@@ -3,8 +3,8 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.Views;
-using BookingBoardGames.Src.Views.ChatViews;
+using BookingBoardGames.Data.Views;
+using BookingBoardGames.Data.Views.ChatViews;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 

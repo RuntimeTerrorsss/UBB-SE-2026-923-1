@@ -4,10 +4,11 @@
 
 using System;
 using System.Collections.Generic;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Shared;
+using System.Threading.Tasks;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Shared;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     /// <summary>
     /// Provides search and filtering capabilities for games.
@@ -20,7 +21,7 @@ namespace BookingBoardGames.Src.Services
         /// <param name="filter">The criteria to filter the games.</param>
         /// <returns>An array of games matching the filter criteria.</returns>
         /// <exception cref="InvalidOperationException">Thrown when search fails.</exception>
-        GameDTO[] SearchGamesByFilter(FilterCriteria filter);
+        Task<GameDTO[]> SearchGamesByFilter(FilterCriteria filter);
 
         /// <summary>
         /// Retrieves a feed of games available tonight for a specific user.
@@ -28,7 +29,7 @@ namespace BookingBoardGames.Src.Services
         /// <param name="userId">The ID of the user.</param>
         /// <returns>An array of games available tonight.</returns>
         /// <exception cref="InvalidOperationException">Thrown when feed retrieval fails.</exception>
-        GameDTO[] GetGamesFeedAvailableTonightByUser(int userId);
+        Task<GameDTO[]> GetGamesFeedAvailableTonightByUser(int userId);
 
         /// <summary>
         /// Retrieves a feed of other games for a specific user.
@@ -36,7 +37,7 @@ namespace BookingBoardGames.Src.Services
         /// <param name="userId">The ID of the user.</param>
         /// <returns>An array of other games.</returns>
         /// <exception cref="InvalidOperationException">Thrown when feed retrieval fails.</exception>
-        GameDTO[] GetOtherGamesFeedByUser(int userId);
+        Task<GameDTO[]> GetOtherGamesFeedByUser(int userId);
 
         /// <summary>
         /// Applies multiple filters and sorting logic to a collection of games.
@@ -54,7 +55,7 @@ namespace BookingBoardGames.Src.Services
         /// <param name="page">The page number for pagination.</param>
         /// <param name="pageSize">The number of games per page.</param>
         /// <returns>A tuple containing categorized games and the total count of available items.</returns>
-        (List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)
+        Task<(List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)>
         GetDiscoveryFeedPaged(int userId, int page, int pageSize);
 
         /// <summary>

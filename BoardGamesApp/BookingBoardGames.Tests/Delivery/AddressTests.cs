@@ -1,5 +1,5 @@
 using System;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
 using Xunit;
 
 namespace BookingBoardGames.Tests.Delivery

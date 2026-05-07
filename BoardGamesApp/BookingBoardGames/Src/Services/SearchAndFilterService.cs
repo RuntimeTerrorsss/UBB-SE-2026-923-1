@@ -5,14 +5,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Shared;
-using BookingBoardGames.Src.Mapper;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Shared;
+using BookingBoardGames.Data.Mapper;
+using BookingBoardGames.Data.Interfaces;
+using System.Threading.Tasks;
 
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     /// <summary>
     /// Service responsible for searching, filtering, and retrieving game feeds.
@@ -47,7 +49,7 @@ namespace BookingBoardGames.Src.Services
         /// </summary>
         /// <param name="filter">The criteria to filter games.</param>
         /// <returns>An array of <see cref="GameDTO"/> matching the criteria.</returns>
-        public GameDTO[] SearchGamesByFilter(FilterCriteria filter)
+        public async Task<GameDTO[]> SearchGamesByFilter(FilterCriteria filter)
         {
             try
             {
@@ -57,7 +59,7 @@ namespace BookingBoardGames.Src.Services
                     filter.City = null;
                 }
 
-                var filteredGamesFromRepository = this.gamesRepository.GetGamesByFilter(filter);
+                var filteredGamesFromRepository = await this.gamesRepository.GetGamesByFilter(filter);
                 filter.City = originalFilterCity;
 
                 var filteredGamesResult = new List<GameDTO>();
@@ -111,11 +113,11 @@ namespace BookingBoardGames.Src.Services
         /// </summary>
         /// <param name="userId">The ID of the user requesting the feed or null.</param>
         /// <returns>An array of <see cref="GameDTO"/> available tonight.</returns>
-        public GameDTO[] GetGamesFeedAvailableTonightByUser(int userId)
+        public async Task<GameDTO[]> GetGamesFeedAvailableTonightByUser(int userId)
         {
             try
             {
-                var availableTonightGameList = this.gamesRepository.GetGamesForFeedAvailableTonight(userId);
+                var availableTonightGameList = await this.gamesRepository.GetGamesForFeedAvailableTonight(userId);
                 var availableTonightGamesResult = new List<GameDTO>();
 
                 foreach (var availableTonightGame in availableTonightGameList)
@@ -142,11 +144,11 @@ namespace BookingBoardGames.Src.Services
         /// </summary>
         /// <param name="userId">The ID of the user requesting the feed or null.</param>
         /// <returns>An array of <see cref="GameDTO"/> representing other games.</returns>
-        public GameDTO[] GetOtherGamesFeedByUser(int userId)
+        public async Task<GameDTO[]> GetOtherGamesFeedByUser(int userId)
         {
             try
             {
-                var otherFeedGames = this.gamesRepository.GetRemainingGamesForFeed(userId);
+                var otherFeedGames = await this.gamesRepository.GetRemainingGamesForFeed(userId);
                 var otherFeedGamesResult = new List<GameDTO>();
                 foreach (var otherFeedGame in otherFeedGames)
                 {
@@ -285,11 +287,11 @@ namespace BookingBoardGames.Src.Services
         /// <param name="page">The current page number (1-based).</param>
         /// <param name="pageSize">The number of items to include per page.</param>
         /// <returns>A tuple containing available games for tonight, other available games, and the total count of games.</returns>
-        public (List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)
+        public async Task<(List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)>
             GetDiscoveryFeedPaged(int userId, int page, int pageSize)
         {
-            var availableTonightGameList = this.GetGamesFeedAvailableTonightByUser(userId).ToList();
-            var otherGameList = this.GetOtherGamesFeedByUser(userId).ToList();
+            var availableTonightGameList = await this.GetGamesFeedAvailableTonightByUser(userId);
+            var otherGameList = await this.GetOtherGamesFeedByUser(userId);
 
             var allDescoveryFeedGames = availableTonightGameList.Concat(otherGameList).ToList();
             var totalAvailableGamesCount = allDescoveryFeedGames.Count;

@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.UI;
 
-namespace BookingBoardGames.Src.Views.ChatViews
+namespace BookingBoardGames.Data.Views.ChatViews
 {
     public sealed partial class ConversationItemView : UserControl
     {

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookingBoardGames.Src.Enum
+namespace BookingBoardGames.Data.Enum
 {
     public enum MessageType
     {

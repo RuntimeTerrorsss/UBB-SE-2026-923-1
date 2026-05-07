@@ -3,10 +3,10 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.Services;
 using Microsoft.UI.Xaml;
 
-namespace BookingBoardGames.Src.Navigation
+namespace BookingBoardGames.Data.Navigation
 {
     public class BookingNavigationArguments
     {

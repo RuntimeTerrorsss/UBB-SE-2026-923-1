@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Shared;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,23 +44,23 @@ public class GamesRepository : InterfaceGamesRepository
     /// <remarks>
     /// Use this when you already know the exact game id and need full game details.
     /// </remarks>
-    public Game? GetGameById(int gameId)
+    public async Task<Game?> GetGameById(int gameId)
     {
-        return this.appContext.Games.FirstOrDefault(game => game.Id == gameId);
+        return await this.appContext.Games.FirstOrDefaultAsync(game => game.Id == gameId);
     }
 
-    public decimal GetPriceGameById(int gameId)
+    public async Task<decimal> GetPriceGameById(int gameId)
     {
-        return this.appContext.Games.Where(game => game.Id == gameId).Select(game => game.PricePerDay).FirstOrDefault();
+        return await this.appContext.Games.Where(game => game.Id == gameId).Select(game => game.PricePerDay).FirstOrDefaultAsync();
     }
 
     /// <summary>
     /// Gets all active games that are visible in the system.
     /// </summary>
     /// <returns>A list of all active games.</returns>
-    public List<Game> GetAll()
+    public async Task<List<Game>> GetAll()
     {
-        return this.GetAllActiveGames(AnonymousUserId);
+        return await this.GetAllActiveGames(AnonymousUserId);
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ public class GamesRepository : InterfaceGamesRepository
     /// - user's own games are excluded if UserId is provided
     /// - if an availability range is provided, only games available in that range are returned.
     /// </remarks>
-    public List<Game> GetGamesByFilter(FilterCriteria filter)
+    public async Task<List<Game>> GetGamesByFilter(FilterCriteria filter)
     {
         var userId = filter.UserId ?? AnonymousUserId;
         var query = this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId);
@@ -114,7 +114,7 @@ public class GamesRepository : InterfaceGamesRepository
             query = query.Where(game => !game.Rentals.Any(rental => rental.StartDate < endDateFilter && rental.EndDate > startDateFilter));
         }
 
-        return query.ToList();
+        return await query.ToListAsync();
     }
 
     /// <summary>
@@ -125,12 +125,12 @@ public class GamesRepository : InterfaceGamesRepository
     /// Used to exclude the user's own games from the feed.
     /// </param>
     /// <returns>A list of games for the "Available Tonight" section.</returns>
-    public List<Game> GetGamesForFeedAvailableTonight(int userId)
+    public async Task<List<Game>> GetGamesForFeedAvailableTonight(int userId)
     {
         var todayDate = DateTime.Today;
         var tomorrowDate = todayDate.AddDays(1);
 
-        return this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId && !game.Rentals.Any(rental => rental.StartDate < tomorrowDate && rental.EndDate > todayDate)).ToList();
+        return await this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId && !game.Rentals.Any(rental => rental.StartDate < tomorrowDate && rental.EndDate > todayDate)).ToListAsync();
     }
 
     /// <summary>
@@ -141,12 +141,12 @@ public class GamesRepository : InterfaceGamesRepository
     /// Used to exclude the user's own games from the feed.
     /// </param>
     /// <returns>A list of games for the "Available Tonight" section.</returns>
-    public List<Game> GetRemainingGamesForFeed(int userId)
+    public async Task<List<Game>> GetRemainingGamesForFeed(int userId)
     {
         var todayDate = DateTime.Today;
         var tomorrowDate = todayDate.AddDays(1);
 
-        return this.appContext.Games.Where(game => game.IsActive && game.OwnerId != userId && game.Rentals.Any(rental => rental.StartDate < tomorrowDate && rental.EndDate > todayDate)).ToList();
+        return await this.appContext.Games.Where(game => game.IsActive && game.OwnerId != userId && game.Rentals.Any(rental => rental.StartDate < tomorrowDate && rental.EndDate > todayDate)).ToListAsync();
     }
 
     // Used to convert game data to Game object
@@ -172,8 +172,8 @@ public class GamesRepository : InterfaceGamesRepository
     /// Used to exclude the user's own games from the results.
     /// </param>
     /// <returns>A list of all active games.</returns>
-    private List<Game> GetAllActiveGames(int userId)
+    private async Task<List<Game>> GetAllActiveGames(int userId)
     {
-        return this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId).ToList();
+        return await this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId).ToListAsync();
     }
 }

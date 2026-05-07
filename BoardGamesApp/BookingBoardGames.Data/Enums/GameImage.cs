@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 
-namespace BookingBoardGames.Src.Enum
+namespace BookingBoardGames.Data.Enum
 {
     /// <summary>
     /// Helper class for converting image data from a byte array (e.g. from database)

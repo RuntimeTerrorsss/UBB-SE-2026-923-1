@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.ViewModels;
 
 namespace BookingBoardGames.Tests.PaymentHistory
 {

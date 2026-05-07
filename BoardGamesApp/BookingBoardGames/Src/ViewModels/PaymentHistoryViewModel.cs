@@ -8,12 +8,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.Constants;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Services;
 
-namespace BookingBoardGames.Src.ViewModels
+namespace BookingBoardGames.Data.ViewModels
 {
     public class FilterOption
     {
@@ -159,7 +159,7 @@ namespace BookingBoardGames.Src.ViewModels
                 new FilterOption { Type = FilterType.AlphabeticalDesc, DisplayName = "Alphabetical (Z-A)" },
             };
 
-            OpenReceiptCommand = new RelayCommand<PaymentDataTransferObject>(OpenReceipt);
+            OpenReceiptCommand = new RelayCommand<PaymentDataTransferObject>(async dto => await OpenReceipt(dto));
             NextPageCommand = new RelayCommandNoParam(OnNextPage, () => CurrentPage < TotalPages);
             PreviousPageCommand = new RelayCommandNoParam(OnPreviousPage, () => CurrentPage > PaymentHistoryViewModelConstants.FirstPage);
 
@@ -196,13 +196,14 @@ namespace BookingBoardGames.Src.ViewModels
             }
         }
 
-        private async void OpenReceipt(PaymentDataTransferObject selectedPayment)
+        private async Task OpenReceipt(PaymentDataTransferObject selectedPayment)
         {
             if (selectedPayment == null)
             {
                 return;
             }
-            string receiptFilePath = paymentService.GetReceiptDocumentPath(selectedPayment.PaymentId);
+
+            string receiptFilePath = await paymentService.GetReceiptDocumentPath(selectedPayment.PaymentId);
 
             try
             {

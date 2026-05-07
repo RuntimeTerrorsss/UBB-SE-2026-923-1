@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Interfaces;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     public class ConversationService : IConversationService
     {

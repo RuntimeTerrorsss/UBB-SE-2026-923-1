@@ -6,15 +6,16 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using BookingBoardGames.Src.Commands;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Commands;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Shared;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 
-namespace BookingBoardGames.Src.ViewModels
+namespace BookingBoardGames.Data.ViewModels
 {
     /// <summary>
     /// Provides details for a specific game, including pricing, availability, and booking commands.
@@ -30,6 +31,7 @@ namespace BookingBoardGames.Src.ViewModels
         private BitmapImage? gameImage;
         private string? ownerImageUrl;
         private BookingDTO gameAndUserDetail;
+        private int gameId;
 
         public event Action<int, int>? OnChatWithOwnerRequested;
 
@@ -40,12 +42,18 @@ namespace BookingBoardGames.Src.ViewModels
         /// <param name="gameId">The unique identifier of the game to display details for.</param>
         public GameDetailsViewModel(InterfaceBookingService bookingService, int gameId)
         {
+
             this.bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
             this.gameAndUserDetail = new BookingDTO();
+            this.gameId = gameId;
+        }
+
+        public async Task InitializeAsync()
+        {
             try
             {
-                this.GameAndUserDetails = this.bookingService.GetBookingInformationForSpecificGame(gameId);
-                this.UnavailableTimeRanges = this.bookingService.GetUnavailableTimeRanges(gameId) ?? Array.Empty<TimeRange>();
+                this.GameAndUserDetails = await this.bookingService.GetBookingInformationForSpecificGame(this.gameId);
+                this.UnavailableTimeRanges = this.bookingService.GetUnavailableTimeRanges(this.gameId) ?? Array.Empty<TimeRange>();
                 this.LoadGameImage();
                 this.LoadOwnerImage();
                 this.HasError = false;

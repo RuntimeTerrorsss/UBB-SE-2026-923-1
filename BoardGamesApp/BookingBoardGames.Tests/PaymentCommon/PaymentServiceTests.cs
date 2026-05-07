@@ -1,8 +1,8 @@
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Mapper;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Mapper;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Services;
 using Moq;
 
 namespace BookingBoardGames.Tests.PaymentCommon

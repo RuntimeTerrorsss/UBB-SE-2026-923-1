@@ -2,12 +2,13 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using BookingBoardGames.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Data;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Data.Interfaces
 {
     public class RentalRepository : IRentalRepository
     {
@@ -18,48 +19,48 @@ namespace BookingBoardGames.Src.Repositories
             this.context = appContext;
         }
 
-        public Rental? GetById(int rentalId)
+        public async Task<Rental?> GetById(int rentalId)
         {
-            return this.context.Rentals.FirstOrDefault(rental => rental.RentalId == rentalId);
+            return await this.context.Rentals
+                .FirstOrDefaultAsync(rental => rental.RentalId == rentalId);
         }
 
-        public TimeRange? GetRentalTimeRange(int rentalId)
+        public async Task<TimeRange?> GetRentalTimeRange(int rentalId)
         {
-            return this.context.Rentals
+            return await this.context.Rentals
                 .Where(rental => rental.RentalId == rentalId)
                 .Select(rental => new TimeRange(rental.StartDate, rental.EndDate))
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
 
-        public List<TimeRange> GetAllOccupiedPeriods()
+        public async Task<List<TimeRange>> GetAllOccupiedPeriods()
         {
-            return this.context.Rentals
+            return await this.context.Rentals
                 .Select(rental => new TimeRange(rental.StartDate, rental.EndDate))
-                .ToList();
+                .ToListAsync();
         }
 
-        public List<TimeRange> GetUnavailableTimeRanges(int gameId)
+        public async Task<List<TimeRange>> GetUnavailableTimeRanges(int gameId)
         {
-            return this.context.Rentals
+            return await this.context.Rentals
                 .Where(rental => rental.GameId == gameId)
                 .Select(rental => new TimeRange(rental.StartDate, rental.EndDate))
-                .ToList();
+                .ToListAsync();
         }
 
-        public bool CheckGameAvailability(DateTime startTime, DateTime endTime, int gameId)
+        public async Task<bool> CheckGameAvailability(DateTime startTime, DateTime endTime, int gameId)
         {
-            bool hasOverlap = this.context.Rentals.Any(rental =>
+            bool hasOverlap = await this.context.Rentals.AnyAsync(rental =>
                 rental.GameId == gameId &&
                 rental.StartDate < endTime &&
                 startTime < rental.EndDate);
-
             return !hasOverlap;
         }
 
-        public void AddRental(Rental rental)
+        public async Task AddRental(Rental rental)
         {
-            this.context.Rentals.Add(rental);
-            this.context.SaveChanges();
+            await this.context.Rentals.AddAsync(rental);
+            await this.context.SaveChangesAsync();
         }
     }
 }
