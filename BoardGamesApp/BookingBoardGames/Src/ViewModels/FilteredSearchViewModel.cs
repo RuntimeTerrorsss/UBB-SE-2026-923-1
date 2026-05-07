@@ -297,7 +297,7 @@ namespace BookingBoardGames.Src.ViewModels
             this.SelectedStartDate = null;
             this.SelectedEndDate = null;
 
-            this.SearchCommand = new RelayCommand(_ => this.SearchGamesByFilter(this.CurrentFilter));
+            this.SearchCommand = new RelayCommand(async _ => await this.SearchGamesByFilter(this.CurrentFilter));
             this.NextPageCommand = new RelayCommand(_ => this.NextPage());
             this.PreviousPageCommand = new RelayCommand(_ => this.PreviousPage());
             this.GoBackCommand = new RelayCommand(_ => this.GoBack());
@@ -327,7 +327,7 @@ namespace BookingBoardGames.Src.ViewModels
         /// </summary>
         /// <param name="initialFilter">The filter to apply on startup.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="initialFilter"/> is <c>null</c>.</exception>
-        public void Initialize(FilterCriteria initialFilter)
+        public async Task Initialize(FilterCriteria initialFilter)
         {
             try
             {
@@ -350,7 +350,7 @@ namespace BookingBoardGames.Src.ViewModels
                     this.SelectedEndDate = null;
                 }
 
-                this.SearchGamesByFilter(this.CurrentFilter);
+                await this.SearchGamesByFilter(this.CurrentFilter);
             }
             catch (Exception ex)
             {
@@ -705,7 +705,7 @@ namespace BookingBoardGames.Src.ViewModels
                     return;
                 }
 
-                this.Games = await this.searchService.SearchGamesByFilter(filterCriteria)?.ToList() ?? new List<GameDTO>();
+                this.Games = (await this.searchService.SearchGamesByFilter(filterCriteria))?.ToList() ?? new List<GameDTO>();
                 this.DisplayedResults = this.Games.ToArray();
                 this.BaseResults = this.DisplayedResults;
                 this.CurrentPage = FirstPage;
