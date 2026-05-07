@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookingBoardGames.Data.DTO
+namespace BookingBoardGames.Data
 {
     public record ReadReceiptDTO(
         int ConversationId,

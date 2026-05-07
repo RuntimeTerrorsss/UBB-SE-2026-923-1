@@ -1,21 +1,16 @@
-﻿// <copyright file="App.xaml.cs" company="PlaceholderCompany">
+// <copyright file="App.xaml.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
 using System;
 using System.Diagnostics;
 using BookingBoardGames.Data;
-using BookingBoardGames.Data.Mapper;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Mapper;
 using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Src.Services;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 
 namespace BookingBoardGames
 {
@@ -33,8 +28,6 @@ namespace BookingBoardGames
 
         /// <summary>
         /// Initializes a new instance of the <see cref="App"/> class.
-        /// Gets the initialization of the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
@@ -49,16 +42,16 @@ namespace BookingBoardGames
             UserRepository = new UserRepository(AppDbContext);
             GameRepository = new GamesAPIProxy(Client);
             RentalRepository = new RentalAPIProxy(Client);
-            PaymentRepository = new PaymentAPIProxy(Client);
-            HistoryRepository = new RepositoryPaymentAPIProxy(Client);
-            ConversationRepository = new ConversationRepository();
+            PaymentRepository = new PaymentRepository(AppDbContext);
+            HistoryRepository = new RepositoryPayment(AppDbContext);
+            ConversationRepository = new ConversationAPIProxy(Client);
 
             // Services
             ConversationNotifier = new ConversationNotifier();
             GlobalGeographicalService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
-            CardPaymentService = new CardPaymentService((PaymentAPIProxy)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
+            CardPaymentService = new CardPaymentService((PaymentRepository)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
             MapService = new MapService();
             ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
             CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);

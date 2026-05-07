@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Security.Authentication.OnlineId;
+using System.Threading.Tasks;
 
 namespace BookingBoardGames.Data.Views.ChatViews
 {
@@ -29,22 +30,23 @@ namespace BookingBoardGames.Data.Views.ChatViews
         public ChatPageView()
         {
             this.InitializeComponent();
-            BookingBoardGames.Data.Shared.SessionContext.GetInstance().OnUserChanged += () =>
+            BookingBoardGames.Src.Shared.SessionContext.GetInstance().OnUserChanged += () =>
             {
                 var newUserId = BookingBoardGames.Data.Shared.SessionContext.GetInstance().UserId;
                 if (this.currentUserId != newUserId)
                 {
                     this.currentUserId = newUserId;
-                    this.Initialize(this.currentUserId);
+                    await this.InitializeAsync(this.currentUserId);
                 }
             };
         }
 
-        public void Initialize(int currentUserId)
+        public async Task InitializeAsync(int currentUserId)
         {
             this.chatPageViewModel = new ChatPageViewModel(currentUserId);
             this.LeftPanel.ViewModel = this.chatPageViewModel.LeftPanelModelView;
             this.RightPanel.ChatViewModel = this.chatPageViewModel.ChatModelView;
+            await this.chatPageViewModel.InitializeAsync();
             this.RightPanel.CurrentUserId = currentUserId;
             this.RightPanel.ProceedToPaymentRequested += this.ProceedToPaymentClick;
 
@@ -59,9 +61,9 @@ namespace BookingBoardGames.Data.Views.ChatViews
             };
         }
 
-        private void AutoSelectConversationWithUser(int otherUserId)
+        private async Task AutoSelectConversationWithUser(int otherUserId)
         {
-            var conversations = this.chatPageViewModel.ConversationService.FetchConversations();
+            var conversations = await this.chatPageViewModel.ConversationService.FetchConversations();
             var existing = conversations.FirstOrDefault(c =>
                 c.Participants.Any(p => p.UserId == otherUserId));
 
@@ -76,9 +78,9 @@ namespace BookingBoardGames.Data.Views.ChatViews
             }
             else
             {
-                this.chatPageViewModel.ConversationService.CreateConversation(this.currentUserId, otherUserId);
+                await this.chatPageViewModel.ConversationService.CreateConversation(this.currentUserId, otherUserId);
 
-                var updatedConversations = this.chatPageViewModel.ConversationService.FetchConversations();
+                var updatedConversations = await this.chatPageViewModel.ConversationService.FetchConversations();
                 var newConversation = updatedConversations.FirstOrDefault(c =>
                     c.Participants.Any(p => p.UserId == otherUserId));
 
@@ -103,20 +105,20 @@ namespace BookingBoardGames.Data.Views.ChatViews
             deliveryWindow.Activate();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArgs)
+        protected override async void OnNavigatedTo(NavigationEventArgs navigationEventArgs)
         {
             base.OnNavigatedTo(navigationEventArgs);
 
             if (navigationEventArgs.Parameter is ValueTuple<int, int> tuple)
             {
                 this.currentUserId = tuple.Item1;
-                this.Initialize(this.currentUserId);
-                this.AutoSelectConversationWithUser(tuple.Item2);
+                await this.InitializeAsync(this.currentUserId);
+                await this.AutoSelectConversationWithUser(tuple.Item2);
             }
             else if (navigationEventArgs.Parameter is int userId)
             {
                 this.currentUserId = userId;
-                this.Initialize(this.currentUserId);
+                await this.InitializeAsync(this.currentUserId);
             }
         }
 
