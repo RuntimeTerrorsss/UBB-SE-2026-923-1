@@ -4,8 +4,9 @@
 
 using System.Threading.Tasks;
 using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Interfaces;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     public abstract class PaymentService : IPaymentService
     {

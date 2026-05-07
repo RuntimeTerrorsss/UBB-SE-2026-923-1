@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Shared;
 
 namespace BookingBoardGames.Data.Interfaces
 {

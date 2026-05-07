@@ -8,7 +8,7 @@ using BookingBoardGames.Src.Constants;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     public class CardPaymentService : PaymentService, ICardPaymentService
     {
@@ -28,7 +28,7 @@ namespace BookingBoardGames.Src.Services
 
         public virtual async Task<CardPaymentDTO> AddCardPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier, decimal amount)
         {
-            if (!await this.CheckBalanceSufficiency(requestIdentifier, clientIdentifier))
+            if (!(await this.CheckBalanceSufficiency(requestIdentifier, clientIdentifier)))
             {
                 throw new Exception("Insufficient Funds");
             }
@@ -100,9 +100,9 @@ namespace BookingBoardGames.Src.Services
                     paymentMethod: cardPayment.PaymentMethod);
         }
 
-        public async virtual Task<RentalDataTransferObject> GetRequestDataTransferObject(int rentalIdentifier)
+        public virtual async Task<RentalDataTransferObject> GetRequestDataTransferObject(int rentalIdentifier)
         {
-            Rental rental = this.rentalService.GetRentalById(rentalIdentifier);
+            Rental rental = await this.rentalService.GetRentalById(rentalIdentifier);
             string gameName = await this.rentalService.GetGameName(rental.RentalId);
             string ownerName = this.userRepository.GetById(rental.OwnerId).Username;
             string clientName = this.userRepository.GetById(rental.ClientId).Username;

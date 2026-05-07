@@ -1,13 +1,13 @@
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Moq;
-using BookingBoardGames.Src.ViewModels;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.DTO;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {

@@ -5,7 +5,7 @@
 using System;
 using System.Windows.Input;
 
-namespace BookingBoardGames.Src.ViewModels
+namespace BookingBoardGames.Data.ViewModels
 {
     public class RelayCommand<T> : ICommand
     {

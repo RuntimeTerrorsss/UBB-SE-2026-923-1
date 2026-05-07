@@ -1,6 +1,6 @@
 using System;
 using Xunit;
-using BookingBoardGames.Src.Commands;
+using BookingBoardGames.Data.Commands;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {

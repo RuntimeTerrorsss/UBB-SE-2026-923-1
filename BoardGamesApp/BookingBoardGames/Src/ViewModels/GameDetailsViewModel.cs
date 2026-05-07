@@ -8,14 +8,14 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BookingBoardGames.Src.Commands;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Commands;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Shared;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 
-namespace BookingBoardGames.Src.ViewModels
+namespace BookingBoardGames.Data.ViewModels
 {
     /// <summary>
     /// Provides details for a specific game, including pricing, availability, and booking commands.

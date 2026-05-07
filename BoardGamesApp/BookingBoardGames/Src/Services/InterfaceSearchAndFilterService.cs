@@ -5,10 +5,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Shared;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     /// <summary>
     /// Provides search and filtering capabilities for games.

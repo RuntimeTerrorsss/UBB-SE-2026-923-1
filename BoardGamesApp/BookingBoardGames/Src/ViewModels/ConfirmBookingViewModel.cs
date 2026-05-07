@@ -9,10 +9,12 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 
-namespace BookingBoardGames.Src.ViewModels
+namespace BookingBoardGames.Data.ViewModels
 {
     /// <summary>
     /// Represents the view model for confirming a booking, providing booking details, availability checks, and commands

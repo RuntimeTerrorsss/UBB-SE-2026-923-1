@@ -5,16 +5,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Shared;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Shared;
+using BookingBoardGames.Data.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Src.Views;
+namespace BookingBoardGames.Data.Views;
 /// <summary>
 /// Provides the user interface for confirming a booking, allowing date modification and final submission.
 /// </summary>
@@ -211,7 +211,7 @@ public sealed partial class ConfirmBookingView : Page
     private void OnMessageUserClicked(object sender, RoutedEventArgs eventArgs)
     {
         var viewModel = (ConfirmBookingViewModel)this.DataContext;
-        int currentUserId = BookingBoardGames.Src.Shared.SessionContext.GetInstance().UserId;
+        int currentUserId = BookingBoardGames.Data.Shared.SessionContext.GetInstance().UserId;
         this.Frame.Navigate(typeof(ChatViews.ChatPageView), (currentUserId, viewModel.GameAndUserDetails.UserId));
     }
 }

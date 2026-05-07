@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     /// <summary>
     /// Defines methods for loading, retrieving, and searching city data, as well as calculating distances between

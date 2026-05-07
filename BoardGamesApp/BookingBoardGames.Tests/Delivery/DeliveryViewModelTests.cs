@@ -1,14 +1,14 @@
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Validators;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Validators;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.ViewModels;
 using Xunit;
 
 namespace BookingBoardGames.Tests.Delivery
