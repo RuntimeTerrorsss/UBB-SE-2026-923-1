@@ -10,6 +10,7 @@ using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.Enum;
 
 namespace BookingBoardGames.Data.Services
 {

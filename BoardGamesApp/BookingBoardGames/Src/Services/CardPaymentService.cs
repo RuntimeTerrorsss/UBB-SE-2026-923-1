@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Constants;
+using BookingBoardGames.Data.Interfaces;
 
 namespace BookingBoardGames.Data.Services
 {
@@ -16,7 +17,7 @@ namespace BookingBoardGames.Data.Services
         private readonly IRentalService rentalService;
 
         public CardPaymentService(
-            PaymentRepository paymentRepository,
+            IPaymentRepository paymentRepository,
             IUserRepository userRepository,
             ReceiptService receiptService,
             IRentalService rentalService)

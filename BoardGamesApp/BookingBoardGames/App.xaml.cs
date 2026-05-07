@@ -46,7 +46,7 @@ namespace BookingBoardGames
             UserRepository = new UserRepository(AppDbContext);
             GameRepository = new GamesAPIProxy(Client);
             RentalRepository = new RentalAPIProxy(Client);
-            PaymentRepository = new PaymentRepository(AppDbContext);
+            PaymentRepository = new PaymentAPIProxy(Client);
             HistoryRepository = new RepositoryPaymentAPIProxy(Client);
             ConversationRepository = new ConversationRepository();
 
@@ -55,7 +55,7 @@ namespace BookingBoardGames
             GlobalGeographicalService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
-            CardPaymentService = new CardPaymentService((PaymentRepository)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
+            CardPaymentService = new CardPaymentService((PaymentAPIProxy)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
             MapService = new MapService();
             ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
             CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using BookingBoardGames.Data.Commands;
 using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Shared;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 

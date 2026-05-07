@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Shared;
 
 namespace BookingBoardGames.Data.Services
 {
