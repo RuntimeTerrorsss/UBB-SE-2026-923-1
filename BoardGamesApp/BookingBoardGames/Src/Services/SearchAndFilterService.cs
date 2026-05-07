@@ -287,11 +287,11 @@ namespace BookingBoardGames.Src.Services
         /// <param name="page">The current page number (1-based).</param>
         /// <param name="pageSize">The number of items to include per page.</param>
         /// <returns>A tuple containing available games for tonight, other available games, and the total count of games.</returns>
-        public (List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)
+        public async Task<(List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)>
             GetDiscoveryFeedPaged(int userId, int page, int pageSize)
         {
-            var availableTonightGameList = this.GetGamesFeedAvailableTonightByUser(userId).ToList();
-            var otherGameList = this.GetOtherGamesFeedByUser(userId).ToList();
+            var availableTonightGameList = await this.GetGamesFeedAvailableTonightByUser(userId);
+            var otherGameList = await this.GetOtherGamesFeedByUser(userId);
 
             var allDescoveryFeedGames = availableTonightGameList.Concat(otherGameList).ToList();
             var totalAvailableGamesCount = allDescoveryFeedGames.Count;

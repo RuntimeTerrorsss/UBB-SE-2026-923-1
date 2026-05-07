@@ -55,7 +55,7 @@ namespace BookingBoardGames.Src.Services
         /// <param name="page">The page number for pagination.</param>
         /// <param name="pageSize">The number of games per page.</param>
         /// <returns>A tuple containing categorized games and the total count of available items.</returns>
-        (List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)
+        Task<(List<GameDTO> AvailableTonight, List<GameDTO> Others, int TotalAvailableGamesCount)>
         GetDiscoveryFeedPaged(int userId, int page, int pageSize);
 
         /// <summary>
