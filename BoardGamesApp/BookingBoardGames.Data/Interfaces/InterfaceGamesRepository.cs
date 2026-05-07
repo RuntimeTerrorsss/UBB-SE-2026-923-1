@@ -1,15 +1,13 @@
-﻿// <copyright file="InterfaceGamesRepository.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
+﻿using System;
 using System.Collections.Generic;
-using BookingBoardGames.Src.Shared;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Shared;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Data.Interfaces
 {
-    /// <summary>
-    /// Defines the repository operations for managing Game entities.
-    /// </summary>
     public interface InterfaceGamesRepository : IRepository<Game>
     {
         /// <summary>
@@ -17,22 +15,22 @@ namespace BookingBoardGames.Src.Repositories
         /// </summary>
         /// <param name="filter">The criteria used to filter the games.</param>
         /// <returns>A list of games matching the filter.</returns>
-        List<Game> GetGamesByFilter(FilterCriteria filter);
+        Task<List<Game>> GetGamesByFilter(FilterCriteria filter);
 
         /// <summary>
         /// Retrieves a list of games available tonight for the specified user's feed.
         /// </summary>
         /// <param name="userId">The unique identifier of the user.</param>
         /// <returns>A list of games available tonight.</returns>
-        List<Game> GetGamesForFeedAvailableTonight(int userId);
+        Task<List<Game>> GetGamesForFeedAvailableTonight(int userId);
 
         /// <summary>
         /// Retrieves a list of other games for the specified user's feed.
         /// </summary>
         /// <param name="userId">The unique identifier of the user.</param>
         /// <returns>A list of other games for the user's feed.</returns>
-        List<Game> GetRemainingGamesForFeed(int userId);
+        Task<List<Game>> GetRemainingGamesForFeed(int userId);
 
-        public decimal GetPriceGameById(int gameId);
+        Task<decimal> GetPriceGameById(int gameId);
     }
 }

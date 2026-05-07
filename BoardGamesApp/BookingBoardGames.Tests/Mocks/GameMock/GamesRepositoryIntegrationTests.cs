@@ -44,7 +44,7 @@ public class GamesRepositoryIntegrationTests
                 new SqlCommand("SET IDENTITY_INSERT Games OFF", connection).ExecuteNonQuery();
             }
 
-            var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            var GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var game = GamesRepository.GetGameById(testId);
 
             Assert.NotNull(game);
@@ -67,7 +67,7 @@ public class GamesRepositoryIntegrationTests
     [Fact]
     public void GetById_GameDoesNotExist_ReturnsNull()
     {
-        var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+        var GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
         var game = GamesRepository.GetGameById(-999);
 
         Assert.Null(game);
@@ -98,7 +98,7 @@ public class GamesRepositoryIntegrationTests
                 new SqlCommand("SET IDENTITY_INSERT Games OFF", connection).ExecuteNonQuery();
             }
 
-            var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            var GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
 
             decimal actualPrice = GamesRepository.GetPriceGameById(testId);
 
@@ -119,7 +119,7 @@ public class GamesRepositoryIntegrationTests
     [Fact]
     public void GetPriceGameById_GameDoesNotExist_ReturnsZero()
     {
-        var GamesRepository = new GamesRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+        var GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
         var price = GamesRepository.GetPriceGameById(-999);
 
         Assert.Equal(0m, price);

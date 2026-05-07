@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
-namespace BookingBoardGames.Src.Views.Controls
+namespace BookingBoardGames.Data.Views.Controls
 {
     /// <summary>
     /// Represents a visual card control that displays summarized information about a game.

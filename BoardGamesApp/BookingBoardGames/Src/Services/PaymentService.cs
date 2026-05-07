@@ -2,9 +2,11 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
 using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Interfaces;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     public abstract class PaymentService : IPaymentService
     {
@@ -35,7 +37,7 @@ namespace BookingBoardGames.Src.Services
         /// </summary>
         /// <param name="paymentId">of payment to get pdf path</param>
         /// <returns>full path to pdf</returns>
-        public string GetReceipt(int paymentId)
+        public async Task<string> GetReceipt(int paymentId)
         {
             Payment paymentToRead = this.paymentRepository.GetPaymentByIdentifier(paymentId);
 
@@ -45,7 +47,7 @@ namespace BookingBoardGames.Src.Services
                 paymentToRead = this.paymentRepository.GetPaymentByIdentifier(paymentId);
             }
 
-            return this.receiptService.GetReceiptDocument(paymentToRead);
+            return await this.receiptService.GetReceiptDocument(paymentToRead);
         }
     }
 }

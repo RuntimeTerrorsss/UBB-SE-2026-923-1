@@ -3,10 +3,13 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     public interface IServicePayment
     {
@@ -40,6 +43,6 @@ namespace BookingBoardGames.Src.Services
         /// </summary>
         /// <param name="paymentId">The ID of the transaction.</param>
         /// <returns>The string file path to the Receipt PDF.</returns>
-        string GetReceiptDocumentPath(int paymentId);
+        Task<string> GetReceiptDocumentPath(int paymentId);
     }
 }

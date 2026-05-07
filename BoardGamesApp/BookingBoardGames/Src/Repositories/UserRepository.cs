@@ -7,7 +7,7 @@ using System.Linq;
 using BookingBoardGames.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Data.Interfaces
 {
     public class UserRepository : IUserRepository
     {

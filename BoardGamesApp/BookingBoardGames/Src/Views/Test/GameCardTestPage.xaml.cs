@@ -4,7 +4,7 @@
 
 using Microsoft.UI.Xaml.Controls;
 
-namespace BookingBoardGames.Src.Views.Test
+namespace BookingBoardGames.Data.Views.Test
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

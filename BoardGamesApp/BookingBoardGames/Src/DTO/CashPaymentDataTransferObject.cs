@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace BookingBoardGames.Src.DTO
+namespace BookingBoardGames.Data.DTO
 {
     public class CashPaymentDataTransferObject(int paymentId, int requestId, int clientId, int ownerId, decimal amount)
     {

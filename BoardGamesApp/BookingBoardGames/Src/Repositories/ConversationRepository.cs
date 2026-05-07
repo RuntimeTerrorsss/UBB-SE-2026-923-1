@@ -4,8 +4,10 @@ using System.Net.Http.Json;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Data.DTO;
+using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Data.Interfaces
 {
     public class ConversationRepository : IConversationRepository
     {

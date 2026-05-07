@@ -3,10 +3,12 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Interfaces;
+using System.Threading.Tasks;
 
-namespace BookingBoardGames.Src.Services;
+namespace BookingBoardGames.Data.Services;
 /// <summary>
 /// Service responsible for handling booking operations, including retrieving game details,
 /// checking availability, and managing rental time rentaltimeranges.
@@ -40,11 +42,11 @@ public class BookingService : InterfaceBookingService
     /// <param name="gameId">The unique identifier of the game.</param>
     /// <returns>A <see cref="BookingDTO"/> containing the game and owner details.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the game or its owner cannot be isfound.</exception>
-    public BookingDTO GetBookingInformationForSpecificGame(int gameId)
+    public async Task<BookingDTO> GetBookingInformationForSpecificGame(int gameId)
     {
         try
         {
-            var bookedGame = this.gamesRepository.GetGameById(gameId);
+            var bookedGame = await this.gamesRepository.GetGameById(gameId);
             if (bookedGame == null)
             {
                 throw new InvalidOperationException($"Game with id {gameId} was not isfound.");
@@ -104,11 +106,11 @@ public class BookingService : InterfaceBookingService
     /// <param name="gameId">The unique identifier of the game.</param>
     /// <param name="timeRange">The requested <see cref="TimeRange"/> for the booking.</param>
     /// <returns><c>true</c> if the game is available for the specified range; otherwise, <c>false</c>.</returns>
-    public bool CheckGameAvailability(int gameId, TimeRange timeRange)
+    public async Task<bool> CheckGameAvailability(int gameId, TimeRange timeRange)
     {
         try
         {
-            return this.rentalsRepository.CheckGameAvailability(timeRange.StartTime, timeRange.EndTime, gameId);
+            return await this.rentalsRepository.CheckGameAvailability(timeRange.StartTime, timeRange.EndTime, gameId);
         }
         catch (Exception exception)
         {
@@ -145,11 +147,11 @@ public class BookingService : InterfaceBookingService
         return days < MinimumValidDayCount ? MinimumValidDayCount : days;
     }
 
-    public void AddBooking(int gameId, int userId, TimeRange timeRange)
+    public async Task AddBooking(int gameId, int userId, TimeRange timeRange)
     {
         try
         {
-            var game = this.gamesRepository.GetGameById(gameId);
+            var game = await this.gamesRepository.GetGameById(gameId);
             if (game == null)
             {
                 throw new InvalidOperationException($"Game with id {gameId} was not found.");

@@ -1,5 +1,5 @@
 using System;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.ViewModels;
 using Xunit;
 
 namespace BookingBoardGames.Tests.Chat

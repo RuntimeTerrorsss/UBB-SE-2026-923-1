@@ -6,12 +6,15 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 
-namespace BookingBoardGames.Src.ViewModels
+namespace BookingBoardGames.Data.ViewModels
 {
     /// <summary>
     /// Represents the view model for confirming a booking, providing booking details, availability checks, and commands
@@ -229,11 +232,11 @@ namespace BookingBoardGames.Src.ViewModels
         /// </summary>
         /// <remarks>If an error occurs during the confirmation process, the method raises an error with a
         /// descriptive message. This method does not throw exceptions to the caller.</remarks>
-        public void ConfirmBooking()
+        public async Task ConfirmBooking()
         {
             try
             {
-                this.bookingService.AddBooking(this.GameAndUserDetails.GameId, this.GameAndUserDetails.UserId, this.SelectedTimeRange);
+                await this.bookingService.AddBooking(this.GameAndUserDetails.GameId, this.GameAndUserDetails.UserId, this.SelectedTimeRange);
                 this.UnavailableTimeRanges = this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
                 this.OnPropertyChanged(nameof(this.UnavailableTimeRanges));
                 this.OnConfirmBookingRequested?.Invoke();

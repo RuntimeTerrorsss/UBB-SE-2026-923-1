@@ -2,12 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Src.Shared;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.Shared;
+using BookingBoardGames.Data.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Src.Views
+namespace BookingBoardGames.Data.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -26,7 +26,7 @@ namespace BookingBoardGames.Src.Views
         /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
         /// </summary>
         /// <param name="e">Event data that can be examined by overriding code.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             var criteria = e.Parameter as FilterCriteria ?? new FilterCriteria();
@@ -36,7 +36,7 @@ namespace BookingBoardGames.Src.Views
                 this.Frame.Navigate(typeof(GameDetailsView), gameId);
             };
             viewModel.OnGoBackRequest += () => this.Frame.Navigate(typeof(DiscoveryView));
-            viewModel.Initialize(criteria);
+            await viewModel.Initialize(criteria);
             this.DataContext = viewModel;
         }
     }
