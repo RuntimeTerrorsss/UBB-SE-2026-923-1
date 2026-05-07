@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BookingBoardGames.Src.Constants;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
@@ -185,7 +186,7 @@ namespace BookingBoardGames.Src.Services
         /// </summary>
         /// <param name="paymentId">The ID of the transaction.</param>
         /// <returns>The string file path to the Receipt PDF.</returns>
-        public string GetReceiptDocumentPath(int paymentId)
+        public async Task<string> GetReceiptDocumentPath(int paymentId)
         {
             Payment foundPayment = this.paymentRepository.GetPaymentById(paymentId);
 
@@ -198,7 +199,7 @@ namespace BookingBoardGames.Src.Services
                 foundPayment.ReceiptFilePath = "receipts\\" + foundPayment.ReceiptFilePath;
             }
 
-            return this.receiptService.GetReceiptDocument(foundPayment);
+            return await this.receiptService.GetReceiptDocument(foundPayment);
         }
 
         /// <summary>
