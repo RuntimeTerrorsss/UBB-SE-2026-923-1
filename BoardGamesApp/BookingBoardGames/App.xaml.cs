@@ -5,9 +5,9 @@
 using System;
 using System.Diagnostics;
 using BookingBoardGames.Data;
-using BookingBoardGames.Src.Mapper;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.Mapper;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
 using BookingBoardGames.Data.Interfaces;
@@ -45,7 +45,7 @@ namespace BookingBoardGames
             // Repositories
             UserRepository = new UserRepository(AppDbContext);
             GameRepository = new GamesAPIProxy(Client);
-            RentalRepository = new RentalRepository(AppDbContext);
+            RentalRepository = new RentalAPIProxy(Client);
             PaymentRepository = new PaymentRepository(AppDbContext);
             HistoryRepository = new RepositoryPayment(AppDbContext);
             ConversationRepository = new ConversationRepository(AppDbContext);

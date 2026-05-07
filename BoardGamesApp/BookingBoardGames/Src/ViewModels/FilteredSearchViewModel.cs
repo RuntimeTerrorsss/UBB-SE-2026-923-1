@@ -9,13 +9,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BookingBoardGames.Src.Commands;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.Commands;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Shared;
 
-namespace BookingBoardGames.Src.ViewModels
+namespace BookingBoardGames.Data.ViewModels
 {
     /// <summary>
     /// ViewModel for the filtered search page.

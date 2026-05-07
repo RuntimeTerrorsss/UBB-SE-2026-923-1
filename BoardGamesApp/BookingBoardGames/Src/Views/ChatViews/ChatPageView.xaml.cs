@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -19,7 +19,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Security.Authentication.OnlineId;
 
-namespace BookingBoardGames.Src.Views.ChatViews
+namespace BookingBoardGames.Data.Views.ChatViews
 {
     public sealed partial class ChatPageView : Page
     {
@@ -29,9 +29,9 @@ namespace BookingBoardGames.Src.Views.ChatViews
         public ChatPageView()
         {
             this.InitializeComponent();
-            BookingBoardGames.Src.Shared.SessionContext.GetInstance().OnUserChanged += () =>
+            BookingBoardGames.Data.Shared.SessionContext.GetInstance().OnUserChanged += () =>
             {
-                var newUserId = BookingBoardGames.Src.Shared.SessionContext.GetInstance().UserId;
+                var newUserId = BookingBoardGames.Data.Shared.SessionContext.GetInstance().UserId;
                 if (this.currentUserId != newUserId)
                 {
                     this.currentUserId = newUserId;

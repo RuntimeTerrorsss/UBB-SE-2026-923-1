@@ -4,7 +4,7 @@
 
 using Microsoft.UI.Xaml.Controls;
 
-namespace BookingBoardGames.Src.Views.Pages
+namespace BookingBoardGames.Data.Views.Pages
 {
     /// <summary>
     /// Represents the main feed page where users can browse and discover games.

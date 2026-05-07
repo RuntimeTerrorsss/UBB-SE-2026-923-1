@@ -3,12 +3,12 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Data.Interfaces;
 using System.Threading.Tasks;
 
-namespace BookingBoardGames.Src.Services;
+namespace BookingBoardGames.Data.Services;
 /// <summary>
 /// Service responsible for handling booking operations, including retrieving game details,
 /// checking availability, and managing rental time rentaltimeranges.
@@ -106,11 +106,11 @@ public class BookingService : InterfaceBookingService
     /// <param name="gameId">The unique identifier of the game.</param>
     /// <param name="timeRange">The requested <see cref="TimeRange"/> for the booking.</param>
     /// <returns><c>true</c> if the game is available for the specified range; otherwise, <c>false</c>.</returns>
-    public bool CheckGameAvailability(int gameId, TimeRange timeRange)
+    public async Task<bool> CheckGameAvailability(int gameId, TimeRange timeRange)
     {
         try
         {
-            return this.rentalsRepository.CheckGameAvailability(timeRange.StartTime, timeRange.EndTime, gameId);
+            return await this.rentalsRepository.CheckGameAvailability(timeRange.StartTime, timeRange.EndTime, gameId);
         }
         catch (Exception exception)
         {

@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -21,7 +21,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
 
-namespace BookingBoardGames.Src.Views.ChatViews
+namespace BookingBoardGames.Data.Views.ChatViews
 {
     public sealed partial class LeftPanelView : UserControl
     {

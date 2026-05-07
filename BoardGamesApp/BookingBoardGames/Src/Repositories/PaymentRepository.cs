@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Data.Interfaces
 {
     public class PaymentRepository : IPaymentRepository
     {

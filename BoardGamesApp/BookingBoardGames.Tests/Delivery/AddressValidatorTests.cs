@@ -1,5 +1,5 @@
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Validators;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Validators;
 
 namespace BookingBoardGames.Tests.Delivery
 {

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookingBoardGames.Src.Validators
+namespace BookingBoardGames.Data.Validators
 {
     public interface IValidator<T, TE>
     {

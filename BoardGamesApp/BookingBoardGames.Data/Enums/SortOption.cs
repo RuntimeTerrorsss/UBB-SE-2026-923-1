@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace BookingBoardGames.Src.Enum
+namespace BookingBoardGames.Data.Enum
 {
     /// <summary>
     /// Specifies the sorting options available for game search results.

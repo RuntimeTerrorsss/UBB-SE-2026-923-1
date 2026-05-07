@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace BookingBoardGames.Src.Repositories;
+namespace BookingBoardGames.Data.Interfaces;
 
 /// <summary>
 /// Interface defining basic repository operations for managing entities of type T, including retrieval by ID and fetching all entities.

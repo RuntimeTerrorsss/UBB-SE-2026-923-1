@@ -1,11 +1,11 @@
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Enum;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Services;
+using BookingBoardGames.Data.Enum;
 using Moq;
 using Xunit;
 

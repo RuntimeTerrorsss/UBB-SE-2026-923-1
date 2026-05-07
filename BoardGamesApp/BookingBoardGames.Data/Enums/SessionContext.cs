@@ -4,7 +4,7 @@
 
 using System;
 
-namespace BookingBoardGames.Src.Shared
+namespace BookingBoardGames.Data.Shared
 {
     /// <summary>
     /// Provides a context for managing the current user's session state, including authentication status and user

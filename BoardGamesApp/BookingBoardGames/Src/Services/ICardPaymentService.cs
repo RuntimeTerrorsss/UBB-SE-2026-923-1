@@ -3,9 +3,9 @@
 // </copyright>
 
 using BookingBoardGames.Data;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
 
-namespace BookingBoardGames.Src.Services
+namespace BookingBoardGames.Data.Services
 {
     public interface ICardPaymentService
     {

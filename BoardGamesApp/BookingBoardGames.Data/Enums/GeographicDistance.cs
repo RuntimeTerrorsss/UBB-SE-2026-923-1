@@ -4,7 +4,7 @@
 
 using System;
 
-namespace BookingBoardGames.Src.Enum
+namespace BookingBoardGames.Data.Enum
 {
     /// <summary>
     /// Provides methods for calculating the distance between two geographic coordinates using the Haversine formula.

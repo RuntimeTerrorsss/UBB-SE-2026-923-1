@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Data.DTO;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Data.Interfaces
 {
     public class ConversationRepository : IConversationRepository
     {

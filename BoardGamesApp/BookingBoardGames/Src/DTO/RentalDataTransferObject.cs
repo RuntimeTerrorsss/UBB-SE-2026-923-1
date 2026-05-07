@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookingBoardGames.Src.DTO
+namespace BookingBoardGames.Data.DTO
 {
     public class RentalDataTransferObject
     {

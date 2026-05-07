@@ -1,6 +1,6 @@
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Shared;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Shared;
 
 namespace BookingBoardGames.Tests.SearchAndBook.Shared;
 

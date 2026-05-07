@@ -3,16 +3,16 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.Navigation;
-using BookingBoardGames.Src.ViewModels;
-using BookingBoardGames.Src.Views;
+using BookingBoardGames.Data.Navigation;
+using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Data.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Src.Views
+namespace BookingBoardGames.Data.Views
 {
     public sealed partial class CardPaymentPage : Page
     {
