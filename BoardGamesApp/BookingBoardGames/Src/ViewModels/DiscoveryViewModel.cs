@@ -13,7 +13,6 @@ using BookingBoardGames.Data.Commands;
 using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Shared;
 
 namespace BookingBoardGames.Data.ViewModels
 {

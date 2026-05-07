@@ -8,7 +8,6 @@ using System.Linq;
 using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Shared;
 using BookingBoardGames.Data.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
