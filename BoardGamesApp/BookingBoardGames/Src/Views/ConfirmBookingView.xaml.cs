@@ -202,10 +202,10 @@ public sealed partial class ConfirmBookingView : Page
         }
     }
 
-    private void OnConfirmClicked(object sender, RoutedEventArgs eventArgs)
+    private async void OnConfirmClicked(object sender, RoutedEventArgs eventArgs)
     {
         var viewModel = (ConfirmBookingViewModel)this.DataContext;
-        viewModel.ConfirmBooking();
+        await viewModel.ConfirmBooking();
     }
 
     private void OnMessageUserClicked(object sender, RoutedEventArgs eventArgs)
