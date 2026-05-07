@@ -44,62 +44,60 @@ namespace BookingBoardGames.Src.ViewModels
         {
             this.cardPaymentService = cardPaymentService;
             this.userService = userService;
-
             this.RequestIdentifier = requestId;
             this.DeliveryAddress = deliveryAddress;
             this.BookingMessageIdentifier = bookingMessageIdentifier;
-            RentalDataTransferObject requestDataTransferObject = this.cardPaymentService.GetRequestDataTransferObject(requestId);
             this.ConversationService = conversationService;
+            this.FinishPaymentCommand = new RelayCommand(_ => { _ = this.FinishPaymentAsync(); }, () => this.IsPaymentButtonEnabled);
+            this.ExitCommand = new RelayCommand(_ => this.NavigateBackwardsAction?.Invoke());
+            this.ResetInactivityCommand = new RelayCommand(_ => this.ResetInactivityTimer());
+            this.balanceRefreshTimer = new System.Timers.Timer(CardPaymentConstants.TimerForRefreshingBalance);
+            this.balanceRefreshTimer.Elapsed += (timerSender, timerEventArguments) => this.RefreshBalance();
+            this.balanceRefreshTimer.AutoReset = true;
+            this.inactivityTimer = new System.Timers.Timer(CardPaymentConstants.TimerBeforeClosingPayment);
+            this.inactivityTimer.Elapsed += this.OnSessionExpired;
+            this.inactivityTimer.AutoReset = false;
+            this.synchronizationContext = SynchronizationContext.Current;
+        }
 
+        public async Task InitializeAsync()
+        {
+            RentalDataTransferObject requestDataTransferObject = await this.cardPaymentService.GetRequestDataTransferObject(this.RequestIdentifier);
             this.ClientIdentifier = requestDataTransferObject.ClientId;
             this.OwnerIdentifier = requestDataTransferObject.OwnerId;
             this.GameName = requestDataTransferObject.GameName;
             this.OwnerName = requestDataTransferObject.OwnerName;
             this.ClientName = requestDataTransferObject.ClientName;
-            this.RequestDates = requestDataTransferObject.StartDate.ToShortDateString() + " to " + requestDataTransferObject.EndDate.Date.Date.ToShortDateString();
+            this.RequestDates = requestDataTransferObject.StartDate.ToShortDateString() + " to " + requestDataTransferObject.EndDate.Date.ToShortDateString();
             this.Price = requestDataTransferObject.Price;
             this.DeliveryDate = requestDataTransferObject.StartDate.ToShortDateString();
-
-            this.FinishPaymentCommand = new RelayCommand(_ => { _ = this.FinishPaymentAsync(); }, () => this.IsPaymentButtonEnabled);
-            this.ExitCommand = new RelayCommand(_ => this.NavigateBackwardsAction?.Invoke());
-            this.ResetInactivityCommand = new RelayCommand(_ => this.ResetInactivityTimer());
-
-            this.balanceRefreshTimer = new System.Timers.Timer(CardPaymentConstants.TimerForRefreshingBalance);
-            this.balanceRefreshTimer.Elapsed += (timerSender, timerEventArguments) => this.RefreshBalance();
-            this.balanceRefreshTimer.AutoReset = true;
-
-            this.inactivityTimer = new System.Timers.Timer(CardPaymentConstants.TimerBeforeClosingPayment);
-            this.inactivityTimer.Elapsed += this.OnSessionExpired;
-            this.inactivityTimer.AutoReset = false;
-
-            this.synchronizationContext = SynchronizationContext.Current;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public int RequestIdentifier { get; init; }
+        public int RequestIdentifier { get; set; }
 
-        public int ClientIdentifier { get; init; }
+        public int ClientIdentifier { get; set; }
 
-        public int OwnerIdentifier { get; init; }
+        public int OwnerIdentifier { get; set; }
 
-        public string GameName { get; init; }
+        public string GameName { get; set; }
 
-        public string OwnerName { get; init; }
+        public string OwnerName { get; set; }
 
-        public string ClientName { get; init; }
+        public string ClientName { get; set; }
 
-        public string DeliveryAddress { get; init; }
+        public string DeliveryAddress { get; set; }
 
-        public string DeliveryDate { get; init; }
+        public string DeliveryDate { get; set; }
 
-        public string RequestDates { get; init; }
+        public string RequestDates { get; set; }
 
-        public decimal Price { get; init; }
+        public decimal Price { get; set; }
 
-        public int BookingMessageIdentifier { get; init; }
+        public int BookingMessageIdentifier { get; set; }
 
-        public IConversationService ConversationService { get; init; }
+        public IConversationService ConversationService { get; set; }
 
         public decimal BalanceAmount
         {

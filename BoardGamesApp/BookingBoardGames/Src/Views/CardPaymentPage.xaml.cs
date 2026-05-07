@@ -25,7 +25,7 @@ namespace BookingBoardGames.Src.Views
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
+        protected async override void OnNavigatedTo(NavigationEventArgs navigationEventArguments)
         {
             base.OnNavigatedTo(navigationEventArguments);
             var bookingArguments = (BookingNavigationArguments)navigationEventArguments.Parameter;
@@ -37,6 +37,7 @@ namespace BookingBoardGames.Src.Views
                 bookingArguments.DeliveryAddress,
                 bookingArguments.BookingMessageIdentifier,
                 bookingArguments.ConversationService);
+            await this.PaymentViewModel.InitializeAsync();
 
             this.DataContext = this.PaymentViewModel;
             this.activeCurrentWindow = bookingArguments.CurrentWindow;
