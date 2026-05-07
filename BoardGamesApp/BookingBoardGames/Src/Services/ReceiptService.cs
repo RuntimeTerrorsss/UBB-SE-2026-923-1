@@ -54,7 +54,7 @@ namespace BookingBoardGames.Src.Services
         /// <param name="selectedPayment">transaction for getting relative path to receipt</param>
         /// <returns>full path to existing or newly created pdf</returns>
         /// <exception cref="InvalidOperationException">receipt path of transaction is missing</exception>
-        public string GetReceiptDocument(Payment selectedPayment)
+        public async Task<string> GetReceiptDocument(Payment selectedPayment)
         {
             if (selectedPayment.ReceiptFilePath == null || selectedPayment.ReceiptFilePath == string.Empty)
             {
@@ -65,7 +65,7 @@ namespace BookingBoardGames.Src.Services
 
             if (!File.Exists(fullReceiptPath))
             {
-                return this.CreateReceipt(selectedPayment);
+                return await this.CreateReceipt(selectedPayment);
             }
 
             return fullReceiptPath;
@@ -143,7 +143,7 @@ namespace BookingBoardGames.Src.Services
             return currentYPosition;
         }
 
-        private double DrawAllSections(
+        private async Task<double> DrawAllSections(
             XGraphics graphicsContext,
             PdfPage pdfPage,
             XFont font,
@@ -151,7 +151,7 @@ namespace BookingBoardGames.Src.Services
             double currentXPosition,
             double currentYPosition)
         {
-            foreach (string textSection in this.GetReceiptContent(payment))
+            foreach (string textSection in await this.GetReceiptContent(payment))
             {
                 currentYPosition = this.DrawTextSection(
                     graphicsContext,
@@ -167,7 +167,7 @@ namespace BookingBoardGames.Src.Services
             return currentYPosition;
         }
 
-        private void DrawReceiptContent(
+        private async Task DrawReceiptContent(
             PdfDocument pdfDocument,
             PdfPage pdfPage,
             Payment payment)
@@ -182,7 +182,7 @@ namespace BookingBoardGames.Src.Services
             double currentXPosition = ReceiptServiceConstants.HorizontalMargin;
             double currentYPosition = ReceiptServiceConstants.VerticalStart;
 
-            currentYPosition = this.DrawAllSections(
+            currentYPosition = await this.DrawAllSections(
                 graphicsContext,
                 pdfPage,
                 font,
@@ -198,14 +198,14 @@ namespace BookingBoardGames.Src.Services
         /// <param name="payment">transaction for generating the content of pdf</param>
         /// <returns>full path to created pdf</returns>
         /// <exception cref="InvalidOperationException">receipt path of transaction is missing</exception>
-        private string CreateReceipt(Payment payment)
+        private async Task<string> CreateReceipt(Payment payment)
         {
             string documentPath = this.PrepareDocumentPath(payment);
 
             using var document = this.CreateDocument();
             var page = document.AddPage();
 
-            this.DrawReceiptContent(document, page, payment);
+            await this.DrawReceiptContent(document, page, payment);
             document.Save(documentPath);
 
             return documentPath;
