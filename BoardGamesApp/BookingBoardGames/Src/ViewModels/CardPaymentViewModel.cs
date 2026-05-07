@@ -62,19 +62,6 @@ namespace BookingBoardGames.Data.ViewModels
 
         public async Task InitializeAsync()
         {
-            RentalDataTransferObject requestDataTransferObject = await this.cardPaymentService.GetRequestDataTransferObject(this.RequestIdentifier);
-            this.ClientIdentifier = requestDataTransferObject.ClientId;
-            this.OwnerIdentifier = requestDataTransferObject.OwnerId;
-            this.GameName = requestDataTransferObject.GameName;
-            this.OwnerName = requestDataTransferObject.OwnerName;
-            this.ClientName = requestDataTransferObject.ClientName;
-            this.RequestDates = requestDataTransferObject.StartDate.ToShortDateString() + " to " + requestDataTransferObject.EndDate.Date.ToShortDateString();
-            this.Price = requestDataTransferObject.Price;
-            this.DeliveryDate = requestDataTransferObject.StartDate.ToShortDateString();
-        }
-
-        public async Task InitializeAsync()
-        {
             this.IsCurrentlyLoading = true;
             try
             {
