@@ -3,10 +3,12 @@
 // </copyright>
 
 using System;
+using System.Threading.Tasks;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Mapper;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Data.Services
 {
@@ -24,51 +26,52 @@ namespace BookingBoardGames.Data.Services
             this.cashPaymentMapper = cashPaymentMapper;
         }
 
-        public int AddCashPayment(CashPaymentDataTransferObject cashPaymentDataTransferObject)
+        public async Task<int> AddCashPaymentAsync(CashPaymentDataTransferObject cashPaymentDataTransferObject)
         {
             Payment paymentEntity = this.cashPaymentMapper.TurnDataTransferObjectIntoEntity(cashPaymentDataTransferObject);
             paymentEntity.PaymentMethod = CashPaymentMethod;
             paymentEntity.PaymentState = PaymentConstrants.StateCompleted;
 
-            int paymentIdentifier = this.paymentRepository.AddPayment(paymentEntity);
+            int paymentIdentifier = await this.paymentRepository.AddPaymentAsync(paymentEntity);
 
             return paymentIdentifier;
         }
 
-        public CashPaymentDataTransferObject GetCashPayment(int paymentIdentifier)
+        public async Task<CashPaymentDataTransferObject> GetCashPaymentAsync(int paymentIdentifier)
         {
-            return this.cashPaymentMapper.TurnEntityIntoDataTransferObject(this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier));
+            var payment = await this.paymentRepository.GetPaymentByIdentifierAsync(paymentIdentifier);
+            return this.cashPaymentMapper.TurnEntityIntoDataTransferObject(payment);
         }
 
-        public void ConfirmDelivery(int paymentIdentifier)
+        public async Task ConfirmDeliveryAsync(int paymentIdentifier)
         {
-            Payment paymentToConfirm = this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
+            Payment paymentToConfirm = await this.paymentRepository.GetPaymentByIdentifierAsync(paymentIdentifier);
             paymentToConfirm.DateConfirmedBuyer = DateTime.Now;
 
-            if (this.IsAllConfirmed(paymentIdentifier))
+            if (await this.IsAllConfirmedAsync(paymentIdentifier))
             {
                 paymentToConfirm.ReceiptFilePath = this.receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
             }
 
-            this.paymentRepository.UpdatePayment(paymentToConfirm);
+            await this.paymentRepository.UpdatePaymentAsync(paymentToConfirm);
         }
 
-        public void ConfirmPayment(int paymentIdentifier)
+        public async Task ConfirmPaymentAsync(int paymentIdentifier)
         {
-            Payment paymentToConfirm = this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
+            Payment paymentToConfirm = await this.paymentRepository.GetPaymentByIdentifierAsync(paymentIdentifier);
             paymentToConfirm.DateConfirmedSeller = DateTime.Now;
 
-            if (this.IsAllConfirmed(paymentIdentifier))
+            if (await this.IsAllConfirmedAsync(paymentIdentifier))
             {
                 paymentToConfirm.ReceiptFilePath = this.receiptService.GenerateReceiptRelativePath(paymentToConfirm.RequestId);
             }
 
-            this.paymentRepository.UpdatePayment(paymentToConfirm);
+            await this.paymentRepository.UpdatePaymentAsync(paymentToConfirm);
         }
 
-        public bool IsAllConfirmed(int paymentIdentifier)
+        public async Task<bool> IsAllConfirmedAsync(int paymentIdentifier)
         {
-            Payment paymentEntity = this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
+            Payment paymentEntity = await this.paymentRepository.GetPaymentByIdentifierAsync(paymentIdentifier);
 
             if (paymentEntity.DateConfirmedSeller != null && paymentEntity.DateConfirmedBuyer != null)
             {
@@ -80,9 +83,9 @@ namespace BookingBoardGames.Data.Services
             return false;
         }
 
-        public bool IsDeliveryConfirmed(int paymentIdentifier)
+        public async Task<bool> IsDeliveryConfirmedAsync(int paymentIdentifier)
         {
-            Payment paymentEntity = this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
+            Payment paymentEntity = await this.paymentRepository.GetPaymentByIdentifierAsync(paymentIdentifier);
 
             if (paymentEntity.DateConfirmedBuyer != null)
             {
@@ -92,9 +95,9 @@ namespace BookingBoardGames.Data.Services
             return false;
         }
 
-        public bool IsPaymentConfirmed(int paymentIdentifier)
+        public async Task<bool> IsPaymentConfirmedAsync(int paymentIdentifier)
         {
-            Payment paymentEntity = this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier);
+            Payment paymentEntity = await this.paymentRepository.GetPaymentByIdentifierAsync(paymentIdentifier);
 
             if (paymentEntity.DateConfirmedSeller != null)
             {

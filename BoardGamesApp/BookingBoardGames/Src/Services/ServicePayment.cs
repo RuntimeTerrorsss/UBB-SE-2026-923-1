@@ -6,14 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Data.Services
 {

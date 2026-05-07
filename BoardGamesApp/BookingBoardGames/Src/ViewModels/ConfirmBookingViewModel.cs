@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
 using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Services;
