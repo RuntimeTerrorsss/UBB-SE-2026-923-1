@@ -4,10 +4,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGames.Src.Repositories
+namespace BookingBoardGames.Api.Repositories
 {
     public class UserRepository : IUserRepository
     {
@@ -18,24 +20,24 @@ namespace BookingBoardGames.Src.Repositories
             this.context = appContext;
         }
 
-        public User? GetById(int id)
+        public async Task<User?> GetById(int id)
         {
-            return this.context.Users.FirstOrDefault(user => user.Id == id);
+            return await this.context.Users.FirstOrDefaultAsync(user => user.Id == id);
         }
 
-        public User? GetGameById(int id)
+        public async Task<User?> GetGameById(int id)
         {
-            return this.GetById(id);
+            return await this.GetById(id);
         }
 
-        public List<User> GetAll()
+        public async Task<List<User>> GetAll()
         {
-            return this.context.Users.ToList();
+            return await this.context.Users.ToListAsync();
         }
 
-        public void SaveAddress(int id, Address address)
+        public async Task SaveAddress(int id, Address address)
         {
-            var foundUser = this.context.Users.FirstOrDefault(user => user.Id == id);
+            var foundUser = await this.context.Users.FirstOrDefaultAsync(user => user.Id == id);
 
             if (foundUser is null)
             {
@@ -46,20 +48,21 @@ namespace BookingBoardGames.Src.Repositories
             foundUser.City = address.City;
             foundUser.Street = address.Street;
             foundUser.StreetNumber = address.StreetNumber;
-            this.context.SaveChanges();
+
+            await this.context.SaveChangesAsync();
         }
 
-        public decimal GetUserBalance(int userId)
+        public async Task<decimal> GetUserBalance(int userId)
         {
-            return this.context.Users
+            return await this.context.Users
                 .Where(user => user.Id == userId)
                 .Select(user => (decimal?)user.Balance)
-                .FirstOrDefault() ?? 0m;
+                .FirstOrDefaultAsync() ?? 0m;
         }
 
-        public void UpdateBalance(int userId, decimal newBalance)
+        public async Task UpdateBalance(int userId, decimal newBalance)
         {
-            var foundUser = this.context.Users.FirstOrDefault(user => user.Id == userId);
+            var foundUser = await this.context.Users.FirstOrDefaultAsync(user => user.Id == userId);
 
             if (foundUser is null)
             {
@@ -67,7 +70,8 @@ namespace BookingBoardGames.Src.Repositories
             }
 
             foundUser.Balance = newBalance;
-            this.context.SaveChanges();
+
+            await this.context.SaveChangesAsync();
         }
     }
 }
