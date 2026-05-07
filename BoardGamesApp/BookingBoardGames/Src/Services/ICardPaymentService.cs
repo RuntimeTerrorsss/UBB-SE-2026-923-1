@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 
@@ -9,18 +10,18 @@ namespace BookingBoardGames.Src.Services
 {
     public interface ICardPaymentService
     {
-        CardPaymentDTO AddCardPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier, decimal amount);
+        Task<CardPaymentDTO> AddCardPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier, decimal amount);
 
-        bool CheckBalanceSufficiency(int requestIdentifier, int clientIdentifier);
+        Task<bool> CheckBalanceSufficiency(int requestIdentifier, int clientIdentifier);
 
         CardPaymentDTO GetCardPayment(int paymentIdentifier);
 
         decimal GetCurrentBalance(int clientIdentifier);
 
-        void ProcessPayment(int rentalIdentifier, int clientIdentifier, int ownerIdentifier);
+        Task ProcessPayment(int rentalIdentifier, int clientIdentifier, int ownerIdentifier);
 
         CardPaymentDTO ConvertToDataTransferObject(Payment cardPayment);
 
-        RentalDataTransferObject GetRequestDataTransferObject(int rentalIdentifier);
+        Task<RentalDataTransferObject> GetRequestDataTransferObject(int rentalIdentifier);
     }
 }
