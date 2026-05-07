@@ -84,19 +84,19 @@ namespace BookingBoardGames.Data.ViewModels
                 {
                     searchCancellationTokenSource?.Cancel();
                     searchCancellationTokenSource = new CancellationTokenSource();
-                    DebounceSearch(searchCancellationTokenSource.Token);
+                    _ = DebounceSearch(searchCancellationTokenSource.Token);
                 }
             }
         }
 
-        private async void DebounceSearch(CancellationToken searchCancellationToken)
+        private async Task DebounceSearch(CancellationToken searchCancellationToken)
         {
             try
             {
                 await Task.Delay(PaymentHistoryViewModelConstants.TaskDelayTime, searchCancellationToken);
                 if (!searchCancellationToken.IsCancellationRequested)
                 {
-                    ApplyFilter(resetPage: true);
+                    await ApplyFilter(resetPage: true);
                 }
             }
             catch (TaskCanceledException)
@@ -111,7 +111,7 @@ namespace BookingBoardGames.Data.ViewModels
             {
                 if (SetProperty(ref selectedFilterOption, value))
                 {
-                    ApplyFilter(resetPage: true);
+                    _ = ApplyFilter(resetPage: true);
                 }
             }
         }
@@ -123,7 +123,7 @@ namespace BookingBoardGames.Data.ViewModels
             {
                 if (SetProperty(ref selectedPaymentMethod, value))
                 {
-                    ApplyFilter(resetPage: true);
+                    _ = ApplyFilter(resetPage: true);
                 }
             }
         }
@@ -160,8 +160,8 @@ namespace BookingBoardGames.Data.ViewModels
             };
 
             OpenReceiptCommand = new RelayCommand<PaymentDataTransferObject>(async dto => await OpenReceipt(dto));
-            NextPageCommand = new RelayCommandNoParam(OnNextPage, () => CurrentPage < TotalPages);
-            PreviousPageCommand = new RelayCommandNoParam(OnPreviousPage, () => CurrentPage > PaymentHistoryViewModelConstants.FirstPage);
+            NextPageCommand = new RelayCommandNoParam(async () => await OnNextPage(), () => CurrentPage < TotalPages);
+            PreviousPageCommand = new RelayCommandNoParam(async () => await OnPreviousPage(), () => CurrentPage > PaymentHistoryViewModelConstants.FirstPage);
 
             // Default to display all
             SelectedFilterOption = FilterOptions.First(filter => filter.Type == FilterType.AllTime);
@@ -173,12 +173,12 @@ namespace BookingBoardGames.Data.ViewModels
             return CurrentPage == TotalPages;
         }
 
-        private void OnNextPage()
+        private async Task OnNextPage()
         {
             if (!OnLastPage())
             {
                 CurrentPage++;
-                ApplyFilter(resetPage: false);
+                await ApplyFilter(resetPage: false);
             }
         }
 
@@ -187,12 +187,12 @@ namespace BookingBoardGames.Data.ViewModels
             return CurrentPage == PaymentHistoryViewModelConstants.FirstPage;
         }
 
-        private void OnPreviousPage()
+        private async Task OnPreviousPage()
         {
             if (!OnFirstPage())
             {
                 CurrentPage--;
-                ApplyFilter(resetPage: false);
+                await ApplyFilter(resetPage: false);
             }
         }
 
@@ -220,7 +220,7 @@ namespace BookingBoardGames.Data.ViewModels
             }
         }
 
-        private void ApplyFilter(bool resetPage = false)
+        private async Task ApplyFilter(bool resetPage = false)
         {
             if (selectedFilterOption == null)
             {
@@ -232,7 +232,7 @@ namespace BookingBoardGames.Data.ViewModels
                 CurrentPage = PaymentHistoryViewModelConstants.FirstPage;
             }
 
-            var pagedResult = paymentService.GetFilteredPayments(selectedFilterOption.Type, selectedPaymentMethod, searchText, CurrentPage, pageSize);
+            var pagedResult = await paymentService.GetFilteredPayments(selectedFilterOption.Type, selectedPaymentMethod, searchText, CurrentPage, pageSize);
 
             Payments.Clear();
             foreach (var payment in pagedResult.Items)
