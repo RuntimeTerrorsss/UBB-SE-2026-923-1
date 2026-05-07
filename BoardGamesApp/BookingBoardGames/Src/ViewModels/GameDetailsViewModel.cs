@@ -53,7 +53,7 @@ namespace BookingBoardGames.Data.ViewModels
             try
             {
                 this.GameAndUserDetails = await this.bookingService.GetBookingInformationForSpecificGame(this.gameId);
-                this.UnavailableTimeRanges = this.bookingService.GetUnavailableTimeRanges(this.gameId) ?? Array.Empty<TimeRange>();
+                this.UnavailableTimeRanges = (await this.bookingService.GetUnavailableTimeRanges(this.gameId)) ?? Array.Empty<TimeRange>();
                 this.LoadGameImage();
                 this.LoadOwnerImage();
                 this.HasError = false;
@@ -202,7 +202,7 @@ namespace BookingBoardGames.Data.ViewModels
         /// </summary>
         /// <param name="timeRange">The period to check for availability.</param>
         /// <returns>True if available; otherwise, false.</returns>
-        public bool CheckGameAvailability(TimeRange timeRange)
+        public async Task<bool> CheckGameAvailability(TimeRange timeRange)
         {
             try
             {
@@ -211,7 +211,7 @@ namespace BookingBoardGames.Data.ViewModels
                     return false;
                 }
 
-                return this.bookingService.CheckGameAvailability(this.GameAndUserDetails.GameId, timeRange);
+                return await this.bookingService.CheckGameAvailability(this.GameAndUserDetails.GameId, timeRange);
             }
             catch (Exception exception)
             {

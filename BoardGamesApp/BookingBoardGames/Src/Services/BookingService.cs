@@ -86,13 +86,11 @@ public class BookingService : InterfaceBookingService
     /// </summary>
     /// <param name="gameId">The unique identifier of the game.</param>
     /// <returns>An array of <see cref="TimeRange"/> representing the unavailable periods.</returns>
-    public TimeRange[] GetUnavailableTimeRanges(int gameId)
+    public async Task<TimeRange[]> GetUnavailableTimeRanges(int gameId)
     {
         try
         {
-            return this.rentalsRepository
-                .GetUnavailableTimeRanges(gameId)
-                .ToArray();
+            return (await this.rentalsRepository.GetUnavailableTimeRanges(gameId)).ToArray();
         }
         catch (Exception exception)
         {

@@ -4,9 +4,10 @@
 
 using System;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Constants;
+using BookingBoardGames.Data.Interfaces;
 
 namespace BookingBoardGames.Data.Services
 {
@@ -16,9 +17,9 @@ namespace BookingBoardGames.Data.Services
         private readonly IRentalService rentalService;
 
         public CardPaymentService(
-            PaymentRepository paymentRepository,
+            IPaymentRepository paymentRepository,
             IUserRepository userRepository,
-            ReceiptService receiptService,
+            IReceiptService receiptService,
             IRentalService rentalService)
             : base(paymentRepository, receiptService)
         {
@@ -49,10 +50,10 @@ namespace BookingBoardGames.Data.Services
                 ReceiptFilePath = null,
             };
 
-            payment.TransactionIdentifier = this.paymentRepository.AddPayment(payment);
+            payment.TransactionIdentifier = await this.paymentRepository.AddPaymentAsync(payment);
             string receiptFilePath = this.receiptService.GenerateReceiptRelativePath(payment.RequestId);
             payment.ReceiptFilePath = receiptFilePath;
-            this.paymentRepository.UpdatePayment(payment);
+            await this.paymentRepository.UpdatePaymentAsync(payment);
 
             return this.ConvertToDataTransferObject(payment);
         }
@@ -62,9 +63,10 @@ namespace BookingBoardGames.Data.Services
             return await this.rentalService.GetRentalPrice(requestIdentifier) <= this.userRepository.GetUserBalance(clientIdentifier);
         }
 
-        public CardPaymentDTO GetCardPayment(int paymentIdentifier)
+        public async Task<CardPaymentDTO?> GetCardPaymentAsync(int paymentIdentifier)
         {
-            return this.ConvertToDataTransferObject(this.paymentRepository.GetPaymentByIdentifier(paymentIdentifier));
+            var payment = await this.paymentRepository.GetPaymentByIdentifierAsync(paymentIdentifier);
+            return payment == null ? null : this.ConvertToDataTransferObject(payment);
         }
 
         public decimal GetCurrentBalance(int clientIdentifier)

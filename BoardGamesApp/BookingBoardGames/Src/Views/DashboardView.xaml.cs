@@ -3,7 +3,6 @@
 // </copyright>
 
 using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Shared;
 using BookingBoardGames.Data.Views.ChatViews;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

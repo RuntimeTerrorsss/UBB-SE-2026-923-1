@@ -3,8 +3,8 @@
 // </copyright>
 
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Data.Services
 {
@@ -23,13 +23,20 @@ namespace BookingBoardGames.Data.Services
         /// Set the receipt file path of a payment (when everything is confirmed).
         /// </summary>
         /// <param name="paymentId">of payment to set file path to</param>
-        public void GenerateReceipt(int paymentId)
+        public async Task GenerateReceiptAsync(int paymentId)
         {
-            Payment paymentToUpdate = this.paymentRepository.GetPaymentByIdentifier(paymentId);
+            Payment? paymentToUpdate =
+                await this.paymentRepository.GetPaymentByIdentifierAsync(paymentId);
 
-            paymentToUpdate.ReceiptFilePath = this.receiptService.GenerateReceiptRelativePath(paymentToUpdate.RequestId);
+            if (paymentToUpdate == null)
+            {
+                return;
+            }
 
-            this.paymentRepository.UpdatePayment(paymentToUpdate);
+            paymentToUpdate.ReceiptFilePath =
+                this.receiptService.GenerateReceiptRelativePath(paymentToUpdate.RequestId);
+
+            await this.paymentRepository.UpdatePaymentAsync(paymentToUpdate);
         }
 
         /// <summary>
@@ -37,14 +44,27 @@ namespace BookingBoardGames.Data.Services
         /// </summary>
         /// <param name="paymentId">of payment to get pdf path</param>
         /// <returns>full path to pdf</returns>
-        public async Task<string> GetReceipt(int paymentId)
+        public async Task<string> GetReceiptAsync(int paymentId)
         {
-            Payment paymentToRead = this.paymentRepository.GetPaymentByIdentifier(paymentId);
+            Payment? paymentToRead =
+                await this.paymentRepository.GetPaymentByIdentifierAsync(paymentId);
+
+            if (paymentToRead == null)
+            {
+                return string.Empty;
+            }
 
             if (string.IsNullOrEmpty(paymentToRead.ReceiptFilePath))
             {
-                this.GenerateReceipt(paymentId);
-                paymentToRead = this.paymentRepository.GetPaymentByIdentifier(paymentId);
+                await this.GenerateReceiptAsync(paymentId);
+
+                paymentToRead =
+                    await this.paymentRepository.GetPaymentByIdentifierAsync(paymentId);
+
+                if (paymentToRead == null)
+                {
+                    return string.Empty;
+                }
             }
 
             return await this.receiptService.GetReceiptDocument(paymentToRead);

@@ -14,7 +14,7 @@ namespace BookingBoardGames.Data.Services
 
         Task<bool> CheckBalanceSufficiency(int requestIdentifier, int clientIdentifier);
 
-        CardPaymentDTO GetCardPayment(int paymentIdentifier);
+        Task<CardPaymentDTO?> GetCardPaymentAsync(int paymentIdentifier);
 
         decimal GetCurrentBalance(int clientIdentifier);
 

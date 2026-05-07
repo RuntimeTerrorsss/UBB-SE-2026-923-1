@@ -100,7 +100,7 @@ namespace BookingBoardGames.Data.Services
                 //// this is if we decide to only use this methode and remove the ApplyFilters method
                 //// only runs this code if SortOption is set, so never from feed
 
-                return this.ApplyFilters(filteredGamesArray, filter);
+                return await this.ApplyFilters(filteredGamesArray, filter);
             }
             catch (Exception thrownException)
             {
@@ -178,7 +178,7 @@ namespace BookingBoardGames.Data.Services
         /// <param name="activeFilter">The criteria used for filtering and sorting the games.</param>
         /// <returns>An array of <see cref="GameDTO"/> objects that match the filter criteria.</returns>
         /// <exception cref="InvalidOperationException">Thrown when an error occurs during the filtering process.</exception>
-        public GameDTO[] ApplyFilters(GameDTO[] initialGamesCollection, FilterCriteria activeFilter)
+        public async Task<GameDTO[]> ApplyFilters(GameDTO[] initialGamesCollection, FilterCriteria activeFilter)
         {
             try
             {
@@ -267,11 +267,18 @@ namespace BookingBoardGames.Data.Services
 
                 if (activeFilter.AvailabilityRange != null)
                 {
-                    filteredGames = filteredGames.Where(game =>
-                        this.rentalsRepository.CheckGameAvailability(
-                            activeFilter.AvailabilityRange.StartTime, activeFilter.AvailabilityRange.EndTime, game.GameId));
-                }
+                    var tasks = filteredGames.Select(async game => new
+                    {
+                        Game = game,
+                        IsAvailable = await this.rentalsRepository.CheckGameAvailability(activeFilter.AvailabilityRange.StartTime, activeFilter.AvailabilityRange.EndTime, game.GameId)
+                    });
 
+                    // Step 2: Wait for all tasks to complete
+                    var results = await Task.WhenAll(tasks);
+
+                    // Step 3: Filter based on the results we just fetched
+                    filteredGames = results.Where(x => x.IsAvailable).Select(x => x.Game);
+                }
                 return filteredGames.ToArray();
             }
             catch (Exception thrownException)

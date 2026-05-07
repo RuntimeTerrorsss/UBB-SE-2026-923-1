@@ -4,8 +4,6 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
 
@@ -17,7 +15,7 @@ namespace BookingBoardGames.Data.Services
         /// Retrieves all transactions without any filtering, mapped to DTOs for UI display.
         /// </summary>
         /// <returns>A list of all mapped TransactionDto objects.</returns>
-        List<PaymentDataTransferObject> GetAllPaymentsForUI();
+        Task<List<PaymentDataTransferObject>> GetAllPaymentsForUI();
 
         /// <summary>
         /// Retrieves transactions mapped to DTOs, filtered or sorted by the given criteria and payment method,
@@ -29,7 +27,7 @@ namespace BookingBoardGames.Data.Services
         /// <param name="pageNumber">Current page index (1-based).</param>
         /// <param name="pageSize">Number of items per page.</param>
         /// <returns>A paginated result containing mapped TransactionDto objects.</returns>
-        PagedResult<PaymentDataTransferObject> GetFilteredPayments(FilterType filter, PaymentMethod paymentMethod = PaymentMethod.ALL, string searchQuery = "", int pageNumber = 1, int pageSize = 10);
+        Task<PagedResult<PaymentDataTransferObject>> GetFilteredPayments(FilterType filter, PaymentMethod paymentMethod = PaymentMethod.ALL, string searchQuery = "", int pageNumber = 1, int pageSize = 10);
 
         /// <summary>
         /// Computes the sum total amount from a given sequence of displayed transactions.

@@ -29,7 +29,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void CalculateTotalAmount_NonEmptyDatabase_ReturnsValidDataAndPositiveTotal()
         {
-            RepositoryPayment repositoryPayment = new RepositoryPayment(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RepositoryPaymentAPIProxy repositoryPayment = new RepositoryPaymentAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             UserRepository userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalAPIProxy RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
@@ -48,7 +48,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         [Fact]
         public void GetReceiptDocumentPath_ForFilteredPayments_ReturnsValidPathAndCorrectResults()
         {
-            RepositoryPayment repositoryPayment = new RepositoryPayment(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            RepositoryPaymentAPIProxy repositoryPayment = new RepositoryPaymentAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             UserRepository userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalAPIProxy RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));

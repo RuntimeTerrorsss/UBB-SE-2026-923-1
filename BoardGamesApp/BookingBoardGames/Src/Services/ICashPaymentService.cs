@@ -2,24 +2,25 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
 using BookingBoardGames.Data.DTO;
 
 namespace BookingBoardGames.Data.Services
 {
     public interface ICashPaymentService
     {
-        public int AddCashPayment(CashPaymentDataTransferObject paymentDto);
+        public Task<int> AddCashPaymentAsync(CashPaymentDataTransferObject paymentDto);
 
-        public CashPaymentDataTransferObject GetCashPayment(int paymentId);
+        public Task<CashPaymentDataTransferObject> GetCashPaymentAsync(int paymentId);
 
-        public void ConfirmDelivery(int paymentId);
+        public Task ConfirmDeliveryAsync(int paymentId);
 
-        public void ConfirmPayment(int paymentId);
+        public Task ConfirmPaymentAsync(int paymentId);
 
-        public bool IsAllConfirmed(int paymentId);
+        public Task<bool> IsAllConfirmedAsync(int paymentId);
 
-        public bool IsDeliveryConfirmed(int paymentId);
+        public Task<bool> IsDeliveryConfirmedAsync(int paymentId);
 
-        public bool IsPaymentConfirmed(int paymentId);
+        public Task<bool> IsPaymentConfirmedAsync(int paymentId);
     }
 }
