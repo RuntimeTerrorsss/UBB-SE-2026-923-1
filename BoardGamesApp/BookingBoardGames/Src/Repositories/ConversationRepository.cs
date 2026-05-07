@@ -1,14 +1,9 @@
-// <copyright file="ConversationRepository.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
-using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Src.Enum;
 
 namespace BookingBoardGames.Src.Repositories
 {
@@ -21,22 +16,22 @@ namespace BookingBoardGames.Src.Repositories
             this.context = appContext;
         }
 
-        public async Task<List<Conversation>> GetConversationsForUser(int userId)
+        public List<Conversation> GetConversationsForUser(int userId)
         {
-            return await this.context.Conversations
+            return this.context.Conversations
                 .AsNoTracking()
                 .Include(conversation => conversation.Participants)
                 .Include(conversation => conversation.Messages)
                 .Where(conversation => conversation.Participants.Any(participant => participant.UserId == userId))
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task<Conversation> GetConversationById(int conversationId)
         {
-            var found = await this.context.Conversations
+            var found = this.context.Conversations
                 .Include(conversation => conversation.Participants)
                 .Include(conversation => conversation.Messages)
-                .FirstOrDefaultAsync(conversation => conversation.ConversationId == conversationId);
+                .FirstOrDefault(conversation => conversation.ConversationId == conversationId);
 
             if (found is null)
             {
@@ -46,12 +41,12 @@ namespace BookingBoardGames.Src.Repositories
             return found;
         }
 
-        public async Task<IReadOnlyList<int>> GetParticipantUserIds(int conversationId)
+        public IReadOnlyList<int> GetParticipantUserIds(int conversationId)
         {
-            return await this.context.ConversationParticipants
+            return this.context.ConversationParticipants
                 .Where(participant => participant.ConversationId == conversationId)
                 .Select(participant => participant.UserId)
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task<int> CreateConversation(int senderId, int receiverId)
@@ -67,101 +62,99 @@ namespace BookingBoardGames.Src.Repositories
             };
 
             this.context.Conversations.Add(conversation);
-            await this.context.SaveChangesAsync();
+            this.context.SaveChanges();
 
-            return conversation.ConversationId;
+            var conversation = response.Content.ReadFromJsonAsync<Conversation>().GetAwaiter().GetResult();
+            return conversation?.ConversationId ?? -1;
         }
 
         public async Task<Message> HandleNewMessage(Message message)
         {
             message.MessageId = 0;
             this.context.Messages.Add(message);
-            await this.context.SaveChangesAsync();
+            this.context.SaveChanges();
 
-            return await this.context.Messages
+            return this.context.Messages
                 .Include(newMessage => newMessage.Sender)
                 .Include(newMessage => newMessage.Receiver)
                 .Include(newMessage => newMessage.Conversation)
-                .FirstAsync(newMessage => newMessage.MessageId == message.MessageId);
+                .First(newMessage => newMessage.MessageId == message.MessageId);
         }
 
         public async Task<Message?> HandleMessageUpdate(Message message)
         {
-            var tracked = await this.context.Messages
-                .FirstOrDefaultAsync(newmessage => newmessage.MessageId == message.MessageId);
+            var tracked = this.context.Messages
+                .FirstOrDefault(m => m.MessageId == message.MessageId);
 
-            if (tracked is null)
+            if (response.IsSuccessStatusCode)
             {
-                return null;
+                var persistedDto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
+                if (persistedDto != null) return MapDtoToEntity(persistedDto);
             }
+            return null;
+        }
 
-            this.context.Entry(tracked).CurrentValues.SetValues(message);
+        public void HandleReadReceipt(ReadReceiptDTO readReceipt)
+        {
+            App.Client.PostAsJsonAsync("conversation/readreceipt", readReceipt).GetAwaiter().GetResult();
+        }
 
-            if (tracked is RentalRequestMessage rentalTracked && message is RentalRequestMessage rentalIncoming)
-            {
-                rentalTracked.IsRequestResolved = rentalIncoming.IsRequestResolved;
-                rentalTracked.IsRequestAccepted = rentalIncoming.IsRequestAccepted;
-                rentalTracked.RequestContent = rentalIncoming.RequestContent;
-            }
-            else if (tracked is CashAgreementMessage cashTracked && message is CashAgreementMessage cashIncoming)
-            {
-                cashTracked.IsCashAgreementResolved = cashIncoming.IsCashAgreementResolved;
-                cashTracked.IsCashAgreementAcceptedByBuyer = cashIncoming.IsCashAgreementAcceptedByBuyer;
-                cashTracked.IsCashAgreementAcceptedBySeller = cashIncoming.IsCashAgreementAcceptedBySeller;
-            }
+            this.context.SaveChanges();
 
-            await this.context.SaveChangesAsync();
-
-            return await this.context.Messages
+            return this.context.Messages
                 .Include(newMessage => newMessage.Sender)
                 .Include(newMessage => newMessage.Receiver)
                 .Include(newMessage => newMessage.Conversation)
-                .FirstAsync(newMessage => newMessage.MessageId == message.MessageId);
+                .First(newMessage => newMessage.MessageId == message.MessageId);
         }
 
-        public async Task HandleReadReceipt(ReadReceiptDTO readReceipt)
+        public void HandleReadReceipt(ReadReceiptDTO readReceipt)
         {
-            var participant = await this.context.ConversationParticipants
-                .FirstOrDefaultAsync(
+            var participant = this.context.ConversationParticipants
+                .FirstOrDefault(
                     receiverParticipant => receiverParticipant.ConversationId == readReceipt.ConversationId
                          && receiverParticipant.UserId == readReceipt.ReaderId);
 
             if (participant is null)
             {
-                return;
+                var dto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
+                if (dto != null) return MapDtoToEntity(dto);
             }
 
             participant.LastMessageReadTime = readReceipt.ReceiptTimeStamp;
-            await this.context.SaveChangesAsync();
+            this.context.SaveChanges();
         }
 
-        public async Task<Message?> HandleRentalRequestFinalization(int messageId)
+        public Message? HandleRentalRequestFinalization(int messageId)
         {
-            var rentalMessage = await this.context.Messages
+            var rentalMessage = this.context.Messages
                 .OfType<RentalRequestMessage>()
-                .FirstOrDefaultAsync(requestMessage => requestMessage.MessageId == messageId);
+                .FirstOrDefault(requestMessage => requestMessage.MessageId == messageId);
 
             if (rentalMessage is null)
             {
-                return null;
+                var dto = response.Content.ReadFromJsonAsync<MessageDataTransferObject>().GetAwaiter().GetResult();
+                if (dto != null) return MapDtoToEntity(dto);
             }
+            return null;
+        }
 
             rentalMessage.IsRequestResolved = true;
             rentalMessage.IsRequestAccepted = true;
-            await this.context.SaveChangesAsync();
+            this.context.SaveChanges();
 
-            return await this.context.Messages
+            return this.context.Messages
                 .Include(requestMessage => requestMessage.Sender)
                 .Include(requestMessage => requestMessage.Receiver)
                 .Include(requestMessage => requestMessage.Conversation)
-                .FirstAsync(requestMessage => requestMessage.MessageId == messageId);
+                .First(requestMessage => requestMessage.MessageId == messageId);
         }
 
-        public async Task<Message?> CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
+        public Message? CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
-            var parent = await this.context.Messages
+            var parent = this.context.Messages
                 .OfType<RentalRequestMessage>()
-                .FirstOrDefaultAsync(paymentMessage => paymentMessage.MessageId == messageIdOfParentRentalRequestMessage);
+                .FirstOrDefault(m => m.MessageId == messageIdOfParentRentalRequestMessage);
 
             if (parent is null)
             {
@@ -170,24 +163,22 @@ namespace BookingBoardGames.Src.Repositories
 
             var cashMessage = new CashAgreementMessage
             {
-                ConversationId = parent.ConversationId,
-                MessageSenderId = parent.MessageSenderId,
-                MessageReceiverId = parent.MessageReceiverId,
-                CashPaymentId = paymentId,
-                MessageSentTime = DateTime.UtcNow,
-                Conversation = null!,
-                Sender = null!,
-                Receiver = null!,
+                MessageType.MessageText => new TextMessage { TextMessageContent = dto.Content, Conversation = null!, Sender = null!, Receiver = null! },
+                MessageType.MessageImage => new ImageMessage { MessageImageUrl = dto.ImageUrl, Conversation = null!, Sender = null!, Receiver = null! },
+                MessageType.MessageRentalRequest => new RentalRequestMessage { RentalRequestId = dto.RequestId, IsRequestResolved = dto.IsResolved, IsRequestAccepted = dto.IsAccepted, RequestContent = dto.Content, Conversation = null!, Sender = null!, Receiver = null! },
+                MessageType.MessageCashAgreement => new CashAgreementMessage { CashPaymentId = dto.PaymentId, IsCashAgreementResolved = dto.IsResolved, IsCashAgreementAcceptedByBuyer = dto.IsAcceptedByBuyer, IsCashAgreementAcceptedBySeller = dto.IsAcceptedBySeller, Conversation = null!, Sender = null!, Receiver = null! },
+                MessageType.MessageSystem => new SystemMessage { MessageContent = dto.Content, Conversation = null!, Sender = null!, Receiver = null! },
+                _ => throw new ArgumentOutOfRangeException()
             };
 
             this.context.Messages.Add(cashMessage);
-            await this.context.SaveChangesAsync();
+            this.context.SaveChanges();
 
-            return await this.context.Messages
-                .Include(message => message.Sender)
-                .Include(message => message.Receiver)
-                .Include(message => message.Conversation)
-                .FirstAsync(message => message.MessageId == cashMessage.MessageId);
+            return this.context.Messages
+                .Include(m => m.Sender)
+                .Include(m => m.Receiver)
+                .Include(m => m.Conversation)
+                .First(m => m.MessageId == cashMessage.MessageId);
         }
     }
 }

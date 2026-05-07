@@ -69,7 +69,6 @@ namespace BookingBoardGames.Tests.Receipt
             };
         }
 
-        // ================================ GenerateReceiptRelativePath ======================================
         [Fact]
         public void GenerateReceiptRelativePath_WhenCalled_ReturnsPathFolder()
         {
@@ -106,7 +105,6 @@ namespace BookingBoardGames.Tests.Receipt
             Assert.NotEqual(receiptPath, receiptPathAfter1Second);
         }
 
-        // ================================ GetReceiptDocument ======================================
         [Fact]
         public void GetReceiptDocument_NullFilePath_ThrowsException()
         {
@@ -138,7 +136,6 @@ namespace BookingBoardGames.Tests.Receipt
 
             Assert.Equal(fullPath, returnedPath);
 
-            // clean
             File.Delete(fullPath);
         }
 
@@ -160,7 +157,6 @@ namespace BookingBoardGames.Tests.Receipt
             Assert.True(File.Exists(returnedPath));
             Assert.EndsWith(".pdf", returnedPath);
 
-            // clean
             File.Delete(returnedPath);
         }
 
@@ -180,7 +176,6 @@ namespace BookingBoardGames.Tests.Receipt
             var returnedPath = receiptService.GetReceiptDocument(payment);
             Assert.True(File.Exists(returnedPath));
 
-            // clean
             File.Delete(returnedPath);
         }
 
@@ -201,7 +196,6 @@ namespace BookingBoardGames.Tests.Receipt
 
             Assert.True(File.Exists(returnedPath));
 
-            // clean
             File.Delete(returnedPath);
         }
     }

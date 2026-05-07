@@ -1,0 +1,6 @@
+@BookingBoardGamesWeb_HostAddress = http://localhost:5017
+
+GET {{BookingBoardGamesWeb_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

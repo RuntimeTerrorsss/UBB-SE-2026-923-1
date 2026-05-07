@@ -28,4 +28,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BookingBoardGames.Data\BookingBoardGames.Data.csproj" />
+  </ItemGroup>
+
 </Project>
