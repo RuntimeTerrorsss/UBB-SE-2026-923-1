@@ -35,7 +35,7 @@ namespace BookingBoardGames.Src.Views
         /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
         /// </summary>
         /// <param name="eventArgs">Event data that can be examined by overriding code.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
+        protected async override void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
             base.OnNavigatedTo(eventArgs);
             SessionContext.GetInstance().UserId = 1;
@@ -49,6 +49,7 @@ namespace BookingBoardGames.Src.Views
             // var userRepository = new UsersRepository();
             // var service = new BookingService(gameRepository, rentalRepository, userRepository);
             var viewModel = new GameDetailsViewModel(App.BookingService, gameId);
+            await viewModel.InitializeAsync();
 
             viewModel.OnGoBackRequested += () =>
             {
