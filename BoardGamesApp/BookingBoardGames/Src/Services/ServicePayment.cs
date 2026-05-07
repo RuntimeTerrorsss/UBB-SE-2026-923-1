@@ -6,14 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Constants;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Enum;
-using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Data.Services
 {
@@ -40,9 +37,9 @@ namespace BookingBoardGames.Data.Services
         /// Retrieves all transactions without any filtering, mapped to DTOs for UI display.
         /// </summary>
         /// <returns>A list of all mapped TransactionDto objects.</returns>
-        public List<PaymentDataTransferObject> GetAllPaymentsForUI()
+        public async Task<List<PaymentDataTransferObject>> GetAllPaymentsForUI()
         {
-            var allPayments = this.paymentRepository.GetAllPayments();
+            var allPayments = await this.paymentRepository.GetAllPayments();
             return this.MapToDataTransferObject(allPayments);
         }
 
@@ -160,9 +157,9 @@ namespace BookingBoardGames.Data.Services
         /// <param name="paymentMethod">The chosen payment method filter.</param>
         /// <param name="searchQuery">Text used to search by Product Name.</param>
         /// <returns>A filtered/sorted list of mapped TransactionDto objects.</returns>
-        public PagedResult<PaymentDataTransferObject> GetFilteredPayments(FilterType filter, PaymentMethod paymentMethod = PaymentMethod.ALL, string searchQuery = "", int pageNumber = 1, int pageSize = 10)
+        public async Task<PagedResult<PaymentDataTransferObject>> GetFilteredPayments(FilterType filter, PaymentMethod paymentMethod = PaymentMethod.ALL, string searchQuery = "", int pageNumber = 1, int pageSize = 10)
         {
-            var payments = this.paymentRepository.GetAllPayments().AsEnumerable();
+            IEnumerable<HistoryPayment> payments = await this.paymentRepository.GetAllPayments();
 
             payments = this.ApplyFilters(payments, paymentMethod, searchQuery, filter);
             payments = this.ApplySorting(payments, filter);
@@ -192,7 +189,7 @@ namespace BookingBoardGames.Data.Services
         /// <returns>The string file path to the Receipt PDF.</returns>
         public async Task<string> GetReceiptDocumentPath(int paymentId)
         {
-            Payment foundPayment = this.paymentRepository.GetPaymentById(paymentId);
+            Payment foundPayment = await this.paymentRepository.GetPaymentById(paymentId);
 
             if (string.IsNullOrEmpty(foundPayment.ReceiptFilePath))
             {
