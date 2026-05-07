@@ -159,7 +159,7 @@ namespace BookingBoardGames.Src.ViewModels
                 new FilterOption { Type = FilterType.AlphabeticalDesc, DisplayName = "Alphabetical (Z-A)" },
             };
 
-            OpenReceiptCommand = new RelayCommand<PaymentDataTransferObject>(OpenReceipt);
+            OpenReceiptCommand = new RelayCommand<PaymentDataTransferObject>(async dto => await OpenReceipt(dto));
             NextPageCommand = new RelayCommandNoParam(OnNextPage, () => CurrentPage < TotalPages);
             PreviousPageCommand = new RelayCommandNoParam(OnPreviousPage, () => CurrentPage > PaymentHistoryViewModelConstants.FirstPage);
 
@@ -196,7 +196,7 @@ namespace BookingBoardGames.Src.ViewModels
             }
         }
 
-        private async void OpenReceipt(PaymentDataTransferObject selectedPayment)
+        private async Task OpenReceipt(PaymentDataTransferObject selectedPayment)
         {
             if (selectedPayment == null)
             {
