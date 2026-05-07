@@ -28,7 +28,7 @@ namespace BookingBoardGames.Data.ViewModels
         private const long StartOfStreamPosition = 0;
         private const int MinimumBookingDayCount = 1;
         private const decimal DefaultTotalPrice = 0;
-        private readonly InterfaceBookingService bookingService;
+        private InterfaceBookingService bookingService;
         private BookingDTO gameAndUserDetail;
         private TimeRange selectedTimeRange;
         private decimal totalPrice;
@@ -70,14 +70,17 @@ namespace BookingBoardGames.Data.ViewModels
             this.bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
             this.gameAndUserDetail = gameAndUserDetails ?? throw new ArgumentNullException(nameof(gameAndUserDetails));
             this.selectedTimeRange = selectedTimeRange ?? throw new ArgumentNullException(nameof(selectedTimeRange));
+        }
 
+        public async Task InitializeAsync(BookingDTO gameAndUserDetails)
+        {
             try
             {
                 this.bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
                 this.GameAndUserDetails = gameAndUserDetails ?? throw new ArgumentNullException(nameof(gameAndUserDetails));
                 this.SelectedTimeRange = selectedTimeRange ?? throw new ArgumentNullException(nameof(selectedTimeRange));
 
-                this.UnavailableTimeRanges = this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
+                this.UnavailableTimeRanges = await this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
                 this.TotalPrice = this.CalculatePrice();
                 this.LoadImages();
             }
@@ -207,7 +210,7 @@ namespace BookingBoardGames.Data.ViewModels
         /// method returns false.</remarks>
         /// <param name="timeRange">The time range for which to check game availability. Cannot be null.</param>
         /// <returns>true if the game is available during the specified time range; otherwise, false.</returns>
-        public bool CheckGameAvailability(TimeRange timeRange)
+        public async Task<bool> CheckGameAvailability(TimeRange timeRange)
         {
             try
             {
@@ -216,7 +219,7 @@ namespace BookingBoardGames.Data.ViewModels
                     return false;
                 }
 
-                return this.bookingService.CheckGameAvailability(this.GameAndUserDetails.GameId, timeRange);
+                return await this.bookingService.CheckGameAvailability(this.GameAndUserDetails.GameId, timeRange);
             }
             catch (Exception exception)
             {
@@ -235,7 +238,7 @@ namespace BookingBoardGames.Data.ViewModels
             try
             {
                 await this.bookingService.AddBooking(this.GameAndUserDetails.GameId, this.GameAndUserDetails.UserId, this.SelectedTimeRange);
-                this.UnavailableTimeRanges = this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
+                this.UnavailableTimeRanges = await this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
                 this.OnPropertyChanged(nameof(this.UnavailableTimeRanges));
                 this.OnConfirmBookingRequested?.Invoke();
             }

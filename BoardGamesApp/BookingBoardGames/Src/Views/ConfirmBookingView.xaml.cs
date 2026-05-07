@@ -46,6 +46,7 @@ public sealed partial class ConfirmBookingView : Page
         }
 
         var viewModel = new ConfirmBookingViewModel(App.BookingService, bookingDTO, range);
+        viewModel.InitializeAsync(bookingDTO);
 
         viewModel.OnErrorOccurred += async (message) =>
         {
