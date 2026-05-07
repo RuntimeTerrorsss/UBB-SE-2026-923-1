@@ -47,7 +47,7 @@ namespace BookingBoardGames
             GameRepository = new GamesAPIProxy(Client);
             RentalRepository = new RentalAPIProxy(Client);
             PaymentRepository = new PaymentRepository(AppDbContext);
-            HistoryRepository = new RepositoryPaymentAPIProxy(AppDbContext);
+            HistoryRepository = new RepositoryPaymentAPIProxy(Client);
             ConversationRepository = new ConversationRepository();
 
             // Services
