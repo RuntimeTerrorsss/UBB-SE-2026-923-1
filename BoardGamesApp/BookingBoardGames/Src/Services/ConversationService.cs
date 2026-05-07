@@ -10,6 +10,7 @@ using BookingBoardGames.Data;
 using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Services;
 
 namespace BookingBoardGames.Src.Services
 {
@@ -90,13 +91,13 @@ namespace BookingBoardGames.Src.Services
         public string GetOtherUserNameByConversationDTO(ConversationDTO conversation)
         {
             int otherUserId = conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId;
-            var user = this.userRepository.GetById(otherUserId).GetAwaiter().GetResult();
+            var user = this.userRepository.GetById(otherUserId).Result;
             return user?.Username ?? "Unknown User";
         }
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
         {
-            var user = this.userRepository.GetById(message.SenderId == this.UserId ? message.ReceiverId : message.SenderId).GetAwaiter().GetResult();
+            var user = this.userRepository.GetById(message.SenderId == this.UserId ? message.ReceiverId : message.SenderId).Result;
             return user?.Username ?? "Unknown User";
         }
 
