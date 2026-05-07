@@ -6,8 +6,9 @@ using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Enum;
 using BookingBoardGames.Data.DTO;
 using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data.Interfaces;
 
-namespace BookingBoardGames.Data.Interfaces
+namespace BookingBoardGames.Web.Interfaces
 {
     public class ConversationRepository : IConversationRepository
     {
