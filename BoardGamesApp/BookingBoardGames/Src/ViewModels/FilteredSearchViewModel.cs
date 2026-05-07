@@ -364,11 +364,11 @@ namespace BookingBoardGames.Src.ViewModels
         /// Resets the page to the first page.
         /// </summary>
         /// <param name="searchCriteria">Criteria sent to the search service.</param>
-        public void LoadSearchResults(FilterCriteria searchCriteria)
+        public async Task LoadSearchResults(FilterCriteria searchCriteria)
         {
             try
             {
-                this.BaseResults = this.searchService.SearchGamesByFilter(searchCriteria) ?? Array.Empty<GameDTO>();
+                this.BaseResults = await this.searchService.SearchGamesByFilter(searchCriteria) ?? Array.Empty<GameDTO>();
                 this.DisplayedResults = this.BaseResults;
                 this.Games = this.DisplayedResults.ToList();
                 this.CurrentPage = FirstPage;
@@ -688,7 +688,7 @@ namespace BookingBoardGames.Src.ViewModels
         /// </summary>
         /// <param name="filterCriteria">The filter criteria to pass to the search service.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="filterCriteria"/> is <c>null</c>.</exception>
-        public void SearchGamesByFilter(FilterCriteria filterCriteria)
+        public async Task SearchGamesByFilter(FilterCriteria filterCriteria)
         {
             try
             {
@@ -705,7 +705,7 @@ namespace BookingBoardGames.Src.ViewModels
                     return;
                 }
 
-                this.Games = this.searchService.SearchGamesByFilter(filterCriteria)?.ToList() ?? new List<GameDTO>();
+                this.Games = await this.searchService.SearchGamesByFilter(filterCriteria)?.ToList() ?? new List<GameDTO>();
                 this.DisplayedResults = this.Games.ToArray();
                 this.BaseResults = this.DisplayedResults;
                 this.CurrentPage = FirstPage;

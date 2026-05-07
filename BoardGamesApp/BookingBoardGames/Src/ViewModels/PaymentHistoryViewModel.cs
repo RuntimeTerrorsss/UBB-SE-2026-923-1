@@ -202,7 +202,8 @@ namespace BookingBoardGames.Src.ViewModels
             {
                 return;
             }
-            string receiptFilePath = paymentService.GetReceiptDocumentPath(selectedPayment.PaymentId);
+
+            string receiptFilePath = await paymentService.GetReceiptDocumentPath(selectedPayment.PaymentId);
 
             try
             {
