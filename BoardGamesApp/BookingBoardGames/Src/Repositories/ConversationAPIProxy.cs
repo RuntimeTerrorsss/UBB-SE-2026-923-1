@@ -33,13 +33,13 @@ namespace BookingBoardGames.Src.Repositories
         public async Task<List<Conversation>> GetConversationsForUser(int userId)
         {
             return await this.httpClient.GetFromJsonAsync<List<Conversation>>(
-                       $"api/conversations?userId={userId}", JsonOptions)
+                       $"api/conversation/user/{userId}", JsonOptions)
                    ?? new List<Conversation>();
         }
 
         public async Task<Conversation> GetConversationById(int conversationId)
         {
-            var response = await this.httpClient.GetAsync($"api/conversations/{conversationId}");
+            var response = await this.httpClient.GetAsync($"api/conversation/{conversationId}");
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<Conversation>(JsonOptions)
@@ -49,14 +49,14 @@ namespace BookingBoardGames.Src.Repositories
         public async Task<IReadOnlyList<int>> GetParticipantUserIds(int conversationId)
         {
             return await this.httpClient.GetFromJsonAsync<List<int>>(
-                       $"api/conversations/{conversationId}/participants", JsonOptions)
+                       $"api/conversation/{conversationId}/participants", JsonOptions)
                    ?? new List<int>();
         }
 
         public async Task<int> CreateConversation(int senderId, int receiverId)
         {
             var response = await this.httpClient.PostAsJsonAsync(
-                "api/conversations",
+                "api/conversation",
                 new { SenderId = senderId, ReceiverId = receiverId },
                 JsonOptions);
             response.EnsureSuccessStatusCode();
@@ -67,7 +67,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public async Task<Message> HandleNewMessage(Message message)
         {
-            var response = await this.httpClient.PostAsJsonAsync("api/conversations/messages", message, JsonOptions);
+            var response = await this.httpClient.PostAsJsonAsync("api/conversation/messages", message, JsonOptions);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<Message>(JsonOptions)
@@ -77,7 +77,7 @@ namespace BookingBoardGames.Src.Repositories
         public async Task<Message?> HandleMessageUpdate(Message message)
         {
             var response = await this.httpClient.PutAsJsonAsync(
-                $"api/conversations/messages/{message.MessageId}", message, JsonOptions);
+                "api/conversation/messages", message, JsonOptions);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -90,14 +90,14 @@ namespace BookingBoardGames.Src.Repositories
         public async Task HandleReadReceipt(ReadReceiptDTO readReceipt)
         {
             var response = await this.httpClient.PostAsJsonAsync(
-                "api/conversations/read-receipt", readReceipt, JsonOptions);
+                "api/conversation/readreceipt", readReceipt, JsonOptions);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task<Message?> HandleRentalRequestFinalization(int messageId)
         {
             var response = await this.httpClient.PostAsync(
-                $"api/conversations/messages/{messageId}/finalize-rental", null);
+                $"api/conversation/rental/finalize/{messageId}", null);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -109,10 +109,8 @@ namespace BookingBoardGames.Src.Repositories
 
         public async Task<Message?> CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
-            var response = await this.httpClient.PostAsJsonAsync(
-                "api/conversations/messages/cash-agreement",
-                new { ParentMessageId = messageIdOfParentRentalRequestMessage, PaymentId = paymentId },
-                JsonOptions);
+            var response = await this.httpClient.PostAsync(
+                $"api/conversation/cash/{messageIdOfParentRentalRequestMessage}/{paymentId}", null);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -122,5 +120,4 @@ namespace BookingBoardGames.Src.Repositories
             return await response.Content.ReadFromJsonAsync<Message>(JsonOptions);
         }
     }
-
 }
