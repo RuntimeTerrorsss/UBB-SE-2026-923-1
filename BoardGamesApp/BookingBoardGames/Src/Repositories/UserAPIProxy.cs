@@ -1,4 +1,4 @@
-﻿// <copyright file="UserRepository.cs" company="PlaceholderCompany">
+﻿// <copyright file="UserAPIProxy.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 

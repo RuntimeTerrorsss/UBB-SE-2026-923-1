@@ -2,16 +2,16 @@
 //// Copyright (c) PlaceholderCompany. All rights reserved.
 //// </copyright>
 
-//namespace BookingBoardGames.Src.Repositories
-//{
-//    public interface IUserRepository : IRepository<User>
-//    {
-//        public User? GetById(int id);
+namespace BookingBoardGames.Data.Interfaces
+{
+    public interface IUserRepository : IRepository<User>
+    {
+        public Task<User?> GetById(int id);
 
-//        public void SaveAddress(int id, Address address);
+        public Task SaveAddress(int id, Address address);
 
-//        public decimal GetUserBalance(int userId);
+        public Task<decimal> GetUserBalance(int userId);
 
-//        public void UpdateBalance(int userId, decimal newBalance);
-//    }
-//}
+        public Task UpdateBalance(int userId, decimal newBalance);
+    }
+}
