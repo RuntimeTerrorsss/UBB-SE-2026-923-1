@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics;
-using BookingBoardGames.Api.Repositories;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Src.Mapper;
@@ -43,8 +42,8 @@ namespace BookingBoardGames
             UserRepository = new UserAPIProxy(AppDbContext);
             GameRepository = new GamesAPIProxy(Client);
             RentalRepository = new RentalAPIProxy(Client);
-            PaymentRepository = new PaymentRepository(AppDbContext);
-            HistoryRepository = new RepositoryPayment(AppDbContext);
+            PaymentRepository = new PaymentAPIProxy(Client);
+            HistoryRepository = new RepositoryPaymentAPIProxy(Client);
             ConversationRepository = new ConversationAPIProxy(Client);
 
             // Services
