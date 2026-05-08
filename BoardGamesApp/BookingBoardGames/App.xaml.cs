@@ -40,7 +40,7 @@ namespace BookingBoardGames
             AppDbContext = new AppDbContext(options);
 
             // Repositories
-            UserRepository = new UserRepository(AppDbContext);
+            UserRepository = new UserAPIProxy(AppDbContext);
             GameRepository = new GamesAPIProxy(Client);
             RentalRepository = new RentalAPIProxy(Client);
             PaymentRepository = new PaymentRepository(AppDbContext);
