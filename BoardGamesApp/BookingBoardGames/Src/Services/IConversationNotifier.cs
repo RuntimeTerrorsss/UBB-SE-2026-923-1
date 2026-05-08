@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Src.Services
