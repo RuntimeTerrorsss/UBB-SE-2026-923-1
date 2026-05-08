@@ -46,7 +46,7 @@ namespace BookingBoardGames.Src.Services
         /// <param name="filter">The filtering and sorting criteria.</param>
         /// <returns>A filtered and ordered array of games.</returns>
         /// <exception cref="InvalidOperationException">Thrown when filtering fails.</exception>
-        GameDTO[] ApplyFilters(GameDTO[] games, FilterCriteria filter);
+        Task<GameDTO[]> ApplyFilters(GameDTO[] games, FilterCriteria filter);
 
         /// <summary>
         /// Retrieves a paginated discovery feed categorized into games available tonight and others.
