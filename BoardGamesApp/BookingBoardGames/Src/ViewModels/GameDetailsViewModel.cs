@@ -295,7 +295,7 @@ namespace BookingBoardGames.Src.ViewModels
         {
             try
             {
-                this.GameImage = await GameImage.ToBitmapImageAsync(this.GameAndUserDetails.Image);
+                this.GameImage = await Helpers.GameImage.ToBitmapImage(this.GameAndUserDetails.Image);
             }
             catch (Exception exception)
             {

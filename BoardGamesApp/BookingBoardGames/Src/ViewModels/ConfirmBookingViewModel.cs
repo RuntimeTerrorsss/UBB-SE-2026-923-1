@@ -346,7 +346,7 @@ namespace BookingBoardGames.Src.ViewModels
             {
                 if (this.GameAndUserDetails.Image != null && this.GameAndUserDetails.Image.Length > 0)
                 {
-                    this.GameImage = await GameImage.ToBitmapImageAsync(this.GameAndUserDetails.Image);
+                    this.GameImage = await Helpers.GameImage.ToBitmapImageAsync(this.GameAndUserDetails.Image);
                 }
                 else
                 {

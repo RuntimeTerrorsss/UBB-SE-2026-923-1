@@ -275,13 +275,13 @@ namespace BookingBoardGames.Src.ViewModels
         /// <summary>
         /// Loads paginated discovery feed and updates UI properties.
         /// </summary>
-        public void LoadPaginatedDiscoveryFeed()
+        public async void LoadPaginatedDiscoveryFeed()
         {
             try
             {
                 int currentUserId = SessionContext.GetInstance().UserId;
 
-                var discoveryFeedResult = this.searchAndFilterService.GetDiscoveryFeedPaged(currentUserId, this.CurrentPage, ItemsPerPage);
+                var discoveryFeedResult = await this.searchAndFilterService.GetDiscoveryFeedPaged(currentUserId, this.CurrentPage, ItemsPerPage);
 
                 this.AvailableTonightGames = discoveryFeedResult.AvailableTonight;
                 this.OtherAvailableGames = discoveryFeedResult.Others;
