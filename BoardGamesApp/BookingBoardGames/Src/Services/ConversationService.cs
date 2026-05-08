@@ -88,10 +88,10 @@ namespace BookingBoardGames.Src.Services
             return conversationList;
         }
 
-        public string GetOtherUserNameByConversationDTO(ConversationDTO conversation)
+        public async Task<string> GetOtherUserNameByConversationDTO(ConversationDTO conversation)
         {
             int otherUserId = conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId;
-            var user = this.userRepository.GetById(otherUserId).Result;
+            var user = await this.userRepository.GetById(otherUserId);
             return user?.Username ?? "Unknown User";
         }
 
@@ -171,10 +171,10 @@ namespace BookingBoardGames.Src.Services
             this.ActionMessageProcessed?.Invoke(messageDTO, userName);
         }
 
-        public void OnConversationReceived(Conversation conversation)
+        public async Task OnConversationReceived(Conversation conversation)
         {
             ConversationDTO conversationDTO = this.ConversationToConversationDTO(conversation);
-            string userName = this.GetOtherUserNameByConversationDTO(conversationDTO);
+            string userName = await this.GetOtherUserNameByConversationDTO(conversationDTO);
             this.ActionConversationProcessed?.Invoke(conversationDTO, userName);
         }
 

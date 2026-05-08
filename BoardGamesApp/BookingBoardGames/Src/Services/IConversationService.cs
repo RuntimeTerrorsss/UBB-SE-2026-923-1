@@ -16,13 +16,13 @@ namespace BookingBoardGames.Src.Services
 
         void OnMessageUpdateReceived(Message message);
 
-        void OnConversationReceived(Conversation conversation);
+        Task OnConversationReceived(Conversation conversation);
 
         void OnReadReceiptReceived(ReadReceiptDTO readReceipt);
 
         Task<List<ConversationDTO>> FetchConversations();
 
-        string GetOtherUserNameByConversationDTO(ConversationDTO conversation);
+        Task<string> GetOtherUserNameByConversationDTO(ConversationDTO conversation);
 
         Task UpdateMessage(MessageDataTransferObject message);
 
