@@ -2,12 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Data.Views
+namespace BookingBoardGames.Src.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

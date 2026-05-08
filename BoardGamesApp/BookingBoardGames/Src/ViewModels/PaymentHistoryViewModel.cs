@@ -9,11 +9,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Constants;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     public class FilterOption
     {

@@ -7,11 +7,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 
-namespace BookingBoardGames.Data.ViewModels;
+namespace BookingBoardGames.Src.ViewModels;
 
 public class ChatPageViewModel
 {

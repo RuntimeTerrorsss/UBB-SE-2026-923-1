@@ -4,11 +4,10 @@
 
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     public class CashPaymentViewModel
     {
@@ -69,7 +68,7 @@ namespace BookingBoardGames.Data.ViewModels
 
         public async Task InitializeAsync(int rentalRequestId, string deliveryAddress)
         {
-            Rental rentalRequest = this.rentalRequestService.GetRentalById(rentalRequestId);
+            Rental rentalRequest = await this.rentalRequestService.GetRentalById(rentalRequestId);
             Game game = await this.gameRepository.GetGameById(rentalRequest.GameId);
             User clientUser = this.userRepository.GetById(rentalRequest.ClientId);
             User ownerUser = this.userRepository.GetById(rentalRequest.OwnerId);

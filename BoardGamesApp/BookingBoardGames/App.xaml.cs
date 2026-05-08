@@ -4,10 +4,11 @@
 
 using System;
 using System.Diagnostics;
+using BookingBoardGames.Api.Repositories;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Mapper;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Mapper;
+using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
@@ -21,8 +22,8 @@ namespace BookingBoardGames
     public partial class App : Application
     {
         public static readonly string BaseApiUrl = "http://localhost:5000/api/";
-        //public static readonly string BaseApiUrl = "http://172.30.250.124:5000/api/";
-   
+
+        // public static readonly string BaseApiUrl = "http://172.30.250.124:5000/api/";
         public static readonly System.Net.Http.HttpClient Client = new System.Net.Http.HttpClient { BaseAddress = new Uri(BaseApiUrl) };
         private Window? window;
 

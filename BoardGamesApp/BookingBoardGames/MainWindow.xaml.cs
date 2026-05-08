@@ -4,7 +4,6 @@
 
 using System;
 using BookingBoardGames.Data.Views;
-using BookingBoardGames.Data.Views.ChatViews;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 

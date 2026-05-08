@@ -3,17 +3,17 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.ViewModels;
-using BookingBoardGames.Data.Views.ChatViews;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.Views.ChatViews;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Data.Views
+namespace BookingBoardGames.Src.Views
 {
     /// <summary>
     /// Provides the main discovery interface for browsing and filtering available games.

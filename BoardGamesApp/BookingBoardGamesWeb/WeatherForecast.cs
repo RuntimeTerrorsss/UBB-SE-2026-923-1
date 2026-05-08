@@ -1,4 +1,4 @@
-namespace BookingBoardGamesWeb
+namespace BookingBoardGamesWeb.Api
 {
     public class WeatherForecast
     {

@@ -1,3 +1,7 @@
+// <copyright file="UserMock.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace BookingBoardgamesILoveBan.Src.Mocks.UserMock
 {
     public static class UserMock

@@ -9,12 +9,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BookingBoardGames.Data.Commands;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Commands;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     /// <summary>
     /// Provides the logic for discovering and filtering games, including pagination and search capabilities.

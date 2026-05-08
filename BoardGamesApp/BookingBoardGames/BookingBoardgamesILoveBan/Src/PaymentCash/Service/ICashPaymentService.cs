@@ -1,3 +1,7 @@
+// <copyright file="ICashPaymentService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace BookingBoardgamesILoveBan.Src.PaymentCash.Service
 {
     public interface ICashPaymentService

@@ -4,14 +4,13 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.Interfaces;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
-using BookingBoardGames.Data.Interfaces;
-using System.Threading.Tasks;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     public class ReceiptService : IReceiptService
     {

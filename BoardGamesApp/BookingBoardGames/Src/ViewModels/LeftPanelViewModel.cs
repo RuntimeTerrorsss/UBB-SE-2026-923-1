@@ -14,11 +14,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.DTO;
 using Microsoft.UI.Xaml;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     public class LeftPanelViewModel : INotifyPropertyChanged
     {

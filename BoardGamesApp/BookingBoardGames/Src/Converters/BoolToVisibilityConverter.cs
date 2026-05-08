@@ -6,7 +6,7 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace BookingBoardGames.Data.Converters
+namespace BookingBoardGames.Src.Converters
 {
     public class BoolToVisibilityConverter : IValueConverter
     {

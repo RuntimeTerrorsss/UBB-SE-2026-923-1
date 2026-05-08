@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     public interface IMapService
     {

@@ -1,11 +1,15 @@
-﻿using System;
+﻿// <copyright file="IConversationNotifier.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     public interface IConversationNotifier
     {

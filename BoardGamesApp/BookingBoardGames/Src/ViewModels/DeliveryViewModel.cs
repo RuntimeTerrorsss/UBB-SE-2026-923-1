@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Validators;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Validators;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     public class DeliveryViewModel
     {

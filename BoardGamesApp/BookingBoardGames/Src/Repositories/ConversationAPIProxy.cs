@@ -8,8 +8,8 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 
 /// <summary>
 /// Proxy repository responsible for reading/writing conversation data via HTTP API.

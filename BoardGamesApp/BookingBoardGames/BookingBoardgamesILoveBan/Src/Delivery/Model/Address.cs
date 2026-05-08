@@ -1,3 +1,7 @@
+// <copyright file="Address.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace BookingBoardgamesILoveBan.Src.Delivery.Model
 {
     public class Address

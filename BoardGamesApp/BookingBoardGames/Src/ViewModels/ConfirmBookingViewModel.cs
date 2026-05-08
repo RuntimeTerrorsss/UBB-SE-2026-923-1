@@ -6,12 +6,11 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Helpers;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     /// <summary>
     /// Represents the view model for confirming a booking, providing booking details, availability checks, and commands

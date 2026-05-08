@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BookingBoardGames.Data.DTO
+namespace BookingBoardGames.Src.DTO
 {
     public class ConversationDTO
     {

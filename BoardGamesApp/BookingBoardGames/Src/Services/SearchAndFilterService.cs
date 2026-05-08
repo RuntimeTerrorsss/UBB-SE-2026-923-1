@@ -5,16 +5,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Data.DTO;
+using System.Threading.Tasks;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.Mapper;
-using BookingBoardGames.Data.Interfaces;
-using System.Threading.Tasks;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Mapper;
 
-
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     /// <summary>
     /// Service responsible for searching, filtering, and retrieving game feeds.

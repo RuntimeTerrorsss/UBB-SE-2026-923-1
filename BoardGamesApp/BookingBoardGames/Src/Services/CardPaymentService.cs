@@ -4,12 +4,11 @@
 
 using System;
 using System.Threading.Tasks;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     public class CardPaymentService : PaymentService, ICardPaymentService
     {

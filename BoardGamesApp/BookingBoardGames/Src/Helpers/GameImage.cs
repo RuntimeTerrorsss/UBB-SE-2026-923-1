@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 
-namespace BookingBoardGames.Data.Helpers
+namespace BookingBoardGames.Src.Helpers
 {
     /// <summary>
     /// Provides helpers to transform raw image bytes into UI bitmap sources.

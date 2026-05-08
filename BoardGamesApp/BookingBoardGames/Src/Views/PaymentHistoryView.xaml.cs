@@ -2,12 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace BookingBoardGames.Data.Views
+namespace BookingBoardGames.Src.Views
 {
     public sealed partial class PaymentHistoryView : Page
     {

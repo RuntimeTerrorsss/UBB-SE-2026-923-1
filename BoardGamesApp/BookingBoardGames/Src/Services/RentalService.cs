@@ -6,9 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Interfaces;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     public class RentalService : IRentalService
     {
