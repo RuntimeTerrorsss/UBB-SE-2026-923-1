@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Src.Services

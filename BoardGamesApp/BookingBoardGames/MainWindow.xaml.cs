@@ -3,7 +3,7 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Data.Views;
+using BookingBoardGames.Src.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
