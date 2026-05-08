@@ -24,8 +24,11 @@ namespace BookingBoardGames.Src.Services
         private int UserId { get; set; }
 
         public event Action<MessageDataTransferObject, string> ActionMessageProcessed;
+
         public event Action<ConversationDTO, string> ActionConversationProcessed;
+
         public event Action<ReadReceiptDTO> ActionReadReceiptProcessed;
+
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
 
         public ConversationService(IConversationRepository conversationRepo, int userIdInput)

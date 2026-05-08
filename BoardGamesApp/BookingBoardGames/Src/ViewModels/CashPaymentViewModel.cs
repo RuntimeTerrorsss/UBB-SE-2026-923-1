@@ -80,7 +80,7 @@ namespace BookingBoardGames.Src.ViewModels
             decimal rentalPrice = await this.rentalRequestService.GetRentalPrice(rentalRequestId);
             this.PaidAmount = rentalPrice.ToString();
 
-            int createdPaymentIdentifier = this.cashPaymentService.AddCashPaymentAsync(
+            int createdPaymentIdentifier = await this.cashPaymentService.AddCashPaymentAsync(
                 new CashPaymentDataTransferObject(NewPaymentPlaceholderId, rentalRequestId, clientUser.Id, ownerUser.Id, rentalPrice));
 
             this.conversationService.OnCashPaymentSelected(this.rentalRequestMessageIdentifier, createdPaymentIdentifier);

@@ -283,7 +283,7 @@ namespace BookingBoardGames.Src.Services
         /// <returns>pdf content text</returns>
         private async Task<string[]> GetReceiptContent(Payment payment)
         {
-            var request = this.rentalService.GetRentalById(payment.RequestId);
+            var request = await this.rentalService.GetRentalById(payment.RequestId);
 
             return new[]
             {

@@ -32,6 +32,7 @@ namespace BookingBoardGames.Src.Views
         /// Gets the view model associated with the discovery logic.
         /// </summary>
         public DiscoveryViewModel ViewModel { get; private set; } = null!;
+
         public static int loggedUserId = 1;
 
         /// <summary>
