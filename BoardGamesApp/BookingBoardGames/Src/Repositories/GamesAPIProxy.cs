@@ -12,6 +12,7 @@ using BookingBoardGames.Data;
 using BookingBoardGames.Data.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using BookingBoardGames.Data.Shared;
 /// <summary>
 /// Repository responsible for reading game/listing data from the database.
 /// Important:
