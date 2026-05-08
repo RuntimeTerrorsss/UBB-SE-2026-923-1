@@ -29,7 +29,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public async Task<Rental?> GetById(int rentalId)
         {
-            var response = await this.httpClient.GetAsync($"api/rentals/{rentalId}");
+            var response = await this.httpClient.GetAsync($"rentals/{rentalId}");
             if (!response.IsSuccessStatusCode)
             {
                 return null;
@@ -40,7 +40,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public async Task<TimeRange?> GetRentalTimeRange(int rentalId)
         {
-            var response = await this.httpClient.GetAsync($"api/rentals/{rentalId}/timerange");
+            var response = await this.httpClient.GetAsync($"rentals/{rentalId}/timerange");
             if (!response.IsSuccessStatusCode)
             {
                 return null;
@@ -51,21 +51,21 @@ namespace BookingBoardGames.Src.Repositories
 
         public async Task<List<TimeRange>> GetAllOccupiedPeriods()
         {
-            return await this.httpClient.GetFromJsonAsync<List<TimeRange>>("api/rentals/occupied", JsonOptions)
+            return await this.httpClient.GetFromJsonAsync<List<TimeRange>>("rentals/occupied", JsonOptions)
                    ?? new List<TimeRange>();
         }
 
         public async Task<List<TimeRange>> GetUnavailableTimeRanges(int gameId)
         {
             return await this.httpClient.GetFromJsonAsync<List<TimeRange>>(
-                       $"api/rentals/unavailable/{gameId}", JsonOptions)
+                       $"rentals/unavailable/{gameId}", JsonOptions)
                    ?? new List<TimeRange>();
         }
 
         public async Task<bool> CheckGameAvailability(DateTime startTime, DateTime endTime, int gameId)
         {
             var response = await this.httpClient.GetAsync(
-                $"api/rentals/availability?gameId={gameId}&start={startTime:O}&end={endTime:O}");
+                $"rentals/availability?gameId={gameId}&start={startTime:O}&end={endTime:O}");
             response.EnsureSuccessStatusCode();
             var raw = await response.Content.ReadAsStringAsync();
             return bool.Parse(raw);
@@ -73,7 +73,7 @@ namespace BookingBoardGames.Src.Repositories
 
         public async Task AddRental(Rental rental)
         {
-            var response = await this.httpClient.PostAsJsonAsync("api/rentals", rental, JsonOptions);
+            var response = await this.httpClient.PostAsJsonAsync("rentals", rental, JsonOptions);
             response.EnsureSuccessStatusCode();
         }
     }

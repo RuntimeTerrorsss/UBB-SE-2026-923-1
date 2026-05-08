@@ -27,7 +27,7 @@ public class UserAPIProxy : IUserRepository
 
     public async Task<User?> GetById(int id)
     {
-        var response = await this.httpClient.GetAsync($"api/users/{id}");
+        var response = await this.httpClient.GetAsync($"users/{id}");
         if (!response.IsSuccessStatusCode)
         {
             return null;
@@ -42,19 +42,19 @@ public class UserAPIProxy : IUserRepository
 
     public async Task<List<User>> GetAll()
     {
-        return await this.httpClient.GetFromJsonAsync<List<User>>("api/users", JsonOptions)
+        return await this.httpClient.GetFromJsonAsync<List<User>>("users", JsonOptions)
                ?? new List<User>();
     }
 
     public async Task SaveAddress(int id, Address address)
     {
-        var response = await this.httpClient.PutAsJsonAsync($"api/users/{id}/address", address, JsonOptions);
+        var response = await this.httpClient.PutAsJsonAsync($"users/{id}/address", address, JsonOptions);
         response.EnsureSuccessStatusCode();
     }
 
     public async Task<decimal> GetUserBalance(int userId)
     {
-        var response = await this.httpClient.GetAsync($"api/users/{userId}/balance");
+        var response = await this.httpClient.GetAsync($"users/{userId}/balance");
         response.EnsureSuccessStatusCode();
         var raw = await response.Content.ReadAsStringAsync();
         return decimal.Parse(raw, System.Globalization.CultureInfo.InvariantCulture);
@@ -62,7 +62,7 @@ public class UserAPIProxy : IUserRepository
 
     public async Task UpdateBalance(int userId, decimal newBalance)
     {
-        var response = await this.httpClient.PutAsJsonAsync($"api/users/{userId}/balance", newBalance, JsonOptions);
+        var response = await this.httpClient.PutAsJsonAsync($"users/{userId}/balance", newBalance, JsonOptions);
         response.EnsureSuccessStatusCode();
     }
 }
