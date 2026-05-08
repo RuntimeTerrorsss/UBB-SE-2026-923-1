@@ -9,6 +9,7 @@ using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Data.Mapper;
 using BookingBoardGames.Data.Services;
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
 
@@ -42,8 +43,8 @@ namespace BookingBoardGames
             UserRepository = new UserRepository(AppDbContext);
             GameRepository = new GamesAPIProxy(Client);
             RentalRepository = new RentalAPIProxy(Client);
-            PaymentRepository = new PaymentRepository(AppDbContext);
-            HistoryRepository = new RepositoryPayment(AppDbContext);
+            PaymentRepository = new PaymentAPIProxy(Client);
+            HistoryRepository = new RepositoryPaymentAPIProxy(Client);
             ConversationRepository = new ConversationAPIProxy(Client);
 
             // Services
@@ -51,7 +52,7 @@ namespace BookingBoardGames
             GlobalGeographicalService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
-            CardPaymentService = new CardPaymentService((PaymentRepository)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
+            CardPaymentService = new CardPaymentService(PaymentRepository, UserRepository, ReceiptService, RentalService);
             MapService = new MapService();
             ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
             CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);

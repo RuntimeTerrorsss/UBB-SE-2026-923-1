@@ -61,8 +61,18 @@ public class PaymentAPIProxy : IPaymentRepository
         throw new NotSupportedException("Delete is not supported by the payments API.");
     }
 
-    public Task<Payment?> UpdatePaymentAsync(Payment payment)
+    public async Task<Payment?> UpdatePaymentAsync(Payment payment)
     {
-        throw new NotSupportedException("Update is not supported by the payments API.");
+        var response = await this.httpClient.PutAsJsonAsync(
+            $"api/payments/{payment.TransactionIdentifier}",
+            payment,
+            JsonOptions);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        return await response.Content.ReadFromJsonAsync<Payment>(JsonOptions);
     }
 }

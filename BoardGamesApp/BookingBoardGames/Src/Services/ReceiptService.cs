@@ -6,9 +6,9 @@ using System;
 using System.IO;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.Services;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
-using BookingBoardGames.Data.Interfaces;
 using System.Threading.Tasks;
 
 namespace BookingBoardGames.Data.Services
@@ -284,7 +284,7 @@ namespace BookingBoardGames.Data.Services
         /// <returns>pdf content text</returns>
         private async Task<string[]> GetReceiptContent(Payment payment)
         {
-            var request = this.rentalService.GetRentalById(payment.RequestId);
+            var request = await this.rentalService.GetRentalById(payment.RequestId);
 
             return new[]
             {
