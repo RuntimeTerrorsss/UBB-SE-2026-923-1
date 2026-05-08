@@ -1,17 +1,14 @@
-﻿//// <copyright file="IUserRepository.cs" company="PlaceholderCompany">
-//// Copyright (c) PlaceholderCompany. All rights reserved.
-//// </copyright>
+﻿
+namespace BookingBoardGames.Data.Interfaces
+{
+    public interface IUserRepository : IRepository<User>
+    {
+        public Task<User?> GetById(int id);
 
-//namespace BookingBoardGames.Src.Repositories
-//{
-//    public interface IUserRepository : IRepository<User>
-//    {
-//        public User? GetById(int id);
+        public Task SaveAddress(int id, Address address);
 
-//        public void SaveAddress(int id, Address address);
+        public Task<decimal> GetUserBalance(int userId);
 
-//        public decimal GetUserBalance(int userId);
-
-//        public void UpdateBalance(int userId, decimal newBalance);
-//    }
-//}
+        public Task UpdateBalance(int userId, decimal newBalance);
+    }
+}

@@ -66,7 +66,7 @@ namespace BookingBoardGames.Src.Services
                 {
                     if (!cachedOwnersById.TryGetValue(filteredGame.OwnerId, out var cachedOwnerGame))
                     {
-                        cachedOwnerGame = this.usersRepository.GetGameById(filteredGame.OwnerId);
+                        cachedOwnerGame = await this.usersRepository.GetGameById(filteredGame.OwnerId);
 
                         if (cachedOwnerGame != null)
                         {
@@ -119,7 +119,7 @@ namespace BookingBoardGames.Src.Services
 
                 foreach (var availableTonightGame in availableTonightGameList)
                 {
-                    var gameOwner = this.usersRepository.GetGameById(availableTonightGame.OwnerId);
+                    var gameOwner = await this.usersRepository.GetGameById(availableTonightGame.OwnerId);
 
                     if (gameOwner != null)
                     {
@@ -149,7 +149,7 @@ namespace BookingBoardGames.Src.Services
                 var otherFeedGamesResult = new List<GameDTO>();
                 foreach (var otherFeedGame in otherFeedGames)
                 {
-                    var gameOwner = this.usersRepository.GetGameById(otherFeedGame.OwnerId);
+                    var gameOwner = await this.usersRepository.GetGameById(otherFeedGame.OwnerId);
 
                     if (gameOwner == null)
                     {

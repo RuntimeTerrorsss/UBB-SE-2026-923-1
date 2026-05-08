@@ -263,14 +263,14 @@ namespace BookingBoardGames.Src.ViewModels
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void RefreshBalance()
+        private async void RefreshBalance()
         {
             if (!this.isPageCurrentlyActive || this.ClientIdentifier == 0)
             {
                 return;
             }
 
-            decimal newBalance = this.userService.GetUserBalance(this.ClientIdentifier);
+            decimal newBalance = await this.userService.GetUserBalance(this.ClientIdentifier);
             this.synchronizationContext?.Post(
                 _ =>
                 {

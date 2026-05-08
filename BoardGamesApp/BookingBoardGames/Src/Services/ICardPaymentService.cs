@@ -16,7 +16,7 @@ namespace BookingBoardGames.Src.Services
 
         Task<CardPaymentDTO?> GetCardPaymentAsync(int paymentIdentifier);
 
-        decimal GetCurrentBalance(int clientIdentifier);
+        Task<decimal> GetCurrentBalance(int clientIdentifier);
 
         Task ProcessPayment(int rentalIdentifier, int clientIdentifier, int ownerIdentifier);
 

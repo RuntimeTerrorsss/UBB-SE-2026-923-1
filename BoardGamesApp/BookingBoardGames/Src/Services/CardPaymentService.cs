@@ -59,7 +59,7 @@ namespace BookingBoardGames.Src.Services
 
         public async Task<bool> CheckBalanceSufficiency(int requestIdentifier, int clientIdentifier)
         {
-            return await this.rentalService.GetRentalPrice(requestIdentifier) <= this.userRepository.GetUserBalance(clientIdentifier);
+            return await this.rentalService.GetRentalPrice(requestIdentifier) <= await this.userRepository.GetUserBalance(clientIdentifier);
         }
 
         public async Task<CardPaymentDTO?> GetCardPaymentAsync(int paymentIdentifier)
@@ -68,16 +68,16 @@ namespace BookingBoardGames.Src.Services
             return payment == null ? null : this.ConvertToDataTransferObject(payment);
         }
 
-        public decimal GetCurrentBalance(int clientIdentifier)
+        public async Task<decimal> GetCurrentBalance(int clientIdentifier)
         {
-            return this.userRepository.GetUserBalance(clientIdentifier);
+            return await this.userRepository.GetUserBalance(clientIdentifier);
         }
 
         public async Task ProcessPayment(int rentalIdentifier, int clientIdentifier, int ownerIdentifier)
         {
             decimal rentalPrice = await this.rentalService.GetRentalPrice(rentalIdentifier);
-            decimal clientBalance = this.userRepository.GetUserBalance(clientIdentifier);
-            decimal ownerBalance = this.userRepository.GetUserBalance(ownerIdentifier);
+            decimal clientBalance = await this.userRepository.GetUserBalance(clientIdentifier);
+            decimal ownerBalance = await this.userRepository.GetUserBalance(ownerIdentifier);
             decimal newClientBalance = clientBalance - rentalPrice;
 
             if (newClientBalance < 0)
@@ -85,8 +85,8 @@ namespace BookingBoardGames.Src.Services
                 throw new Exception("Insufficient Funds");
             }
 
-            this.userRepository.UpdateBalance(clientIdentifier, newClientBalance);
-            this.userRepository.UpdateBalance(ownerIdentifier, ownerBalance + rentalPrice);
+            await this.userRepository.UpdateBalance(clientIdentifier, newClientBalance);
+            await this.userRepository.UpdateBalance(ownerIdentifier, ownerBalance + rentalPrice);
         }
 
         public CardPaymentDTO ConvertToDataTransferObject(Payment cardPayment)
@@ -105,8 +105,8 @@ namespace BookingBoardGames.Src.Services
         {
             Rental rental = await this.rentalService.GetRentalById(rentalIdentifier);
             string gameName = await this.rentalService.GetGameName(rental.RentalId);
-            string ownerName = this.userRepository.GetById(rental.OwnerId).Username;
-            string clientName = this.userRepository.GetById(rental.ClientId).Username;
+            string ownerName = (await this.userRepository.GetById(rental.OwnerId)).Username;
+            string clientName = (await this.userRepository.GetById(rental.ClientId)).Username;
             decimal gamePrice = await this.rentalService.GetRentalPrice(rental.RentalId);
 
             return new RentalDataTransferObject(rental.RentalId, rental.GameId, gameName, rental.ClientId, clientName, rental.OwnerId, ownerName, rental.StartDate, rental.EndDate, gamePrice);
