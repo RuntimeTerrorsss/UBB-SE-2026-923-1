@@ -51,7 +51,7 @@ public class BookingService : InterfaceBookingService
                 throw new InvalidOperationException($"Game with id {gameId} was not isfound.");
             }
 
-            var gameOwner = this.usersRepository.GetGameById(bookedGame.OwnerId);
+            var gameOwner = await this.usersRepository.GetGameById(bookedGame.OwnerId);
             if (gameOwner == null)
             {
                 throw new InvalidOperationException($"Owner for game id {gameId} was not isfound.");

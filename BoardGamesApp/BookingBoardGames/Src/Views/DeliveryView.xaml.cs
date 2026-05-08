@@ -51,6 +51,7 @@ namespace BookingBoardGames.Src.Views
                 App.MapService,
                 App.UserRepository,
                 new AddressValidator());
+            this.deliveryViewModel.InitializeAsync();
 
             this.deliveryViewModel.OnNavigateToPayment = () =>
             {

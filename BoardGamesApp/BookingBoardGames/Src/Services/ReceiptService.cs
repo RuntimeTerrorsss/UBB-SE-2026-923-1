@@ -230,9 +230,8 @@ namespace BookingBoardGames.Src.Services
                    $"Date Issued: {issuedDate}";
         }
 
-        private async Task<string> BuildRequestInfo(Payment payment, Task<Rental> requestTask)
+        private async Task<string> BuildRequestInfo(Payment payment, Rental request)
         {
-            var request = await requestTask;
             var requestedGame = await this.gameRepository.GetGameById(request.GameId);
             var client = await this.userRepository.GetById(payment.ClientId);
             var owner = await this.userRepository.GetById(payment.OwnerId);

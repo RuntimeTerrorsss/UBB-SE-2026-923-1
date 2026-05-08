@@ -70,8 +70,8 @@ namespace BookingBoardGames.Src.ViewModels
         {
             Rental rentalRequest = await this.rentalRequestService.GetRentalById(rentalRequestId);
             Game game = await this.gameRepository.GetGameById(rentalRequest.GameId);
-            User clientUser = this.userRepository.GetById(rentalRequest.ClientId);
-            User ownerUser = this.userRepository.GetById(rentalRequest.OwnerId);
+            User clientUser = await this.userRepository.GetById(rentalRequest.ClientId);
+            User ownerUser = await this.userRepository.GetById(rentalRequest.OwnerId);
 
             this.OwnerName = ownerUser.Username;
             this.GameName = game.Name;
