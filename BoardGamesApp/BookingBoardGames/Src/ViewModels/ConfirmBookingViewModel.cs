@@ -5,12 +5,11 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Helpers;
 using BookingBoardGames.Data.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Windows.Storage.Streams;
 
 namespace BookingBoardGames.Data.ViewModels
 {
@@ -25,7 +24,6 @@ namespace BookingBoardGames.Data.ViewModels
     /// confirm booking details before finalizing a reservation.</remarks>
     internal class ConfirmBookingViewModel : INotifyPropertyChanged
     {
-        private const long StartOfStreamPosition = 0;
         private const int MinimumBookingDayCount = 1;
         private const decimal DefaultTotalPrice = 0;
         private InterfaceBookingService bookingService;
@@ -349,12 +347,7 @@ namespace BookingBoardGames.Data.ViewModels
             {
                 if (this.GameAndUserDetails.Image != null && this.GameAndUserDetails.Image.Length > 0)
                 {
-                    using var stream = new InMemoryRandomAccessStream();
-                    await stream.WriteAsync(this.GameAndUserDetails.Image.AsBuffer());
-                    stream.Seek(StartOfStreamPosition);
-                    var bitmap = new BitmapImage();
-                    await bitmap.SetSourceAsync(stream);
-                    this.GameImage = bitmap;
+                    this.GameImage = await GameImage.ToBitmapImageAsync(this.GameAndUserDetails.Image);
                 }
                 else
                 {

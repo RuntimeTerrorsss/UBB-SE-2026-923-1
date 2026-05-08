@@ -5,15 +5,14 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BookingBoardGames.Data.Commands;
 using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Helpers;
 using BookingBoardGames.Data.Services;
 using BookingBoardGames.Data.Shared;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Windows.Storage.Streams;
 
 namespace BookingBoardGames.Data.ViewModels
 {
@@ -23,7 +22,6 @@ namespace BookingBoardGames.Data.ViewModels
     public class GameDetailsViewModel : INotifyPropertyChanged
     {
         private const long UnregisteredUserID = -1;
-        private const long StartOfStreamPosition = 0;
         private const decimal DefaultTotalPrice = 0;
         private readonly InterfaceBookingService bookingService;
         private bool hasError;
@@ -297,19 +295,7 @@ namespace BookingBoardGames.Data.ViewModels
         {
             try
             {
-                if (this.GameAndUserDetails.Image == null || this.GameAndUserDetails.Image.Length == 0)
-                {
-                    this.GameImage = null;
-                    return;
-                }
-
-                using var stream = new InMemoryRandomAccessStream();
-                await stream.WriteAsync(this.GameAndUserDetails.Image.AsBuffer());
-                stream.Seek(StartOfStreamPosition);
-
-                var bitmap = new BitmapImage();
-                await bitmap.SetSourceAsync(stream);
-                this.GameImage = bitmap;
+                this.GameImage = await GameImage.ToBitmapImageAsync(this.GameAndUserDetails.Image);
             }
             catch (Exception exception)
             {
