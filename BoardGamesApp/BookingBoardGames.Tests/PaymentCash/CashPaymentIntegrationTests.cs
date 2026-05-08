@@ -1,16 +1,11 @@
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames;
 using BookingBoardGames;
 using Microsoft.EntityFrameworkCore;
 using BookingBoardGames.Data;
-using BookingBoardGames.Data.Mapper;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Mapper;
 using BookingBoardGames.Data.Constants;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Tests.PaymentCash
 {

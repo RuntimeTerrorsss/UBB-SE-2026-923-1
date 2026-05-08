@@ -1,14 +1,10 @@
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames;
-using BookingBoardGames;
+using BookingBoardGames.Src.Repositories;
 using Microsoft.EntityFrameworkCore;
 using BookingBoardGames.Data;
 using System;
 using Xunit;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {

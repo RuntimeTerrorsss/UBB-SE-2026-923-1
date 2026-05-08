@@ -1,9 +1,8 @@
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames;
-using BookingBoardGames;
 using Microsoft.EntityFrameworkCore;
 using BookingBoardGames.Data;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.DTO;
 using Microsoft.Data.SqlClient;
 using Xunit;
 

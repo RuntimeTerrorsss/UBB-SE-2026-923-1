@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics;
-using BookingBoardGames.Api.Repositories;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Src.Mapper;
@@ -15,7 +14,6 @@ using Microsoft.UI.Xaml;
 
 namespace BookingBoardGames
 {
-    //TODO: rename repositoryPayment and PaymentRepository, finish conversation repo
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
@@ -43,8 +41,8 @@ namespace BookingBoardGames
             UserRepository = new UserRepository(AppDbContext);
             GameRepository = new GamesAPIProxy(Client);
             RentalRepository = new RentalAPIProxy(Client);
-            PaymentRepository = new PaymentRepository(AppDbContext);
-            HistoryRepository = new RepositoryPayment(AppDbContext);
+            PaymentRepository = new PaymentAPIProxy(Client);
+            HistoryRepository = new RepositoryPaymentAPIProxy(Client);
             ConversationRepository = new ConversationAPIProxy(Client);
 
             // Services
@@ -52,7 +50,8 @@ namespace BookingBoardGames
             GlobalGeographicalService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
-            CardPaymentService = new CardPaymentService((PaymentRepository)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
+            CardPaymentService = new CardPaymentService(PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
+            //CardPaymentService = new CardPaymentService((PaymentRepository)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
             MapService = new MapService();
             ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
             CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);

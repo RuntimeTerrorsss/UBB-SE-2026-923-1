@@ -1,14 +1,9 @@
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames;
 using BookingBoardGames;
 using Microsoft.EntityFrameworkCore;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

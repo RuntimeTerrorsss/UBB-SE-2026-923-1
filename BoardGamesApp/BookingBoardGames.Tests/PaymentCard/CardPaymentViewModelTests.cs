@@ -4,10 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Moq;
-using BookingBoardGames.Data.ViewModels;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.DTO;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {
