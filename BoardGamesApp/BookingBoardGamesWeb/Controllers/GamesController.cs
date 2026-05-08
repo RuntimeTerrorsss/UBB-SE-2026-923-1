@@ -99,7 +99,7 @@ namespace BookingBoardGames.Api.Controllers
         }
 
         [HttpGet("feed/tonight")]
-        public async Task<ActionResult<List<Game>>> GetGamesFeedAvailableTonight(int userId)
+        public async Task<ActionResult<List<Game>>> GetGamesFeedAvailableTonight([FromQuery] int userId)
         {
             var tonight = DateTime.Today;
             var tomorrow = tonight.AddDays(1);
@@ -116,7 +116,7 @@ namespace BookingBoardGames.Api.Controllers
         }
 
         [HttpGet("feed/remaining")]
-        public async Task<ActionResult<List<Game>>> GetRemainingGamesForFeed(int userId)
+        public async Task<ActionResult<List<Game>>> GetRemainingGamesForFeed([FromQuery] int userId)
         {
             return await _context.Games
                 .Include(g => g.Owner)
