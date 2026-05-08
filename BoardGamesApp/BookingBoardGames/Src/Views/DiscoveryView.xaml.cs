@@ -33,7 +33,7 @@ namespace BookingBoardGames.Src.Views
         /// </summary>
         public DiscoveryViewModel ViewModel { get; private set; } = null!;
 
-        public static int loggedUserId = 1;
+        public static int loggedUserId = MainWindow.loggedInUserAlice;
 
         /// <summary>
         /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
@@ -43,7 +43,10 @@ namespace BookingBoardGames.Src.Views
         {
             base.OnNavigatedTo(e);
 
+            // Static loggedUserId survives navigation; re-apply session and refresh the switch label
+            // (otherwise the button resets to the XAML default and lies about who's active).
             SessionContext.GetInstance().UserId = loggedUserId;
+            this.SyncSwitchUserButtonLabel();
 
             this.ViewModel = new DiscoveryViewModel(App.SearchAndFilterService, App.GlobalGeographicalService);
 
@@ -101,20 +104,26 @@ namespace BookingBoardGames.Src.Views
             this.Frame.Navigate(typeof(DashboardView), app.DashboardUser);
         }
 
+        private void SyncSwitchUserButtonLabel()
+        {
+            this.SwitchUserButton.Content = loggedUserId == MainWindow.loggedInUserAlice
+                ? "Switch to Bob"
+                : "Switch to Alice";
+        }
+
         private void SwitchUserButton_Click(object sender, RoutedEventArgs e)
         {
             if (loggedUserId == MainWindow.loggedInUserAlice)
             {
                 loggedUserId = MainWindow.loggedInUserBob;
-                this.SwitchUserButton.Content = "Switch to Alice (User 1)";
             }
             else
             {
                 loggedUserId = MainWindow.loggedInUserAlice;
-                this.SwitchUserButton.Content = "Switch to Bob (User 2)";
             }
-            
+
             SessionContext.GetInstance().UserId = loggedUserId;
+            this.SyncSwitchUserButtonLabel();
         }
     }
 }

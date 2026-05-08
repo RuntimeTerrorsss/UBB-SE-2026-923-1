@@ -16,8 +16,8 @@ namespace BookingBoardGames
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        public static int loggedInUserAlice = 1;
-        public static int loggedInUserBob = 2;
+        public static int loggedInUserAlice = 2;
+        public static int loggedInUserBob = 3;
 
         public MainWindow()
         {
