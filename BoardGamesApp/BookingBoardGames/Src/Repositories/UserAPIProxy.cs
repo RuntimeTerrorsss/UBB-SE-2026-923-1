@@ -2,7 +2,9 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -28,11 +30,19 @@ public class UserAPIProxy : IUserRepository
     public async Task<User?> GetById(int id)
     {
         var response = await this.httpClient.GetAsync($"users/{id}");
-        if (!response.IsSuccessStatusCode)
+        Debug.WriteLine($"GetById status: {response.StatusCode}");
+        if (!response.IsSuccessStatusCode) return null;
+        var raw = await response.Content.ReadAsStringAsync();
+        Debug.WriteLine($"GetById raw: {raw}");
+        try
         {
+            return JsonSerializer.Deserialize<User>(raw, JsonOptions);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"GetById DESERIALIZE ERROR: {ex.Message}");
             return null;
         }
-        return await response.Content.ReadFromJsonAsync<User>(JsonOptions);
     }
 
     public async Task<User?> GetGameById(int id)

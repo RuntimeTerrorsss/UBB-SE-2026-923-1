@@ -8,14 +8,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.DTO;
 
-/// <summary>
-/// Proxy repository responsible for reading/writing conversation data via HTTP API.
-/// </summary>
 namespace BookingBoardGames.Src.Repositories
 {
     public class ConversationAPIProxy : IConversationRepository
@@ -25,6 +24,7 @@ namespace BookingBoardGames.Src.Repositories
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true,
+            //Converters = { new MessageJsonConverter() }
         };
 
         public ConversationAPIProxy(HttpClient httpClient)
@@ -43,7 +43,6 @@ namespace BookingBoardGames.Src.Repositories
         {
             var response = await this.httpClient.GetAsync($"conversation/{conversationId}");
             response.EnsureSuccessStatusCode();
-
             return await response.Content.ReadFromJsonAsync<Conversation>(JsonOptions)
                    ?? throw new InvalidOperationException($"Conversation {conversationId} was not found.");
         }
@@ -62,7 +61,6 @@ namespace BookingBoardGames.Src.Repositories
                 new { SenderId = senderId, ReceiverId = receiverId },
                 JsonOptions);
             response.EnsureSuccessStatusCode();
-
             var raw = await response.Content.ReadAsStringAsync();
             var createdConversation = JsonSerializer.Deserialize<Conversation>(raw, JsonOptions);
             if (createdConversation is not null && createdConversation.ConversationId > 0)
@@ -137,11 +135,41 @@ namespace BookingBoardGames.Src.Repositories
         {
             var response = await this.httpClient.PostAsync(
                 $"conversation/cash/{messageIdOfParentRentalRequestMessage}/{paymentId}", null);
+            if (!response.IsSuccessStatusCode) return null;
+            var resultDto = await response.Content.ReadFromJsonAsync<MessageDataTransferObject>(JsonOptions);
+            return resultDto is null ? null : DtoToMessage(resultDto);
+        }
 
-            if (!response.IsSuccessStatusCode)
-            {
-                return null;
-            }
+        // ── Helpers ────────────────────────────────────────────────────────────
+
+        private static MessageDataTransferObject MessageToDto(Message message)
+        {
+            return new MessageDataTransferObject(
+                Id: message.MessageId,
+                ConversationId: message.ConversationId,
+                SenderId: message.MessageSenderId,
+                ReceiverId: message.MessageReceiverId,
+                SentAt: message.MessageSentTime,
+                Content: message.MessageContentAsString ?? string.Empty,
+                Type: message switch
+                {
+                    TextMessage => MessageType.MessageText,
+                    ImageMessage => MessageType.MessageImage,
+                    RentalRequestMessage => MessageType.MessageRentalRequest,
+                    CashAgreementMessage => MessageType.MessageCashAgreement,
+                    SystemMessage => MessageType.MessageSystem,
+                    _ => throw new ArgumentOutOfRangeException()
+                },
+                ImageUrl: message is ImageMessage img ? img.MessageImageUrl ?? string.Empty : string.Empty,
+                IsResolved: message is RentalRequestMessage r ? r.IsRequestResolved
+                          : message is CashAgreementMessage c ? c.IsCashAgreementResolved : false,
+                IsAccepted: message is RentalRequestMessage ra ? ra.IsRequestAccepted : false,
+                IsAcceptedByBuyer: message is CashAgreementMessage cb ? cb.IsCashAgreementAcceptedByBuyer : false,
+                IsAcceptedBySeller: message is CashAgreementMessage cs ? cs.IsCashAgreementAcceptedBySeller : false,
+                RequestId: message is RentalRequestMessage rr ? rr.RentalRequestId : -1,
+                PaymentId: message is CashAgreementMessage cp ? cp.CashPaymentId : -1
+            );
+        }
 
             var createdDto = await response.Content.ReadFromJsonAsync<MessageDto>(JsonOptions);
             return createdDto is null ? null : this.MessageDtoToMessage(createdDto);
