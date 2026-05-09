@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Src.DTO;
@@ -46,37 +47,24 @@ public class BookingService : InterfaceBookingService
         try
         {
             var bookedGame = await this.gamesRepository.GetGameById(gameId);
+            Debug.WriteLine($"bookedGame: {bookedGame?.Name ?? "NULL"}");
+
             if (bookedGame == null)
-            {
-                throw new InvalidOperationException($"Game with id {gameId} was not isfound.");
-            }
+                throw new InvalidOperationException($"Game with id {gameId} was not found.");
 
             var gameOwner = await this.usersRepository.GetGameById(bookedGame.OwnerId);
-            if (gameOwner == null)
-            {
-                throw new InvalidOperationException($"Owner for game id {gameId} was not isfound.");
-            }
+            Debug.WriteLine($"gameOwner: {gameOwner?.DisplayName ?? "NULL"}");
 
-            return new BookingDTO
-            {
-                GameId = bookedGame.Id,
-                Name = bookedGame.Name,
-                Image = bookedGame.Image,
-                Price = bookedGame.PricePerDay,
-                City = gameOwner.City,
-                MinimumNrPlayers = bookedGame.MinimumPlayerNumber,
-                MaximumNumberPlayers = bookedGame.MaximumPlayerNumber,
-                Description = bookedGame.Description,
-                UserId = gameOwner.Id,
-                DisplayName = gameOwner.DisplayName,
-                IsSuspended = gameOwner.IsSuspended,
-                AvatarUrl = gameOwner.AvatarUrl,
-                CreatedAt = gameOwner.CreatedAt,
-            };
+            if (gameOwner == null)
+                throw new InvalidOperationException($"Owner for game id {gameId} was not found.");
+
+            return new BookingDTO { };
         }
         catch (Exception exception)
         {
-            throw new InvalidOperationException($"Failed to retrieve details for game {gameId}.", exception);
+            Debug.WriteLine($"BOOKING ERROR: {exception.Message}");
+            Debug.WriteLine($"INNER: {exception.InnerException?.Message}");
+            throw;
         }
     }
 

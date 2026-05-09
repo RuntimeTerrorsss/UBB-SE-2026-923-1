@@ -7,13 +7,13 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.DTO;
 
-/// <summary>
-/// Proxy repository responsible for reading/writing conversation data via HTTP API.
-/// </summary>
 namespace BookingBoardGames.Src.Repositories
 {
     public class ConversationAPIProxy : IConversationRepository
@@ -23,6 +23,7 @@ namespace BookingBoardGames.Src.Repositories
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true,
+            //Converters = { new MessageJsonConverter() }
         };
 
         public ConversationAPIProxy(HttpClient httpClient)
@@ -41,7 +42,6 @@ namespace BookingBoardGames.Src.Repositories
         {
             var response = await this.httpClient.GetAsync($"conversation/{conversationId}");
             response.EnsureSuccessStatusCode();
-
             return await response.Content.ReadFromJsonAsync<Conversation>(JsonOptions)
                    ?? throw new InvalidOperationException($"Conversation {conversationId} was not found.");
         }
@@ -60,31 +60,27 @@ namespace BookingBoardGames.Src.Repositories
                 new { SenderId = senderId, ReceiverId = receiverId },
                 JsonOptions);
             response.EnsureSuccessStatusCode();
-
             var raw = await response.Content.ReadAsStringAsync();
             return int.Parse(raw);
         }
 
         public async Task<Message> HandleNewMessage(Message message)
         {
-            var response = await this.httpClient.PostAsJsonAsync("conversation/messages", message, JsonOptions);
+            var dto = MessageToDto(message);
+            var response = await this.httpClient.PostAsJsonAsync("conversation/messages", dto, JsonOptions);
             response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonAsync<Message>(JsonOptions)
-                   ?? throw new InvalidOperationException("Failed to create message.");
+            var resultDto = await response.Content.ReadFromJsonAsync<MessageDataTransferObject>(JsonOptions)
+                            ?? throw new InvalidOperationException("Failed to create message.");
+            return DtoToMessage(resultDto);
         }
 
         public async Task<Message?> HandleMessageUpdate(Message message)
         {
-            var response = await this.httpClient.PutAsJsonAsync(
-                "conversation/messages", message, JsonOptions);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return null;
-            }
-
-            return await response.Content.ReadFromJsonAsync<Message>(JsonOptions);
+            var dto = MessageToDto(message);
+            var response = await this.httpClient.PutAsJsonAsync("conversation/messages", dto, JsonOptions);
+            if (!response.IsSuccessStatusCode) return null;
+            var resultDto = await response.Content.ReadFromJsonAsync<MessageDataTransferObject>(JsonOptions);
+            return resultDto is null ? null : DtoToMessage(resultDto);
         }
 
         public async Task HandleReadReceipt(ReadReceiptDTO readReceipt)
@@ -98,26 +94,128 @@ namespace BookingBoardGames.Src.Repositories
         {
             var response = await this.httpClient.PostAsync(
                 $"conversation/rental/finalize/{messageId}", null);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return null;
-            }
-
-            return await response.Content.ReadFromJsonAsync<Message>(JsonOptions);
+            if (!response.IsSuccessStatusCode) return null;
+            var resultDto = await response.Content.ReadFromJsonAsync<MessageDataTransferObject>(JsonOptions);
+            return resultDto is null ? null : DtoToMessage(resultDto);
         }
 
         public async Task<Message?> CreateCashAgreementMessage(int messageIdOfParentRentalRequestMessage, int paymentId)
         {
             var response = await this.httpClient.PostAsync(
                 $"conversation/cash/{messageIdOfParentRentalRequestMessage}/{paymentId}", null);
+            if (!response.IsSuccessStatusCode) return null;
+            var resultDto = await response.Content.ReadFromJsonAsync<MessageDataTransferObject>(JsonOptions);
+            return resultDto is null ? null : DtoToMessage(resultDto);
+        }
 
-            if (!response.IsSuccessStatusCode)
+        // ── Helpers ────────────────────────────────────────────────────────────
+
+        private static MessageDataTransferObject MessageToDto(Message message)
+        {
+            return new MessageDataTransferObject(
+                Id: message.MessageId,
+                ConversationId: message.ConversationId,
+                SenderId: message.MessageSenderId,
+                ReceiverId: message.MessageReceiverId,
+                SentAt: message.MessageSentTime,
+                Content: message.MessageContentAsString ?? string.Empty,
+                Type: message switch
+                {
+                    TextMessage => MessageType.MessageText,
+                    ImageMessage => MessageType.MessageImage,
+                    RentalRequestMessage => MessageType.MessageRentalRequest,
+                    CashAgreementMessage => MessageType.MessageCashAgreement,
+                    SystemMessage => MessageType.MessageSystem,
+                    _ => throw new ArgumentOutOfRangeException()
+                },
+                ImageUrl: message is ImageMessage img ? img.MessageImageUrl ?? string.Empty : string.Empty,
+                IsResolved: message is RentalRequestMessage r ? r.IsRequestResolved
+                          : message is CashAgreementMessage c ? c.IsCashAgreementResolved : false,
+                IsAccepted: message is RentalRequestMessage ra ? ra.IsRequestAccepted : false,
+                IsAcceptedByBuyer: message is CashAgreementMessage cb ? cb.IsCashAgreementAcceptedByBuyer : false,
+                IsAcceptedBySeller: message is CashAgreementMessage cs ? cs.IsCashAgreementAcceptedBySeller : false,
+                RequestId: message is RentalRequestMessage rr ? rr.RentalRequestId : -1,
+                PaymentId: message is CashAgreementMessage cp ? cp.CashPaymentId : -1
+            );
+        }
+
+        private static Message DtoToMessage(MessageDataTransferObject dto)
+        {
+            return dto.Type switch
             {
-                return null;
-            }
-
-            return await response.Content.ReadFromJsonAsync<Message>(JsonOptions);
+                MessageType.MessageText => new TextMessage
+                {
+                    MessageId = dto.Id,
+                    ConversationId = dto.ConversationId,
+                    MessageSenderId = dto.SenderId,
+                    MessageReceiverId = dto.ReceiverId,
+                    MessageSentTime = dto.SentAt,
+                    MessageContentAsString = dto.Content,
+                    TextMessageContent = dto.Content,
+                    Conversation = null!,
+                    Sender = null!,
+                    Receiver = null!,
+                },
+                MessageType.MessageImage => new ImageMessage
+                {
+                    MessageId = dto.Id,
+                    ConversationId = dto.ConversationId,
+                    MessageSenderId = dto.SenderId,
+                    MessageReceiverId = dto.ReceiverId,
+                    MessageSentTime = dto.SentAt,
+                    MessageContentAsString = dto.Content,
+                    MessageImageUrl = dto.ImageUrl,
+                    Conversation = null!,
+                    Sender = null!,
+                    Receiver = null!,
+                },
+                MessageType.MessageRentalRequest => new RentalRequestMessage
+                {
+                    MessageId = dto.Id,
+                    ConversationId = dto.ConversationId,
+                    MessageSenderId = dto.SenderId,
+                    MessageReceiverId = dto.ReceiverId,
+                    MessageSentTime = dto.SentAt,
+                    MessageContentAsString = dto.Content,
+                    RentalRequestId = dto.RequestId,
+                    IsRequestResolved = dto.IsResolved,
+                    IsRequestAccepted = dto.IsAccepted,
+                    RequestContent = dto.Content,
+                    Conversation = null!,
+                    Sender = null!,
+                    Receiver = null!,
+                },
+                MessageType.MessageCashAgreement => new CashAgreementMessage
+                {
+                    MessageId = dto.Id,
+                    ConversationId = dto.ConversationId,
+                    MessageSenderId = dto.SenderId,
+                    MessageReceiverId = dto.ReceiverId,
+                    MessageSentTime = dto.SentAt,
+                    MessageContentAsString = dto.Content,
+                    CashPaymentId = dto.PaymentId,
+                    IsCashAgreementResolved = dto.IsResolved,
+                    IsCashAgreementAcceptedByBuyer = dto.IsAcceptedByBuyer,
+                    IsCashAgreementAcceptedBySeller = dto.IsAcceptedBySeller,
+                    Conversation = null!,
+                    Sender = null!,
+                    Receiver = null!,
+                },
+                MessageType.MessageSystem => new SystemMessage
+                {
+                    MessageId = dto.Id,
+                    ConversationId = dto.ConversationId,
+                    MessageSenderId = dto.SenderId,
+                    MessageReceiverId = dto.ReceiverId,
+                    MessageSentTime = dto.SentAt,
+                    MessageContentAsString = dto.Content,
+                    MessageContent = dto.Content,
+                    Conversation = null!,
+                    Sender = null!,
+                    Receiver = null!,
+                },
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
     }
 }

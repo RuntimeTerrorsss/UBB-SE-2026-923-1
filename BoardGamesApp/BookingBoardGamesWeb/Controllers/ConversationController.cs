@@ -60,17 +60,22 @@ namespace BookingBoardGames.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateConversation([FromBody] CreateConversationRequest request)
         {
+            var sender = await _context.Users.FindAsync(request.SenderId);
+            var receiver = await _context.Users.FindAsync(request.ReceiverId);
+
+            if (sender == null || receiver == null) return NotFound();
+
             var conversation = new Conversation
             {
-                Participants = new List<ConversationParticipant>
-                {
-                    new ConversationParticipant { UserId = request.SenderId },
-                    new ConversationParticipant { UserId = request.ReceiverId },
-                },
                 Messages = new List<Message>()
             };
-
             _context.Conversations.Add(conversation);
+            await _context.SaveChangesAsync();
+
+            _context.ConversationParticipants.AddRange(
+                new ConversationParticipant { ConversationId = conversation.ConversationId, UserId = request.SenderId },
+                new ConversationParticipant { ConversationId = conversation.ConversationId, UserId = request.ReceiverId }
+            );
             await _context.SaveChangesAsync();
 
             var created = await _context.Conversations

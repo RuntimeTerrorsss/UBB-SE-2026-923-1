@@ -43,19 +43,13 @@ namespace BookingBoardGames.Src.Views
                 return;
             }
 
-            // var gameRepository = new GamesRepository();
-            // var rentalRepository = new RentalsRepository();
-            // var userRepository = new UsersRepository();
-            // var service = new BookingService(gameRepository, rentalRepository, userRepository);
             var viewModel = new GameDetailsViewModel(App.BookingService, gameId);
-            await viewModel.InitializeAsync();
+
+            this.DataContext = viewModel;
 
             viewModel.OnGoBackRequested += () =>
             {
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
+                if (this.Frame.CanGoBack) this.Frame.GoBack();
             };
 
             viewModel.OnStartBookingRequested += (bookingDto, range) =>
@@ -72,16 +66,15 @@ namespace BookingBoardGames.Src.Views
                     CloseButtonText = "OK",
                     XamlRoot = this.XamlRoot,
                 };
-
                 await dialog.ShowAsync();
             };
-
-            this.DataContext = viewModel;
 
             viewModel.OnChatWithOwnerRequested += (currentUserId, ownerUserId) =>
             {
                 this.Frame.Navigate(typeof(ChatViews.ChatPageView), (currentUserId, ownerUserId));
             };
+
+            await viewModel.InitializeAsync();
         }
 
         private void OnBackClicked(object sender, RoutedEventArgs eventArgs)

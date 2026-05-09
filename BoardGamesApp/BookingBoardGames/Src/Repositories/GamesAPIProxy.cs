@@ -3,6 +3,7 @@
 // </copyright>
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -39,12 +40,21 @@ public class GamesAPIProxy : InterfaceGamesRepository
 
     public async Task<Game?> GetGameById(int gameId)
     {
-        var response = await this.httpClient.GetAsync($"games/{gameId}");
-        if (!response.IsSuccessStatusCode)
+        try
         {
+            var response = await this.httpClient.GetAsync($"games/{gameId}");
+            Debug.WriteLine($"GetGameById status: {response.StatusCode}");
+            if (!response.IsSuccessStatusCode) return null;
+            var raw = await response.Content.ReadAsStringAsync();
+            Debug.WriteLine($"GetGameById raw: {raw}");
+            return JsonSerializer.Deserialize<Game>(raw, JsonOptions);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"GetGameById EXCEPTION: {ex.Message}");
+            Debug.WriteLine($"GetGameById INNER: {ex.InnerException?.Message}");
             return null;
         }
-        return await response.Content.ReadFromJsonAsync<Game>(JsonOptions);
     }
 
     public async Task<decimal> GetPriceGameById(int gameId)

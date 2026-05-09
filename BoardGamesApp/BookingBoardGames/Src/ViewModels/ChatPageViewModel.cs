@@ -103,10 +103,18 @@ public class ChatPageViewModel
 
     private async void OnMessageSent(MessageDataTransferObject message)
     {
-        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
-        int receiverUserId = matchedConversation.Participants.First(participantItem => participantItem.UserId != message.SenderId).UserId;
-        message = message with { ReceiverId = receiverUserId };
-        await this.conversationService.SendMessage(message);
+        try
+        {
+            var matchedConversation = this.conversations.FirstOrDefault(c => c.Id == message.ConversationId);
+            int receiverUserId = matchedConversation.Participants.First(p => p.UserId != message.SenderId).UserId;
+            message = message with { ReceiverId = receiverUserId };
+            await this.conversationService.SendMessage(message);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"OnMessageSent error: {ex.Message}");
+            // pune un breakpoint aici
+        }
     }
 
     private async void SendReadReceipt(ConversationDTO conversation)

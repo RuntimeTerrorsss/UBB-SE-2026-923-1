@@ -58,14 +58,15 @@ namespace BookingBoardGames.Src.Repositories
         public async Task<List<TimeRange>> GetUnavailableTimeRanges(int gameId)
         {
             return await this.httpClient.GetFromJsonAsync<List<TimeRange>>(
-                       $"rentals/unavailable/{gameId}", JsonOptions)
+                       $"rentals/game/{gameId}/unavailable", JsonOptions)
                    ?? new List<TimeRange>();
         }
 
         public async Task<bool> CheckGameAvailability(DateTime startTime, DateTime endTime, int gameId)
         {
-            var response = await this.httpClient.GetAsync(
-                $"rentals/availability?gameId={gameId}&start={startTime:O}&end={endTime:O}");
+            var range = new TimeRange(startTime, endTime);
+            var response = await this.httpClient.PostAsJsonAsync(
+                $"rentals/{gameId}/check", range, JsonOptions);
             response.EnsureSuccessStatusCode();
             var raw = await response.Content.ReadAsStringAsync();
             return bool.Parse(raw);
