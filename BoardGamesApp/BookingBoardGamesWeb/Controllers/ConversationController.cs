@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,45 +14,39 @@ namespace BookingBoardGames.Api.Controllers
     public class ConversationController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IConversationRepository conversationRepository;
 
-        public ConversationController(AppDbContext context)
+        public ConversationController(AppDbContext context, IConversationRepository conversationRepository)
         {
             _context = context;
+            this.conversationRepository = conversationRepository;
         }
 
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<List<Conversation>>> GetConversationsForUser(int userId)
         {
-            var conversations = await _context.Conversations
-                .AsNoTracking()
-                .Include(c => c.Participants)
-                .Include(c => c.Messages)
-                .Where(c => c.Participants.Any(p => p.UserId == userId))
-                .ToListAsync();
-
+            var conversations = await this.conversationRepository.GetConversationsForUser(userId);
             return Ok(conversations);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Conversation>> GetConversationById(int id)
         {
-            var conversation = await _context.Conversations
-                .Include(c => c.Participants)
-                .Include(c => c.Messages)
-                .FirstOrDefaultAsync(c => c.ConversationId == id);
-
-            if (conversation is null) return NotFound();
-            return Ok(conversation);
+            try
+            {
+                var conversation = await this.conversationRepository.GetConversationById(id);
+                return Ok(conversation);
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet("{id}/participants")]
         public async Task<ActionResult<IReadOnlyList<int>>> GetParticipantUserIds(int id)
         {
-            var userIds = await _context.ConversationParticipants
-                .Where(p => p.ConversationId == id)
-                .Select(p => p.UserId)
-                .ToListAsync();
-
+            var userIds = await this.conversationRepository.GetParticipantUserIds(id);
             return Ok(userIds);
         }
 
@@ -90,25 +85,9 @@ namespace BookingBoardGames.Api.Controllers
                 return Ok(existingConversation);
             }
 
-            var conversation = new Conversation
-            {
-                Messages = new List<Message>()
-            };
-            _context.Conversations.Add(conversation);
-            await _context.SaveChangesAsync();
-
-            _context.ConversationParticipants.AddRange(
-                new ConversationParticipant { ConversationId = conversation.ConversationId, UserId = request.SenderId },
-                new ConversationParticipant { ConversationId = conversation.ConversationId, UserId = request.ReceiverId }
-            );
-            await _context.SaveChangesAsync();
-
-            var created = await _context.Conversations
-                .Include(c => c.Participants)
-                .Include(c => c.Messages)
-                .FirstOrDefaultAsync(c => c.ConversationId == conversation.ConversationId);
-
-            return CreatedAtAction(nameof(GetConversationById), new { id = conversation.ConversationId }, created);
+            int conversationId = await this.conversationRepository.CreateConversation(request.SenderId, request.ReceiverId);
+            var created = await this.conversationRepository.GetConversationById(conversationId);
+            return CreatedAtAction(nameof(GetConversationById), new { id = conversationId }, created);
         }
 
         [HttpPost("messages")]
@@ -144,49 +123,20 @@ namespace BookingBoardGames.Api.Controllers
 
             var normalizedMessageDto = messageDto with { ReceiverId = receiverId };
             var message = MessageDtoToEntity(normalizedMessageDto);
-            _context.Messages.Add(message);
-            await _context.SaveChangesAsync();
-
-            var persisted = await _context.Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Receiver)
-                .Include(m => m.Conversation)
-                .FirstOrDefaultAsync(m => m.MessageId == message.MessageId);
-
-            return Ok(EntityToMessageDto(persisted!));
+            var persisted = await this.conversationRepository.HandleNewMessage(message);
+            return Ok(EntityToMessageDto(persisted));
         }
 
         [HttpPut("messages")]
         public async Task<ActionResult<MessageDto>> UpdateMessage([FromBody] MessageDto messageDto)
         {
-            var tracked = await _context.Messages.FirstOrDefaultAsync(m => m.MessageId == messageDto.Id);
-            if (tracked is null) return NotFound();
-
-            tracked.MessageContentAsString = messageDto.Content;
-            tracked.MessageSentTime = messageDto.SentAt;
-
-            if (tracked is RentalRequestMessage rentalTracked && messageDto.Type == MessageType.MessageRentalRequest)
+            var updated = await this.conversationRepository.HandleMessageUpdate(MessageDtoToEntity(messageDto));
+            if (updated is null)
             {
-                rentalTracked.IsRequestResolved = messageDto.IsResolved;
-                rentalTracked.IsRequestAccepted = messageDto.IsAccepted;
-                rentalTracked.RequestContent = messageDto.Content;
-            }
-            else if (tracked is CashAgreementMessage cashTracked && messageDto.Type == MessageType.MessageCashAgreement)
-            {
-                cashTracked.IsCashAgreementResolved = messageDto.IsResolved;
-                cashTracked.IsCashAgreementAcceptedByBuyer = messageDto.IsAcceptedByBuyer;
-                cashTracked.IsCashAgreementAcceptedBySeller = messageDto.IsAcceptedBySeller;
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
-
-            var persisted = await _context.Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Receiver)
-                .Include(m => m.Conversation)
-                .FirstOrDefaultAsync(m => m.MessageId == tracked.MessageId);
-
-            return Ok(EntityToMessageDto(persisted!));
+            return Ok(EntityToMessageDto(updated));
         }
 
         [HttpPost("readreceipt")]

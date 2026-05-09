@@ -166,7 +166,7 @@ public class BookingService : InterfaceBookingService
                 totalPrice: this.CalculateTotalPriceForRentingASpecificGame(game.PricePerDay, timeRange)
             );
 
-            this.rentalsRepository.AddRental(rental);
+            await this.rentalsRepository.AddRental(rental);
         }
         catch (Exception exception)
         {
