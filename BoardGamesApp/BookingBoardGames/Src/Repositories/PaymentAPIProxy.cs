@@ -58,14 +58,18 @@ namespace BookingBoardGames.Src.Repositories
             return int.Parse(raw, System.Globalization.CultureInfo.InvariantCulture);
         }
 
-        public Task<bool> DeletePaymentAsync(Payment payment)
+    public async Task<Payment?> UpdatePaymentAsync(Payment payment)
+    {
+        var response = await this.httpClient.PutAsJsonAsync(
+            $"api/payments/{payment.TransactionIdentifier}",
+            payment,
+            JsonOptions);
+
+        if (!response.IsSuccessStatusCode)
         {
-            throw new NotSupportedException("Delete is not supported by the payments API.");
+            return null;
         }
 
-        public Task<Payment?> UpdatePaymentAsync(Payment payment)
-        {
-            throw new NotSupportedException("Update is not supported by the payments API.");
-        }
+        return await response.Content.ReadFromJsonAsync<Payment>(JsonOptions);
     }
 }

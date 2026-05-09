@@ -7,8 +7,10 @@ using System.IO;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.Services;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
+using System.Threading.Tasks;
 
 namespace BookingBoardGames.Src.Services
 {

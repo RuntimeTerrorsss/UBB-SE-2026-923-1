@@ -1,7 +1,10 @@
-﻿//// <copyright file="UserRepository.cs" company="PlaceholderCompany">
-//// Copyright (c) PlaceholderCompany. All rights reserved.
-//// </copyright>
+// <copyright file="UserRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.Interfaces;
@@ -38,14 +41,17 @@ namespace BookingBoardGames.Api.Repositories
         public async Task SaveAddress(int id, Address address)
         {
             var foundUser = await this.context.Users.FirstOrDefaultAsync(user => user.Id == id);
+
             if (foundUser is null)
             {
                 return;
             }
+
             foundUser.Country = address.Country;
             foundUser.City = address.City;
             foundUser.Street = address.Street;
             foundUser.StreetNumber = address.StreetNumber;
+
             await this.context.SaveChangesAsync();
         }
 
@@ -60,11 +66,14 @@ namespace BookingBoardGames.Api.Repositories
         public async Task UpdateBalance(int userId, decimal newBalance)
         {
             var foundUser = await this.context.Users.FirstOrDefaultAsync(user => user.Id == userId);
+
             if (foundUser is null)
             {
                 return;
             }
+
             foundUser.Balance = newBalance;
+
             await this.context.SaveChangesAsync();
         }
     }
