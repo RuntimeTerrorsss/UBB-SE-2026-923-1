@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace BookingBoardGames.Data
 {
@@ -19,7 +20,48 @@ namespace BookingBoardGames.Data
             string? overrideConnection = Environment.GetEnvironmentVariable("BOOKINGBOARDGAMES_DB_CONNECTION");
             if (!string.IsNullOrWhiteSpace(overrideConnection))
             {
+                Console.WriteLine("Using database connection string from environment variable." + overrideConnection);
                 return overrideConnection;
+            }
+
+            try
+            {
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../BookingBoardGamesWeb"))
+                    .AddJsonFile("appsettings.json", optional: true)
+                    .Build();
+
+                var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+                if (!string.IsNullOrWhiteSpace(connectionString))
+                { 
+                    Console.WriteLine("Using database connection string from appsettings.json." + connectionString);
+                    return connectionString;
+                }
+                    
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../BookingBoardGamesWeb"))
+                    .AddJsonFile("appsettings.json", optional: true)
+                    .Build();
+
+                var connectionString = configuration.GetConnectionString("RemoteConnection");
+
+                if (!string.IsNullOrWhiteSpace(connectionString))
+                {
+                    Console.WriteLine("Using database connection string from appsettings.json." + connectionString);
+                    return connectionString;
+                }
+
+            }
+            catch
+            {
             }
 
             const string databaseName = "MergedBoardGamesDb";
@@ -33,10 +75,12 @@ namespace BookingBoardGames.Data
             {
                 if (CanConnect(candidate))
                 {
+                    Console.WriteLine("Using database connection string: " + candidate);
                     return candidate;
                 }
             }
 
+            Console.WriteLine("No valid database connection string found. Using default: " + candidates[0]);
             return candidates[0];
         }
 
