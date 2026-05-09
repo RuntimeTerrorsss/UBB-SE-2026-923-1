@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.Services
 {
@@ -24,8 +24,11 @@ namespace BookingBoardGames.Src.Services
         private int UserId { get; set; }
 
         public event Action<MessageDataTransferObject, string> ActionMessageProcessed;
+
         public event Action<ConversationDTO, string> ActionConversationProcessed;
+
         public event Action<ReadReceiptDTO> ActionReadReceiptProcessed;
+
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
 
         public ConversationService(IConversationRepository conversationRepo, int userIdInput)
@@ -88,10 +91,10 @@ namespace BookingBoardGames.Src.Services
             return conversationList;
         }
 
-        public string GetOtherUserNameByConversationDTO(ConversationDTO conversation)
+        public async Task<string> GetOtherUserNameByConversationDTO(ConversationDTO conversation)
         {
             int otherUserId = conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId;
-            var user = this.userRepository.GetById(otherUserId).Result;
+            var user = await this.userRepository.GetById(otherUserId);
             return user?.Username ?? "Unknown User";
         }
 
@@ -171,10 +174,10 @@ namespace BookingBoardGames.Src.Services
             this.ActionMessageProcessed?.Invoke(messageDTO, userName);
         }
 
-        public void OnConversationReceived(Conversation conversation)
+        public async Task OnConversationReceived(Conversation conversation)
         {
             ConversationDTO conversationDTO = this.ConversationToConversationDTO(conversation);
-            string userName = this.GetOtherUserNameByConversationDTO(conversationDTO);
+            string userName = await this.GetOtherUserNameByConversationDTO(conversationDTO);
             this.ActionConversationProcessed?.Invoke(conversationDTO, userName);
         }
 

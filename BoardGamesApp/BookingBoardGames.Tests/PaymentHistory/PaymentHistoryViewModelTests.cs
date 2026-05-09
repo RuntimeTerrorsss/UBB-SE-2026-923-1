@@ -1,8 +1,7 @@
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.ViewModels;
 using Moq;
 using System;
 using System.Collections.Generic;

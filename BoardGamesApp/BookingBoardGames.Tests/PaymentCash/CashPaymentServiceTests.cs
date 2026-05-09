@@ -1,6 +1,6 @@
-using BookingBoardGames.Data.Mapper;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Mapper;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.Interfaces;
 using Moq;

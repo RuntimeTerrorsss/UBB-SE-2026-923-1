@@ -10,7 +10,7 @@ using BookingBoardGames.Data;
 using BookingBoardGames.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGames.Web.Repositories
+namespace BookingBoardGames.Api.Repositories
 {
     public class ConversationRepository : IConversationRepository
     {

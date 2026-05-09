@@ -13,7 +13,7 @@ using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGames.Data.Interfaces
+namespace BookingBoardGames.Src.Repositories
 {
     public class RepositoryPaymentAPIProxy : IRepositoryPayment
     {
@@ -31,13 +31,13 @@ namespace BookingBoardGames.Data.Interfaces
 
         public async Task<IReadOnlyList<HistoryPayment>> GetAllPayments()
         {
-            return await this.httpClient.GetFromJsonAsync<List<HistoryPayment>>("api/payments", JsonOptions)
+            return await this.httpClient.GetFromJsonAsync<List<HistoryPayment>>("api/payments/history", JsonOptions)
                ?? new List<HistoryPayment>();
         }
 
         public async Task<HistoryPayment?> GetPaymentById(int searchedPaymentId)
         {
-            var response = await this.httpClient.GetAsync($"api/payments/{searchedPaymentId}");
+            var response = await this.httpClient.GetAsync($"api/payments/history/{searchedPaymentId}");
 
             if (!response.IsSuccessStatusCode)
             {

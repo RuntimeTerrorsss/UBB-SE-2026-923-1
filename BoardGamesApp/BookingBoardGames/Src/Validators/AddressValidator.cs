@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookingBoardGames.Data.Validators
+namespace BookingBoardGames.Src.Validators
 {
     public class AddressValidator : IValidator<Dictionary<string, string>, Address>
     {

@@ -1,4 +1,4 @@
-﻿// <copyright file="GameImage.cs" company="PlaceholderCompany">
+// <copyright file="GameImage.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 
-namespace BookingBoardGames.Data.Enum
+namespace BookingBoardGames.Src.Helpers
 {
     /// <summary>
-    /// Helper class for converting image data from a byte array (e.g. from database)
-    /// into a BitmapImage that can be displayed in the WinUI interface.
+    /// Provides helpers to transform raw image bytes into UI bitmap sources.
     /// </summary>
-    internal class GameImage
+    internal static class GameImage
     {
+        private const long StartOfStreamPosition = 0;
+
         /// <summary>
-        /// Converts a byte array into a BitmapImage for UI display.
+        /// Converts a byte array into a <see cref="BitmapImage"/> that can be used in WinUI bindings.
         /// </summary>
-        /// <param name="imageBytes">Raw image data (e.g. from database).</param>
-        /// <returns>A BitmapImage usable in XAML, or null if input is empty.</returns>
-        /*
-        public static async Task<BitmapImage?> ToBitmapImage(byte[]? imageBytes)
+        /// <param name="imageBytes">Raw image bytes.</param>
+        /// <returns>A bitmap image instance, or <see langword="null"/> when bytes are empty.</returns>
+        public static async Task<BitmapImage?> ToBitmapImageAsync(byte[]? imageBytes)
         {
             if (imageBytes == null || imageBytes.Length == 0)
             {
@@ -31,13 +31,11 @@ namespace BookingBoardGames.Data.Enum
 
             using var stream = new InMemoryRandomAccessStream();
             await stream.WriteAsync(imageBytes.AsBuffer());
-            stream.Seek(0);
+            stream.Seek(StartOfStreamPosition);
 
             var bitmap = new BitmapImage();
             await bitmap.SetSourceAsync(stream);
-
             return bitmap;
         }
     }
-        */
 }

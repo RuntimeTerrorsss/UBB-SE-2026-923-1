@@ -11,58 +11,65 @@ using System.Threading.Tasks;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Interfaces;
 
-public class PaymentAPIProxy : IPaymentRepository
+namespace BookingBoardGames.Src.Repositories
 {
-    private readonly HttpClient httpClient;
-
-    private static readonly JsonSerializerOptions JsonOptions = new()
+    public class PaymentAPIProxy : IPaymentRepository
     {
-        PropertyNameCaseInsensitive = true,
-    };
+        private readonly HttpClient httpClient;
 
-    public PaymentAPIProxy(HttpClient httpClient)
-    {
-        this.httpClient = httpClient;
-    }
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true,
+        };
 
-    public async Task<IReadOnlyList<Payment>> GetAllPaymentsAsync()
-    {
-        return await this.httpClient.GetFromJsonAsync<List<Payment>>("api/payments", JsonOptions)
-               ?? new List<Payment>();
-    }
+        public PaymentAPIProxy(HttpClient httpClient)
+        {
+            this.httpClient = httpClient;
+        }
 
-    public async Task<Payment?> GetPaymentByIdentifierAsync(int paymentId)
+        public async Task<IReadOnlyList<Payment>> GetAllPaymentsAsync()
+        {
+            return await this.httpClient.GetFromJsonAsync<List<Payment>>("api/payments", JsonOptions)
+                   ?? new List<Payment>();
+        }
+
+        public async Task<Payment?> GetPaymentByIdentifierAsync(int paymentId)
+        {
+            var response = await this.httpClient.GetAsync($"api/payments/{paymentId}");
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<Payment>(JsonOptions);
+        }
+
+        public async Task<int> AddPaymentAsync(Payment payment)
+        {
+            if (payment.DateOfTransaction == default)
+            {
+                payment.DateOfTransaction = DateTime.Now;
+            }
+
+            var response = await this.httpClient.PostAsJsonAsync("api/payments", payment, JsonOptions);
+            response.EnsureSuccessStatusCode();
+
+            var raw = await response.Content.ReadAsStringAsync();
+            return int.Parse(raw, System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+    public async Task<Payment?> UpdatePaymentAsync(Payment payment)
     {
-        var response = await this.httpClient.GetAsync($"api/payments/{paymentId}");
+        var response = await this.httpClient.PutAsJsonAsync(
+            $"api/payments/{payment.TransactionIdentifier}",
+            payment,
+            JsonOptions);
+
         if (!response.IsSuccessStatusCode)
         {
             return null;
         }
 
         return await response.Content.ReadFromJsonAsync<Payment>(JsonOptions);
-    }
-
-    public async Task<int> AddPaymentAsync(Payment payment)
-    {
-        if (payment.DateOfTransaction == default)
-        {
-            payment.DateOfTransaction = DateTime.Now;
-        }
-
-        var response = await this.httpClient.PostAsJsonAsync("api/payments", payment, JsonOptions);
-        response.EnsureSuccessStatusCode();
-
-        var raw = await response.Content.ReadAsStringAsync();
-        return int.Parse(raw, System.Globalization.CultureInfo.InvariantCulture);
-    }
-
-    public Task<bool> DeletePaymentAsync(Payment payment)
-    {
-        throw new NotSupportedException("Delete is not supported by the payments API.");
-    }
-
-    public Task<Payment?> UpdatePaymentAsync(Payment payment)
-    {
-        throw new NotSupportedException("Update is not supported by the payments API.");
     }
 }

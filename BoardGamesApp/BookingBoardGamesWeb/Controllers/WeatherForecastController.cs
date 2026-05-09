@@ -1,6 +1,7 @@
+using BookingBoardGamesWeb.Api;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookingBoardGamesWeb.Controllers
+namespace BookingBoardGames.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]

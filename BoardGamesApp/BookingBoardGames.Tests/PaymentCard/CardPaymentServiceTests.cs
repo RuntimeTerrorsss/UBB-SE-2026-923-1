@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 using Moq;
-using BookingBoardgamesILoveBan.Src.PaymentCard.Service;
+using BookingBoardGames.Src.Services;
 using BookingBoardgamesILoveBan.Src.Mocks.RequestMock;
 using BookingBoardgamesILoveBan.Src.Mocks.UserMock;
 using BookingBoardgamesILoveBan.Src.PaymentCommon.Repository;

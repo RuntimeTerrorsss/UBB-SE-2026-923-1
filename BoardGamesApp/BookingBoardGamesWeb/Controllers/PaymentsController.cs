@@ -5,7 +5,7 @@ using BookingBoardGames.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGamesWeb.Controllers
+namespace BookingBoardGames.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -64,6 +64,37 @@ namespace BookingBoardGamesWeb.Controllers
             return await query.ToListAsync();
         }
 
+        [HttpGet("history/{id}")]
+        public async Task<ActionResult<HistoryPayment>> GetHistoryById(int id)
+        {
+            var result = await _context.Payments
+                .Include(p => p.Request).ThenInclude(r => r.Game)
+                .Include(p => p.Owner)
+                .Where(p => p.TransactionIdentifier == id)
+                .Select(payment => new HistoryPayment
+                {
+                    TransactionIdentifier = payment.TransactionIdentifier,
+                    PaidAmount = payment.PaidAmount,
+                    PaymentMethod = payment.PaymentMethod,
+                    DateOfTransaction = payment.DateOfTransaction,
+                    DateConfirmedBuyer = payment.DateConfirmedBuyer,
+                    DateConfirmedSeller = payment.DateConfirmedSeller,
+                    PaymentState = payment.PaymentState,
+                    ReceiptFilePath = payment.ReceiptFilePath,
+                    RequestId = payment.RequestId,
+                    ClientId = payment.ClientId,
+                    OwnerId = payment.OwnerId,
+                    GameName = payment.Request != null && payment.Request.Game != null
+                        ? payment.Request.Game.Name : string.Empty,
+                    OwnerName = payment.Owner != null
+                        ? payment.Owner.DisplayName : string.Empty,
+                })
+                .FirstOrDefaultAsync();
+
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<ActionResult<int>> AddPayment([FromBody] Payment payment)
         {
@@ -71,6 +102,21 @@ namespace BookingBoardGamesWeb.Controllers
             _context.Payments.Add(payment);
             await _context.SaveChangesAsync();
             return Ok(payment.TransactionIdentifier);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Payment>> UpdatePayment(int id, [FromBody] Payment payment)
+        {
+            var existing = await _context.Payments.FindAsync(id);
+            if (existing == null) return NotFound();
+
+            existing.ReceiptFilePath = payment.ReceiptFilePath ?? string.Empty;
+            existing.DateOfTransaction = payment.DateOfTransaction ?? DateTime.Now;
+            existing.DateConfirmedBuyer = payment.DateConfirmedBuyer;
+            existing.DateConfirmedSeller = payment.DateConfirmedSeller;
+
+            await _context.SaveChangesAsync();
+            return Ok(existing);
         }
     }
 }

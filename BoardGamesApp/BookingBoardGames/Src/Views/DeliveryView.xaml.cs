@@ -6,16 +6,16 @@ using System;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.Navigation;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Validators;
-using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Src.Navigation;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Validators;
+using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Web.WebView2.Core;
 
-namespace BookingBoardGames.Data.Views
+namespace BookingBoardGames.Src.Views
 {
     public sealed partial class DeliveryView : Page
     {
@@ -51,6 +51,7 @@ namespace BookingBoardGames.Data.Views
                 App.MapService,
                 App.UserRepository,
                 new AddressValidator());
+            this.deliveryViewModel.InitializeAsync();
 
             this.deliveryViewModel.OnNavigateToPayment = () =>
             {

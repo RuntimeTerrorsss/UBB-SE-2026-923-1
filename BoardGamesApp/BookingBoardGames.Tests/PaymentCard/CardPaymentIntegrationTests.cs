@@ -1,14 +1,10 @@
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames;
-using BookingBoardGames;
+using BookingBoardGames.Src.Repositories;
 using Microsoft.EntityFrameworkCore;
 using BookingBoardGames.Data;
 using System;
 using Xunit;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Tests.PaymentCard
 {
@@ -23,7 +19,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         public void AddCardPayment_ValidPipeline_ReturnsNotNullResult()
         {
             PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserAPIProxy userService = new UserAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalAPIProxy RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
@@ -54,7 +50,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         public void AddCardPayment_ValidPipeline_ReturnsCardPaymentMethod()
         {
             PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserAPIProxy userService = new UserAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalAPIProxy RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
@@ -86,7 +82,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         public void GetCardPayment_ValidTransaction_ReturnsNotNull()
         {
             PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserAPIProxy userService = new UserAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalAPIProxy RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
@@ -118,7 +114,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         public void GetCardPayment_ValidTransaction_ReturnsCorrectAmount()
         {
             PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserAPIProxy userService = new UserAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalAPIProxy RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
@@ -150,7 +146,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         public void GetCardPayment_ValidTransaction_ReturnsCorrectClientIdentifier()
         {
             PaymentRepository paymentRepository = new PaymentRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            UserRepository userService = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserAPIProxy userService = new UserAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalAPIProxy RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
@@ -183,7 +179,7 @@ namespace BookingBoardGames.Tests.PaymentCard
         {
             var dbContext = new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>());
             PaymentRepository paymentRepository = new PaymentRepository(dbContext);
-            UserRepository userService = new UserRepository(dbContext);
+            UserAPIProxy userService = new UserAPIProxy(dbContext);
             GamesAPIProxy GamesRepository = new GamesAPIProxy(dbContext);
             RentalAPIProxy RentalRepository = new RentalAPIProxy(dbContext);
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);

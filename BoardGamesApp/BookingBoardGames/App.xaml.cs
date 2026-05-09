@@ -6,23 +6,23 @@ using System;
 using System.Diagnostics;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Mapper;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Mapper;
+using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
 
 namespace BookingBoardGames
 {
-    //TODO: rename repositoryPayment and PaymentRepository, finish conversation repo
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     public partial class App : Application
     {
         public static readonly string BaseApiUrl = "http://localhost:5000/api/";
-        //public static readonly string BaseApiUrl = "http://172.30.250.124:5000/api/";
-   
+
+        // public static readonly string BaseApiUrl = "http://172.30.250.124:5000/api/";
         public static readonly System.Net.Http.HttpClient Client = new System.Net.Http.HttpClient { BaseAddress = new Uri(BaseApiUrl) };
         private Window? window;
 
@@ -39,11 +39,11 @@ namespace BookingBoardGames
             AppDbContext = new AppDbContext(options);
 
             // Repositories
-            UserRepository = new UserRepository(AppDbContext);
+            UserRepository = new UserAPIProxy(Client);
             GameRepository = new GamesAPIProxy(Client);
             RentalRepository = new RentalAPIProxy(Client);
-            PaymentRepository = new PaymentRepository(AppDbContext);
-            HistoryRepository = new RepositoryPayment(AppDbContext);
+            PaymentRepository = new PaymentAPIProxy(Client);
+            HistoryRepository = new RepositoryPaymentAPIProxy(Client);
             ConversationRepository = new ConversationAPIProxy(Client);
 
             // Services
@@ -51,7 +51,7 @@ namespace BookingBoardGames
             GlobalGeographicalService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
-            CardPaymentService = new CardPaymentService((PaymentRepository)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
+            CardPaymentService = new CardPaymentService(PaymentRepository, UserRepository, ReceiptService, RentalService);
             MapService = new MapService();
             ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
             CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);

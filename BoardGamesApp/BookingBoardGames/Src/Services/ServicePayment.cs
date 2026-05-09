@@ -7,12 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Constants;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Src.Services;
 using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     /// <summary>
     /// Service responsible for business logic, mapping, computing totals, and filtering transactions for the Payment History view.

@@ -7,11 +7,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
+using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.Interfaces;
 
-namespace BookingBoardGames.Data.ViewModels;
+namespace BookingBoardGames.Src.ViewModels;
 
 public class ChatPageViewModel
 {
@@ -59,7 +62,7 @@ public class ChatPageViewModel
         {
             this.LeftPanelModelView.HandleIncomingConversation(
                 conversationItem,
-                this.conversationService.GetOtherUserNameByConversationDTO(conversationItem),
+                await this.conversationService.GetOtherUserNameByConversationDTO(conversationItem),
                 this.currentUserId,
                 this.userRepository);
         }
@@ -116,13 +119,13 @@ public class ChatPageViewModel
         await this.conversationService.UpdateMessage(message);
     }
 
-    private void OnMessageReceived(MessageDataTransferObject message, string senderName)
+    private async void OnMessageReceived(MessageDataTransferObject message, string senderName)
     {
         var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
 
         matchedConversation?.AddMessageToListDTO(message);
 
-        this.LeftPanelModelView.HandleIncomingMessage(message, senderName);
+        await this.LeftPanelModelView.HandleIncomingMessage(message, senderName);
         this.ChatModelView.HandleIncomingMessage(message);
         if (this.ChatModelView.ConversationId == message.ConversationId)
         {

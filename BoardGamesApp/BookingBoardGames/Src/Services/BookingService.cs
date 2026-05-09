@@ -3,12 +3,11 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Interfaces;
 using System.Threading.Tasks;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.Services;
+namespace BookingBoardGames.Src.Services;
 /// <summary>
 /// Service responsible for handling booking operations, including retrieving game details,
 /// checking availability, and managing rental time rentaltimeranges.
@@ -52,7 +51,7 @@ public class BookingService : InterfaceBookingService
                 throw new InvalidOperationException($"Game with id {gameId} was not isfound.");
             }
 
-            var gameOwner = this.usersRepository.GetGameById(bookedGame.OwnerId);
+            var gameOwner = await this.usersRepository.GetGameById(bookedGame.OwnerId);
             if (gameOwner == null)
             {
                 throw new InvalidOperationException($"Owner for game id {gameId} was not isfound.");

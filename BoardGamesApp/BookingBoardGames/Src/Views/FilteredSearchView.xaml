@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
-    x:Class="BookingBoardGames.Data.Views.FilteredSearchView"
+    x:Class="BookingBoardGames.Src.Views.FilteredSearchView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="Root"
-    xmlns:viewModels="using:BookingBoardGames.Data.ViewModels"
-    xmlns:shared="using:BookingBoardGames.Data.DTO"
+    xmlns:viewModels="using:BookingBoardGames.Src.ViewModels"
+    xmlns:DTO="using:BookingBoardGames.Src.DTO"
     mc:Ignorable="d">
 
     <Grid Padding="20" RowSpacing="20" ColumnSpacing="20">
@@ -149,7 +149,7 @@
                           SelectionMode="Single"
                           SelectedItem="{Binding SelectedGame, Mode=TwoWay}">
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="shared:GameDTO">
+                        <DataTemplate x:DataType="DTO:GameDTO">
                             <Border BorderBrush="LightGray"
                                     BorderThickness="1"
                                     CornerRadius="8"

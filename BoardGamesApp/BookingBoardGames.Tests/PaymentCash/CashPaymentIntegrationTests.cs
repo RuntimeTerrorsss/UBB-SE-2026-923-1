@@ -1,16 +1,11 @@
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames;
 using BookingBoardGames;
 using Microsoft.EntityFrameworkCore;
 using BookingBoardGames.Data;
-using BookingBoardGames.Data.Mapper;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Mapper;
 using BookingBoardGames.Data.Constants;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Tests.PaymentCash
 {
@@ -137,7 +132,7 @@ namespace BookingBoardGames.Tests.PaymentCash
 
         private static ICashPaymentService BuildCashPaymentService(IPaymentRepository paymentRepository)
         {
-            var userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            var userRepository = new UserAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             var RentalService = new RentalService(RentalRepository, GamesRepository);

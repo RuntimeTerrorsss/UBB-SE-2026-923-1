@@ -4,10 +4,10 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     public interface IServicePayment
     {

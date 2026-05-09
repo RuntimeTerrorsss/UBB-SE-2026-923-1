@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace SearchAndBook.Repositories.Sql
+namespace BookingBoardGames.Src.Repositories.Sql
 {
     /// <summary>
     /// Provides predefined SQL query strings for retrieving user-related data from the database.

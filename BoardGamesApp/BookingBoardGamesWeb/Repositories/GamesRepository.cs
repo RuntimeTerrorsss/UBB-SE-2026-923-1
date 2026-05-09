@@ -6,11 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Shared;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
+namespace BookingBoardGames.Api.Repositories;
 /// <summary>
 /// Repository responsible for reading game/listing data from the database.
 /// Important:

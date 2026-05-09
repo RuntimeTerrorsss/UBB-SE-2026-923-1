@@ -5,12 +5,12 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Src.DTO;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
-namespace BookingBoardGames.Data.ViewModels;
+namespace BookingBoardGames.Src.ViewModels;
 
 public class MessageViewModel : INotifyPropertyChanged
 {
