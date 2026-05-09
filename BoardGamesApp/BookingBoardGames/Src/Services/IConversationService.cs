@@ -28,6 +28,10 @@ namespace BookingBoardGames.Src.Services
 
         Task SendMessage(MessageDataTransferObject message);
 
+        void StartPolling();
+
+        void StopPolling();
+
         event Action<MessageDataTransferObject, string> ActionMessageProcessed;
 
         event Action<ConversationDTO, string> ActionConversationProcessed;

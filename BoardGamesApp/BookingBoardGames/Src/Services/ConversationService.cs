@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Enum;
@@ -22,6 +23,9 @@ namespace BookingBoardGames.Src.Services
         private IConversationNotifier notifier;
 
         private int UserId { get; set; }
+
+        private CancellationTokenSource pollingCancellationTokenSource;
+        private List<Conversation> cachedConversations = new List<Conversation>();
 
         public event Action<MessageDataTransferObject, string> ActionMessageProcessed;
 
@@ -84,7 +88,10 @@ namespace BookingBoardGames.Src.Services
             List<ConversationDTO> conversationList = new List<ConversationDTO>();
             var systemLookupCache = new Dictionary<int, bool>();
 
-            foreach (var conversation in await this.ConversationRepository.GetConversationsForUser(this.UserId))
+            var fetchedConversations = await this.ConversationRepository.GetConversationsForUser(this.UserId);
+            this.cachedConversations = fetchedConversations;
+
+            foreach (var conversation in fetchedConversations)
             {
                 ConversationDTO conversationDto = this.ConversationToConversationDTO(conversation);
                 bool hasRealOtherParticipant = false;
@@ -224,6 +231,92 @@ namespace BookingBoardGames.Src.Services
             if (created != null)
             {
                 await this.NotifySubscribersAboutMessage(created);
+            }
+        }
+
+        public void StartPolling()
+        {
+            if (this.pollingCancellationTokenSource != null)
+            {
+                return;
+            }
+
+            this.pollingCancellationTokenSource = new CancellationTokenSource();
+            _ = Task.Run(() => this.PollConversationsLoop(this.pollingCancellationTokenSource.Token));
+        }
+
+        public void StopPolling()
+        {
+            this.pollingCancellationTokenSource?.Cancel();
+            this.pollingCancellationTokenSource?.Dispose();
+            this.pollingCancellationTokenSource = null;
+        }
+
+        private async Task PollConversationsLoop(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(0.1), token);
+                    var fetchedConversations = await this.ConversationRepository.GetConversationsForUser(this.UserId);
+
+                    foreach (var fetchedConv in fetchedConversations)
+                    {
+                        var cachedConv = this.cachedConversations.FirstOrDefault(c => c.ConversationId == fetchedConv.ConversationId);
+
+                        if (cachedConv == null)
+                        {
+                            this.NotifySubscribersAboutNewConversation(fetchedConv);
+                        }
+                        else
+                        {
+                            foreach (var fetchedMsg in fetchedConv.Messages)
+                            {
+                                var cachedMsg = cachedConv.Messages.FirstOrDefault(m => m.MessageId == fetchedMsg.MessageId);
+                                if (cachedMsg == null)
+                                {
+                                    await this.NotifySubscribersAboutMessage(fetchedMsg);
+                                }
+                                else
+                                {
+                                    bool updated = false;
+                                    if (fetchedMsg is RentalRequestMessage fetchedRental && cachedMsg is RentalRequestMessage cachedRental)
+                                    {
+                                        if (fetchedRental.IsRequestResolved != cachedRental.IsRequestResolved ||
+                                            fetchedRental.IsRequestAccepted != cachedRental.IsRequestAccepted)
+                                        {
+                                            updated = true;
+                                        }
+                                    }
+                                    else if (fetchedMsg is CashAgreementMessage fetchedCash && cachedMsg is CashAgreementMessage cachedCash)
+                                    {
+                                        if (fetchedCash.IsCashAgreementResolved != cachedCash.IsCashAgreementResolved ||
+                                            fetchedCash.IsCashAgreementAcceptedByBuyer != cachedCash.IsCashAgreementAcceptedByBuyer ||
+                                            fetchedCash.IsCashAgreementAcceptedBySeller != cachedCash.IsCashAgreementAcceptedBySeller)
+                                        {
+                                            updated = true;
+                                        }
+                                    }
+
+                                    if (updated)
+                                    {
+                                        await this.NotifySubscribersAboutMessageUpdate(fetchedMsg);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    this.cachedConversations = fetchedConversations;
+                }
+                catch (TaskCanceledException)
+                {
+                    break;
+                }
+                catch (Exception)
+                {
+                }
             }
         }
 
