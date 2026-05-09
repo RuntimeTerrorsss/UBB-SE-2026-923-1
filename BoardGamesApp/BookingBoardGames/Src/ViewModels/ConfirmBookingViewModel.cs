@@ -1,4 +1,4 @@
-﻿// <copyright file="ConfirmBookingViewModel.cs" company="PlaceholderCompany">
+// <copyright file="ConfirmBookingViewModel.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -353,9 +353,10 @@ namespace BookingBoardGames.Src.ViewModels
                     this.GameImage = null;
                 }
 
-                if (!string.IsNullOrEmpty(this.GameAndUserDetails.AvatarUrl))
+                if (!string.IsNullOrWhiteSpace(this.GameAndUserDetails.AvatarUrl) &&
+                    Uri.TryCreate(this.GameAndUserDetails.AvatarUrl, UriKind.Absolute, out var avatarUri))
                 {
-                    this.OwnerImage = new BitmapImage(new Uri(this.GameAndUserDetails.AvatarUrl));
+                    this.OwnerImage = new BitmapImage(avatarUri);
                 }
                 else
                 {

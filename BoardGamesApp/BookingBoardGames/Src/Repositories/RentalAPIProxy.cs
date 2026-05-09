@@ -1,4 +1,4 @@
-﻿// <copyright file="RentalRepository.cs" company="PlaceholderCompany">
+// <copyright file="RentalRepository.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -51,7 +51,13 @@ namespace BookingBoardGames.Src.Repositories
 
         public async Task<List<TimeRange>> GetAllOccupiedPeriods()
         {
-            return await this.httpClient.GetFromJsonAsync<List<TimeRange>>("rentals/occupied", JsonOptions)
+            var response = await this.httpClient.GetAsync("rentals/occupied");
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<TimeRange>();
+            }
+
+            return await response.Content.ReadFromJsonAsync<List<TimeRange>>(JsonOptions)
                    ?? new List<TimeRange>();
         }
 
@@ -65,11 +71,10 @@ namespace BookingBoardGames.Src.Repositories
         public async Task<bool> CheckGameAvailability(DateTime startTime, DateTime endTime, int gameId)
         {
             var range = new TimeRange(startTime, endTime);
-            var response = await this.httpClient.PostAsJsonAsync(
-                $"rentals/{gameId}/check", range, JsonOptions);
+            var response = await this.httpClient.PostAsJsonAsync($"rentals/{gameId}/check", range, JsonOptions);
             response.EnsureSuccessStatusCode();
-            var raw = await response.Content.ReadAsStringAsync();
-            return bool.Parse(raw);
+            var available = await response.Content.ReadFromJsonAsync<bool>(JsonOptions);
+            return available;
         }
 
         public async Task AddRental(Rental rental)
