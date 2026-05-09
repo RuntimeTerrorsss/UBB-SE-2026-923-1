@@ -58,7 +58,22 @@ public class BookingService : InterfaceBookingService
             if (gameOwner == null)
                 throw new InvalidOperationException($"Owner for game id {gameId} was not found.");
 
-            return new BookingDTO { };
+            return new BookingDTO 
+            { 
+                GameId = bookedGame.Id,
+                Name = bookedGame.Name,
+                Image = bookedGame.Image,
+                Price = bookedGame.PricePerDay,
+                City = gameOwner.City,
+                MinimumNrPlayers = bookedGame.MinimumPlayerNumber,
+                MaximumNumberPlayers = bookedGame.MaximumPlayerNumber,
+                Description = bookedGame.Description,
+                UserId = gameOwner.Id,
+                DisplayName = gameOwner.DisplayName,
+                IsSuspended = gameOwner.IsSuspended,
+                AvatarUrl = gameOwner.AvatarUrl,
+                CreatedAt = gameOwner.CreatedAt
+            };
         }
         catch (Exception exception)
         {
