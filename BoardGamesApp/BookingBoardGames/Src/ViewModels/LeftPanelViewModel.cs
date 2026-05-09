@@ -14,11 +14,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.DTO;
 using Microsoft.UI.Xaml;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     public class LeftPanelViewModel : INotifyPropertyChanged
     {
@@ -141,12 +141,12 @@ namespace BookingBoardGames.Data.ViewModels
             matchedConversation.UnreadCount = noUnreadMessagesCount;
         }
 
-        public void HandleIncomingMessage(MessageDataTransferObject message, string senderName)
+        public async Task HandleIncomingMessage(MessageDataTransferObject message, string senderName)
         {
-            this.HandleIncomingMessage(message, senderName, App.UserRepository);
+            await this.HandleIncomingMessage(message, senderName, App.UserRepository);
         }
 
-        public void HandleIncomingMessage(MessageDataTransferObject message, string senderName, IUserRepository userService)
+        public async Task HandleIncomingMessage(MessageDataTransferObject message, string senderName, IUserRepository userService)
         {
             int firstCharacterIndex = 0;
             int singleCharacterLength = 1;
@@ -173,7 +173,7 @@ namespace BookingBoardGames.Data.ViewModels
                     message.Content,
                     DateTime.Now,
                     unreadCountInput: message.ConversationId == this.selectedConversationId ? noUnreadMessagesCount : singleUnreadMessageCount,
-                    userService.GetById(message.ReceiverId).AvatarUrl);
+                    (await userService.GetById(message.ReceiverId)).AvatarUrl);
                 this.allConversations.Insert(0, newConversationPreview);
             }
 
@@ -185,7 +185,7 @@ namespace BookingBoardGames.Data.ViewModels
             this.HandleIncomingConversation(conversation, displayName, userId, App.UserRepository);
         }
 
-        public void HandleIncomingConversation(ConversationDTO conversation, string displayName, int userId, IUserRepository service)
+        public async void HandleIncomingConversation(ConversationDTO conversation, string displayName, int userId, IUserRepository service)
         {
             int firstCharacterIndex = 0;
             int singleCharacterLength = 1;
@@ -205,7 +205,7 @@ namespace BookingBoardGames.Data.ViewModels
                 conversation.MessageList.LastOrDefault()?.GetChatMessagePreview() ?? string.Empty,
                 conversation.MessageList.LastOrDefault()?.SentAt ?? DateTime.MinValue,
                 unreadCountInput: conversation.UnreadCount[userId],
-                service.GetById(otherUserIdentifier).AvatarUrl);
+                (await service.GetById(otherUserIdentifier)).AvatarUrl);
 
             this.allConversations.Insert(0, newConversationPreview);
             this.SortConversationsByTimestamp();

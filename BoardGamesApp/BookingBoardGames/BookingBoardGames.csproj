@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
@@ -16,6 +16,20 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="BookingBoardGames\**" />
+    <Compile Remove="Src\Interfaces\**" />
+    <Compile Remove="Src\ViewModels\ChatViewModels\**" />
+    <EmbeddedResource Remove="BookingBoardGames\**" />
+    <EmbeddedResource Remove="Src\Interfaces\**" />
+    <EmbeddedResource Remove="Src\ViewModels\ChatViewModels\**" />
+    <None Remove="BookingBoardGames\**" />
+    <None Remove="Src\Interfaces\**" />
+    <None Remove="Src\ViewModels\ChatViewModels\**" />
+    <Page Remove="BookingBoardGames\**" />
+    <Page Remove="Src\Interfaces\**" />
+    <Page Remove="Src\ViewModels\ChatViewModels\**" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
@@ -60,13 +74,7 @@
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BookingBoardGames\Src\Repositories\" />
-    <Folder Include="Src\Interfaces\" />
-    <Folder Include="Src\ViewModels\ChatViewModels\" />
     <Folder Include="Src\Views\ChatViews\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="BookingBoardgamesILoveBan\BookingBoardgamesILoveBan.csproj" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BookingBoardGames.Data\BookingBoardGames.Data.csproj" />
@@ -87,4 +95,13 @@
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
   </PropertyGroup>
+  <ItemGroup>
+    <PRIResource Remove="Src\Interfaces\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Src\ViewModels\ChatViewModels\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="BookingBoardGames\**" />
+  </ItemGroup>
 </Project>

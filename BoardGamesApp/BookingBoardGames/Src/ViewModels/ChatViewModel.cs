@@ -9,11 +9,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Src.DTO;
 using Microsoft.UI.Xaml.Controls;
 
-namespace BookingBoardGames.Data.ViewModels;
+namespace BookingBoardGames.Src.ViewModels;
 
 public class ChatViewModel : INotifyPropertyChanged
 {

@@ -5,10 +5,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Data.Constants;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGames.Data.Interfaces
+namespace BookingBoardGames.Api.Repositories
 {
     public class RepositoryPayment : IRepositoryPayment
     {

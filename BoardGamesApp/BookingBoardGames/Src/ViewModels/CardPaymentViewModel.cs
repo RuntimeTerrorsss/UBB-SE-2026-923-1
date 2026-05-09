@@ -7,13 +7,13 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.Commands;
 using BookingBoardGames.Data.Constants;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Commands;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     public class CardPaymentViewModel : INotifyPropertyChanged
     {
@@ -263,14 +263,14 @@ namespace BookingBoardGames.Data.ViewModels
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void RefreshBalance()
+        private async void RefreshBalance()
         {
             if (!this.isPageCurrentlyActive || this.ClientIdentifier == 0)
             {
                 return;
             }
 
-            decimal newBalance = this.userService.GetUserBalance(this.ClientIdentifier);
+            decimal newBalance = await this.userService.GetUserBalance(this.ClientIdentifier);
             this.synchronizationContext?.Post(
                 _ =>
                 {

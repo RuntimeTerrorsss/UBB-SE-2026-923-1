@@ -5,16 +5,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Data.DTO;
+using System.Threading.Tasks;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.Mapper;
-using BookingBoardGames.Data.Interfaces;
-using System.Threading.Tasks;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Mapper;
 
-
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     /// <summary>
     /// Service responsible for searching, filtering, and retrieving game feeds.
@@ -69,7 +66,7 @@ namespace BookingBoardGames.Data.Services
                 {
                     if (!cachedOwnersById.TryGetValue(filteredGame.OwnerId, out var cachedOwnerGame))
                     {
-                        cachedOwnerGame = this.usersRepository.GetGameById(filteredGame.OwnerId);
+                        cachedOwnerGame = await this.usersRepository.GetGameById(filteredGame.OwnerId);
 
                         if (cachedOwnerGame != null)
                         {
@@ -122,7 +119,7 @@ namespace BookingBoardGames.Data.Services
 
                 foreach (var availableTonightGame in availableTonightGameList)
                 {
-                    var gameOwner = this.usersRepository.GetGameById(availableTonightGame.OwnerId);
+                    var gameOwner = await this.usersRepository.GetGameById(availableTonightGame.OwnerId);
 
                     if (gameOwner != null)
                     {
@@ -152,7 +149,7 @@ namespace BookingBoardGames.Data.Services
                 var otherFeedGamesResult = new List<GameDTO>();
                 foreach (var otherFeedGame in otherFeedGames)
                 {
-                    var gameOwner = this.usersRepository.GetGameById(otherFeedGame.OwnerId);
+                    var gameOwner = await this.usersRepository.GetGameById(otherFeedGame.OwnerId);
 
                     if (gameOwner == null)
                     {

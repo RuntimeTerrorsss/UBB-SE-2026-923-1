@@ -3,9 +3,9 @@
 // </copyright>
 
 using System.Threading.Tasks;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     /// <summary>
     /// Defines the operations for managing and querying game bookings.

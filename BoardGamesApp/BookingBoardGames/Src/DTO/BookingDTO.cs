@@ -4,7 +4,7 @@
 
 using System;
 
-namespace BookingBoardGames.Data.DTO;
+namespace BookingBoardGames.Src.DTO;
 /// <summary>
 /// Represents the data transfer object for a booking, containing information about the booked game, user, and related
 /// details.

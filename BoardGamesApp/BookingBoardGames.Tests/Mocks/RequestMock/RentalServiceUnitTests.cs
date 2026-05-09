@@ -1,7 +1,6 @@
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.DTO;
 using System;
 using Moq;
 using Xunit;

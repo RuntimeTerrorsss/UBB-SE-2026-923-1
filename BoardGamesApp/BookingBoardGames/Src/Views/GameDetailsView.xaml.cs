@@ -5,15 +5,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Data.Views
+namespace BookingBoardGames.Src.Views
 {
     /// <summary>
     /// Provides the user interface for viewing detailed information about a game and selecting rental dates.

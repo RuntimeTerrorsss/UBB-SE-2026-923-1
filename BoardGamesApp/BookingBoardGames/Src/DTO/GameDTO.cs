@@ -5,7 +5,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace BookingBoardGames.Data.DTO
+namespace BookingBoardGames.Src.DTO
 {
     public class GameDTO : INotifyPropertyChanged
     {

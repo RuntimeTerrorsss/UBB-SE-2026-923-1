@@ -5,12 +5,11 @@
 using System;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Constants;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Mapper;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Mapper;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     public class CashPaymentService : PaymentService, ICashPaymentService
     {

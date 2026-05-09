@@ -9,13 +9,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BookingBoardGames.Data.Commands;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Shared;
+using BookingBoardGames.Src.Commands;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     /// <summary>
     /// ViewModel for the filtered search page.
@@ -419,7 +418,7 @@ namespace BookingBoardGames.Data.ViewModels
         /// Applies <see cref="CurrentFilter"/> on top of <see cref="BaseResults"/> without re-querying the service.
         /// Validates the date range before proceeding.
         /// </summary>
-        public void ApplyFilters()
+        public async Task ApplyFilters()
         {
             try
             {
@@ -431,7 +430,7 @@ namespace BookingBoardGames.Data.ViewModels
                     return;
                 }
 
-                this.DisplayedResults = this.searchService.ApplyFilters(this.BaseResults, this.CurrentFilter) ?? Array.Empty<GameDTO>();
+                this.DisplayedResults = await this.searchService.ApplyFilters(this.BaseResults, this.CurrentFilter) ?? Array.Empty<GameDTO>();
                 this.Games = this.DisplayedResults.ToList();
                 this.CurrentPage = FirstPage;
                 this.OnPropertyChanged(nameof(this.TotalPages));
@@ -450,7 +449,7 @@ namespace BookingBoardGames.Data.ViewModels
         /// <see cref="SelectedStartDate"/>, <see cref="SelectedEndDate"/>),
         /// writes them into <see cref="CurrentFilter"/>, and calls <see cref="ApplyFilters"/>.
         /// </summary>
-        public void ApplySelectedUiFilters()
+        public async Task ApplySelectedUiFilters()
         {
             try
             {
@@ -470,7 +469,7 @@ namespace BookingBoardGames.Data.ViewModels
                     this.SelectedStartDate?.DateTime,
                     this.SelectedEndDate?.DateTime);
 
-                this.ApplyFilters();
+                await this.ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -479,12 +478,12 @@ namespace BookingBoardGames.Data.ViewModels
         }
 
         /// <summary>Removes the name filter from <see cref="CurrentFilter"/> and re-applies the remaining filters.</summary>
-        public void RemoveNameFilter()
+        public async Task RemoveNameFilter()
         {
             try
             {
                 this.CurrentFilter.Name = null;
-                this.ApplyFilters();
+                await this.ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -493,12 +492,12 @@ namespace BookingBoardGames.Data.ViewModels
         }
 
         /// <summary>Removes the city filter from <see cref="CurrentFilter"/> and re-applies the remaining filters.</summary>
-        public void RemoveCityFilter()
+        public async Task RemoveCityFilter()
         {
             try
             {
                 this.CurrentFilter.City = null;
-                this.ApplyFilters();
+                await this.ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -507,12 +506,12 @@ namespace BookingBoardGames.Data.ViewModels
         }
 
         /// <summary>Removes the maximum-price filter from <see cref="CurrentFilter"/> and re-applies the remaining filters.</summary>
-        public void RemovePriceFilter()
+        public async Task RemovePriceFilter()
         {
             try
             {
                 this.CurrentFilter.MaximumPrice = null;
-                this.ApplyFilters();
+                await this.ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -521,12 +520,12 @@ namespace BookingBoardGames.Data.ViewModels
         }
 
         /// <summary>Removes the player-count filter from <see cref="CurrentFilter"/> and re-applies the remaining filters.</summary>
-        public void RemovePlayersFilter()
+        public async Task RemovePlayersFilter()
         {
             try
             {
                 this.CurrentFilter.PlayerCount = null;
-                this.ApplyFilters();
+                await this.ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -535,12 +534,12 @@ namespace BookingBoardGames.Data.ViewModels
         }
 
         /// <summary>Removes the availability-date filter from <see cref="CurrentFilter"/> and re-applies the remaining filters.</summary>
-        public void RemoveDateFilter()
+        public async Task RemoveDateFilter()
         {
             try
             {
                 this.CurrentFilter.AvailabilityRange = null;
-                this.ApplyFilters();
+                await this.ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -549,12 +548,12 @@ namespace BookingBoardGames.Data.ViewModels
         }
 
         /// <summary>Sets the sort order to <see cref="SortOption.PriceAscending"/> and re-applies filters.</summary>
-        public void SetPriceAscendingSort()
+        public async Task SetPriceAscendingSort()
         {
             try
             {
                 this.CurrentFilter.SortOption = SortOption.PriceAscending;
-                this.ApplyFilters();
+                await this.ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -563,12 +562,12 @@ namespace BookingBoardGames.Data.ViewModels
         }
 
         /// <summary>Sets the sort order to <see cref="SortOption.PriceDescending"/> and re-applies filters.</summary>
-        public void SetPriceDescendingSort()
+        public async Task SetPriceDescendingSort()
         {
             try
             {
                 this.CurrentFilter.SortOption = SortOption.PriceDescending;
-                this.ApplyFilters();
+                await this.ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -577,12 +576,12 @@ namespace BookingBoardGames.Data.ViewModels
         }
 
         /// <summary>Clears the sort option (<see cref="SortOption.None"/>) and re-applies filters.</summary>
-        public void ClearSorting()
+        public async Task ClearSorting()
         {
             try
             {
                 this.CurrentFilter.SortOption = SortOption.None;
-                this.ApplyFilters();
+                await this.ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -654,7 +653,7 @@ namespace BookingBoardGames.Data.ViewModels
                 }
                 else
                 {
-                    this.ApplyFilters();
+                    await this.ApplyFilters();
                 }
             }
             catch (Exception ex)

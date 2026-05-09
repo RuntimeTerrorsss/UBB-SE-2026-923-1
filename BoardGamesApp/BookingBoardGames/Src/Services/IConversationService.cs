@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     public interface IConversationService
     {
@@ -16,13 +16,13 @@ namespace BookingBoardGames.Data.Services
 
         void OnMessageUpdateReceived(Message message);
 
-        void OnConversationReceived(Conversation conversation);
+        Task OnConversationReceived(Conversation conversation);
 
         void OnReadReceiptReceived(ReadReceiptDTO readReceipt);
 
         Task<List<ConversationDTO>> FetchConversations();
 
-        string GetOtherUserNameByConversationDTO(ConversationDTO conversation);
+        Task<string> GetOtherUserNameByConversationDTO(ConversationDTO conversation);
 
         Task UpdateMessage(MessageDataTransferObject message);
 

@@ -3,12 +3,13 @@
 // </copyright>
 
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BookingBoardGames.Data.Interfaces
+namespace BookingBoardGames.Api.Repositories
 {
     public class RentalRepository : IRentalRepository
     {

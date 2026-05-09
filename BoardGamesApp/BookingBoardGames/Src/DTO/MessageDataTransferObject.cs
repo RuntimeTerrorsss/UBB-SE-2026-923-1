@@ -5,7 +5,7 @@
 using System;
 using BookingBoardGames.Data.Enum;
 
-namespace BookingBoardGames.Data.DTO
+namespace BookingBoardGames.Src.DTO
 {
     public record MessageDataTransferObject(
         int Id,

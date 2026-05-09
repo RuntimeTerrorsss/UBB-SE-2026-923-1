@@ -1,14 +1,9 @@
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames;
 using BookingBoardGames;
 using Microsoft.EntityFrameworkCore;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +25,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         public void CalculateTotalAmount_NonEmptyDatabase_ReturnsValidDataAndPositiveTotal()
         {
             RepositoryPaymentAPIProxy repositoryPayment = new RepositoryPaymentAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            UserRepository userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserAPIProxy userRepository = new UserAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalAPIProxy RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);
@@ -49,7 +44,7 @@ namespace BookingBoardGames.Tests.PaymentHistory
         public void GetReceiptDocumentPath_ForFilteredPayments_ReturnsValidPathAndCorrectResults()
         {
             RepositoryPaymentAPIProxy repositoryPayment = new RepositoryPaymentAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
-            UserRepository userRepository = new UserRepository(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
+            UserAPIProxy userRepository = new UserAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             GamesAPIProxy GamesRepository = new GamesAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalAPIProxy RentalRepository = new RentalAPIProxy(new AppDbContextFactory().CreateDbContext(System.Array.Empty<string>()));
             RentalService RentalService = new RentalService(RentalRepository, GamesRepository);

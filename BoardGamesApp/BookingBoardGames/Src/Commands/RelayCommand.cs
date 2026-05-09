@@ -5,7 +5,7 @@
 using System;
 using System.Windows.Input;
 
-namespace BookingBoardGames.Data.Commands
+namespace BookingBoardGames.Src.Commands
 {
     public class RelayCommand(Action<object?> executeAction, Func<bool>? canExecuteFunction = null) : ICommand
     {

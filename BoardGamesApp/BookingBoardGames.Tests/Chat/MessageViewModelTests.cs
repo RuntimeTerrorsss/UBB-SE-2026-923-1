@@ -1,9 +1,8 @@
 using System;
 using Xunit;
-using BookingBoardGames.Data.ViewModels;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Data.Shared;
 using Microsoft.UI.Xaml;
 
 namespace BookingBoardGames.Tests.Chat

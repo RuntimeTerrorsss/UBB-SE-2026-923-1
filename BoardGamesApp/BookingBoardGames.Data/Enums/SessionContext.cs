@@ -4,7 +4,7 @@
 
 using System;
 
-namespace BookingBoardGames.Data.Shared
+namespace BookingBoardGames.Data.Enum
 {
     /// <summary>
     /// Provides a context for managing the current user's session state, including authentication status and user
