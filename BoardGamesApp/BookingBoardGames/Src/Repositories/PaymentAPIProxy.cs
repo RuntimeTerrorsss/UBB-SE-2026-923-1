@@ -72,5 +72,16 @@ namespace BookingBoardGames.Src.Repositories
 
             return await response.Content.ReadFromJsonAsync<Payment>(JsonOptions);
         }
+
+        public async Task<bool> DeletePaymentAsync(Payment payment)
+        {
+            if (payment == null)
+            {
+                return false;
+            }
+
+            var response = await this.httpClient.DeleteAsync($"payments/{payment.TransactionIdentifier}");
+            return response.IsSuccessStatusCode;
+        }
     }
 }
