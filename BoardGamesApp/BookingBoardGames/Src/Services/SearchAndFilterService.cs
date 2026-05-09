@@ -297,7 +297,7 @@ namespace BookingBoardGames.Src.Services
             var availableTonightGameList = await this.GetGamesFeedAvailableTonightByUser(userId);
             var otherGameList = await this.GetOtherGamesFeedByUser(userId);
 
-            var allDescoveryFeedGames = availableTonightGameList.Concat(otherGameList).ToList();
+            var allDescoveryFeedGames = availableTonightGameList.Concat(otherGameList).DistinctBy(game => game.GameId).ToList();
             var totalAvailableGamesCount = allDescoveryFeedGames.Count;
 
             var paginatedGames = allDescoveryFeedGames
