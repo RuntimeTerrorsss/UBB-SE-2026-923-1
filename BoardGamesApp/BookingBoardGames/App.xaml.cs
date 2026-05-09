@@ -21,9 +21,10 @@ namespace BookingBoardGames
     public partial class App : Application
     {
         public static readonly string BaseApiUrl = "http://localhost:5000/api/";
+        // move this to setting file json
         public static readonly string RemoteApiUrl = "http://172.30.250.124:5000/api/";
 
-        public static readonly System.Net.Http.HttpClient Client = new System.Net.Http.HttpClient { BaseAddress = new Uri(BaseApiUrl) };
+        public static readonly System.Net.Http.HttpClient Client = new System.Net.Http.HttpClient { BaseAddress = new Uri(RemoteApiUrl) };
         private Window? window;
 
         /// <summary>
