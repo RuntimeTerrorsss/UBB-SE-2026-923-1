@@ -58,18 +58,19 @@ namespace BookingBoardGames.Src.Repositories
             return int.Parse(raw, System.Globalization.CultureInfo.InvariantCulture);
         }
 
-    public async Task<Payment?> UpdatePaymentAsync(Payment payment)
-    {
-        var response = await this.httpClient.PutAsJsonAsync(
-            $"api/payments/{payment.TransactionIdentifier}",
-            payment,
-            JsonOptions);
-
-        if (!response.IsSuccessStatusCode)
+        public async Task<Payment?> UpdatePaymentAsync(Payment payment)
         {
-            return null;
-        }
+            var response = await this.httpClient.PutAsJsonAsync(
+                $"api/payments/{payment.TransactionIdentifier}",
+                payment,
+                JsonOptions);
 
-        return await response.Content.ReadFromJsonAsync<Payment>(JsonOptions);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<Payment>(JsonOptions);
+        }
     }
 }
