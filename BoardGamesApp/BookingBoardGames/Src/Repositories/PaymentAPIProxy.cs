@@ -29,13 +29,13 @@ namespace BookingBoardGames.Src.Repositories
 
         public async Task<IReadOnlyList<Payment>> GetAllPaymentsAsync()
         {
-            return await this.httpClient.GetFromJsonAsync<List<Payment>>("api/payments", JsonOptions)
+            return await this.httpClient.GetFromJsonAsync<List<Payment>>("payments", JsonOptions)
                    ?? new List<Payment>();
         }
 
         public async Task<Payment?> GetPaymentByIdentifierAsync(int paymentId)
         {
-            var response = await this.httpClient.GetAsync($"api/payments/{paymentId}");
+            var response = await this.httpClient.GetAsync($"payments/{paymentId}");
             if (!response.IsSuccessStatusCode)
             {
                 return null;
@@ -51,7 +51,7 @@ namespace BookingBoardGames.Src.Repositories
                 payment.DateOfTransaction = DateTime.Now;
             }
 
-            var response = await this.httpClient.PostAsJsonAsync("api/payments", payment, JsonOptions);
+            var response = await this.httpClient.PostAsJsonAsync("payments", payment, JsonOptions);
             response.EnsureSuccessStatusCode();
 
             var raw = await response.Content.ReadAsStringAsync();

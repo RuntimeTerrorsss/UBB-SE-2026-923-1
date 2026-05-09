@@ -3,6 +3,7 @@
 // </copyright>
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -39,17 +40,26 @@ public class GamesAPIProxy : InterfaceGamesRepository
 
     public async Task<Game?> GetGameById(int gameId)
     {
-        var response = await this.httpClient.GetAsync($"api/games/{gameId}");
-        if (!response.IsSuccessStatusCode)
+        try
         {
+            var response = await this.httpClient.GetAsync($"games/{gameId}");
+            Debug.WriteLine($"GetGameById status: {response.StatusCode}");
+            if (!response.IsSuccessStatusCode) return null;
+            var raw = await response.Content.ReadAsStringAsync();
+            Debug.WriteLine($"GetGameById raw: {raw}");
+            return JsonSerializer.Deserialize<Game>(raw, JsonOptions);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"GetGameById EXCEPTION: {ex.Message}");
+            Debug.WriteLine($"GetGameById INNER: {ex.InnerException?.Message}");
             return null;
         }
-        return await response.Content.ReadFromJsonAsync<Game>(JsonOptions);
     }
 
     public async Task<decimal> GetPriceGameById(int gameId)
     {
-        var response = await this.httpClient.GetAsync($"api/games/{gameId}/price");
+        var response = await this.httpClient.GetAsync($"games/{gameId}/price");
         response.EnsureSuccessStatusCode();
         var raw = await response.Content.ReadAsStringAsync();
         return decimal.Parse(raw, System.Globalization.CultureInfo.InvariantCulture);
@@ -57,13 +67,13 @@ public class GamesAPIProxy : InterfaceGamesRepository
 
     public async Task<List<Game>> GetAll()
     {
-        return await this.httpClient.GetFromJsonAsync<List<Game>>("api/games", JsonOptions)
+        return await this.httpClient.GetFromJsonAsync<List<Game>>("games", JsonOptions)
                ?? new List<Game>();
     }
 
     public async Task<List<Game>> GetGamesByFilter(FilterCriteria filter)
     {
-        var response = await this.httpClient.PostAsJsonAsync("api/games/search", filter, JsonOptions);
+        var response = await this.httpClient.PostAsJsonAsync("games/search", filter, JsonOptions);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<List<Game>>(JsonOptions)
                ?? new List<Game>();
@@ -72,14 +82,14 @@ public class GamesAPIProxy : InterfaceGamesRepository
     public async Task<List<Game>> GetGamesForFeedAvailableTonight(int userId)
     {
         return await this.httpClient.GetFromJsonAsync<List<Game>>(
-                   $"api/games/feed/tonight?userId={userId}", JsonOptions)
+                   $"games/feed/tonight?userId={userId}", JsonOptions)
                ?? new List<Game>();
     }
 
     public async Task<List<Game>> GetRemainingGamesForFeed(int userId)
     {
         return await this.httpClient.GetFromJsonAsync<List<Game>>(
-                   $"api/games/feed/remaining?userId={userId}", JsonOptions)
+                   $"games/feed/remaining?userId={userId}", JsonOptions)
                ?? new List<Game>();
     }
 }

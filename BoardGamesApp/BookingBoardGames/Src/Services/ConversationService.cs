@@ -1,4 +1,4 @@
-﻿// <copyright file="ConversationService.cs" company="PlaceholderCompany">
+// <copyright file="ConversationService.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -82,10 +82,39 @@ namespace BookingBoardGames.Src.Services
         public async Task<List<ConversationDTO>> FetchConversations()
         {
             List<ConversationDTO> conversationList = new List<ConversationDTO>();
+            var systemLookupCache = new Dictionary<int, bool>();
 
             foreach (var conversation in await this.ConversationRepository.GetConversationsForUser(this.UserId))
             {
-                conversationList.Add(this.ConversationToConversationDTO(conversation));
+                ConversationDTO conversationDto = this.ConversationToConversationDTO(conversation);
+                bool hasRealOtherParticipant = false;
+
+                foreach (var participant in conversationDto.Participants)
+                {
+                    if (participant.UserId == this.UserId)
+                    {
+                        continue;
+                    }
+
+                    if (!systemLookupCache.TryGetValue(participant.UserId, out bool isSystemUser))
+                    {
+                        var user = await this.userRepository.GetById(participant.UserId);
+                        isSystemUser = user is not null &&
+                                       string.Equals(user.Username, "System", StringComparison.OrdinalIgnoreCase);
+                        systemLookupCache[participant.UserId] = isSystemUser;
+                    }
+
+                    if (!isSystemUser)
+                    {
+                        hasRealOtherParticipant = true;
+                        break;
+                    }
+                }
+
+                if (hasRealOtherParticipant)
+                {
+                    conversationList.Add(conversationDto);
+                }
             }
 
             return conversationList;
@@ -93,15 +122,46 @@ namespace BookingBoardGames.Src.Services
 
         public async Task<string> GetOtherUserNameByConversationDTO(ConversationDTO conversation)
         {
-            int otherUserId = conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId;
-            var user = await this.userRepository.GetById(otherUserId);
-            return user?.Username ?? "Unknown User";
+            var otherParticipantIds = conversation.Participants
+                .Select(participantItem => participantItem.UserId)
+                .Where(participantId => participantId != this.UserId)
+                .Distinct()
+                .ToList();
+
+            if (otherParticipantIds.Count == 0)
+            {
+                return "Unknown User";
+            }
+
+            foreach (var otherUserId in otherParticipantIds)
+            {
+                var user = await this.userRepository.GetById(otherUserId);
+                if (user is not null &&
+                    !string.Equals(user.Username, "System", StringComparison.OrdinalIgnoreCase))
+                {
+                    return user.Username;
+                }
+            }
+
+            var fallbackUser = await this.userRepository.GetById(otherParticipantIds.First());
+            if (fallbackUser is null ||
+                string.Equals(fallbackUser.Username, "System", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Unknown User";
+            }
+
+            return fallbackUser.Username;
         }
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
         {
-            var user = this.userRepository.GetById(message.SenderId == this.UserId ? message.ReceiverId : message.SenderId).Result;
-            return user?.Username ?? "Unknown User";
+            int otherUserId = message.SenderId == this.UserId ? message.ReceiverId : message.SenderId;
+            if (otherUserId <= 0)
+            {
+                return "Unknown User";
+            }
+
+            return $"User {otherUserId}";
         }
 
         public async Task SendMessage(MessageDataTransferObject message)

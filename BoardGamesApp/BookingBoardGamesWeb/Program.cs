@@ -17,6 +17,13 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -37,6 +44,14 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseAuthorization();
+
+// Browser check: GET /api/ otherwise 404 (controllers are under /api/Games, /api/Users, …)
+app.MapGet("/api", () => Results.Json(new
+{
+    name = "BookingBoardGames.Api",
+    swagger = "/swagger",
+    hint = "Sample: GET http://localhost:5000/api/games",
+}));
 app.MapControllers();
 
 

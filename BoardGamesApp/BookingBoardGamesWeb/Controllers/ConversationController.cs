@@ -60,17 +60,47 @@ namespace BookingBoardGames.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateConversation([FromBody] CreateConversationRequest request)
         {
+            if (request.SenderId <= 0 || request.ReceiverId <= 0 || request.SenderId == request.ReceiverId)
+            {
+                return BadRequest("Invalid conversation participants.");
+            }
+
+            var sender = await _context.Users.FindAsync(request.SenderId);
+            var receiver = await _context.Users.FindAsync(request.ReceiverId);
+            if (sender is null || receiver is null)
+            {
+                return NotFound("Sender or receiver not found.");
+            }
+
+            if (string.Equals(sender.Username, "System", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(receiver.Username, "System", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest("System user is not allowed as direct conversation participant.");
+            }
+
+            var existingConversation = await _context.Conversations
+                .Include(c => c.Participants)
+                .Include(c => c.Messages)
+                .FirstOrDefaultAsync(c =>
+                    c.Participants.Any(p => p.UserId == request.SenderId) &&
+                    c.Participants.Any(p => p.UserId == request.ReceiverId));
+
+            if (existingConversation is not null)
+            {
+                return Ok(existingConversation);
+            }
+
             var conversation = new Conversation
             {
-                Participants = new List<ConversationParticipant>
-                {
-                    new ConversationParticipant { UserId = request.SenderId },
-                    new ConversationParticipant { UserId = request.ReceiverId },
-                },
                 Messages = new List<Message>()
             };
-
             _context.Conversations.Add(conversation);
+            await _context.SaveChangesAsync();
+
+            _context.ConversationParticipants.AddRange(
+                new ConversationParticipant { ConversationId = conversation.ConversationId, UserId = request.SenderId },
+                new ConversationParticipant { ConversationId = conversation.ConversationId, UserId = request.ReceiverId }
+            );
             await _context.SaveChangesAsync();
 
             var created = await _context.Conversations
@@ -84,7 +114,36 @@ namespace BookingBoardGames.Api.Controllers
         [HttpPost("messages")]
         public async Task<ActionResult<MessageDto>> SendMessage([FromBody] MessageDto messageDto)
         {
-            var message = MessageDtoToEntity(messageDto);
+            var conversation = await _context.Conversations
+                .AsNoTracking()
+                .Include(c => c.Participants)
+                .FirstOrDefaultAsync(c => c.ConversationId == messageDto.ConversationId);
+            if (conversation is null)
+            {
+                return BadRequest("Conversation not found.");
+            }
+
+            if (!conversation.Participants.Any(p => p.UserId == messageDto.SenderId))
+            {
+                return BadRequest("Sender is not part of this conversation.");
+            }
+
+            int receiverId = messageDto.ReceiverId;
+            if (!conversation.Participants.Any(p => p.UserId == receiverId))
+            {
+                receiverId = conversation.Participants
+                    .Where(p => p.UserId != messageDto.SenderId)
+                    .Select(p => p.UserId)
+                    .FirstOrDefault();
+            }
+
+            if (receiverId <= 0)
+            {
+                return BadRequest("Receiver is invalid for this conversation.");
+            }
+
+            var normalizedMessageDto = messageDto with { ReceiverId = receiverId };
+            var message = MessageDtoToEntity(normalizedMessageDto);
             _context.Messages.Add(message);
             await _context.SaveChangesAsync();
 
