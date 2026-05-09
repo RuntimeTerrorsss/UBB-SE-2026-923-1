@@ -174,6 +174,19 @@ namespace BookingBoardGames.Src.Services
         public async Task SendMessage(MessageDataTransferObject message)
         {
             Message persisted = await this.ConversationRepository.HandleNewMessage(this.MessageDTOToMessage(message));
+
+            var cachedConv = this.cachedConversations.FirstOrDefault(c => c.ConversationId == persisted.ConversationId);
+            if (cachedConv != null)
+            {
+                if (cachedConv.Messages is System.Collections.Generic.IList<Message> collection)
+                {
+                    if (!collection.Any(m => m.MessageId == persisted.MessageId))
+                    {
+                        collection.Add(persisted);
+                    }
+                }
+            }
+
             await this.NotifySubscribersAboutMessage(persisted);
         }
 

@@ -116,16 +116,12 @@ public class ChatViewModel : INotifyPropertyChanged
 
     public void HandleIncomingMessage(MessageDataTransferObject message)
     {
-        double oneSecondTolerance = 1;
-
         if (message.ConversationId != this.ConversationId)
         {
             return;
         }
 
-        bool messageExists = this.Messages.Any(messageItem =>
-            messageItem.Content == message.Content &&
-            Math.Abs((messageItem.SentAt - message.SentAt).TotalSeconds) < oneSecondTolerance);
+        bool messageExists = this.Messages.Any(messageItem => messageItem.Id == message.Id);
 
         if (messageExists)
         {
@@ -162,9 +158,6 @@ public class ChatViewModel : INotifyPropertyChanged
             unassignedIdentifier,
             unassignedIdentifier);
 
-        var newViewModel = new MessageViewModel(messageDataTransferObject, this.CurrentUserId);
-
-        this.Messages.Add(newViewModel);
         this.InputText = string.Empty;
         this.MessageSent.Invoke(messageDataTransferObject);
     }
