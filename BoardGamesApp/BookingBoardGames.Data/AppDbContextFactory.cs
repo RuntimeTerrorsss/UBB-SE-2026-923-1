@@ -44,6 +44,26 @@ namespace BookingBoardGames.Data
             {
             }
 
+            try
+            {
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../BookingBoardGamesWeb"))
+                    .AddJsonFile("appsettings.json", optional: true)
+                    .Build();
+
+                var connectionString = configuration.GetConnectionString("RemoteConnection");
+
+                if (!string.IsNullOrWhiteSpace(connectionString))
+                {
+                    Console.WriteLine("Using database connection string from appsettings.json." + connectionString);
+                    return connectionString;
+                }
+
+            }
+            catch
+            {
+            }
+
             const string databaseName = "MergedBoardGamesDb";
             string[] candidates =
             {
