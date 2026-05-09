@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookingBoardGames.Api.Controllers
 {
@@ -11,17 +11,17 @@ namespace BookingBoardGames.Api.Controllers
     [Route("api/[controller]")]
     public class RentalsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IRentalRepository _repo;
 
-        public RentalsController(AppDbContext context)
+        public RentalsController(IRentalRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Rental>> GetRental(int id)
         {
-            var rental = await _context.Rentals.FindAsync(id);
+            var rental = await _repo.GetById(id);
             if (rental == null) return NotFound();
             return Ok(rental);
         }
@@ -29,33 +29,28 @@ namespace BookingBoardGames.Api.Controllers
         [HttpGet("game/{gameId}/unavailable")]
         public async Task<ActionResult<List<TimeRange>>> GetUnavailable(int gameId)
         {
-            var list = await _context.Rentals
-                .Where(r => r.GameId == gameId)
-                .Select(r => new TimeRange(r.StartDate, r.EndDate))
-                .ToListAsync();
-            return Ok(list);
+            return Ok(await _repo.GetUnavailableTimeRanges(gameId));
         }
 
         [HttpGet("{id}/timerange")]
         public async Task<ActionResult<TimeRange>> GetRentalTimeRange(int id)
         {
-            var rental = await _context.Rentals.FindAsync(id);
-            if (rental == null) return NotFound();
-            return Ok(new TimeRange(rental.StartDate, rental.EndDate));
+            var range = await _repo.GetRentalTimeRange(id);
+            if (range == null) return NotFound();
+            return Ok(range);
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateRental([FromBody] Rental rental)
+        public async Task<ActionResult> CreateRental([FromBody] Rental rental)
         {
-            _context.Rentals.Add(rental);
-            await _context.SaveChangesAsync();
+            await _repo.AddRental(rental);
             return Ok(rental.RentalId);
         }
 
         [HttpPost("{id}/check")]
         public async Task<ActionResult<bool>> CheckAvailability(int id, [FromBody] TimeRange range)
         {
-            bool available = !_context.Rentals.Any(r => r.GameId == id && r.StartDate < range.EndTime && range.StartTime < r.EndDate);
+            bool available = await _repo.CheckGameAvailability(range.StartTime, range.EndTime, id);
             return Ok(available);
         }
     }

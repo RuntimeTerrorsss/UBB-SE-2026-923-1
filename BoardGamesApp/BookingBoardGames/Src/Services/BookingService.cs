@@ -1,4 +1,4 @@
-﻿// <copyright file="BookingService.cs" company="PlaceholderCompany">
+// <copyright file="BookingService.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -166,7 +166,7 @@ public class BookingService : InterfaceBookingService
                 totalPrice: this.CalculateTotalPriceForRentingASpecificGame(game.PricePerDay, timeRange)
             );
 
-            this.rentalsRepository.AddRental(rental);
+            await this.rentalsRepository.AddRental(rental);
         }
         catch (Exception exception)
         {

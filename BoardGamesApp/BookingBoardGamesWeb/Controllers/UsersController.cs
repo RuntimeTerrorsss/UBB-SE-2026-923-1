@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookingBoardGames.Api.Controllers
 {
@@ -11,17 +10,17 @@ namespace BookingBoardGames.Api.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IUserRepository _repo;
 
-        public UsersController(AppDbContext context)
+        public UsersController(IUserRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _repo.GetById(id);
             if (user == null) return NotFound();
             return Ok(user);
         }
@@ -29,26 +28,20 @@ namespace BookingBoardGames.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<User>>> GetAll()
         {
-            return await _context.Users.AsNoTracking().ToListAsync();
+            return Ok(await _repo.GetAll());
         }
 
         [HttpPut("{id}/address")]
         public async Task<ActionResult> SaveAddress(int id, [FromBody] Address address)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
-            user.Country = address.Country;
-            user.City = address.City;
-            user.Street = address.Street;
-            user.StreetNumber = address.StreetNumber;
-            await _context.SaveChangesAsync();
+            await _repo.SaveAddress(id, address);
             return NoContent();
         }
 
         [HttpGet("{id}/balance")]
         public async Task<ActionResult<decimal>> GetBalance(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _repo.GetById(id);
             if (user == null) return NotFound();
             return Ok(user.Balance);
         }
@@ -56,10 +49,7 @@ namespace BookingBoardGames.Api.Controllers
         [HttpPut("{id}/balance")]
         public async Task<ActionResult> UpdateBalance(int id, [FromBody] decimal newBalance)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
-            user.Balance = newBalance;
-            await _context.SaveChangesAsync();
+            await _repo.UpdateBalance(id, newBalance);
             return NoContent();
         }
     }

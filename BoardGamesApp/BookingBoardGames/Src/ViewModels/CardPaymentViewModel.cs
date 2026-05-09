@@ -292,7 +292,7 @@ namespace BookingBoardGames.Src.ViewModels
                 await Task.Run(() =>
                     this.cardPaymentService.AddCardPayment(this.RequestIdentifier, this.ClientIdentifier, this.OwnerIdentifier, this.Price));
 
-                ((ConversationService)this.ConversationService).OnCardPaymentSelected(this.BookingMessageIdentifier);
+                await ((ConversationService)this.ConversationService).OnCardPaymentSelected(this.BookingMessageIdentifier);
 
                 this.IsPaymentSuccessful = true;
                 this.CurrentStatusMessage = "Payment successful!";

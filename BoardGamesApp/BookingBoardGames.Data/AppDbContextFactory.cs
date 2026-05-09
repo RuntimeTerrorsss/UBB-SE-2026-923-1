@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -24,44 +24,33 @@ namespace BookingBoardGames.Data
                 return overrideConnection;
             }
 
-            try
+            string? webProjectPath = FindWebProjectPath();
+            if (webProjectPath != null)
             {
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../BookingBoardGamesWeb"))
-                    .AddJsonFile("appsettings.json", optional: true)
-                    .Build();
-
-                var connectionString = configuration.GetConnectionString("DefaultConnection");
-
-                if (!string.IsNullOrWhiteSpace(connectionString))
-                { 
-                    Console.WriteLine("Using database connection string from appsettings.json." + connectionString);
-                    return connectionString;
-                }
-                    
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../BookingBoardGamesWeb"))
-                    .AddJsonFile("appsettings.json", optional: true)
-                    .Build();
-
-                var connectionString = configuration.GetConnectionString("RemoteConnection");
-
-                if (!string.IsNullOrWhiteSpace(connectionString))
+                try
                 {
-                    Console.WriteLine("Using database connection string from appsettings.json." + connectionString);
-                    return connectionString;
-                }
+                    var configuration = new ConfigurationBuilder()
+                        .SetBasePath(webProjectPath)
+                        .AddJsonFile("appsettings.json", optional: true)
+                        .Build();
 
-            }
-            catch
-            {
+                    var defaultConnection = configuration.GetConnectionString("DefaultConnection");
+                    if (!string.IsNullOrWhiteSpace(defaultConnection))
+                    {
+                        Console.WriteLine("Using DefaultConnection from appsettings.json: " + defaultConnection);
+                        return defaultConnection;
+                    }
+
+                    var remoteConnection = configuration.GetConnectionString("RemoteConnection");
+                    if (!string.IsNullOrWhiteSpace(remoteConnection))
+                    {
+                        Console.WriteLine("Using RemoteConnection from appsettings.json: " + remoteConnection);
+                        return remoteConnection;
+                    }
+                }
+                catch
+                {
+                }
             }
 
             const string databaseName = "MergedBoardGamesDb";
@@ -96,6 +85,33 @@ namespace BookingBoardGames.Data
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Walks up from Directory.GetCurrentDirectory() looking for a sibling
+        /// folder named "BookingBoardGamesWeb" that contains appsettings.json.
+        /// Works whether the CWD is the bin output folder (runtime) or the
+        /// solution/project root (EF CLI migrations).
+        /// </summary>
+        private static string? FindWebProjectPath()
+        {
+            const string targetFolder = "BookingBoardGamesWeb";
+            const string settingsFile = "appsettings.json";
+
+            DirectoryInfo? dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (dir != null)
+            {
+                string candidate = Path.Combine(dir.FullName, targetFolder);
+                if (Directory.Exists(candidate) &&
+                    File.Exists(Path.Combine(candidate, settingsFile)))
+                {
+                    return candidate;
+                }
+
+                dir = dir.Parent;
+            }
+
+            return null;
         }
     }
 }

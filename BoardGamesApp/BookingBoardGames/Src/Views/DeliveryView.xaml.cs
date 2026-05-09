@@ -1,4 +1,4 @@
-﻿// <copyright file="DeliveryView.xaml.cs" company="PlaceholderCompany">
+// <copyright file="DeliveryView.xaml.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -51,7 +51,6 @@ namespace BookingBoardGames.Src.Views
                 App.MapService,
                 App.UserRepository,
                 new AddressValidator());
-            this.deliveryViewModel.InitializeAsync();
 
             this.deliveryViewModel.OnNavigateToPayment = () =>
             {
@@ -76,7 +75,7 @@ namespace BookingBoardGames.Src.Views
             };
 
             this.deliveryViewModel.StateChanged += this.RefreshUi;
-            this.deliveryViewModel.Initialize(this.currentUserId);
+            _ = this.deliveryViewModel.Initialize(this.currentUserId);
             this.RefreshUi();
         }
 

@@ -1,4 +1,4 @@
-﻿// <copyright file="CardPaymentService.cs" company="PlaceholderCompany">
+// <copyright file="CardPaymentService.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -103,10 +103,14 @@ namespace BookingBoardGames.Src.Services
 
         public virtual async Task<RentalDataTransferObject> GetRequestDataTransferObject(int rentalIdentifier)
         {
-            Rental rental = await this.rentalService.GetRentalById(rentalIdentifier);
+            Rental rental = await this.rentalService.GetRentalById(rentalIdentifier)
+                ?? throw new InvalidOperationException($"Rental with ID {rentalIdentifier} was not found.");
+
             string gameName = await this.rentalService.GetGameName(rental.RentalId);
-            string ownerName = (await this.userRepository.GetById(rental.OwnerId)).Username;
-            string clientName = (await this.userRepository.GetById(rental.ClientId)).Username;
+            User? ownerUser = await this.userRepository.GetById(rental.OwnerId);
+            User? clientUser = await this.userRepository.GetById(rental.ClientId);
+            string ownerName = ownerUser?.Username ?? "Unknown Owner";
+            string clientName = clientUser?.Username ?? "Unknown Client";
             decimal gamePrice = await this.rentalService.GetRentalPrice(rental.RentalId);
 
             return new RentalDataTransferObject(rental.RentalId, rental.GameId, gameName, rental.ClientId, clientName, rental.OwnerId, ownerName, rental.StartDate, rental.EndDate, gamePrice);

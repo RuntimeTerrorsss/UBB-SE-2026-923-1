@@ -26,6 +26,7 @@ namespace BookingBoardGames.Src.Services
 
         private CancellationTokenSource pollingCancellationTokenSource;
         private List<Conversation> cachedConversations = new List<Conversation>();
+        private readonly HashSet<int> recentlySentMessageIds = new HashSet<int>();
 
         public event Action<MessageDataTransferObject, string> ActionMessageProcessed;
 
@@ -175,6 +176,10 @@ namespace BookingBoardGames.Src.Services
         {
             Message persisted = await this.ConversationRepository.HandleNewMessage(this.MessageDTOToMessage(message));
 
+            // Track the sent ID so the poller won't fire a duplicate notification for it.
+            this.recentlySentMessageIds.Add(persisted.MessageId);
+
+            // Immediately update the local cache so the poller sees the message as known.
             var cachedConv = this.cachedConversations.FirstOrDefault(c => c.ConversationId == persisted.ConversationId);
             if (cachedConv != null)
             {
@@ -289,7 +294,11 @@ namespace BookingBoardGames.Src.Services
                                 var cachedMsg = cachedConv.Messages.FirstOrDefault(m => m.MessageId == fetchedMsg.MessageId);
                                 if (cachedMsg == null)
                                 {
-                                    await this.NotifySubscribersAboutMessage(fetchedMsg);
+                                    // Only notify if we didn't just send this message ourselves.
+                                    if (!this.recentlySentMessageIds.Remove(fetchedMsg.MessageId))
+                                    {
+                                        await this.NotifySubscribersAboutMessage(fetchedMsg);
+                                    }
                                 }
                                 else
                                 {

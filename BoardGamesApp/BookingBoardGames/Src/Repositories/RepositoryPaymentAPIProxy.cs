@@ -1,4 +1,4 @@
-﻿// <copyright file="RepositoryPayment.cs" company="PlaceholderCompany">
+// <copyright file="RepositoryPayment.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -31,13 +31,13 @@ namespace BookingBoardGames.Src.Repositories
 
         public async Task<IReadOnlyList<HistoryPayment>> GetAllPayments()
         {
-            return await this.httpClient.GetFromJsonAsync<List<HistoryPayment>>("payments", JsonOptions)
+            return await this.httpClient.GetFromJsonAsync<List<HistoryPayment>>("payments/history", JsonOptions)
                ?? new List<HistoryPayment>();
         }
 
         public async Task<HistoryPayment?> GetPaymentById(int searchedPaymentId)
         {
-            var response = await this.httpClient.GetAsync($"payments/{searchedPaymentId}");
+            var response = await this.httpClient.GetAsync($"payments/history/{searchedPaymentId}");
 
             if (!response.IsSuccessStatusCode)
             {

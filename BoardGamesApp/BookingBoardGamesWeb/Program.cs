@@ -1,4 +1,6 @@
+using BookingBoardGames.Api.Repositories;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Text.Json.Serialization;
@@ -11,18 +13,18 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<InterfaceGamesRepository, GamesRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IRepositoryPayment, RepositoryPayment>();
+builder.Services.AddScoped<IRentalRepository, RentalRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler =
-            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-    });
 
 var app = builder.Build();
 
@@ -45,7 +47,6 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseAuthorization();
 
-// Browser check: GET /api/ otherwise 404 (controllers are under /api/Games, /api/Users, …)
 app.MapGet("/api", () => Results.Json(new
 {
     name = "BookingBoardGames.Api",
@@ -53,7 +54,5 @@ app.MapGet("/api", () => Results.Json(new
     hint = "Sample: GET http://localhost:5000/api/games",
 }));
 app.MapControllers();
-
-
 
 app.Run();
