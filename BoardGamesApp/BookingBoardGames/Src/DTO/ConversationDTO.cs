@@ -1,4 +1,4 @@
-﻿// <copyright file="ConversationDTO.cs" company="PlaceholderCompany">
+// <copyright file="ConversationDTO.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -36,8 +36,11 @@ namespace BookingBoardGames.Src.DTO
 
         public void AddMessageToListDTO(MessageDataTransferObject newMessage)
         {
-            this.MessageList.Add(newMessage);
-            this.UpdateUnreadCounts();
+            if (!this.MessageList.Any(m => m.Id == newMessage.Id))
+            {
+                this.MessageList.Add(newMessage);
+                this.UpdateUnreadCounts();
+            }
         }
 
         public void UpdateUnreadCounts()

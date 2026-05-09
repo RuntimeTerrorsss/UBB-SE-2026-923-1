@@ -92,13 +92,13 @@
 
                     <TextBlock Text="Maximum Price"/>
                     <Slider
-                        Minimum="1"
+                        Minimum="0"
                         Maximum="100"
                         Value="{Binding SelectedMaximumPrice, Mode=TwoWay}"/>
 
                     <TextBlock Text="Number of players"/>
                     <Slider
-                        Minimum="1"
+                        Minimum="0"
                         Maximum="20"
                         Value="{Binding SelectedMinimumPlayers, Mode=TwoWay}"/>
 

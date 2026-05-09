@@ -44,6 +44,10 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public async Task InitializeAsync(int currentUserId)
         {
+            if (this.chatPageViewModel != null)
+            {
+                this.chatPageViewModel.ConversationService.StopPolling();
+            }
             this.chatPageViewModel = new ChatPageViewModel(currentUserId);
             this.LeftPanel.ViewModel = this.chatPageViewModel.LeftPanelModelView;
             this.RightPanel.ChatViewModel = this.chatPageViewModel.ChatModelView;
@@ -126,6 +130,15 @@ namespace BookingBoardGames.Src.Views.ChatViews
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(DiscoveryView));
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            if (this.chatPageViewModel != null)
+            {
+                this.chatPageViewModel.ConversationService.StopPolling();
+            }
         }
     }
 }
