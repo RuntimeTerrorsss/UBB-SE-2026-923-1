@@ -21,10 +21,10 @@ jobs:
       run: dotnet restore BoardGamesApp/BookingBoardGames/BookingBoardGames.sln
 
     - name: Build BookingBoardGames
-      run: dotnet build BoardGamesApp/BookingBoardGames/BookingBoardGames.csproj --no-restore -c Release
+      run: dotnet build BoardGamesApp/BookingBoardGames/BookingBoardGames.csproj --no-restore -c Release -p:PublishReadyToRun=false
 
     - name: Build BookingBoardGames.Data
-      run: dotnet build BoardGamesApp/BookingBoardGames.Data/BookingBoardGames.Data.csproj --no-restore -c Release
+      run: dotnet build BoardGamesApp/BookingBoardGames.Data/BookingBoardGames.Data.csproj --no-restore -c Release -p:PublishReadyToRun=false
 
     - name: Build BookingBoardGames.Api
-      run: dotnet build BoardGamesApp/BookingBoardGamesWeb/BookingBoardGames.Api.csproj --no-restore -c Release
+      run: dotnet build BoardGamesApp/BookingBoardGamesWeb/BookingBoardGames.Api.csproj --no-restore -c Release -p:PublishReadyToRun=false
