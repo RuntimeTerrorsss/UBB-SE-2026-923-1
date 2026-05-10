@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
@@ -41,7 +42,7 @@ namespace BookingBoardGames.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateRental([FromBody] Rental rental)
+        public async Task<ActionResult> CreateRental([FromBody] Rental rental)
         {
             await this.rentalRepository.AddRental(rental);
             return Ok(rental.RentalId);

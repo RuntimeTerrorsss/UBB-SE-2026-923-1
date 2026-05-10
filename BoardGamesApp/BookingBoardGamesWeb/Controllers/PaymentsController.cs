@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookingBoardGames.Api.Controllers
 {
@@ -11,86 +11,40 @@ namespace BookingBoardGames.Api.Controllers
     [Route("api/[controller]")]
     public class PaymentsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IPaymentRepository _repo;
+        private readonly IRepositoryPayment _historyRepo;
 
-        public PaymentsController(AppDbContext context)
+        public PaymentsController(IPaymentRepository repo, IRepositoryPayment historyRepo)
         {
-            _context = context;
+            _repo = repo;
+            _historyRepo = historyRepo;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Payment>> GetPayment(int id)
         {
-            var payment = await _context.Payments.FindAsync(id);
+            var payment = await _repo.GetPaymentByIdentifierAsync(id);
             if (payment == null) return NotFound();
             return Ok(payment);
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Payment>>> GetAll()
+        public async Task<ActionResult<IReadOnlyList<Payment>>> GetAll()
         {
-            return await _context.Payments.AsNoTracking().ToListAsync();
+            return Ok(await _repo.GetAllPaymentsAsync());
         }
 
+        // Returns HistoryPayment records with GameName + OwnerName populated via JOIN.
         [HttpGet("history")]
-        public async Task<ActionResult<List<HistoryPayment>>> GetHistory()
+        public async Task<ActionResult<IReadOnlyList<HistoryPayment>>> GetHistory()
         {
-            var query = _context.Payments
-                .Include(payment => payment.Request)
-                    .ThenInclude(rental => rental.Game)
-                .Include(payment => payment.Owner)
-                .Select(payment => new HistoryPayment
-                {
-                    TransactionIdentifier = payment.TransactionIdentifier,
-                    PaidAmount = payment.PaidAmount,
-                    PaymentMethod = payment.PaymentMethod,
-                    DateOfTransaction = payment.DateOfTransaction,
-                    DateConfirmedBuyer = payment.DateConfirmedBuyer,
-                    DateConfirmedSeller = payment.DateConfirmedSeller,
-                    PaymentState = payment.PaymentState,
-                    ReceiptFilePath = payment.ReceiptFilePath,
-                    RequestId = payment.RequestId,
-                    ClientId = payment.ClientId,
-                    OwnerId = payment.OwnerId,
-
-                    GameName = payment.Request != null && payment.Request.Game != null
-                                    ? payment.Request.Game.Name
-                                    : string.Empty,
-                    OwnerName = payment.Owner != null
-                                    ? payment.Owner.DisplayName
-                                    : string.Empty,
-                });
-
-            return await query.ToListAsync();
+            return Ok(await _historyRepo.GetAllPayments());
         }
 
         [HttpGet("history/{id}")]
         public async Task<ActionResult<HistoryPayment>> GetHistoryById(int id)
         {
-            var result = await _context.Payments
-                .Include(p => p.Request).ThenInclude(r => r.Game)
-                .Include(p => p.Owner)
-                .Where(p => p.TransactionIdentifier == id)
-                .Select(payment => new HistoryPayment
-                {
-                    TransactionIdentifier = payment.TransactionIdentifier,
-                    PaidAmount = payment.PaidAmount,
-                    PaymentMethod = payment.PaymentMethod,
-                    DateOfTransaction = payment.DateOfTransaction,
-                    DateConfirmedBuyer = payment.DateConfirmedBuyer,
-                    DateConfirmedSeller = payment.DateConfirmedSeller,
-                    PaymentState = payment.PaymentState,
-                    ReceiptFilePath = payment.ReceiptFilePath,
-                    RequestId = payment.RequestId,
-                    ClientId = payment.ClientId,
-                    OwnerId = payment.OwnerId,
-                    GameName = payment.Request != null && payment.Request.Game != null
-                        ? payment.Request.Game.Name : string.Empty,
-                    OwnerName = payment.Owner != null
-                        ? payment.Owner.DisplayName : string.Empty,
-                })
-                .FirstOrDefaultAsync();
-
+            var result = await _historyRepo.GetPaymentById(id);
             if (result == null) return NotFound();
             return Ok(result);
         }
@@ -98,25 +52,27 @@ namespace BookingBoardGames.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> AddPayment([FromBody] Payment payment)
         {
-            if (payment.DateOfTransaction == default) payment.DateOfTransaction = System.DateTime.Now;
-            _context.Payments.Add(payment);
-            await _context.SaveChangesAsync();
-            return Ok(payment.TransactionIdentifier);
+            if (payment.DateOfTransaction == default) payment.DateOfTransaction = DateTime.Now;
+            int newId = await _repo.AddPaymentAsync(payment);
+            return Ok(newId);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Payment>> UpdatePayment(int id, [FromBody] Payment payment)
         {
-            var existing = await _context.Payments.FindAsync(id);
+            payment.TransactionIdentifier = id;
+            var updated = await _repo.UpdatePaymentAsync(payment);
+            if (updated == null) return NotFound();
+            return Ok(updated);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeletePayment(int id)
+        {
+            var existing = await _repo.GetPaymentByIdentifierAsync(id);
             if (existing == null) return NotFound();
-
-            existing.ReceiptFilePath = payment.ReceiptFilePath ?? string.Empty;
-            existing.DateOfTransaction = payment.DateOfTransaction ?? DateTime.Now;
-            existing.DateConfirmedBuyer = payment.DateConfirmedBuyer;
-            existing.DateConfirmedSeller = payment.DateConfirmedSeller;
-
-            await _context.SaveChangesAsync();
-            return Ok(existing);
+            bool deleted = await _repo.DeletePaymentAsync(existing);
+            return deleted ? NoContent() : StatusCode(500);
         }
     }
 }

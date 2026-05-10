@@ -1,4 +1,4 @@
-﻿// <copyright file="PaymentAPIProxy.cs" company="PlaceholderCompany">
+// <copyright file="PaymentAPIProxy.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -61,7 +61,7 @@ namespace BookingBoardGames.Src.Repositories
         public async Task<Payment?> UpdatePaymentAsync(Payment payment)
         {
             var response = await this.httpClient.PutAsJsonAsync(
-                $"api/payments/{payment.TransactionIdentifier}",
+                $"payments/{payment.TransactionIdentifier}",
                 payment,
                 JsonOptions);
 
