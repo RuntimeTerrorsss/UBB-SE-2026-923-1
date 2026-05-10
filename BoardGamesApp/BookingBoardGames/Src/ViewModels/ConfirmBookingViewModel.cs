@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -23,6 +24,7 @@ namespace BookingBoardGames.Src.ViewModels
     /// confirm booking details before finalizing a reservation.</remarks>
     internal class ConfirmBookingViewModel : INotifyPropertyChanged
     {
+        private const int UnregisteredUserId = -1;
         private const int MinimumBookingDayCount = 1;
         private const decimal DefaultTotalPrice = 0;
         private InterfaceBookingService bookingService;
@@ -234,7 +236,14 @@ namespace BookingBoardGames.Src.ViewModels
         {
             try
             {
-                await this.bookingService.AddBooking(this.GameAndUserDetails.GameId, this.GameAndUserDetails.UserId, this.SelectedTimeRange);
+                int clientUserId = SessionContext.GetInstance().UserId;
+                if (clientUserId == UnregisteredUserId)
+                {
+                    this.RaiseError("User not logged in. Please log in first.");
+                    return;
+                }
+
+                await this.bookingService.AddBooking(this.GameAndUserDetails.GameId, clientUserId, this.SelectedTimeRange);
                 this.UnavailableTimeRanges = await this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
                 this.OnPropertyChanged(nameof(this.UnavailableTimeRanges));
                 this.OnConfirmBookingRequested?.Invoke();

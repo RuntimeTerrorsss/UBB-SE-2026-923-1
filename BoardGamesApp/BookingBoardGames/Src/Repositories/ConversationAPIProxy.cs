@@ -71,6 +71,33 @@ namespace BookingBoardGames.Src.Repositories
             return JsonSerializer.Deserialize<int>(raw, JsonOptions);
         }
 
+        public async Task<int> FindOrCreateConversationBetweenUsers(int userIdA, int userIdB)
+        {
+            if (userIdA <= 0 || userIdB <= 0 || userIdA == userIdB)
+            {
+                throw new ArgumentException("Participants must be two distinct valid user ids.");
+            }
+
+            var conversations = await this.GetConversationsForUser(userIdA);
+            foreach (var conversation in conversations)
+            {
+                var participants = conversation.Participants;
+                if (participants is null || participants.Count != 2)
+                {
+                    continue;
+                }
+
+                var participantIds = new HashSet<int>(participants.Select(participantItem => participantItem.UserId));
+
+                if (participantIds.Contains(userIdA) && participantIds.Contains(userIdB))
+                {
+                    return conversation.ConversationId;
+                }
+            }
+
+            return await this.CreateConversation(userIdA, userIdB);
+        }
+
         public async Task<Message> HandleNewMessage(Message message)
         {
             var messageDto = this.MessageToMessageDto(message);

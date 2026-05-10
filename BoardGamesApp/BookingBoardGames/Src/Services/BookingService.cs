@@ -147,26 +147,20 @@ public class BookingService : InterfaceBookingService
         return days < MinimumValidDayCount ? MinimumValidDayCount : days;
     }
 
-    public async Task AddBooking(int gameId, int userId, TimeRange timeRange)
+    public async Task AddBooking(int gameId, int clientId, TimeRange timeRange)
     {
         try
         {
-            var game = await this.gamesRepository.GetGameById(gameId);
-            if (game == null)
+            if (clientId <= 0)
             {
-                throw new InvalidOperationException($"Game with id {gameId} was not found.");
+                throw new InvalidOperationException("A valid logged-in renter account is required to complete a booking.");
             }
 
-            var rental = new Rental(
-                startDate: timeRange.StartTime,
-                endDate: timeRange.EndTime,
-                gameId: gameId,
-                clientId: userId,
-                ownerId: game.OwnerId,
-                totalPrice: this.CalculateTotalPriceForRentingASpecificGame(game.PricePerDay, timeRange)
-            );
-
-            await this.rentalsRepository.AddRental(rental);
+            await this.rentalsRepository.BookGameWithRentalRequest(
+                clientId,
+                gameId,
+                timeRange.StartTime,
+                timeRange.EndTime);
         }
         catch (Exception exception)
         {
