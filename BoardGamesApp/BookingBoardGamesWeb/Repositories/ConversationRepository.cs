@@ -72,6 +72,26 @@ namespace BookingBoardGames.Api.Repositories
             return conversation.ConversationId;
         }
 
+        public async Task<int> FindOrCreateConversationBetweenUsers(int userIdA, int userIdB)
+        {
+            if (userIdA <= 0 || userIdB <= 0 || userIdA == userIdB)
+            {
+                throw new ArgumentException("Participants must be two distinct valid user ids.");
+            }
+
+            var conversationsForA = await this.context.ConversationParticipants
+                .Where(participant => participant.UserId == userIdA)
+                .Select(participant => participant.ConversationId)
+                .ToListAsync();
+
+            var existingConversationId = await this.context.ConversationParticipants
+                .Where(participant => conversationsForA.Contains(participant.ConversationId) && participant.UserId == userIdB)
+                .Select(participant => participant.ConversationId)
+                .FirstOrDefaultAsync();
+
+            return existingConversationId != 0 ? existingConversationId : await this.CreateConversation(userIdA, userIdB);
+        }
+
         public async Task<Message> HandleNewMessage(Message message)
         {
             message.MessageId = 0;

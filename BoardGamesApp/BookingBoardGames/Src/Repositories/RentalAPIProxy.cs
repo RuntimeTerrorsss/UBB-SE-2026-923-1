@@ -82,5 +82,14 @@ namespace BookingBoardGames.Src.Repositories
             var response = await this.httpClient.PostAsJsonAsync("rentals", rental, JsonOptions);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task BookGameWithRentalRequest(int clientId, int gameId, DateTime startDate, DateTime endDate)
+        {
+            var response = await this.httpClient.PostAsJsonAsync(
+                "rentals/book",
+                new { ClientId = clientId, GameId = gameId, StartDate = startDate, EndDate = endDate },
+                JsonOptions);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

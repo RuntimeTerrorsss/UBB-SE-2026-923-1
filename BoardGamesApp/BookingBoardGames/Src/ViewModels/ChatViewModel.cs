@@ -95,17 +95,17 @@ public class ChatViewModel : INotifyPropertyChanged
         this.Initials = conversation.Initials;
         this.AvatarUrl = conversation.AvatarUrl;
 
-        // Rental Request fixed on top
-        var sortedMessages = messages
-            .OrderByDescending(m => m.Type == MessageType.MessageRentalRequest)
+        List<MessageDataTransferObject> orderedMessages = messages
+            .OrderBy(messageItem => messageItem.SentAt)
+            .ThenBy(messageItem => messageItem.Id)
             .ToList();
 
         this.Messages.Clear();
-        for (int i = 0; i < messages.Count; i++)
+        for (int i = 0; i < orderedMessages.Count; i++)
         {
-            var currentMessage = messages[i];
+            var currentMessage = orderedMessages[i];
             var newMessageViewModel = new MessageViewModel(currentMessage, this.CurrentUserId);
-            if (i < messages.Count - theirUnreadCount)
+            if (i < orderedMessages.Count - theirUnreadCount)
             {
                 newMessageViewModel.IsRead = true;
             }

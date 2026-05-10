@@ -20,5 +20,11 @@ namespace BookingBoardGames.Data.Interfaces
         Task<bool> CheckGameAvailability(DateTime start, DateTime end, int gameId);
 
         Task AddRental(Rental rental);
+
+        /// <summary>
+        /// Reserved for the desktop client API proxy: creates a rental and a rental-request chat message for the owner.
+        /// The server-side repository does not implement this; use <c>POST api/rentals/book</c>.
+        /// </summary>
+        Task BookGameWithRentalRequest(int clientId, int gameId, DateTime startDate, DateTime endDate);
     }
 }

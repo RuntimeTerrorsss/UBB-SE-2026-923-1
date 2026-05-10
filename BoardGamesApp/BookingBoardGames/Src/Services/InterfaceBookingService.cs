@@ -60,15 +60,13 @@ namespace BookingBoardGames.Src.Services
         int CalculateNumberOfDaysInAGivenTimeRange(TimeRange selectedTimeRange);
 
         /// <summary>
-        /// Adds a new booking for the specified game and owner within the given time range.    
+        /// Adds a booking for the specified game by the renting user and notifies the listing owner via a rental-request message in chat.
         /// </summary>
         /// <remarks>If the specified time range overlaps with an existing booking for the same game, the
-        /// booking will not be added. Ensure that the time range is valid and available before calling this
-        /// method.</remarks>
-        /// <param name="gameId">The unique identifier of the game to be booked. Must correspond to an existing game.</param>
-        /// <param name="ownerId">The unique identifier of the owner making the booking. Must correspond to a valid user.</param>
-        /// <param name="timeRange">The time range for which the booking is requested. The range must not overlap with existing bookings for the
-        /// same game.</param>
-        Task AddBooking(int gameId, int ownerId, TimeRange timeRange);
+        /// booking will not be added.</remarks>
+        /// <param name="gameId">The unique identifier of the game to be booked.</param>
+        /// <param name="clientId">The logged-in user's id (renter).</param>
+        /// <param name="timeRange">The requested rental period.</param>
+        Task AddBooking(int gameId, int clientId, TimeRange timeRange);
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BookingBoardGames.Api.Repositories
 {
@@ -62,6 +63,11 @@ namespace BookingBoardGames.Api.Repositories
         {
             await this.context.Rentals.AddAsync(rental);
             await this.context.SaveChangesAsync();
+        }
+
+        public Task BookGameWithRentalRequest(int clientId, int gameId, DateTime startDate, DateTime endDate)
+        {
+            throw new NotSupportedException("Use POST api/rentals/book; this repository only persists rentals.");
         }
     }
 }
