@@ -4,7 +4,7 @@
 
 using System;
 
-namespace BookingBoardGames.Data.DTO
+namespace BookingBoardGames.Src.DTO
 {
     public class PaymentDataTransferObject
     {

@@ -5,15 +5,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.ViewModels;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Data.Views
+namespace BookingBoardGames.Src.Views
 {
     /// <summary>
     /// Provides the user interface for viewing detailed information about a game and selecting rental dates.
@@ -38,25 +37,18 @@ namespace BookingBoardGames.Data.Views
         protected async override void OnNavigatedTo(NavigationEventArgs eventArgs)
         {
             base.OnNavigatedTo(eventArgs);
-            SessionContext.GetInstance().UserId = 1;
             if (eventArgs.Parameter is not int gameId)
             {
                 return;
             }
 
-            // var gameRepository = new GamesRepository();
-            // var rentalRepository = new RentalsRepository();
-            // var userRepository = new UsersRepository();
-            // var service = new BookingService(gameRepository, rentalRepository, userRepository);
             var viewModel = new GameDetailsViewModel(App.BookingService, gameId);
-            await viewModel.InitializeAsync();
+
+            this.DataContext = viewModel;
 
             viewModel.OnGoBackRequested += () =>
             {
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
+                if (this.Frame.CanGoBack) this.Frame.GoBack();
             };
 
             viewModel.OnStartBookingRequested += (bookingDto, range) =>
@@ -73,16 +65,15 @@ namespace BookingBoardGames.Data.Views
                     CloseButtonText = "OK",
                     XamlRoot = this.XamlRoot,
                 };
-
                 await dialog.ShowAsync();
             };
-
-            this.DataContext = viewModel;
 
             viewModel.OnChatWithOwnerRequested += (currentUserId, ownerUserId) =>
             {
                 this.Frame.Navigate(typeof(ChatViews.ChatPageView), (currentUserId, ownerUserId));
             };
+
+            await viewModel.InitializeAsync();
         }
 
         private void OnBackClicked(object sender, RoutedEventArgs eventArgs)

@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Validators;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Validators;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     public class DeliveryViewModel
     {
@@ -26,7 +26,12 @@ namespace BookingBoardGames.Data.ViewModels
             this.MapService = mapService;
             this.UserRepository = userRepository;
             this.Validator = validator;
-            this.CurrentUser = this.UserRepository.GetById(currentUserId);
+        }
+
+        public async Task InitializeAsync()
+        {
+            this.CurrentUser = await this.UserRepository.GetById(this.CurrentId);
+
             this.CurrentAddress = this.CurrentUser != null
                 ? new Address(this.CurrentUser.Country, this.CurrentUser.City, this.CurrentUser.Street, this.CurrentUser.StreetNumber)
                 : new Address();
@@ -54,10 +59,10 @@ namespace BookingBoardGames.Data.ViewModels
 
         private IValidator<Dictionary<string, string>, Address> Validator { get; set; }
 
-        public void Initialize(int userId)
+        public async Task Initialize(int userId)
         {
             this.CurrentId = userId;
-            this.CurrentUser = this.UserRepository.GetById(userId);
+            this.CurrentUser = await this.UserRepository.GetById(userId);
 
             if (this.CurrentUser != null)
             {
@@ -108,7 +113,7 @@ namespace BookingBoardGames.Data.ViewModels
             }
         }
 
-        public void SubmitDelivery()
+        public async void SubmitDelivery()
         {
             this.ValidationErrors = this.Validator.Validate(this.CurrentAddress);
             this.StateChanged?.Invoke();
@@ -117,7 +122,7 @@ namespace BookingBoardGames.Data.ViewModels
             {
                 if (this.IsSaveAddress && this.CurrentUser is not null)
                 {
-                    this.UserRepository.SaveAddress(this.CurrentUser.Id, this.CurrentAddress);
+                    await this.UserRepository.SaveAddress(this.CurrentUser.Id, this.CurrentAddress);
                 }
 
                 this.OnNavigateToPayment?.Invoke();

@@ -5,17 +5,16 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BookingBoardGames.Data.Commands;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Shared;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Src.Commands;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Helpers;
+using BookingBoardGames.Src.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Windows.Storage.Streams;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     /// <summary>
     /// Provides details for a specific game, including pricing, availability, and booking commands.
@@ -23,7 +22,6 @@ namespace BookingBoardGames.Data.ViewModels
     public class GameDetailsViewModel : INotifyPropertyChanged
     {
         private const long UnregisteredUserID = -1;
-        private const long StartOfStreamPosition = 0;
         private const decimal DefaultTotalPrice = 0;
         private readonly InterfaceBookingService bookingService;
         private bool hasError;
@@ -53,7 +51,7 @@ namespace BookingBoardGames.Data.ViewModels
             try
             {
                 this.GameAndUserDetails = await this.bookingService.GetBookingInformationForSpecificGame(this.gameId);
-                this.UnavailableTimeRanges = this.bookingService.GetUnavailableTimeRanges(this.gameId) ?? Array.Empty<TimeRange>();
+                this.UnavailableTimeRanges = (await this.bookingService.GetUnavailableTimeRanges(this.gameId)) ?? Array.Empty<TimeRange>();
                 this.LoadGameImage();
                 this.LoadOwnerImage();
                 this.HasError = false;
@@ -202,7 +200,7 @@ namespace BookingBoardGames.Data.ViewModels
         /// </summary>
         /// <param name="timeRange">The period to check for availability.</param>
         /// <returns>True if available; otherwise, false.</returns>
-        public bool CheckGameAvailability(TimeRange timeRange)
+        public async Task<bool> CheckGameAvailability(TimeRange timeRange)
         {
             try
             {
@@ -211,7 +209,7 @@ namespace BookingBoardGames.Data.ViewModels
                     return false;
                 }
 
-                return this.bookingService.CheckGameAvailability(this.GameAndUserDetails.GameId, timeRange);
+                return await this.bookingService.CheckGameAvailability(this.GameAndUserDetails.GameId, timeRange);
             }
             catch (Exception exception)
             {
@@ -297,19 +295,7 @@ namespace BookingBoardGames.Data.ViewModels
         {
             try
             {
-                if (this.GameAndUserDetails.Image == null || this.GameAndUserDetails.Image.Length == 0)
-                {
-                    this.GameImage = null;
-                    return;
-                }
-
-                using var stream = new InMemoryRandomAccessStream();
-                await stream.WriteAsync(this.GameAndUserDetails.Image.AsBuffer());
-                stream.Seek(StartOfStreamPosition);
-
-                var bitmap = new BitmapImage();
-                await bitmap.SetSourceAsync(stream);
-                this.GameImage = bitmap;
+                this.GameImage = await Helpers.GameImage.ToBitmapImageAsync(this.GameAndUserDetails.Image);
             }
             catch (Exception exception)
             {

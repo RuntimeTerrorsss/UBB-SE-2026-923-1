@@ -1,4 +1,4 @@
-﻿// <copyright file="LeftPanelViewModel.cs" company="PlaceholderCompany">
+// <copyright file="LeftPanelViewModel.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -14,11 +14,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.DTO;
 using Microsoft.UI.Xaml;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     public class LeftPanelViewModel : INotifyPropertyChanged
     {
@@ -141,12 +141,12 @@ namespace BookingBoardGames.Data.ViewModels
             matchedConversation.UnreadCount = noUnreadMessagesCount;
         }
 
-        public void HandleIncomingMessage(MessageDataTransferObject message, string senderName)
+        public async Task HandleIncomingMessage(MessageDataTransferObject message, string senderName)
         {
-            this.HandleIncomingMessage(message, senderName, App.UserRepository);
+            await this.HandleIncomingMessage(message, senderName, App.UserRepository);
         }
 
-        public void HandleIncomingMessage(MessageDataTransferObject message, string senderName, IUserRepository userService)
+        public async Task HandleIncomingMessage(MessageDataTransferObject message, string senderName, IUserRepository userService)
         {
             int firstCharacterIndex = 0;
             int singleCharacterLength = 1;
@@ -166,6 +166,7 @@ namespace BookingBoardGames.Data.ViewModels
             }
             else
             {
+                var receiverUser = await userService.GetById(message.ReceiverId);
                 var newConversationPreview = new ConversationPreviewModel(
                     message.ConversationId,
                     senderName,
@@ -173,19 +174,19 @@ namespace BookingBoardGames.Data.ViewModels
                     message.Content,
                     DateTime.Now,
                     unreadCountInput: message.ConversationId == this.selectedConversationId ? noUnreadMessagesCount : singleUnreadMessageCount,
-                    userService.GetById(message.ReceiverId).AvatarUrl);
+                    receiverUser?.AvatarUrl ?? string.Empty);
                 this.allConversations.Insert(0, newConversationPreview);
             }
 
             this.ApplyFilter();
         }
 
-        public void HandleIncomingConversation(ConversationDTO conversation, string displayName, int userId)
+        public Task HandleIncomingConversation(ConversationDTO conversation, string displayName, int userId)
         {
-            this.HandleIncomingConversation(conversation, displayName, userId, App.UserRepository);
+            return this.HandleIncomingConversation(conversation, displayName, userId, App.UserRepository);
         }
 
-        public void HandleIncomingConversation(ConversationDTO conversation, string displayName, int userId, IUserRepository service)
+        public async Task HandleIncomingConversation(ConversationDTO conversation, string displayName, int userId, IUserRepository service)
         {
             int firstCharacterIndex = 0;
             int singleCharacterLength = 1;
@@ -196,16 +197,42 @@ namespace BookingBoardGames.Data.ViewModels
                 return;
             }
 
-            var otherUserIdentifier = conversation.Participants.First(participantItem => participantItem.UserId != userId).UserId;
+            var otherParticipantIds = conversation.Participants
+                .Select(participantItem => participantItem.UserId)
+                .Where(participantId => participantId != userId)
+                .Distinct()
+                .ToList();
+
+            if (otherParticipantIds.Count == 0)
+            {
+                return;
+            }
+
+            int otherUserIdentifier = otherParticipantIds.First();
+            foreach (var participantId in otherParticipantIds)
+            {
+                var candidate = await service.GetById(participantId);
+                if (candidate is not null &&
+                    !string.Equals(candidate.Username, "System", StringComparison.OrdinalIgnoreCase))
+                {
+                    otherUserIdentifier = participantId;
+                    break;
+                }
+            }
+
+            var otherUser = await service.GetById(otherUserIdentifier);
+            int unreadCount = conversation.UnreadCount.TryGetValue(userId, out var count) ? count : 0;
+            string safeDisplayName = string.IsNullOrWhiteSpace(displayName) ? "Unknown User" : displayName;
+            string initials = safeDisplayName.Substring(firstCharacterIndex, singleCharacterLength).ToUpper();
 
             var newConversationPreview = new ConversationPreviewModel(
                 conversation.Id,
-                displayName,
-                displayName.Substring(firstCharacterIndex, singleCharacterLength).ToUpper(),
+                safeDisplayName,
+                initials,
                 conversation.MessageList.LastOrDefault()?.GetChatMessagePreview() ?? string.Empty,
                 conversation.MessageList.LastOrDefault()?.SentAt ?? DateTime.MinValue,
-                unreadCountInput: conversation.UnreadCount[userId],
-                service.GetById(otherUserIdentifier).AvatarUrl);
+                unreadCountInput: unreadCount,
+                otherUser?.AvatarUrl ?? string.Empty);
 
             this.allConversations.Insert(0, newConversationPreview);
             this.SortConversationsByTimestamp();

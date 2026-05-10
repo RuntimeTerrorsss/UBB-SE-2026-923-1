@@ -4,14 +4,15 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.Services;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
-using BookingBoardGames.Data.Interfaces;
 using System.Threading.Tasks;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     public class ReceiptService : IReceiptService
     {
@@ -234,8 +235,8 @@ namespace BookingBoardGames.Data.Services
         private async Task<string> BuildRequestInfo(Payment payment, Rental request)
         {
             var requestedGame = await this.gameRepository.GetGameById(request.GameId);
-            var client = this.userRepository.GetById(payment.ClientId);
-            var owner = this.userRepository.GetById(payment.OwnerId);
+            var client = await this.userRepository.GetById(payment.ClientId);
+            var owner = await this.userRepository.GetById(payment.OwnerId);
 
             string requestInfo = $"Rental Information\n" +
                 $"- Rental ID: {payment.RequestId}\n" +
@@ -284,7 +285,7 @@ namespace BookingBoardGames.Data.Services
         /// <returns>pdf content text</returns>
         private async Task<string[]> GetReceiptContent(Payment payment)
         {
-            var request = this.rentalService.GetRentalById(payment.RequestId);
+            var request = await this.rentalService.GetRentalById(payment.RequestId);
 
             return new[]
             {

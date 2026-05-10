@@ -8,8 +8,8 @@ namespace BookingBoardGames.Src.Services
 {
     public interface IPaymentService
     {
-        public void GenerateReceipt(int paymentId);
+        Task GenerateReceiptAsync(int paymentId);
 
-        public Task<string> GetReceipt(int paymentId);
+        Task<string> GetReceiptAsync(int paymentId);
     }
 }

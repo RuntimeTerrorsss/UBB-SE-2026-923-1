@@ -5,16 +5,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BookingBoardGames.Data.DTO;
+using System.Threading.Tasks;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.Mapper;
-using BookingBoardGames.Data.Interfaces;
-using System.Threading.Tasks;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Mapper;
 
-
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     /// <summary>
     /// Service responsible for searching, filtering, and retrieving game feeds.
@@ -69,7 +66,7 @@ namespace BookingBoardGames.Data.Services
                 {
                     if (!cachedOwnersById.TryGetValue(filteredGame.OwnerId, out var cachedOwnerGame))
                     {
-                        cachedOwnerGame = this.usersRepository.GetGameById(filteredGame.OwnerId);
+                        cachedOwnerGame = await this.usersRepository.GetGameById(filteredGame.OwnerId);
 
                         if (cachedOwnerGame != null)
                         {
@@ -100,7 +97,7 @@ namespace BookingBoardGames.Data.Services
                 //// this is if we decide to only use this methode and remove the ApplyFilters method
                 //// only runs this code if SortOption is set, so never from feed
 
-                return this.ApplyFilters(filteredGamesArray, filter);
+                return await this.ApplyFilters(filteredGamesArray, filter);
             }
             catch (Exception thrownException)
             {
@@ -122,7 +119,7 @@ namespace BookingBoardGames.Data.Services
 
                 foreach (var availableTonightGame in availableTonightGameList)
                 {
-                    var gameOwner = this.usersRepository.GetGameById(availableTonightGame.OwnerId);
+                    var gameOwner = await this.usersRepository.GetGameById(availableTonightGame.OwnerId);
 
                     if (gameOwner != null)
                     {
@@ -152,7 +149,7 @@ namespace BookingBoardGames.Data.Services
                 var otherFeedGamesResult = new List<GameDTO>();
                 foreach (var otherFeedGame in otherFeedGames)
                 {
-                    var gameOwner = this.usersRepository.GetGameById(otherFeedGame.OwnerId);
+                    var gameOwner = await this.usersRepository.GetGameById(otherFeedGame.OwnerId);
 
                     if (gameOwner == null)
                     {
@@ -178,7 +175,7 @@ namespace BookingBoardGames.Data.Services
         /// <param name="activeFilter">The criteria used for filtering and sorting the games.</param>
         /// <returns>An array of <see cref="GameDTO"/> objects that match the filter criteria.</returns>
         /// <exception cref="InvalidOperationException">Thrown when an error occurs during the filtering process.</exception>
-        public GameDTO[] ApplyFilters(GameDTO[] initialGamesCollection, FilterCriteria activeFilter)
+        public async Task<GameDTO[]> ApplyFilters(GameDTO[] initialGamesCollection, FilterCriteria activeFilter)
         {
             try
             {
@@ -267,11 +264,18 @@ namespace BookingBoardGames.Data.Services
 
                 if (activeFilter.AvailabilityRange != null)
                 {
-                    filteredGames = filteredGames.Where(game =>
-                        this.rentalsRepository.CheckGameAvailability(
-                            activeFilter.AvailabilityRange.StartTime, activeFilter.AvailabilityRange.EndTime, game.GameId));
-                }
+                    var tasks = filteredGames.Select(async game => new
+                    {
+                        Game = game,
+                        IsAvailable = await this.rentalsRepository.CheckGameAvailability(activeFilter.AvailabilityRange.StartTime, activeFilter.AvailabilityRange.EndTime, game.GameId)
+                    });
 
+                    // Step 2: Wait for all tasks to complete
+                    var results = await Task.WhenAll(tasks);
+
+                    // Step 3: Filter based on the results we just fetched
+                    filteredGames = results.Where(x => x.IsAvailable).Select(x => x.Game);
+                }
                 return filteredGames.ToArray();
             }
             catch (Exception thrownException)
@@ -293,7 +297,7 @@ namespace BookingBoardGames.Data.Services
             var availableTonightGameList = await this.GetGamesFeedAvailableTonightByUser(userId);
             var otherGameList = await this.GetOtherGamesFeedByUser(userId);
 
-            var allDescoveryFeedGames = availableTonightGameList.Concat(otherGameList).ToList();
+            var allDescoveryFeedGames = availableTonightGameList.Concat(otherGameList).DistinctBy(game => game.GameId).ToList();
             var totalAvailableGamesCount = allDescoveryFeedGames.Count;
 
             var paginatedGames = allDescoveryFeedGames

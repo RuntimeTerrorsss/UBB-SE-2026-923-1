@@ -4,9 +4,9 @@
 
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     public interface ICardPaymentService
     {
@@ -14,9 +14,9 @@ namespace BookingBoardGames.Data.Services
 
         Task<bool> CheckBalanceSufficiency(int requestIdentifier, int clientIdentifier);
 
-        CardPaymentDTO GetCardPayment(int paymentIdentifier);
+        Task<CardPaymentDTO?> GetCardPaymentAsync(int paymentIdentifier);
 
-        decimal GetCurrentBalance(int clientIdentifier);
+        Task<decimal> GetCurrentBalance(int clientIdentifier);
 
         Task ProcessPayment(int rentalIdentifier, int clientIdentifier, int ownerIdentifier);
 

@@ -1,20 +1,16 @@
-﻿// <copyright file="ConfirmBookingViewModel.cs" company="PlaceholderCompany">
+// <copyright file="ConfirmBookingViewModel.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Windows.Storage.Streams;
 
-namespace BookingBoardGames.Data.ViewModels
+namespace BookingBoardGames.Src.ViewModels
 {
     /// <summary>
     /// Represents the view model for confirming a booking, providing booking details, availability checks, and commands
@@ -27,10 +23,9 @@ namespace BookingBoardGames.Data.ViewModels
     /// confirm booking details before finalizing a reservation.</remarks>
     internal class ConfirmBookingViewModel : INotifyPropertyChanged
     {
-        private const long StartOfStreamPosition = 0;
         private const int MinimumBookingDayCount = 1;
         private const decimal DefaultTotalPrice = 0;
-        private readonly InterfaceBookingService bookingService;
+        private InterfaceBookingService bookingService;
         private BookingDTO gameAndUserDetail;
         private TimeRange selectedTimeRange;
         private decimal totalPrice;
@@ -72,14 +67,17 @@ namespace BookingBoardGames.Data.ViewModels
             this.bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
             this.gameAndUserDetail = gameAndUserDetails ?? throw new ArgumentNullException(nameof(gameAndUserDetails));
             this.selectedTimeRange = selectedTimeRange ?? throw new ArgumentNullException(nameof(selectedTimeRange));
+        }
 
+        public async Task InitializeAsync(BookingDTO gameAndUserDetails)
+        {
             try
             {
                 this.bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
                 this.GameAndUserDetails = gameAndUserDetails ?? throw new ArgumentNullException(nameof(gameAndUserDetails));
                 this.SelectedTimeRange = selectedTimeRange ?? throw new ArgumentNullException(nameof(selectedTimeRange));
 
-                this.UnavailableTimeRanges = this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
+                this.UnavailableTimeRanges = await this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
                 this.TotalPrice = this.CalculatePrice();
                 this.LoadImages();
             }
@@ -209,7 +207,7 @@ namespace BookingBoardGames.Data.ViewModels
         /// method returns false.</remarks>
         /// <param name="timeRange">The time range for which to check game availability. Cannot be null.</param>
         /// <returns>true if the game is available during the specified time range; otherwise, false.</returns>
-        public bool CheckGameAvailability(TimeRange timeRange)
+        public async Task<bool> CheckGameAvailability(TimeRange timeRange)
         {
             try
             {
@@ -218,7 +216,7 @@ namespace BookingBoardGames.Data.ViewModels
                     return false;
                 }
 
-                return this.bookingService.CheckGameAvailability(this.GameAndUserDetails.GameId, timeRange);
+                return await this.bookingService.CheckGameAvailability(this.GameAndUserDetails.GameId, timeRange);
             }
             catch (Exception exception)
             {
@@ -237,7 +235,7 @@ namespace BookingBoardGames.Data.ViewModels
             try
             {
                 await this.bookingService.AddBooking(this.GameAndUserDetails.GameId, this.GameAndUserDetails.UserId, this.SelectedTimeRange);
-                this.UnavailableTimeRanges = this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
+                this.UnavailableTimeRanges = await this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
                 this.OnPropertyChanged(nameof(this.UnavailableTimeRanges));
                 this.OnConfirmBookingRequested?.Invoke();
             }
@@ -348,21 +346,17 @@ namespace BookingBoardGames.Data.ViewModels
             {
                 if (this.GameAndUserDetails.Image != null && this.GameAndUserDetails.Image.Length > 0)
                 {
-                    using var stream = new InMemoryRandomAccessStream();
-                    await stream.WriteAsync(this.GameAndUserDetails.Image.AsBuffer());
-                    stream.Seek(StartOfStreamPosition);
-                    var bitmap = new BitmapImage();
-                    await bitmap.SetSourceAsync(stream);
-                    this.GameImage = bitmap;
+                    this.GameImage = await Helpers.GameImage.ToBitmapImageAsync(this.GameAndUserDetails.Image);
                 }
                 else
                 {
                     this.GameImage = null;
                 }
 
-                if (!string.IsNullOrEmpty(this.GameAndUserDetails.AvatarUrl))
+                if (!string.IsNullOrWhiteSpace(this.GameAndUserDetails.AvatarUrl) &&
+                    Uri.TryCreate(this.GameAndUserDetails.AvatarUrl, UriKind.Absolute, out var avatarUri))
                 {
-                    this.OwnerImage = new BitmapImage(new Uri(this.GameAndUserDetails.AvatarUrl));
+                    this.OwnerImage = new BitmapImage(avatarUri);
                 }
                 else
                 {

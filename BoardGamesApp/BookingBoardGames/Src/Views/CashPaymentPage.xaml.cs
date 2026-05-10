@@ -2,14 +2,13 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Data.Navigation;
-using BookingBoardGames.Data.ViewModels;
-using BookingBoardGames.Data.Views;
+using BookingBoardGames.Src.Navigation;
+using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Data.Views
+namespace BookingBoardGames.Src.Views
 {
     public sealed partial class CashPaymentPage : Page
     {

@@ -3,9 +3,9 @@
 // </copyright>
 
 using System.Threading.Tasks;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     /// <summary>
     /// Defines the operations for managing and querying game bookings.
@@ -30,7 +30,7 @@ namespace BookingBoardGames.Data.Services
         /// <exception cref="InvalidOperationException">
         /// Thrown when retrieval of unavailable rentaltimeranges fails.
         /// </exception>
-        TimeRange[] GetUnavailableTimeRanges(int gameId);
+        Task<TimeRange[]> GetUnavailableTimeRanges(int gameId);
 
         /// <summary>
         /// Checks if a game is available for booking during a specified time range.
@@ -41,7 +41,7 @@ namespace BookingBoardGames.Data.Services
         /// <exception cref="InvalidOperationException">
         /// Thrown when the availability check fails.
         /// </exception>
-        bool CheckGameAvailability(int gameId, TimeRange range);
+        Task<bool> CheckGameAvailability(int gameId, TimeRange range);
 
         /// <summary>
         /// Calculates the total rental price for a specific game based on the provided base price and rental time

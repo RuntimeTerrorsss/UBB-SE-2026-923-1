@@ -6,9 +6,9 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.ViewModels;
+namespace BookingBoardGames.Src.ViewModels;
 
 public class ConversationPreviewModel : INotifyPropertyChanged
 {

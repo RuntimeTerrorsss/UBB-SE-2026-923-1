@@ -9,11 +9,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Src.DTO;
 using Microsoft.UI.Xaml.Controls;
 
-namespace BookingBoardGames.Data.ViewModels;
+namespace BookingBoardGames.Src.ViewModels;
 
 public class ChatViewModel : INotifyPropertyChanged
 {
@@ -116,16 +116,12 @@ public class ChatViewModel : INotifyPropertyChanged
 
     public void HandleIncomingMessage(MessageDataTransferObject message)
     {
-        double oneSecondTolerance = 1;
-
         if (message.ConversationId != this.ConversationId)
         {
             return;
         }
 
-        bool messageExists = this.Messages.Any(messageItem =>
-            messageItem.Content == message.Content &&
-            Math.Abs((messageItem.SentAt - message.SentAt).TotalSeconds) < oneSecondTolerance);
+        bool messageExists = this.Messages.Any(messageItem => messageItem.Id == message.Id);
 
         if (messageExists)
         {
@@ -162,9 +158,6 @@ public class ChatViewModel : INotifyPropertyChanged
             unassignedIdentifier,
             unassignedIdentifier);
 
-        var newViewModel = new MessageViewModel(messageDataTransferObject, this.CurrentUserId);
-
-        this.Messages.Add(newViewModel);
         this.InputText = string.Empty;
         this.MessageSent.Invoke(messageDataTransferObject);
     }

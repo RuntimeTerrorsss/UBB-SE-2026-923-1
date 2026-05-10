@@ -1,16 +1,17 @@
-﻿// <copyright file="ConversationService.cs" company="PlaceholderCompany">
+// <copyright file="ConversationService.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
-using BookingBoardGames.Data.DTO;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.Services
 {
@@ -23,9 +24,15 @@ namespace BookingBoardGames.Src.Services
 
         private int UserId { get; set; }
 
+        private CancellationTokenSource pollingCancellationTokenSource;
+        private List<Conversation> cachedConversations = new List<Conversation>();
+
         public event Action<MessageDataTransferObject, string> ActionMessageProcessed;
+
         public event Action<ConversationDTO, string> ActionConversationProcessed;
+
         public event Action<ReadReceiptDTO> ActionReadReceiptProcessed;
+
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
 
         public ConversationService(IConversationRepository conversationRepo, int userIdInput)
@@ -79,31 +86,107 @@ namespace BookingBoardGames.Src.Services
         public async Task<List<ConversationDTO>> FetchConversations()
         {
             List<ConversationDTO> conversationList = new List<ConversationDTO>();
+            var systemLookupCache = new Dictionary<int, bool>();
 
-            foreach (var conversation in await this.ConversationRepository.GetConversationsForUser(this.UserId))
+            var fetchedConversations = await this.ConversationRepository.GetConversationsForUser(this.UserId);
+            this.cachedConversations = fetchedConversations;
+
+            foreach (var conversation in fetchedConversations)
             {
-                conversationList.Add(this.ConversationToConversationDTO(conversation));
+                ConversationDTO conversationDto = this.ConversationToConversationDTO(conversation);
+                bool hasRealOtherParticipant = false;
+
+                foreach (var participant in conversationDto.Participants)
+                {
+                    if (participant.UserId == this.UserId)
+                    {
+                        continue;
+                    }
+
+                    if (!systemLookupCache.TryGetValue(participant.UserId, out bool isSystemUser))
+                    {
+                        var user = await this.userRepository.GetById(participant.UserId);
+                        isSystemUser = user is not null &&
+                                       string.Equals(user.Username, "System", StringComparison.OrdinalIgnoreCase);
+                        systemLookupCache[participant.UserId] = isSystemUser;
+                    }
+
+                    if (!isSystemUser)
+                    {
+                        hasRealOtherParticipant = true;
+                        break;
+                    }
+                }
+
+                if (hasRealOtherParticipant)
+                {
+                    conversationList.Add(conversationDto);
+                }
             }
 
             return conversationList;
         }
 
-        public string GetOtherUserNameByConversationDTO(ConversationDTO conversation)
+        public async Task<string> GetOtherUserNameByConversationDTO(ConversationDTO conversation)
         {
-            int otherUserId = conversation.Participants.First(participantItem => participantItem.UserId != this.UserId).UserId;
-            var user = this.userRepository.GetById(otherUserId).Result;
-            return user?.Username ?? "Unknown User";
+            var otherParticipantIds = conversation.Participants
+                .Select(participantItem => participantItem.UserId)
+                .Where(participantId => participantId != this.UserId)
+                .Distinct()
+                .ToList();
+
+            if (otherParticipantIds.Count == 0)
+            {
+                return "Unknown User";
+            }
+
+            foreach (var otherUserId in otherParticipantIds)
+            {
+                var user = await this.userRepository.GetById(otherUserId);
+                if (user is not null &&
+                    !string.Equals(user.Username, "System", StringComparison.OrdinalIgnoreCase))
+                {
+                    return user.Username;
+                }
+            }
+
+            var fallbackUser = await this.userRepository.GetById(otherParticipantIds.First());
+            if (fallbackUser is null ||
+                string.Equals(fallbackUser.Username, "System", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Unknown User";
+            }
+
+            return fallbackUser.Username;
         }
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
         {
-            var user = this.userRepository.GetById(message.SenderId == this.UserId ? message.ReceiverId : message.SenderId).Result;
-            return user?.Username ?? "Unknown User";
+            int otherUserId = message.SenderId == this.UserId ? message.ReceiverId : message.SenderId;
+            if (otherUserId <= 0)
+            {
+                return "Unknown User";
+            }
+
+            return $"User {otherUserId}";
         }
 
         public async Task SendMessage(MessageDataTransferObject message)
         {
             Message persisted = await this.ConversationRepository.HandleNewMessage(this.MessageDTOToMessage(message));
+
+            var cachedConv = this.cachedConversations.FirstOrDefault(c => c.ConversationId == persisted.ConversationId);
+            if (cachedConv != null)
+            {
+                if (cachedConv.Messages is System.Collections.Generic.IList<Message> collection)
+                {
+                    if (!collection.Any(m => m.MessageId == persisted.MessageId))
+                    {
+                        collection.Add(persisted);
+                    }
+                }
+            }
+
             await this.NotifySubscribersAboutMessage(persisted);
         }
 
@@ -164,6 +247,92 @@ namespace BookingBoardGames.Src.Services
             }
         }
 
+        public void StartPolling()
+        {
+            if (this.pollingCancellationTokenSource != null)
+            {
+                return;
+            }
+
+            this.pollingCancellationTokenSource = new CancellationTokenSource();
+            _ = Task.Run(() => this.PollConversationsLoop(this.pollingCancellationTokenSource.Token));
+        }
+
+        public void StopPolling()
+        {
+            this.pollingCancellationTokenSource?.Cancel();
+            this.pollingCancellationTokenSource?.Dispose();
+            this.pollingCancellationTokenSource = null;
+        }
+
+        private async Task PollConversationsLoop(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(0.1), token);
+                    var fetchedConversations = await this.ConversationRepository.GetConversationsForUser(this.UserId);
+
+                    foreach (var fetchedConv in fetchedConversations)
+                    {
+                        var cachedConv = this.cachedConversations.FirstOrDefault(c => c.ConversationId == fetchedConv.ConversationId);
+
+                        if (cachedConv == null)
+                        {
+                            this.NotifySubscribersAboutNewConversation(fetchedConv);
+                        }
+                        else
+                        {
+                            foreach (var fetchedMsg in fetchedConv.Messages)
+                            {
+                                var cachedMsg = cachedConv.Messages.FirstOrDefault(m => m.MessageId == fetchedMsg.MessageId);
+                                if (cachedMsg == null)
+                                {
+                                    await this.NotifySubscribersAboutMessage(fetchedMsg);
+                                }
+                                else
+                                {
+                                    bool updated = false;
+                                    if (fetchedMsg is RentalRequestMessage fetchedRental && cachedMsg is RentalRequestMessage cachedRental)
+                                    {
+                                        if (fetchedRental.IsRequestResolved != cachedRental.IsRequestResolved ||
+                                            fetchedRental.IsRequestAccepted != cachedRental.IsRequestAccepted)
+                                        {
+                                            updated = true;
+                                        }
+                                    }
+                                    else if (fetchedMsg is CashAgreementMessage fetchedCash && cachedMsg is CashAgreementMessage cachedCash)
+                                    {
+                                        if (fetchedCash.IsCashAgreementResolved != cachedCash.IsCashAgreementResolved ||
+                                            fetchedCash.IsCashAgreementAcceptedByBuyer != cachedCash.IsCashAgreementAcceptedByBuyer ||
+                                            fetchedCash.IsCashAgreementAcceptedBySeller != cachedCash.IsCashAgreementAcceptedBySeller)
+                                        {
+                                            updated = true;
+                                        }
+                                    }
+
+                                    if (updated)
+                                    {
+                                        await this.NotifySubscribersAboutMessageUpdate(fetchedMsg);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    this.cachedConversations = fetchedConversations;
+                }
+                catch (TaskCanceledException)
+                {
+                    break;
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+
         public void OnMessageReceived(Message message)
         {
             MessageDataTransferObject messageDTO = this.MessageToMessageDTO(message);
@@ -171,10 +340,10 @@ namespace BookingBoardGames.Src.Services
             this.ActionMessageProcessed?.Invoke(messageDTO, userName);
         }
 
-        public void OnConversationReceived(Conversation conversation)
+        public async Task OnConversationReceived(Conversation conversation)
         {
             ConversationDTO conversationDTO = this.ConversationToConversationDTO(conversation);
-            string userName = this.GetOtherUserNameByConversationDTO(conversationDTO);
+            string userName = await this.GetOtherUserNameByConversationDTO(conversationDTO);
             this.ActionConversationProcessed?.Invoke(conversationDTO, userName);
         }
 

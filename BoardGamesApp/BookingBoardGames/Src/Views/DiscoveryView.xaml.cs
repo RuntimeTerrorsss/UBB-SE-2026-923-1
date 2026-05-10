@@ -3,17 +3,17 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Data.DTO;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.ViewModels;
-using BookingBoardGames.Data.Views.ChatViews;
+using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.ViewModels;
+using BookingBoardGames.Src.Views.ChatViews;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Data.Views
+namespace BookingBoardGames.Src.Views
 {
     /// <summary>
     /// Provides the main discovery interface for browsing and filtering available games.
@@ -32,7 +32,8 @@ namespace BookingBoardGames.Data.Views
         /// Gets the view model associated with the discovery logic.
         /// </summary>
         public DiscoveryViewModel ViewModel { get; private set; } = null!;
-        public static int loggedUserId = 1;
+
+        public static int loggedUserId = MainWindow.loggedInUserAlice;
 
         /// <summary>
         /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
@@ -42,7 +43,10 @@ namespace BookingBoardGames.Data.Views
         {
             base.OnNavigatedTo(e);
 
+            // Static loggedUserId survives navigation; re-apply session and refresh the switch label
+            // (otherwise the button resets to the XAML default and lies about who's active).
             SessionContext.GetInstance().UserId = loggedUserId;
+            this.SyncSwitchUserButtonLabel();
 
             this.ViewModel = new DiscoveryViewModel(App.SearchAndFilterService, App.GlobalGeographicalService);
 
@@ -100,20 +104,26 @@ namespace BookingBoardGames.Data.Views
             this.Frame.Navigate(typeof(DashboardView), app.DashboardUser);
         }
 
+        private void SyncSwitchUserButtonLabel()
+        {
+            this.SwitchUserButton.Content = loggedUserId == MainWindow.loggedInUserAlice
+                ? "Switch to Bob"
+                : "Switch to Alice";
+        }
+
         private void SwitchUserButton_Click(object sender, RoutedEventArgs e)
         {
             if (loggedUserId == MainWindow.loggedInUserAlice)
             {
                 loggedUserId = MainWindow.loggedInUserBob;
-                this.SwitchUserButton.Content = "Switch to Alice (User 1)";
             }
             else
             {
                 loggedUserId = MainWindow.loggedInUserAlice;
-                this.SwitchUserButton.Content = "Switch to Bob (User 2)";
             }
-            
+
             SessionContext.GetInstance().UserId = loggedUserId;
+            this.SyncSwitchUserButtonLabel();
         }
     }
 }

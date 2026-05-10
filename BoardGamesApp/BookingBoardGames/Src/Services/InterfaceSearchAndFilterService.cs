@@ -5,10 +5,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Shared;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.Services
+namespace BookingBoardGames.Src.Services
 {
     /// <summary>
     /// Provides search and filtering capabilities for games.
@@ -46,7 +46,7 @@ namespace BookingBoardGames.Data.Services
         /// <param name="filter">The filtering and sorting criteria.</param>
         /// <returns>A filtered and ordered array of games.</returns>
         /// <exception cref="InvalidOperationException">Thrown when filtering fails.</exception>
-        GameDTO[] ApplyFilters(GameDTO[] games, FilterCriteria filter);
+        Task<GameDTO[]> ApplyFilters(GameDTO[] games, FilterCriteria filter);
 
         /// <summary>
         /// Retrieves a paginated discovery feed categorized into games available tonight and others.

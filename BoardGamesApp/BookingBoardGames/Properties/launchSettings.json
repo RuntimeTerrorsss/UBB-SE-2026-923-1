@@ -1,5 +1,8 @@
 {
   "profiles": {
+    "BookingBoardGames": {
+      "commandName": "Project"
+    },
     "BookingBoardGames (Package)": {
       "commandName": "MsixPackage"
     },

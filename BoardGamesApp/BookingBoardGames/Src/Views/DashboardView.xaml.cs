@@ -2,14 +2,15 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using BookingBoardGames.Data.Services;
-using BookingBoardGames.Data.Shared;
-using BookingBoardGames.Data.Views.ChatViews;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Views.ChatViews;
+using BookingBoardGames;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace BookingBoardGames.Data.Views
+namespace BookingBoardGames.Src.Views
 {
     public sealed partial class DashboardView : Page
     {
@@ -38,7 +39,10 @@ namespace BookingBoardGames.Data.Views
             if (App.ConversationRepository is { } conversationRepository && App.UserRepository is { } userRepository)
             {
                 var conversationService = new ConversationService(conversationRepository, currentUserId, userRepository);
-                conversationService.CreateConversation(currentUserId, 1);
+                int targetUserId = currentUserId == MainWindow.loggedInUserAlice
+                    ? MainWindow.loggedInUserBob
+                    : MainWindow.loggedInUserAlice;
+                conversationService.CreateConversation(currentUserId, targetUserId);
             }
 
             var window1 = new Window();

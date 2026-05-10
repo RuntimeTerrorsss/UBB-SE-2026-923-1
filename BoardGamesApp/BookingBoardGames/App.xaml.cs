@@ -1,36 +1,33 @@
-﻿// <copyright file="App.xaml.cs" company="PlaceholderCompany">
+// <copyright file="App.xaml.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
 using System;
 using System.Diagnostics;
 using BookingBoardGames.Data;
-using BookingBoardGames.Data.Mapper;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Services;
+using BookingBoardGames.Src.Mapper;
+using BookingBoardGames.Src.Repositories;
+using BookingBoardGames.Src.Services;
+using BookingBoardGames.Src.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
-
 namespace BookingBoardGames
 {
-    //TODO: rename repositoryPayment and PaymentRepository, finish conversation repo
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     public partial class App : Application
     {
         public static readonly string BaseApiUrl = "http://localhost:5000/api/";
+        public static readonly string RemoteApiUrl = "http://172.30.250.124:5000/api/";
+
         public static readonly System.Net.Http.HttpClient Client = new System.Net.Http.HttpClient { BaseAddress = new Uri(BaseApiUrl) };
         private Window? window;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="App"/> class.
-        /// Gets the initialization of the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
@@ -42,19 +39,19 @@ namespace BookingBoardGames
             AppDbContext = new AppDbContext(options);
 
             // Repositories
-            UserRepository = new UserRepository(AppDbContext);
+            UserRepository = new UserAPIProxy(Client);
             GameRepository = new GamesAPIProxy(Client);
             RentalRepository = new RentalAPIProxy(Client);
-            PaymentRepository = new PaymentRepository(AppDbContext);
-            HistoryRepository = new RepositoryPayment(AppDbContext);
-            ConversationRepository = new ConversationRepository(Client);
+            PaymentRepository = new PaymentAPIProxy(Client);
+            HistoryRepository = new RepositoryPaymentAPIProxy(Client);
+            ConversationRepository = new ConversationAPIProxy(Client);
 
             // Services
             ConversationNotifier = new ConversationNotifier();
             GlobalGeographicalService = new GeographicalService();
             RentalService = new RentalService(RentalRepository, GameRepository);
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
-            CardPaymentService = new CardPaymentService((PaymentRepository)PaymentRepository, UserRepository, (ReceiptService)ReceiptService, RentalService);
+            CardPaymentService = new CardPaymentService(PaymentRepository, UserRepository, ReceiptService, RentalService);
             MapService = new MapService();
             ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
             CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);

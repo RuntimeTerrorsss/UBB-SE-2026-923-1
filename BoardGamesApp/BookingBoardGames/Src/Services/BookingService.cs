@@ -3,12 +3,12 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Data.DTO;
-using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Data.Interfaces;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Src.DTO;
 
-namespace BookingBoardGames.Data.Services;
+namespace BookingBoardGames.Src.Services;
 /// <summary>
 /// Service responsible for handling booking operations, including retrieving game details,
 /// checking availability, and managing rental time rentaltimeranges.
@@ -47,19 +47,19 @@ public class BookingService : InterfaceBookingService
         try
         {
             var bookedGame = await this.gamesRepository.GetGameById(gameId);
+            Debug.WriteLine($"bookedGame: {bookedGame?.Name ?? "NULL"}");
+
             if (bookedGame == null)
-            {
-                throw new InvalidOperationException($"Game with id {gameId} was not isfound.");
-            }
+                throw new InvalidOperationException($"Game with id {gameId} was not found.");
 
-            var gameOwner = this.usersRepository.GetGameById(bookedGame.OwnerId);
+            var gameOwner = await this.usersRepository.GetGameById(bookedGame.OwnerId);
+            Debug.WriteLine($"gameOwner: {gameOwner?.DisplayName ?? "NULL"}");
+
             if (gameOwner == null)
-            {
-                throw new InvalidOperationException($"Owner for game id {gameId} was not isfound.");
-            }
+                throw new InvalidOperationException($"Owner for game id {gameId} was not found.");
 
-            return new BookingDTO
-            {
+            return new BookingDTO 
+            { 
                 GameId = bookedGame.Id,
                 Name = bookedGame.Name,
                 Image = bookedGame.Image,
@@ -72,12 +72,14 @@ public class BookingService : InterfaceBookingService
                 DisplayName = gameOwner.DisplayName,
                 IsSuspended = gameOwner.IsSuspended,
                 AvatarUrl = gameOwner.AvatarUrl,
-                CreatedAt = gameOwner.CreatedAt,
+                CreatedAt = gameOwner.CreatedAt
             };
         }
         catch (Exception exception)
         {
-            throw new InvalidOperationException($"Failed to retrieve details for game {gameId}.", exception);
+            Debug.WriteLine($"BOOKING ERROR: {exception.Message}");
+            Debug.WriteLine($"INNER: {exception.InnerException?.Message}");
+            throw;
         }
     }
 
@@ -86,13 +88,11 @@ public class BookingService : InterfaceBookingService
     /// </summary>
     /// <param name="gameId">The unique identifier of the game.</param>
     /// <returns>An array of <see cref="TimeRange"/> representing the unavailable periods.</returns>
-    public TimeRange[] GetUnavailableTimeRanges(int gameId)
+    public async Task<TimeRange[]> GetUnavailableTimeRanges(int gameId)
     {
         try
         {
-            return this.rentalsRepository
-                .GetUnavailableTimeRanges(gameId)
-                .ToArray();
+            return (await this.rentalsRepository.GetUnavailableTimeRanges(gameId)).ToArray();
         }
         catch (Exception exception)
         {

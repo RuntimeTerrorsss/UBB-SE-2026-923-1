@@ -5,10 +5,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Data.Constants;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingBoardGames.Data.Interfaces
+namespace BookingBoardGames.Api.Repositories
 {
     public class RepositoryPayment : IRepositoryPayment
     {
@@ -19,15 +20,15 @@ namespace BookingBoardGames.Data.Interfaces
             this.context = appContext;
         }
 
-        public IReadOnlyList<HistoryPayment> GetAllPayments()
+        public async Task<IReadOnlyList<HistoryPayment>> GetAllPayments()
         {
-            return this.BuildPaymentQuery().ToList();
+            return await this.BuildPaymentQuery().ToListAsync();
         }
 
-        public HistoryPayment? GetPaymentById(int searchedPaymentId)
+        public async Task<HistoryPayment?> GetPaymentById(int searchedPaymentId)
         {
-            return this.BuildPaymentQuery()
-                .FirstOrDefault(payment => payment.TransactionIdentifier == searchedPaymentId);
+            return await this.BuildPaymentQuery()
+                .FirstOrDefaultAsync(payment => payment.TransactionIdentifier == searchedPaymentId);
         }
 
         private IQueryable<HistoryPayment> BuildPaymentQuery()

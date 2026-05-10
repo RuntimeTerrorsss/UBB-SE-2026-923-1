@@ -3,8 +3,7 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Data.Views;
-using BookingBoardGames.Data.Views.ChatViews;
+using BookingBoardGames.Src.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -17,8 +16,8 @@ namespace BookingBoardGames
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        public static int loggedInUserAlice = 1;
-        public static int loggedInUserBob = 2;
+        public static int loggedInUserAlice = 2;
+        public static int loggedInUserBob = 3;
 
         public MainWindow()
         {

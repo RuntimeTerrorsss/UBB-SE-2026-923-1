@@ -1,4 +1,4 @@
-﻿// <copyright file="ChatPageViewModel.cs" company="PlaceholderCompany">
+// <copyright file="ChatPageViewModel.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -7,11 +7,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
+using BookingBoardGames.Data;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;
 using BookingBoardGames.Src.Services;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames;
 
-namespace BookingBoardGames.Data.ViewModels;
+namespace BookingBoardGames.Src.ViewModels;
 
 public class ChatPageViewModel
 {
@@ -53,16 +57,36 @@ public class ChatPageViewModel
     public async Task InitializeAsync()
     {
         var fetchedConversations = await this.conversationService.FetchConversations();
+
+        // Keep demo users connected: ensure Alice<->Bob conversation exists.
+        if (this.currentUserId == MainWindow.loggedInUserAlice || this.currentUserId == MainWindow.loggedInUserBob)
+        {
+            int otherDemoUserId = this.currentUserId == MainWindow.loggedInUserAlice
+                ? MainWindow.loggedInUserBob
+                : MainWindow.loggedInUserAlice;
+
+            bool hasConversationWithOtherDemoUser = fetchedConversations.Any(conversation =>
+                conversation.Participants.Any(participant => participant.UserId == otherDemoUserId));
+
+            if (!hasConversationWithOtherDemoUser)
+            {
+                await this.conversationService.CreateConversation(this.currentUserId, otherDemoUserId);
+                fetchedConversations = await this.conversationService.FetchConversations();
+            }
+        }
+
         this.conversations.AddRange(fetchedConversations);
 
         foreach (var conversationItem in this.conversations)
         {
-            this.LeftPanelModelView.HandleIncomingConversation(
+            await this.LeftPanelModelView.HandleIncomingConversation(
                 conversationItem,
-                this.conversationService.GetOtherUserNameByConversationDTO(conversationItem),
+                await this.conversationService.GetOtherUserNameByConversationDTO(conversationItem),
                 this.currentUserId,
                 this.userRepository);
         }
+
+        this.conversationService.StartPolling();
     }
 
     public LeftPanelViewModel LeftPanelModelView { get; }
@@ -100,34 +124,125 @@ public class ChatPageViewModel
 
     private async void OnMessageSent(MessageDataTransferObject message)
     {
-        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
-        int receiverUserId = matchedConversation.Participants.First(participantItem => participantItem.UserId != message.SenderId).UserId;
-        message = message with { ReceiverId = receiverUserId };
-        await this.conversationService.SendMessage(message);
+        try
+        {
+            var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
+            if (matchedConversation is null)
+            {
+                return;
+            }
+
+            int receiverUserId = matchedConversation.Participants.First(participantItem => participantItem.UserId != message.SenderId).UserId;
+            message = message with { ReceiverId = receiverUserId };
+            await this.conversationService.SendMessage(message);
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine($"OnMessageSent failed: {exception.Message}");
+        }
     }
 
     private async void SendReadReceipt(ConversationDTO conversation)
     {
-        await this.conversationService.SendReadReceipt(conversation);
+        try
+        {
+            await this.conversationService.SendReadReceipt(conversation);
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine($"SendReadReceipt failed: {exception.Message}");
+        }
     }
 
     private async void OnSendMessageUpdate(MessageDataTransferObject message)
     {
-        await this.conversationService.UpdateMessage(message);
+        try
+        {
+            await this.conversationService.UpdateMessage(message);
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine($"OnSendMessageUpdate failed: {exception.Message}");
+        }
     }
 
     private void OnMessageReceived(MessageDataTransferObject message, string senderName)
     {
-        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
-
-        matchedConversation?.AddMessageToListDTO(message);
-
-        this.LeftPanelModelView.HandleIncomingMessage(message, senderName);
-        this.ChatModelView.HandleIncomingMessage(message);
-        if (this.ChatModelView.ConversationId == message.ConversationId)
+        ((App)Microsoft.UI.Xaml.Application.Current).Window?.DispatcherQueue.TryEnqueue(async () =>
         {
-            this.SendReadReceipt(matchedConversation);
-        }
+            try
+            {
+                var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
+
+                matchedConversation?.AddMessageToListDTO(message);
+
+                int resolvedOtherUserId = message.SenderId == this.currentUserId ? message.ReceiverId : message.SenderId;
+                if (resolvedOtherUserId <= 0 || resolvedOtherUserId == this.currentUserId)
+                {
+                    int participantDerivedUserId = matchedConversation?.Participants
+                        .Where(participantItem => participantItem.UserId != this.currentUserId && participantItem.UserId != 1)
+                        .Select(participantItem => participantItem.UserId)
+                        .FirstOrDefault() ?? 0;
+
+                    if (participantDerivedUserId <= 0)
+                    {
+                        var refreshedConversation = (await this.conversationService.FetchConversations())
+                            .FirstOrDefault(conversationItem => conversationItem.Id == message.ConversationId);
+                        if (refreshedConversation is not null && matchedConversation is null)
+                        {
+                            this.conversations.Add(refreshedConversation);
+                            matchedConversation = refreshedConversation;
+                        }
+
+                        participantDerivedUserId = refreshedConversation?.Participants
+                            .Where(participantItem => participantItem.UserId != this.currentUserId && participantItem.UserId != 1)
+                            .Select(participantItem => participantItem.UserId)
+                            .FirstOrDefault() ?? participantDerivedUserId;
+                    }
+
+                    if (participantDerivedUserId > 0)
+                    {
+                        resolvedOtherUserId = participantDerivedUserId;
+                    }
+                }
+
+                if (senderName.StartsWith("User ", StringComparison.Ordinal) || resolvedOtherUserId > 0)
+                {
+                    var otherUser = await this.userRepository.GetById(resolvedOtherUserId);
+                    senderName = otherUser?.Username ?? senderName;
+                }
+
+                if (matchedConversation is not null &&
+                    string.Equals(senderName, "System", StringComparison.OrdinalIgnoreCase))
+                {
+                    int otherUserId = matchedConversation.Participants
+                        .Where(participantItem => participantItem.UserId != this.currentUserId)
+                        .Select(participantItem => participantItem.UserId)
+                        .FirstOrDefault();
+
+                    if (otherUserId > 0)
+                    {
+                        var otherUser = await this.userRepository.GetById(otherUserId);
+                        if (otherUser is not null &&
+                            !string.Equals(otherUser.Username, "System", StringComparison.OrdinalIgnoreCase))
+                        {
+                            senderName = otherUser.Username;
+                        }
+                    }
+                }
+
+                await this.LeftPanelModelView.HandleIncomingMessage(message, senderName);
+                this.ChatModelView.HandleIncomingMessage(message);
+                if (this.ChatModelView.ConversationId == message.ConversationId && matchedConversation is not null)
+                {
+                    this.SendReadReceipt(matchedConversation);
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine($"OnMessageReceived failed: {exception.Message}");
+            }
+        });
     }
 
     private void UpdateBookingRequest(int messageId, int conversationId, bool accepted, bool resolved)
@@ -167,42 +282,75 @@ public class ChatPageViewModel
 
     private void OnConversationReceived(ConversationDTO conversation, string otherUsername)
     {
-        this.conversations.Add(conversation);
-        this.LeftPanelModelView.HandleIncomingConversation(conversation, otherUsername, this.currentUserId);
+        ((App)Microsoft.UI.Xaml.Application.Current).Window?.DispatcherQueue.TryEnqueue(async () =>
+        {
+            try
+            {
+                this.conversations.Add(conversation);
+                await this.LeftPanelModelView.HandleIncomingConversation(conversation, otherUsername, this.currentUserId);
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine($"OnConversationReceived failed: {exception.Message}");
+            }
+        });
     }
 
     private void OnReadReceiptReceived(ReadReceiptDTO readReceipt)
     {
-        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == readReceipt.ConversationId);
-        matchedConversation.LastRead[readReceipt.ReaderId] = readReceipt.ReceiptTimeStamp;
-        matchedConversation.UpdateUnreadCounts();
-        if (this.ChatModelView.ConversationId == readReceipt.ConversationId && readReceipt.ReaderId != this.currentUserId)
+        ((App)Microsoft.UI.Xaml.Application.Current).Window?.DispatcherQueue.TryEnqueue(() =>
         {
-            this.ChatModelView.LoadConversation(this.LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, matchedConversation.UnreadCount[readReceipt.ReaderId]);
-        }
+            try
+            {
+                var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == readReceipt.ConversationId);
+                if (matchedConversation != null)
+                {
+                    matchedConversation.LastRead[readReceipt.ReaderId] = readReceipt.ReceiptTimeStamp;
+                    matchedConversation.UpdateUnreadCounts();
+                    if (this.ChatModelView.ConversationId == readReceipt.ConversationId && readReceipt.ReaderId != this.currentUserId)
+                    {
+                        this.ChatModelView.LoadConversation(this.LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, matchedConversation.UnreadCount[readReceipt.ReaderId]);
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine($"OnReadReceiptReceived failed: {exception.Message}");
+            }
+        });
     }
 
     private void OnMessageUpdateReceived(MessageDataTransferObject updatedMessage, string senderName)
     {
-        int noUnreadMessagesCount = 0;
-        var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == updatedMessage.ConversationId);
-        if (matchedConversation == null)
+        ((App)Microsoft.UI.Xaml.Application.Current).Window?.DispatcherQueue.TryEnqueue(() =>
         {
-            return;
-        }
-
-        for (int i = 0; i < matchedConversation.MessageList.Count; i++)
-        {
-            if (matchedConversation.MessageList[i].Id == updatedMessage.Id)
+            try
             {
-                matchedConversation.MessageList[i] = updatedMessage;
-                if (this.ChatModelView.ConversationId == updatedMessage.ConversationId)
+                int noUnreadMessagesCount = 0;
+                var matchedConversation = this.conversations.FirstOrDefault(conversationItem => conversationItem.Id == updatedMessage.ConversationId);
+                if (matchedConversation == null)
                 {
-                    this.ChatModelView.LoadConversation(this.LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, noUnreadMessagesCount);
+                    return;
                 }
 
-                break;
+                for (int i = 0; i < matchedConversation.MessageList.Count; i++)
+                {
+                    if (matchedConversation.MessageList[i].Id == updatedMessage.Id)
+                    {
+                        matchedConversation.MessageList[i] = updatedMessage;
+                        if (this.ChatModelView.ConversationId == updatedMessage.ConversationId)
+                        {
+                            this.ChatModelView.LoadConversation(this.LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, noUnreadMessagesCount);
+                        }
+
+                        break;
+                    }
+                }
             }
-        }
+            catch (Exception exception)
+            {
+                Debug.WriteLine($"OnMessageUpdateReceived failed: {exception.Message}");
+            }
+        });
     }
 }
