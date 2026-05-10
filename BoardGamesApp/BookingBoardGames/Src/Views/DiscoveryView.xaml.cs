@@ -101,7 +101,7 @@ namespace BookingBoardGames.Src.Views
         private void DashboardButton_Click(object sender, RoutedEventArgs e)
         {
             var app = (App)Application.Current;
-            this.Frame.Navigate(typeof(DashboardView), app.DashboardUser);
+            this.Frame.Navigate(typeof(DashboardView), SessionContext.GetInstance().UserId);
         }
 
         private void SyncSwitchUserButtonLabel()

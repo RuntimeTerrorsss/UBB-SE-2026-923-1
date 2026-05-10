@@ -36,15 +36,6 @@ namespace BookingBoardGames.Src.Views
         private void ChatButton_Click(object sender, RoutedEventArgs e)
         {
             int currentUserId = SessionContext.GetInstance().UserId;
-            if (App.ConversationRepository is { } conversationRepository && App.UserRepository is { } userRepository)
-            {
-                var conversationService = new ConversationService(conversationRepository, currentUserId, userRepository);
-                int targetUserId = currentUserId == MainWindow.loggedInUserAlice
-                    ? MainWindow.loggedInUserBob
-                    : MainWindow.loggedInUserAlice;
-                conversationService.CreateConversation(currentUserId, targetUserId);
-            }
-
             var window1 = new Window();
             var frame1 = new Frame();
             window1.Content = frame1;
