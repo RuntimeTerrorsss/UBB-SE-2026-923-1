@@ -340,6 +340,20 @@ namespace BookingBoardGames.Src.ViewModels
             this.OnErrorOccurred?.Invoke(message);
         }
 
+        public async Task RefreshUnavailableTimeRanges()
+        {
+            try
+            {
+                this.UnavailableTimeRanges = await this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId)
+                    ?? Array.Empty<TimeRange>();
+                this.OnPropertyChanged(nameof(this.UnavailableTimeRanges));
+            }
+            catch (Exception exception)
+            {
+                this.RaiseError($"Could not refresh availability. {exception.Message}");
+            }
+        }
+
         private async void LoadImages()
         {
             try

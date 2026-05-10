@@ -1,4 +1,6 @@
+using BookingBoardGames.Api.Repositories;
 using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Text.Json.Serialization;
@@ -10,6 +12,11 @@ builder.WebHost.UseUrls("http://0.0.0.0:5000");
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<InterfaceGamesRepository, GamesRepository>();
+builder.Services.AddScoped<IRentalRepository, RentalRepository>();
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

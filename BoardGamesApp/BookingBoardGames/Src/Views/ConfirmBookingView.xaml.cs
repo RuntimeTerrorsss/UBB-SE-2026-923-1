@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Services;
@@ -35,7 +36,7 @@ public sealed partial class ConfirmBookingView : Page
     /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
     /// </summary>
     /// <param name="eventArgs">Event data that can be examined by overriding code.</param>
-    protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
+    protected override async void OnNavigatedTo(NavigationEventArgs eventArgs)
     {
         base.OnNavigatedTo(eventArgs);
 
@@ -45,7 +46,7 @@ public sealed partial class ConfirmBookingView : Page
         }
 
         var viewModel = new ConfirmBookingViewModel(App.BookingService, bookingDTO, range);
-        viewModel.InitializeAsync(bookingDTO);
+        await viewModel.InitializeAsync(bookingDTO);
 
         viewModel.OnErrorOccurred += async (message) =>
         {
@@ -103,27 +104,18 @@ public sealed partial class ConfirmBookingView : Page
             SelectedPressedBorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Goldenrod),
         };
 
-        calendar.CalendarViewDayItemChanging += (calendarSender, calendarArgumets) =>
+        calendar.CalendarViewDayItemChanging += (calendarSender, calendarArguments) =>
         {
-            var date = calendarArgumets.Item.Date.DateTime;
+            var date = calendarArguments.Item.Date.DateTime;
 
-            bool isUnavailable = viewModel.IsTimeRangeUnavailable(date);
-
-            if (isUnavailable)
+            if (viewModel.IsTimeRangeUnavailable(date))
             {
-                calendarArgumets.Item.IsBlackout = true;
-                calendarArgumets.Item.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DarkRed);
+                calendarArguments.Item.IsBlackout = true;
+                calendarArguments.Item.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DarkRed);
                 return;
             }
 
-            if (this.modifySelectedStart.HasValue && this.modifySelectedEnd.HasValue &&
-                date.Date >= this.modifySelectedStart.Value.Date && date.Date <= this.modifySelectedEnd.Value.Date)
-            {
-                calendarArgumets.Item.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Goldenrod);
-                return;
-            }
-
-            calendarArgumets.Item.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DarkGreen);
+            calendarArguments.Item.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DarkGreen);
         };
 
         calendar.SelectedDatesChanged += (calendarSender, calendarArguments) =>
@@ -132,16 +124,13 @@ public sealed partial class ConfirmBookingView : Page
             if (selectedDates.Count > MinimumSelectedDates + 1)
             {
                 var toKeep = new List<DateTimeOffset>
-                    {
-                        selectedDates[selectedDates.Count - 2],
-                        selectedDates[selectedDates.Count - 1],
-                    };
+            {
+                selectedDates[selectedDates.Count - 2],
+                selectedDates[selectedDates.Count - 1],
+            };
                 calendarSender.SelectedDates.Clear();
                 foreach (var date in toKeep)
-                {
                     calendarSender.SelectedDates.Add(date);
-                }
-
                 return;
             }
 
@@ -152,26 +141,24 @@ public sealed partial class ConfirmBookingView : Page
                 return;
             }
 
-            var sorted = selectedDates
-                .Select(date => date.DateTime)
-                .OrderBy(date => date)
-                .ToList();
-
+            var sorted = selectedDates.Select(d => d.DateTime).OrderBy(d => d).ToList();
             this.modifySelectedStart = sorted[0];
             this.modifySelectedEnd = sorted[sorted.Count - 1];
+        };
 
-            // force redraw
-            var temporaryOffset = 1;
-            var minDate = calendarSender.MinDate;
-            calendarSender.MinDate = DateTimeOffset.Now.Date.AddDays(temporaryOffset);
-            calendarSender.MinDate = minDate;
+        calendar.Loaded += async (s, e) =>
+        {
+            await Task.Delay(200);
+            calendar.DispatcherQueue.TryEnqueue(() =>
+            {
+                calendar.MinDate = DateTimeOffset.Now.Date.AddDays(1);
+                calendar.MinDate = DateTimeOffset.Now.Date;
+            });
         };
 
         calendar.SelectedDates.Add(viewModel.SelectedTimeRange.StartTime);
         if (viewModel.SelectedTimeRange.EndTime != viewModel.SelectedTimeRange.StartTime)
-        {
             calendar.SelectedDates.Add(viewModel.SelectedTimeRange.EndTime);
-        }
 
         var dialog = new ContentDialog
         {
@@ -187,18 +174,10 @@ public sealed partial class ConfirmBookingView : Page
         if (result == ContentDialogResult.Primary)
         {
             var selectedDates = calendar.SelectedDates;
-            if (selectedDates.Count < MinimumSelectedDates)
-            {
-                return;
-            }
+            if (selectedDates.Count < MinimumSelectedDates) return;
 
-            var sorted = selectedDates
-                .Select(date => date.DateTime)
-                .OrderBy(date => date)
-                .ToList();
-
-            var newRange = new TimeRange(sorted[0], sorted[sorted.Count - 1]);
-            viewModel.UpdateSelectedRange(newRange);
+            var sorted = selectedDates.Select(d => d.DateTime).OrderBy(d => d).ToList();
+            viewModel.UpdateSelectedRange(new TimeRange(sorted[0], sorted[sorted.Count - 1]));
         }
     }
 
