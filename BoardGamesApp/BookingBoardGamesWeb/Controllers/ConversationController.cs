@@ -11,17 +11,20 @@ namespace BookingBoardGames.Api.Controllers
     [Route("api/[controller]")]
     public class ConversationController : ControllerBase
     {
-        private readonly IConversationRepository _repo;
+        private readonly AppDbContext _context;
+        private readonly IConversationRepository conversationRepository;
 
-        public ConversationController(IConversationRepository repo)
+        public ConversationController(AppDbContext context, IConversationRepository conversationRepository)
         {
-            _repo = repo;
+            _context = context;
+            this.conversationRepository = conversationRepository;
         }
 
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<List<Conversation>>> GetConversationsForUser(int userId)
         {
-            return Ok(await _repo.GetConversationsForUser(userId));
+            var conversations = await this.conversationRepository.GetConversationsForUser(userId);
+            return Ok(conversations);
         }
 
         [HttpGet("{id}")]
@@ -29,7 +32,8 @@ namespace BookingBoardGames.Api.Controllers
         {
             try
             {
-                return Ok(await _repo.GetConversationById(id));
+                var conversation = await this.conversationRepository.GetConversationById(id);
+                return Ok(conversation);
             }
             catch (InvalidOperationException)
             {
@@ -40,7 +44,8 @@ namespace BookingBoardGames.Api.Controllers
         [HttpGet("{id}/participants")]
         public async Task<ActionResult<IReadOnlyList<int>>> GetParticipantUserIds(int id)
         {
-            return Ok(await _repo.GetParticipantUserIds(id));
+            var userIds = await this.conversationRepository.GetParticipantUserIds(id);
+            return Ok(userIds);
         }
 
         public record CreateConversationRequest(int SenderId, int ReceiverId);
@@ -51,8 +56,20 @@ namespace BookingBoardGames.Api.Controllers
             if (request.SenderId <= 0 || request.ReceiverId <= 0 || request.SenderId == request.ReceiverId)
                 return BadRequest("Invalid conversation participants.");
 
-            int conversationId = await _repo.CreateConversation(request.SenderId, request.ReceiverId);
-            var created = await _repo.GetConversationById(conversationId);
+            var existingConversation = await _context.Conversations
+                .Include(c => c.Participants)
+                .Include(c => c.Messages)
+                .FirstOrDefaultAsync(c =>
+                    c.Participants.Any(p => p.UserId == request.SenderId) &&
+                    c.Participants.Any(p => p.UserId == request.ReceiverId));
+
+            if (existingConversation is not null)
+            {
+                return Ok(existingConversation);
+            }
+
+            int conversationId = await this.conversationRepository.CreateConversation(request.SenderId, request.ReceiverId);
+            var created = await this.conversationRepository.GetConversationById(conversationId);
             return CreatedAtAction(nameof(GetConversationById), new { id = conversationId }, created);
         }
 
@@ -63,18 +80,40 @@ namespace BookingBoardGames.Api.Controllers
             // Reset ID so EF always inserts a new row (prevents accidental update / triple-insert)
             message.MessageId = 0;
 
-            var persisted = await _repo.HandleNewMessage(message);
+            if (!conversation.Participants.Any(p => p.UserId == messageDto.SenderId))
+            {
+                return BadRequest("Sender is not part of this conversation.");
+            }
+
+            int receiverId = messageDto.ReceiverId;
+            if (!conversation.Participants.Any(p => p.UserId == receiverId))
+            {
+                receiverId = conversation.Participants
+                    .Where(p => p.UserId != messageDto.SenderId)
+                    .Select(p => p.UserId)
+                    .FirstOrDefault();
+            }
+
+            if (receiverId <= 0)
+            {
+                return BadRequest("Receiver is invalid for this conversation.");
+            }
+
+            var normalizedMessageDto = messageDto with { ReceiverId = receiverId };
+            var message = MessageDtoToEntity(normalizedMessageDto);
+            var persisted = await this.conversationRepository.HandleNewMessage(message);
             return Ok(EntityToMessageDto(persisted));
         }
 
         [HttpPut("messages")]
         public async Task<ActionResult<MessageDto>> UpdateMessage([FromBody] MessageDto messageDto)
         {
-            var message = MessageDtoToEntity(messageDto);
-            message.MessageId = messageDto.Id;
+            var updated = await this.conversationRepository.HandleMessageUpdate(MessageDtoToEntity(messageDto));
+            if (updated is null)
+            {
+                return NotFound();
+            }
 
-            var updated = await _repo.HandleMessageUpdate(message);
-            if (updated is null) return NotFound();
             return Ok(EntityToMessageDto(updated));
         }
 
