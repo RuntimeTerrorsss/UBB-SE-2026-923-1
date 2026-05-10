@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Interfaces;
@@ -11,12 +12,26 @@ namespace BookingBoardGames.Api.Controllers
     [Route("api/[controller]")]
     public class RentalsController : ControllerBase
     {
+        private const int MinimumValidDayCount = 1;
+
         private readonly IRentalRepository rentalRepository;
 
-        public RentalsController(IRentalRepository rentalRepository)
+        private readonly IConversationRepository conversationRepository;
+
+        private readonly InterfaceGamesRepository gamesRepository;
+
+        public RentalsController(
+            IRentalRepository rentalRepository,
+            IConversationRepository conversationRepository,
+            InterfaceGamesRepository gamesRepository)
         {
             this.rentalRepository = rentalRepository;
+            this.conversationRepository = conversationRepository;
+            this.gamesRepository = gamesRepository;
         }
+
+        /// <summary>Creates the rental record and adds a rental-request message to the renter ↔ owner conversation.</summary>
+        public record BookGameWithRentalRequestBody(int ClientId, int GameId, DateTime StartDate, DateTime EndDate);
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Rental>> GetRental(int id)
@@ -39,6 +54,86 @@ namespace BookingBoardGames.Api.Controllers
             var range = await this.rentalRepository.GetRentalTimeRange(id);
             if (range == null) return NotFound();
             return Ok(range);
+        }
+
+        [HttpPost("book")]
+        public async Task<ActionResult<int>> BookGameWithRentalRequest([FromBody] BookGameWithRentalRequestBody request)
+        {
+            if (request.ClientId <= 0)
+            {
+                return this.BadRequest("A valid renter account is required.");
+            }
+
+            if (request.EndDate < request.StartDate)
+            {
+                return this.BadRequest("End date must be on or after the start date.");
+            }
+
+            var game = await this.gamesRepository.GetGameById(request.GameId);
+            if (game == null)
+            {
+                return this.NotFound($"Game with id {request.GameId} was not found.");
+            }
+
+            if (request.ClientId == game.OwnerId)
+            {
+                return this.BadRequest("You cannot rent your own game listing.");
+            }
+
+            bool available = await this.rentalRepository.CheckGameAvailability(
+                request.StartDate,
+                request.EndDate,
+                request.GameId);
+
+            if (!available)
+            {
+                return this.Conflict("This game is not available for the selected dates.");
+            }
+
+            int bookingDays = (request.EndDate - request.StartDate).Days + MinimumValidDayCount;
+            if (bookingDays < MinimumValidDayCount)
+            {
+                bookingDays = MinimumValidDayCount;
+            }
+
+            decimal totalPrice = bookingDays * game.PricePerDay;
+            var rental = new Rental(
+                request.StartDate,
+                request.EndDate,
+                request.GameId,
+                request.ClientId,
+                game.OwnerId,
+                totalPrice);
+
+            await this.rentalRepository.AddRental(rental);
+
+            int conversationId = await this.conversationRepository.FindOrCreateConversationBetweenUsers(
+                request.ClientId,
+                game.OwnerId);
+
+            string formattedTotal = totalPrice.ToString("0.##", CultureInfo.InvariantCulture);
+            string requestSummary =
+                $"{game.Name}: {request.StartDate:dd MMM yyyy} – {request.EndDate:dd MMM yyyy}" +
+                $" ({bookingDays} day(s), total {formattedTotal}).";
+
+            var rentalRequestMessage = new RentalRequestMessage
+            {
+                ConversationId = conversationId,
+                MessageSenderId = request.ClientId,
+                MessageReceiverId = game.OwnerId,
+                MessageSentTime = DateTime.UtcNow,
+                RentalRequestId = rental.RentalId,
+                RequestContent = requestSummary,
+                MessageContentAsString = "Rental Request",
+                IsRequestResolved = false,
+                IsRequestAccepted = false,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!,
+            };
+
+            await this.conversationRepository.HandleNewMessage(rentalRequestMessage);
+            return this.Ok(rental.RentalId);
         }
 
         [HttpPost]
