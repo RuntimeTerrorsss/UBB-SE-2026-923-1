@@ -44,6 +44,13 @@ namespace BookingBoardGames.Src.Views.ChatViews
 
         public async Task InitializeAsync(int currentUserId)
         {
+            if (this.chatPageViewModel != null)
+            {
+                this.chatPageViewModel.ConversationService.StopPolling();
+                App.ConversationNotifier?.Unregister(this.currentUserId);
+                this.RightPanel.ProceedToPaymentRequested -= this.ProceedToPaymentClick;
+            }
+
             this.chatPageViewModel = new ChatPageViewModel(currentUserId);
             this.LeftPanel.ViewModel = this.chatPageViewModel.LeftPanelModelView;
             this.RightPanel.ChatViewModel = this.chatPageViewModel.ChatModelView;

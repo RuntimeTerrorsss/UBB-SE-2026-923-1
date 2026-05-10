@@ -53,6 +53,12 @@ namespace BookingBoardGames.Src.Services
             this.userRepository = userRepo;
             this.notifier = conversationNotifier;
 
+            if (App.ActiveConversationService != null)
+            {
+                App.ActiveConversationService.StopPolling();
+            }
+
+            App.ActiveConversationService = this;
             this.notifier.Register(this.UserId, this);
         }
 

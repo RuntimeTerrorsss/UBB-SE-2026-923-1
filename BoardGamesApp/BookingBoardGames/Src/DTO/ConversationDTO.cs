@@ -36,6 +36,11 @@ namespace BookingBoardGames.Src.DTO
 
         public void AddMessageToListDTO(MessageDataTransferObject newMessage)
         {
+            if (this.MessageList.Any(m => m.Id == newMessage.Id))
+            {
+                return;
+            }
+
             this.MessageList.Add(newMessage);
             this.UpdateUnreadCounts();
         }

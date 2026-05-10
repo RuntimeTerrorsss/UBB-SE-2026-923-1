@@ -95,6 +95,8 @@ namespace BookingBoardGames
 
         public static InterfaceSearchAndFilterService? SearchAndFilterService { get; private set; }
 
+        public static ConversationService? ActiveConversationService { get; set; }
+
         public int DashboardUser { get; set; } = 3;
 
         public int NoChatsUser { get; set; } = 8;
