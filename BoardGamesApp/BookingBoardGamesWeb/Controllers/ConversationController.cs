@@ -11,12 +11,10 @@ namespace BookingBoardGames.Api.Controllers
     [Route("api/[controller]")]
     public class ConversationController : ControllerBase
     {
-        private readonly AppDbContext _context;
         private readonly IConversationRepository conversationRepository;
 
-        public ConversationController(AppDbContext context, IConversationRepository conversationRepository)
+        public ConversationController(IConversationRepository conversationRepository)
         {
-            _context = context;
             this.conversationRepository = conversationRepository;
         }
 
@@ -56,18 +54,6 @@ namespace BookingBoardGames.Api.Controllers
             if (request.SenderId <= 0 || request.ReceiverId <= 0 || request.SenderId == request.ReceiverId)
                 return BadRequest("Invalid conversation participants.");
 
-            var existingConversation = await _context.Conversations
-                .Include(c => c.Participants)
-                .Include(c => c.Messages)
-                .FirstOrDefaultAsync(c =>
-                    c.Participants.Any(p => p.UserId == request.SenderId) &&
-                    c.Participants.Any(p => p.UserId == request.ReceiverId));
-
-            if (existingConversation is not null)
-            {
-                return Ok(existingConversation);
-            }
-
             int conversationId = await this.conversationRepository.CreateConversation(request.SenderId, request.ReceiverId);
             var created = await this.conversationRepository.GetConversationById(conversationId);
             return CreatedAtAction(nameof(GetConversationById), new { id = conversationId }, created);
@@ -77,30 +63,7 @@ namespace BookingBoardGames.Api.Controllers
         public async Task<ActionResult<MessageDto>> SendMessage([FromBody] MessageDto messageDto)
         {
             var message = MessageDtoToEntity(messageDto);
-            // Reset ID so EF always inserts a new row (prevents accidental update / triple-insert)
             message.MessageId = 0;
-
-            if (!conversation.Participants.Any(p => p.UserId == messageDto.SenderId))
-            {
-                return BadRequest("Sender is not part of this conversation.");
-            }
-
-            int receiverId = messageDto.ReceiverId;
-            if (!conversation.Participants.Any(p => p.UserId == receiverId))
-            {
-                receiverId = conversation.Participants
-                    .Where(p => p.UserId != messageDto.SenderId)
-                    .Select(p => p.UserId)
-                    .FirstOrDefault();
-            }
-
-            if (receiverId <= 0)
-            {
-                return BadRequest("Receiver is invalid for this conversation.");
-            }
-
-            var normalizedMessageDto = messageDto with { ReceiverId = receiverId };
-            var message = MessageDtoToEntity(normalizedMessageDto);
             var persisted = await this.conversationRepository.HandleNewMessage(message);
             return Ok(EntityToMessageDto(persisted));
         }
@@ -125,14 +88,14 @@ namespace BookingBoardGames.Api.Controllers
                 readReceipt.ReaderId,
                 readReceipt.ReceiverId,
                 readReceipt.ReceiptTimeStamp);
-            await _repo.HandleReadReceipt(dto);
+            await this.conversationRepository.HandleReadReceipt(dto);
             return NoContent();
         }
 
         [HttpPost("rental/finalize/{messageId}")]
         public async Task<ActionResult<MessageDto>> FinalizeRentalRequest(int messageId)
         {
-            var updated = await _repo.HandleRentalRequestFinalization(messageId);
+            var updated = await this.conversationRepository.HandleRentalRequestFinalization(messageId);
             if (updated is null) return NotFound();
             return Ok(EntityToMessageDto(updated));
         }
@@ -140,12 +103,10 @@ namespace BookingBoardGames.Api.Controllers
         [HttpPost("cash/{parentMessageId}/{paymentId}")]
         public async Task<ActionResult<MessageDto>> CreateCashAgreementMessage(int parentMessageId, int paymentId)
         {
-            var created = await _repo.CreateCashAgreementMessage(parentMessageId, paymentId);
+            var created = await this.conversationRepository.CreateCashAgreementMessage(parentMessageId, paymentId);
             if (created is null) return NotFound();
             return Ok(EntityToMessageDto(created));
         }
-
-        // ── helpers ──────────────────────────────────────────────────────────
 
         private Message MessageDtoToEntity(MessageDto dto)
         {
@@ -261,8 +222,6 @@ namespace BookingBoardGames.Api.Controllers
                 RequestId: message is RentalRequestMessage rrm2 ? rrm2.RentalRequestId : defaultMissingIdentifier,
                 PaymentId: message is CashAgreementMessage cam2 ? cam2.CashPaymentId : defaultMissingIdentifier);
         }
-
-        // ── DTOs / enums ─────────────────────────────────────────────────────
 
         public record MessageDto(
             int Id,
