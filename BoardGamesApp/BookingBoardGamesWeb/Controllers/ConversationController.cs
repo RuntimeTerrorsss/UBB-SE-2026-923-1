@@ -110,10 +110,11 @@ namespace BookingBoardGames.Api.Controllers
 
         private Message MessageDtoToEntity(MessageDto dto)
         {
-            return dto.Type switch
+            Message message = dto.Type switch
             {
                 MessageType.MessageText => new TextMessage
                 {
+                    MessageId = dto.Id,
                     ConversationId = dto.ConversationId,
                     MessageSenderId = dto.SenderId,
                     MessageReceiverId = dto.ReceiverId,
@@ -126,6 +127,7 @@ namespace BookingBoardGames.Api.Controllers
                 },
                 MessageType.MessageImage => new ImageMessage
                 {
+                    MessageId = dto.Id,
                     ConversationId = dto.ConversationId,
                     MessageSenderId = dto.SenderId,
                     MessageReceiverId = dto.ReceiverId,
@@ -138,6 +140,7 @@ namespace BookingBoardGames.Api.Controllers
                 },
                 MessageType.MessageRentalRequest => new RentalRequestMessage
                 {
+                    MessageId = dto.Id,
                     ConversationId = dto.ConversationId,
                     MessageSenderId = dto.SenderId,
                     MessageReceiverId = dto.ReceiverId,
@@ -153,6 +156,7 @@ namespace BookingBoardGames.Api.Controllers
                 },
                 MessageType.MessageCashAgreement => new CashAgreementMessage
                 {
+                    MessageId = dto.Id,
                     ConversationId = dto.ConversationId,
                     MessageSenderId = dto.SenderId,
                     MessageReceiverId = dto.ReceiverId,
@@ -168,6 +172,7 @@ namespace BookingBoardGames.Api.Controllers
                 },
                 MessageType.MessageSystem => new SystemMessage
                 {
+                    MessageId = dto.Id,
                     ConversationId = dto.ConversationId,
                     MessageSenderId = dto.SenderId,
                     MessageReceiverId = dto.ReceiverId,
@@ -180,6 +185,8 @@ namespace BookingBoardGames.Api.Controllers
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(dto.Type), dto.Type, "Unsupported message type."),
             };
+
+            return message;
         }
 
         private MessageDto EntityToMessageDto(Message message)

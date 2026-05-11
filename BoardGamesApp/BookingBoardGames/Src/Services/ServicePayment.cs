@@ -1,4 +1,4 @@
-﻿// <copyright file="ServicePayment.cs" company="PlaceholderCompany">
+// <copyright file="ServicePayment.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -40,7 +40,21 @@ namespace BookingBoardGames.Src.Services
         public async Task<List<PaymentDataTransferObject>> GetAllPaymentsForUI()
         {
             var allPayments = await this.paymentRepository.GetAllPayments();
+            allPayments = this.FilterPaymentsByCurrentUser(allPayments).ToList();
             return this.MapToDataTransferObject(allPayments);
+        }
+
+        private IEnumerable<HistoryPayment> FilterPaymentsByCurrentUser(IEnumerable<HistoryPayment> payments)
+        {
+            int currentUserId = SessionContext.GetInstance().UserId;
+            if (currentUserId <= 0)
+            {
+                return Enumerable.Empty<HistoryPayment>();
+            }
+
+            return payments.Where(payment =>
+                payment.ClientId == currentUserId ||
+                payment.OwnerId == currentUserId);
         }
 
         private bool IsPaymentMethodFilterApplied(PaymentMethod paymentMethod)
@@ -160,6 +174,7 @@ namespace BookingBoardGames.Src.Services
         public async Task<PagedResult<PaymentDataTransferObject>> GetFilteredPayments(FilterType filter, PaymentMethod paymentMethod = PaymentMethod.ALL, string searchQuery = "", int pageNumber = 1, int pageSize = 10)
         {
             IEnumerable<HistoryPayment> payments = await this.paymentRepository.GetAllPayments();
+            payments = this.FilterPaymentsByCurrentUser(payments);
 
             payments = this.ApplyFilters(payments, paymentMethod, searchQuery, filter);
             payments = this.ApplySorting(payments, filter);

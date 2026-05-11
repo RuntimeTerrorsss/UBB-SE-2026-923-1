@@ -26,6 +26,7 @@ namespace BookingBoardGames.Src.ViewModels
             this.MapService = mapService;
             this.UserRepository = userRepository;
             this.Validator = validator;
+            this.CurrentAddress = new Address();
         }
 
         public async Task InitializeAsync()
@@ -71,6 +72,10 @@ namespace BookingBoardGames.Src.ViewModels
                     this.CurrentUser.City,
                     this.CurrentUser.Street,
                     this.CurrentUser.StreetNumber);
+            }
+            else
+            {
+                this.CurrentAddress = new Address();
             }
         }
 
