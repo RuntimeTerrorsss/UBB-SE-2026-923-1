@@ -116,7 +116,12 @@ namespace BookingBoardGames
 
             try
             {
-                GlobalGeographicalService = await GeographicalService.LoadFromFileAsync();
+                if (GlobalGeographicalService == null)
+                {
+                    GlobalGeographicalService = new GeographicalService();
+                }
+
+                await GlobalGeographicalService.LoadCitiesFromFileAsync();
             }
             catch (Exception ex)
             {

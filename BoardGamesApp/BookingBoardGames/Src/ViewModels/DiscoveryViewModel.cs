@@ -49,8 +49,9 @@ namespace BookingBoardGames.Src.ViewModels
             this.searchAndFilterService = searchService;
             this.geographicalService = geographicalService;
 
-            this.selectedStartDate = null;
-            this.selectedEndDate = null;
+            var today = DateTimeOffset.Now.Date;
+            this.selectedStartDate = today;
+            this.selectedEndDate = today;
 
             this.NextPageCommand = new RelayCommand(_ => this.GoToNextPage());
             this.PreviousPageCommand = new RelayCommand(_ => this.GoToPreviousPage());
@@ -158,6 +159,11 @@ namespace BookingBoardGames.Src.ViewModels
             {
                 var newValue = value?.Date;
 
+                if (!newValue.HasValue)
+                {
+                    newValue = DateTimeOffset.Now.Date;
+                }
+
                 if (this.selectedStartDate != newValue)
                 {
                     this.selectedStartDate = newValue;
@@ -165,14 +171,7 @@ namespace BookingBoardGames.Src.ViewModels
                     this.OnPropertyChanged(nameof(this.MinEndDate));
                     this.OnPropertyChanged(nameof(this.IsEndDateEnabled));
 
-                    if (this.selectedStartDate.HasValue)
-                    {
-                        this.selectedEndDate = this.selectedStartDate.Value;
-                    }
-                    else
-                    {
-                        this.selectedEndDate = null;
-                    }
+                    this.selectedEndDate = this.selectedStartDate;
 
                     this.OnPropertyChanged(nameof(this.SelectedEndDate));
                 }
@@ -188,6 +187,11 @@ namespace BookingBoardGames.Src.ViewModels
             set
             {
                 var newValue = value?.Date;
+
+                if (!newValue.HasValue)
+                {
+                    newValue = this.SelectedStartDate?.Date ?? DateTimeOffset.Now.Date;
+                }
 
                 if (this.SelectedStartDate.HasValue && newValue.HasValue &&
                     newValue.Value < this.SelectedStartDate.Value)

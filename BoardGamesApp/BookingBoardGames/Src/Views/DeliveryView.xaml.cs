@@ -1,7 +1,3 @@
-// <copyright file="DeliveryView.xaml.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 using System;
 using System.Diagnostics;
 using System.Text.Json;
@@ -32,20 +28,20 @@ namespace BookingBoardGames.Src.Views
 
         public DeliveryView()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs navigationEvent)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            base.OnNavigatedTo(navigationEvent);
+            base.OnNavigatedTo(e);
 
-            var arguments = ((int UserId, int RequestId, int MessageId, ConversationService ConversationService, Window ToWindow))navigationEvent.Parameter;
-            this.currentUserId = arguments.UserId;
-            this.requestId = arguments.RequestId;
-            this.incomingMessageId = arguments.MessageId;
-            this.conversationService = arguments.ConversationService;
-            this.currentWindow = arguments.ToWindow;
+            var args = ((int UserId, int RequestId, int MessageId, ConversationService ConversationService, Window ToWindow))e.Parameter;
 
+            this.currentUserId = args.UserId;
+            this.requestId = args.RequestId;
+            this.incomingMessageId = args.MessageId;
+            this.conversationService = args.ConversationService;
+            this.currentWindow = args.ToWindow;
             this.deliveryViewModel = new DeliveryViewModel(
                 this.currentUserId,
                 App.MapService,
@@ -57,13 +53,15 @@ namespace BookingBoardGames.Src.Views
                 var bookingArguments = new BookingNavigationArguments
                 {
                     RequestIdentifier = this.requestId,
-                    DeliveryAddress = this.deliveryViewModel.CurrentAddress.ToString(),
+                    DeliveryAddress = this.deliveryViewModel.CurrentAddress.Country + ", " +
+                                      this.deliveryViewModel.CurrentAddress.City + ", " +
+                                      this.deliveryViewModel.CurrentAddress.Street + " " +
+                                      this.deliveryViewModel.CurrentAddress.StreetNumber,
                     BookingMessageIdentifier = this.incomingMessageId,
                     ConversationService = this.conversationService,
-                    CurrentWindow = this.currentWindow,
+                    CurrentWindow = this.currentWindow
                 };
 
-                // Debug.WriteLine(_conversationService.UserId);
                 if (this.CashPaymentRadio.IsChecked == true)
                 {
                     this.Frame.Navigate(typeof(CashPaymentPage), bookingArguments);
@@ -75,24 +73,21 @@ namespace BookingBoardGames.Src.Views
             };
 
             this.deliveryViewModel.StateChanged += this.RefreshUi;
-            _ = this.deliveryViewModel.Initialize(this.currentUserId);
+            _ = this.deliveryViewModel.InitializeAsync();
             this.RefreshUi();
         }
 
         private void RefreshUi()
         {
-            // Sync all text fields from CurrentAddress (also handles map auto-fill)
             this.CountryInput.Text = this.deliveryViewModel.CurrentAddress.Country;
             this.CityInput.Text = this.deliveryViewModel.CurrentAddress.City;
             this.StreetInput.Text = this.deliveryViewModel.CurrentAddress.Street;
             this.StreetNumberInput.Text = this.deliveryViewModel.CurrentAddress.StreetNumber;
 
-            // Show/hide the map overlay
             this.MapOverlay.Visibility = this.deliveryViewModel.IsMapVisible
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            // Show or clear validation errors per field
             this.ShowFieldError(this.CountryInput, this.CountryError, "Country");
             this.ShowFieldError(this.CityInput, this.CityError, "City");
             this.ShowFieldError(this.StreetInput, this.StreetError, "Street");
@@ -101,20 +96,18 @@ namespace BookingBoardGames.Src.Views
 
         private void ShowFieldError(TextBox input, TextBlock errorBlock, string fieldName)
         {
-            if (this.deliveryViewModel.ValidationErrors.TryGetValue(fieldName, out string? message))
+            if (this.deliveryViewModel.ValidationErrors.TryGetValue(fieldName, out string message))
             {
                 errorBlock.Text = message;
                 errorBlock.Visibility = Visibility.Visible;
-                VisualStateManager.GoToState(input, "InvalidUnfocused", true);
             }
             else
             {
                 errorBlock.Visibility = Visibility.Collapsed;
-                VisualStateManager.GoToState(input, "Normal", true);
             }
         }
 
-        private void OnFieldChanged(object sender, TextChangedEventArgs textEventArguments)
+        private void OnFieldChanged(object sender, TextChangedEventArgs e)
         {
             if (sender is TextBox tb && tb.Tag is string fieldName)
             {
@@ -122,22 +115,22 @@ namespace BookingBoardGames.Src.Views
             }
         }
 
-        private void OnSaveAddressChecked(object sender, RoutedEventArgs routedEventArguments)
-            => this.deliveryViewModel.IsSaveAddress = true;
+        private void OnSaveAddressChecked(object sender, RoutedEventArgs e)
+            => this.deliveryViewModel.OnSaveAddressChanged(true);
 
-        private void OnSaveAddressUnchecked(object sender, RoutedEventArgs routedEventArguments)
-            => this.deliveryViewModel.IsSaveAddress = false;
+        private void OnSaveAddressUnchecked(object sender, RoutedEventArgs e)
+            => this.deliveryViewModel.OnSaveAddressChanged(false);
 
-        private void OnOpenMapClicked(object sender, RoutedEventArgs routedEventArguments)
+        private void OnOpenMapClicked(object sender, RoutedEventArgs e)
             => _ = this.InitializeMapAsync();
 
-        private void OnCloseMapClicked(object sender, RoutedEventArgs routedEventArguments)
+        private void OnCloseMapClicked(object sender, RoutedEventArgs e)
             => this.deliveryViewModel.CloseMap();
 
-        private void OnSubmitClicked(object sender, RoutedEventArgs routedEventArguments)
-            => this.deliveryViewModel.SubmitDelivery();
+        private async void OnSubmitClicked(object sender, RoutedEventArgs e)
+            => await this.deliveryViewModel.SubmitDelivery();
 
-        private async void OnConfirmLocationClicked(object sender, RoutedEventArgs routedEventArguments)
+        private async void OnConfirmLocationClicked(object sender, RoutedEventArgs e)
             => await this.deliveryViewModel.ConfirmMapLocationAsync(this.pendingLatitude, this.pendingLongitude);
 
         private async Task InitializeMapAsync()
@@ -145,63 +138,42 @@ namespace BookingBoardGames.Src.Views
             this.deliveryViewModel.OpenMap();
             await this.MapWebView.EnsureCoreWebView2Async();
 
-            this.MapWebView.CoreWebView2.Settings.UserAgent = "BookingBoardgamesApp/1.0 (Contact: your.email@gmail.com)";
             this.MapWebView.CoreWebView2.WebMessageReceived -= this.OnMapMessageReceived;
             this.MapWebView.CoreWebView2.WebMessageReceived += this.OnMapMessageReceived;
 
-            // VERY
-            // VERY
-            // IMPORTANT
-            // GO to your device settings to Time and Language
-            // Select Region
-            // Select region format
-            // Change to English US
             this.MapWebView.CoreWebView2.NavigateToString("""
-                <!DOCTYPE html>
-                <html>
-                <head>
-                  <meta charset="utf-8"/>
-                  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-                  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-                  <style>html, body, #map { height: 100%; margin: 0; padding: 0; }</style>
-                </head>
-                <body>
-                  <div id="map"></div>
-                  <script>
-                    var map = L.map('map').setView([46.7712, 23.5897], 13);
-                    var marker = null;
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '© OpenStreetMap contributors'
-                    }).addTo(map);
-                    map.on('click', function(e) {
-                        if (marker) marker.setLatLng(e.latlng);
-                        else marker = L.marker(e.latlng).addTo(map);
-                        window.chrome.webview.postMessage(
-                            JSON.stringify({ lat: e.latlng.lat, lng: e.latlng.lng }));
-                    });
-                  </script>
-                </body>
-                </html>
-                """);
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>html, body, #map { height: 100%; margin: 0; padding: 0; }</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+var map = L.map('map').setView([46.7712, 23.5897], 13);
+var marker = null;
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+map.on('click', function(e) {
+if (marker) marker.setLatLng(e.latlng);
+else marker = L.marker(e.latlng).addTo(map);
+window.chrome.webview.postMessage(JSON.stringify({ lat: e.latlng.lat, lng: e.latlng.lng }));
+});
+</script>
+</body>
+</html>
+""");
         }
 
-        private void OnMapMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs eventArguments)
+        private void OnMapMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
-            try
-            {
-                string rawMessage = eventArguments.TryGetWebMessageAsString();
+            var msg = e.TryGetWebMessageAsString();
+            using var doc = JsonDocument.Parse(msg);
 
-                using JsonDocument jsonDocument = JsonDocument.Parse(rawMessage);
-
-                this.pendingLatitude = jsonDocument.RootElement.GetProperty("lat").GetDouble();
-                this.pendingLongitude = jsonDocument.RootElement.GetProperty("lng").GetDouble();
-
-                Debug.WriteLine($"MAP CLICK REGISTERED -> Lat: {this.pendingLatitude}, Lon: {this.pendingLongitude}");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"JSON PARSE ERROR: {ex.Message}");
-            }
+            this.pendingLatitude = doc.RootElement.GetProperty("lat").GetDouble();
+            this.pendingLongitude = doc.RootElement.GetProperty("lng").GetDouble();
         }
     }
 }

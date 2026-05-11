@@ -119,6 +119,7 @@ namespace BookingBoardGames.Src.Services
                 if (asciiCityName.Trim().Equals("Bucuresti", StringComparison.OrdinalIgnoreCase))
                 {
                     this.AddCityAlias(city, "Bucharest");
+                    this.AddCityAlias(city, "București");
                 }
 
                 if (!string.IsNullOrWhiteSpace(alternateCityNames))
@@ -213,13 +214,33 @@ namespace BookingBoardGames.Src.Services
             }
 
             var normalizedPartialName = this.NormalizeCityName(partialName);
-
-            return this.cityLookupByNormalizedName
+            var rawSuggestions = this.cityLookupByNormalizedName
                 .Where(cityLookupEntry => cityLookupEntry.Key.Contains(normalizedPartialName))
                 .Select(cityLookupEntry => cityLookupEntry.Value.MainName)
-                .Distinct()
+                .Distinct();
+
+            var normalizedSuggestions = rawSuggestions
+                .Select(this.NormalizeSuggestion)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
                 .Take(MaximumCitySuggestions)
                 .ToList();
+
+            return normalizedSuggestions;
+        }
+
+        private string NormalizeSuggestion(string suggestion)
+        {
+            if (string.Equals(suggestion, "Bucharest", StringComparison.OrdinalIgnoreCase))
+            {
+                return "București";
+            }
+
+            if (string.Equals(suggestion, "Bucuresti", StringComparison.OrdinalIgnoreCase))
+            {
+                return "București";
+            }
+
+            return suggestion;
         }
 
         private void AddCityAlias(City city, string originalCityName)
