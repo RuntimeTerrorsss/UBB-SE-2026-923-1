@@ -27,7 +27,7 @@
             <StackPanel Orientation="Horizontal"
                 HorizontalAlignment="Right"
                 Spacing="8">
-                <Button x:Name="SwitchUserButton" Content="Switch to Bob (User 2)" Click="SwitchUserButton_Click"/>
+                <Button x:Name="SwitchUserButton" Content="Switch to Carol (User 2)" Click="SwitchUserButton_Click"/>
                 <Button Content="Dashboard" Click="DashboardButton_Click"/>
                 <Button Content="Chat" Click="ChatButton_Click"/>
             </StackPanel>
