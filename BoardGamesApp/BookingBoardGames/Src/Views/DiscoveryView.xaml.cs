@@ -107,8 +107,8 @@ namespace BookingBoardGames.Src.Views
         private void SyncSwitchUserButtonLabel()
         {
             this.SwitchUserButton.Content = loggedUserId == MainWindow.loggedInUserAlice
-                ? "Switch to Bob"
-                : "Switch to Alice";
+                ? "Switch to Carol"
+                : "Switch to Bob";
         }
 
         private void SwitchUserButton_Click(object sender, RoutedEventArgs e)
