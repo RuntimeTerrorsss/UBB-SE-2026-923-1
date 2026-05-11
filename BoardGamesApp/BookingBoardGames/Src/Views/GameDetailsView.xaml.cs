@@ -74,6 +74,7 @@ namespace BookingBoardGames.Src.Views
             };
 
             await viewModel.InitializeAsync();
+            this.ForceRedrawCalendar();
         }
 
         private void OnBackClicked(object sender, RoutedEventArgs eventArgs)
