@@ -28,6 +28,8 @@ namespace BookingBoardGames.Src.Views.ChatViews
         private ChatPageViewModel chatPageViewModel;
         private int currentUserId;
 
+        public ChatPageViewModel ViewModel => this.chatPageViewModel;
+
         public ChatPageView()
         {
             this.InitializeComponent();
@@ -54,6 +56,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
             this.chatPageViewModel = new ChatPageViewModel(currentUserId);
             this.LeftPanel.ViewModel = this.chatPageViewModel.LeftPanelModelView;
             this.RightPanel.ChatViewModel = this.chatPageViewModel.ChatModelView;
+            this.Bindings.Update();
             await this.chatPageViewModel.InitializeAsync();
             this.RightPanel.CurrentUserId = currentUserId;
             this.RightPanel.ProceedToPaymentRequested += this.ProceedToPaymentClick;
