@@ -48,6 +48,7 @@ namespace BookingBoardGames.Src.ViewModels
             this.gameRepository = gameRepository;
             this.conversationService = conversationService;
             this.rentalRequestMessageIdentifier = rentalRequestMessageIdentifier;
+            this.DeliveryAddress = deliveryAddress;
         }
 
         public async Task InitializeAsync(int rentalRequestId, string deliveryAddress)
@@ -67,6 +68,7 @@ namespace BookingBoardGames.Src.ViewModels
             this.OwnerName = ownerUser.Username;
             this.GameName = game.Name;
             this.RequestDates = rentalRequest.StartDate.ToShortDateString() + DateRangeSeparator + rentalRequest.EndDate.ToShortDateString();
+            this.DeliveryAddress = deliveryAddress;
 
             decimal rentalPrice = await this.rentalRequestService.GetRentalPrice(rentalRequestId);
             this.PaidAmount = rentalPrice.ToString();

@@ -36,15 +36,17 @@ namespace BookingBoardGames.Src.ViewModels
             this.CurrentAddress = this.CurrentUser != null
                 ? new Address(this.CurrentUser.Country, this.CurrentUser.City, this.CurrentUser.Street, this.CurrentUser.StreetNumber)
                 : new Address();
+
+            this.StateChanged?.Invoke();
         }
 
         public event Action StateChanged;
 
         public Address CurrentAddress { get; set; }
 
-        public bool IsMapVisible { get; set; } = false;
+        public bool IsMapVisible { get; set; }
 
-        public bool IsSaveAddress { get; set; } = false;
+        public bool IsSaveAddress { get; set; }
 
         public Dictionary<string, string> ValidationErrors { get; set; } = new Dictionary<string, string>();
 
@@ -63,10 +65,13 @@ namespace BookingBoardGames.Src.ViewModels
         public async Task Initialize(int userId)
         {
             this.CurrentId = userId;
+
             this.CurrentUser = await this.UserRepository.GetById(userId);
 
             if (this.CurrentUser != null)
             {
+                await this.UserRepository.GetById(this.CurrentUser.Id);
+
                 this.CurrentAddress = new Address(
                     this.CurrentUser.Country,
                     this.CurrentUser.City,
@@ -77,6 +82,8 @@ namespace BookingBoardGames.Src.ViewModels
             {
                 this.CurrentAddress = new Address();
             }
+
+            this.StateChanged?.Invoke();
         }
 
         public void OnFieldChange(string fieldName, string newValue)
@@ -103,7 +110,6 @@ namespace BookingBoardGames.Src.ViewModels
 
         public async Task ConfirmMapLocationAsync(double latitude, double longitude)
         {
-            Debug.WriteLine($"--- CONFIRM LOCATION CLICKED --- Lat: {latitude}, Lon: {longitude}");
             Address resolved = await this.MapService.GetAddressFromMapAsync(latitude, longitude);
 
             if (resolved != null)
@@ -111,26 +117,47 @@ namespace BookingBoardGames.Src.ViewModels
                 this.CurrentAddress = resolved;
                 this.IsMapVisible = false;
                 this.StateChanged?.Invoke();
-            }
-            else
-            {
-                Debug.WriteLine($"Address not valid, received: Lat={latitude}, Lon={longitude}");
+
+                await this.SaveAddressIfRequestedAsync();
             }
         }
 
-        public async void SubmitDelivery()
+        public async Task SubmitDelivery()
         {
             this.ValidationErrors = this.Validator.Validate(this.CurrentAddress);
             this.StateChanged?.Invoke();
 
             if (this.ValidationErrors.Count == 0)
             {
-                if (this.IsSaveAddress && this.CurrentUser is not null)
-                {
-                    await this.UserRepository.SaveAddress(this.CurrentUser.Id, this.CurrentAddress);
-                }
-
+                await this.SaveAddressIfRequestedAsync();
                 this.OnNavigateToPayment?.Invoke();
+            }
+        }
+
+        public void OnSaveAddressChanged(bool isChecked)
+        {
+            this.IsSaveAddress = isChecked;
+
+            if (isChecked && this.CurrentUser != null)
+            {
+                _ = this.SaveAddressIfRequestedAsync();
+            }
+        }
+
+        private async Task SaveAddressIfRequestedAsync()
+        {
+            if (this.IsSaveAddress && this.CurrentUser != null)
+            {
+                await this.UserRepository.SaveAddress(this.CurrentUser.Id, this.CurrentAddress);
+
+                this.CurrentUser = await this.UserRepository.GetById(this.CurrentUser.Id);
+                this.CurrentAddress = new Address(
+                    this.CurrentUser.Country,
+                    this.CurrentUser.City,
+                    this.CurrentUser.Street,
+                    this.CurrentUser.StreetNumber);
+
+                this.StateChanged?.Invoke();
             }
         }
     }

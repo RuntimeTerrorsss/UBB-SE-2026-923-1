@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
 using BookingBoardGames.Src.Navigation;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
@@ -25,32 +26,52 @@ namespace BookingBoardGames.Src.Views
         {
             base.OnNavigatedTo(e);
 
-            if (e.Parameter is BookingNavigationArguments booking)
+            try
             {
-                this.PaymentViewModel = new CashPaymentViewModel(
-                    App.CashPaymentService,
-                    App.UserRepository,
-                    App.RentalService,
-                    App.GameRepository,
-                    booking.RequestIdentifier,
-                    booking.DeliveryAddress,
-                    booking.BookingMessageIdentifier,
-                    booking.ConversationService);
-                await this.PaymentViewModel.InitializeAsync(booking.RequestIdentifier, booking.DeliveryAddress);
+                if (e.Parameter is BookingNavigationArguments booking)
+                {
+                    if (booking.ConversationService == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Cash payment navigation missing conversation service.");
+                        return;
+                    }
 
-                this.DataContext = this.PaymentViewModel;
-                this.currentApplicationWindow = booking.CurrentWindow;
+                    this.PaymentViewModel = new CashPaymentViewModel(
+                        App.CashPaymentService,
+                        App.UserRepository,
+                        App.RentalService,
+                        App.GameRepository,
+                        booking.RequestIdentifier,
+                        booking.DeliveryAddress,
+                        booking.BookingMessageIdentifier,
+                        booking.ConversationService);
+
+                    await this.PaymentViewModel.InitializeAsync(
+                        booking.RequestIdentifier,
+                        booking.DeliveryAddress);
+
+                    this.DataContext = this.PaymentViewModel;
+                    this.currentApplicationWindow = booking.CurrentWindow;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
 
         private void NavigateToChatButton_Click(object sender, RoutedEventArgs e)
         {
-            this.currentApplicationWindow.Close();
-            /*
-            if (Frame.CanGoBack)
+            if (this.currentApplicationWindow != null)
             {
-                Frame.Navigate(typeof(ChatPageView), App.CURRENT_USER_WILL_DELETE);
-            }*/
+                this.currentApplicationWindow.Close();
+                return;
+            }
+
+            if (this.Frame?.CanGoBack == true)
+            {
+                this.Frame.GoBack();
+            }
         }
     }
 }

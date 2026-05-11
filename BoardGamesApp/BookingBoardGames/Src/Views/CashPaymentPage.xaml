@@ -43,7 +43,7 @@
 
 				Price:
 				<Bold>
-					<Run Text="{Binding Amount}"/>
+                    <Run Text="{Binding PaidAmount, Mode=OneWay, FallbackValue='0'}"/>
 				</Bold>
 			</Paragraph>
 			<Paragraph Margin="0,20,0,0">

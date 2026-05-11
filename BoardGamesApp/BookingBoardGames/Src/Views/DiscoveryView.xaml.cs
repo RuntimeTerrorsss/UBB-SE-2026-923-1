@@ -62,8 +62,8 @@ namespace BookingBoardGames.Src.Views
             };
 
             this.DataContext = this.ViewModel;
-            this.StartDatePicker.Date = null;
-            this.EndDatePicker.Date = null;
+            this.StartDatePicker.Date = this.ViewModel.SelectedStartDate;
+            this.EndDatePicker.Date = this.ViewModel.SelectedEndDate;
         }
 
         private void HandleSearchRequest(FilterCriteria filter)

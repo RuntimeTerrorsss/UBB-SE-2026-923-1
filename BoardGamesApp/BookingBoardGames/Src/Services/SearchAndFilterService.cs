@@ -4,7 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
@@ -51,10 +53,7 @@ namespace BookingBoardGames.Src.Services
             try
             {
                 string? originalFilterCity = filter.City;
-                if (filter.SortOption == SortOption.Location)
-                {
-                    filter.City = null;
-                }
+                filter.City = null;
 
                 var filteredGamesFromRepository = await this.gamesRepository.GetGamesByFilter(filter);
                 filter.City = originalFilterCity;
@@ -180,6 +179,8 @@ namespace BookingBoardGames.Src.Services
             try
             {
                 IEnumerable<GameDTO> filteredGames = initialGamesCollection;
+                var resolvedCityName = this.ResolveCityName(activeFilter.City);
+                var normalizedFilterCity = this.NormalizeCityName(resolvedCityName);
 
                 if (!string.IsNullOrWhiteSpace(activeFilter.Name))
                 {
@@ -199,12 +200,12 @@ namespace BookingBoardGames.Src.Services
                         filteredGame.MaximumPlayerNumber >= activeFilter.PlayerCount.Value);
                 }
 
-                if (!string.IsNullOrWhiteSpace(activeFilter.City) &&
+                if (!string.IsNullOrWhiteSpace(normalizedFilterCity) &&
                     activeFilter.SortOption != SortOption.Location)
                 {
                     filteredGames = filteredGames.Where(filteredGame =>
                         !string.IsNullOrWhiteSpace(filteredGame.City) &&
-                        filteredGame.City.Contains(activeFilter.City, StringComparison.OrdinalIgnoreCase));
+                        this.NormalizeCityName(filteredGame.City).Contains(normalizedFilterCity, StringComparison.OrdinalIgnoreCase));
                 }
 
                 switch (activeFilter.SortOption)
@@ -218,10 +219,10 @@ namespace BookingBoardGames.Src.Services
                         break;
 
                     case SortOption.Location:
-                        if (!string.IsNullOrWhiteSpace(activeFilter.City))
+                        if (!string.IsNullOrWhiteSpace(resolvedCityName))
                         {
                             var userCityDetails =
-                                this.geographicalService.GetCityDetails(activeFilter.City);
+                                this.geographicalService.GetCityDetails(resolvedCityName);
 
                             if (userCityDetails.IsFound)
                             {
@@ -270,12 +271,11 @@ namespace BookingBoardGames.Src.Services
                         IsAvailable = await this.rentalsRepository.CheckGameAvailability(activeFilter.AvailabilityRange.StartTime, activeFilter.AvailabilityRange.EndTime, game.GameId)
                     });
 
-                    // Step 2: Wait for all tasks to complete
                     var results = await Task.WhenAll(tasks);
 
-                    // Step 3: Filter based on the results we just fetched
                     filteredGames = results.Where(x => x.IsAvailable).Select(x => x.Game);
                 }
+
                 return filteredGames.ToArray();
             }
             catch (Exception thrownException)
@@ -407,6 +407,49 @@ namespace BookingBoardGames.Src.Services
                 MaximumPlayerNumber = gameEntity.MaximumPlayerNumber,
                 MinimumPlayerNumber = gameEntity.MinimumPlayerNumber,
             };
+        }
+
+        private string? ResolveCityName(string? cityName)
+        {
+            if (string.IsNullOrWhiteSpace(cityName))
+            {
+                return cityName;
+            }
+
+            var cityDetails = this.geographicalService.GetCityDetails(cityName);
+            return cityDetails.IsFound ? cityDetails.CityName : cityName;
+        }
+
+        private string NormalizeCityName(string? cityName)
+        {
+            if (string.IsNullOrWhiteSpace(cityName))
+            {
+                return string.Empty;
+            }
+
+            var normalized = cityName.Normalize(NormalizationForm.FormD);
+            var builder = new StringBuilder(normalized.Length);
+
+            foreach (var character in normalized)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark)
+                {
+                    builder.Append(character);
+                }
+            }
+
+            var result = builder.ToString()
+                .Normalize(NormalizationForm.FormC)
+                .Trim()
+                .ToLower()
+                .Replace("-", " ");
+
+            if (result == "bucharest")
+            {
+                return "bucuresti";
+            }
+
+            return result;
         }
     }
 }
