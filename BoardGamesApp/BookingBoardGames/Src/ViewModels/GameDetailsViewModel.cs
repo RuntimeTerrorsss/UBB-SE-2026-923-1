@@ -295,7 +295,18 @@ namespace BookingBoardGames.Src.ViewModels
         {
             try
             {
-                this.GameImage = await Helpers.GameImage.ToBitmapImageAsync(this.GameAndUserDetails.Image);
+                if (this.GameAndUserDetails.Image != null && this.GameAndUserDetails.Image.Length > 0)
+                {
+                    this.GameImage = await Helpers.GameImage.ToBitmapImageAsync(this.GameAndUserDetails.Image);
+                }
+                else
+                {
+                    var imageUrl = BookingBoardGames.Src.Mapper.GameImageMapper.GetImageUrl(this.GameAndUserDetails.Name);
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        this.GameImage = new BitmapImage(new Uri(imageUrl));
+                    }
+                }
             }
             catch (Exception exception)
             {
