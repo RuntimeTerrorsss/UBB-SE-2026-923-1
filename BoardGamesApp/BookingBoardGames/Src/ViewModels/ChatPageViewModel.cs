@@ -17,12 +17,13 @@ using BookingBoardGames;
 
 namespace BookingBoardGames.Src.ViewModels;
 
-public class ChatPageViewModel
+public class ChatPageViewModel : ViewModelBase
 {
     private readonly int currentUserId;
     private readonly ConversationService conversationService;
     private readonly IUserRepository userRepository;
     private readonly List<ConversationDTO> conversations = new();
+    private string currentUsername = string.Empty;
 
     public ChatPageViewModel(int currentUser)
    : this(currentUser, new ConversationService(App.ConversationRepository, currentUser))
@@ -54,9 +55,18 @@ public class ChatPageViewModel
         this.conversationService.ActionMessageUpdateProcessed += this.OnMessageUpdateReceived;
     }
 
+    public string CurrentUsername
+    {
+        get => this.currentUsername;
+        set => this.SetProperty(ref this.currentUsername, value);
+    }
+
     public async Task InitializeAsync()
     {
         var fetchedConversations = await this.conversationService.FetchConversations();
+
+        var user = await this.userRepository.GetById(this.currentUserId);
+        this.CurrentUsername = user?.Username ?? string.Empty;
 
         // Keep demo users connected: ensure Alice<->Bob conversation exists.
         if (this.currentUserId == MainWindow.loggedInUserAlice || this.currentUserId == MainWindow.loggedInUserBob)
