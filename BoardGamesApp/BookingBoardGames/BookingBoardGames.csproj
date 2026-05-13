@@ -77,7 +77,6 @@
     <Folder Include="Src\Views\ChatViews\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BookingBoardGames.Data\BookingBoardGames.Data.csproj" />
     <ProjectReference Include="..\BookingBoardGames.Sharing\BookingBoardGames.Sharing.csproj" />
   </ItemGroup>
   <!--

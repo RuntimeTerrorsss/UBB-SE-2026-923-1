@@ -8,10 +8,10 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Sharing.DTO;
 using BookingBoardGames.Sharing.Mapper;
 using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Src.Commands;
-using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Helpers;
 using Microsoft.UI.Xaml.Media.Imaging;
 

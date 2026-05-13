@@ -6,10 +6,9 @@ using System;
 using System.Diagnostics;
 using BookingBoardGames.Data;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Sharing.Mapper;
+using BookingBoardGames.Sharing.Repositories;
 using BookingBoardGames.Sharing.Services;
-using BookingBoardGames.Src.Mapper;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
 

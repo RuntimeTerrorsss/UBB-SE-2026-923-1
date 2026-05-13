@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingBoardGames.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingBoardGames.Sharing", "..\BookingBoardGames.Sharing\BookingBoardGames.Sharing.csproj", "{75FBD5E9-4E9F-4C67-8282-B5CE65E62529}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingBoardGames.Web", "..\BookingBoardGames.Web\BookingBoardGames.Web.csproj", "{A06A3DD1-9052-4494-B72C-C4B4484310EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -88,6 +90,18 @@ Global
 		{75FBD5E9-4E9F-4C67-8282-B5CE65E62529}.Release|x64.Build.0 = Release|Any CPU
 		{75FBD5E9-4E9F-4C67-8282-B5CE65E62529}.Release|x86.ActiveCfg = Release|Any CPU
 		{75FBD5E9-4E9F-4C67-8282-B5CE65E62529}.Release|x86.Build.0 = Release|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Debug|x64.Build.0 = Debug|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Debug|x86.Build.0 = Debug|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Release|ARM64.Build.0 = Release|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Release|x64.ActiveCfg = Release|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Release|x64.Build.0 = Release|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Release|x86.ActiveCfg = Release|Any CPU
+		{A06A3DD1-9052-4494-B72C-C4B4484310EB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

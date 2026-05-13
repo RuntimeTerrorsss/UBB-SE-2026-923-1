@@ -11,6 +11,7 @@ using BookingBoardGames.Data;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Sharing.DTO;
+using BookingBoardGames;
 
 namespace BookingBoardGames.Sharing.Services
 {
