@@ -10,8 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Sharing.DTO;
+using BookingBoardGames.Sharing.Services;
 
 namespace BookingBoardGames.Src.ViewModels
 {

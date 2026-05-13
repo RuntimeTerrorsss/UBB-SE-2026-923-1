@@ -3,7 +3,7 @@
 // </copyright>
 
 using System;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Sharing.Services;
 using Microsoft.UI.Xaml;
 
 namespace BookingBoardGames.Src.Navigation

@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BookingBoardGames.Data\BookingBoardGames.Data.csproj" />
+    <ProjectReference Include="..\BookingBoardGames.Sharing\BookingBoardGames.Sharing.csproj" />
   </ItemGroup>
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution

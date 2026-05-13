@@ -5,8 +5,8 @@
 using System;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.ViewModels
 {

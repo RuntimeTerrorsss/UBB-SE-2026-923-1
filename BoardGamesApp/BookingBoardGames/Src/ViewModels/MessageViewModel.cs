@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Sharing.DTO;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 

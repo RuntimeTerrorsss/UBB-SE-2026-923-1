@@ -9,11 +9,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using BookingBoardGames.Data;
-using BookingBoardGames.Src.DTO;
 using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames;
+using BookingBoardGames.Sharing.DTO;
+using BookingBoardGames.Sharing.Services;
 
 namespace BookingBoardGames.Src.ViewModels;
 

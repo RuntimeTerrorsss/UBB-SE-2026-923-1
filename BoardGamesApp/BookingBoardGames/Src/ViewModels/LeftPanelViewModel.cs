@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Sharing.DTO;
 using Microsoft.UI.Xaml;
 
 namespace BookingBoardGames.Src.ViewModels

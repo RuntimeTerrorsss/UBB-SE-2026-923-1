@@ -9,9 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Constants;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Sharing.DTO;
+using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Src.Commands;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
 
 namespace BookingBoardGames.Src.ViewModels
 {
