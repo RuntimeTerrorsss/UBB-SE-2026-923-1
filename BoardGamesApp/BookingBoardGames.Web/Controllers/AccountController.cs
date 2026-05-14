@@ -1,6 +1,19 @@
-﻿namespace BookingBoardGames.Web.Controllers
+using BookingBoardGames.Data.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BookingBoardGames.Web.Controllers
 {
-    public class AccountController
+    [AllowAnonymous]
+    public class AccountController : Controller
     {
+        private readonly IUserRepository _userRepository;
+
+        public AccountController(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        // Action methods here...
     }
 }

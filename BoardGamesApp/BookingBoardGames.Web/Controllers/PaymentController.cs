@@ -1,6 +1,19 @@
-﻿namespace BookingBoardGames.Web.Controllers
+using BookingBoardGames.Sharing.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BookingBoardGames.Web.Controllers
 {
-    public class PaymentController
+    [Authorize]
+    public class PaymentController : Controller
     {
+        private readonly IPaymentService _paymentService;
+
+        public PaymentController(IPaymentService paymentService)
+        {
+            _paymentService = paymentService;
+        }
+
+        // Action methods here...
     }
 }

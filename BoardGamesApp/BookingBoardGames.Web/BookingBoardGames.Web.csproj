@@ -10,8 +10,4 @@
     <ProjectReference Include="..\BookingBoardGames.Sharing\BookingBoardGames.Sharing.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\ViewModels\" />
-  </ItemGroup>
-
 </Project>

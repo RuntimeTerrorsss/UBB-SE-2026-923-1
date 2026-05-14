@@ -35,41 +35,18 @@ namespace BookingBoardGames.Sharing.Services
 
         public event Action<MessageDataTransferObject, string> ActionMessageUpdateProcessed;
 
-        public ConversationService(IConversationRepository conversationRepo, int userIdInput)
-            : this(conversationRepo, userIdInput, App.UserRepository, ResolveNotifier())
+        public ConversationService(IConversationRepository conversationRepo, IUserRepository userRepo, IConversationNotifier conversationNotifier)
         {
-        }
-
-        public ConversationService(IConversationRepository conversationRepo, int userIdInput, IUserRepository userRepo)
-            : this(conversationRepo, userIdInput, userRepo, ResolveNotifier())
-        {
-        }
-
-        public ConversationService(IConversationRepository conversationRepo, int userIdInput, IUserRepository userRepo, IConversationNotifier conversationNotifier)
-        {
-            UserId = userIdInput;
             ConversationRepository = conversationRepo;
             userRepository = userRepo;
             notifier = conversationNotifier;
+        }
 
-            try
-            {
-                if (App.ActiveConversationService != null)
-                {
-                    App.ActiveConversationService.StopPolling();
-                }
-            }
-            catch { }
-
-            App.ActiveConversationService = this;
+        public void Initialize(int userIdInput)
+        {
+            UserId = userIdInput;
             notifier.Register(UserId, this);
         }
-
-        private static IConversationNotifier ResolveNotifier()
-        {
-            return App.ConversationNotifier ?? new ConversationNotifier();
-        }
-
         private async Task NotifySubscribersAboutMessage(Message message)
         {
             IReadOnlyList<int> participants = await ConversationRepository.GetParticipantUserIds(message.ConversationId);

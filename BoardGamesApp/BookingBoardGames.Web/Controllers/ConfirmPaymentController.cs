@@ -1,6 +1,19 @@
-﻿namespace BookingBoardGames.Web.Controllers
+using BookingBoardGames.Sharing.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BookingBoardGames.Web.Controllers
 {
-    public class ConfirmPaymentController
+    [Authorize]
+    public class ConfirmPaymentController : Controller
     {
+        private readonly IReceiptService _receiptService;
+
+        public ConfirmPaymentController(IReceiptService receiptService)
+        {
+            _receiptService = receiptService;
+        }
+
+        // Action methods here...
     }
 }

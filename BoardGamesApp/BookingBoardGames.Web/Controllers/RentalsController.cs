@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingBoardGames.Web.Controllers
 {
     [Authorize]
-    public class ChatsController : Controller
+    public class RentalsController : Controller
     {
-        private readonly IConversationService _conversationService;
+        private readonly IRentalService _rentalService;
 
-        public ChatsController(IConversationService conversationService)
+        public RentalsController(IRentalService rentalService)
         {
-            _conversationService = conversationService;
+            _rentalService = rentalService;
         }
 
         // Action methods here...
