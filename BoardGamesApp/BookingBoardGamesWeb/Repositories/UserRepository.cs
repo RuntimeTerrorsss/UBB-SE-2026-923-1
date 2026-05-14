@@ -76,5 +76,17 @@ namespace BookingBoardGames.Api.Repositories
 
             await this.context.SaveChangesAsync();
         }
+
+        // todo
+        public async Task<User?> Login(string emailOrUsername, string password)
+        {
+            return null;
+        }
+
+        // todo
+        public async Task<bool> Register(User newUser)
+        {
+            return true;
+        }
     }
 }
