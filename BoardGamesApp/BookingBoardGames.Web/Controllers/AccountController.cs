@@ -26,6 +26,28 @@ namespace BookingBoardGames.Web.Controllers
             {
                 return View(registeringUserViewModel);
             }
+
+            var user = new User
+            {
+                Username = registeringUserViewModel.Username,
+                DisplayName = registeringUserViewModel.DisplayName,
+                Email = registeringUserViewModel.Email,
+                PasswordHash = registeringUserViewModel.Password,
+                City = registeringUserViewModel.City,
+                Country = registeringUserViewModel.Country,
+                PhoneNumber = registeringUserViewModel.PhoneNumber,
+                Street = registeringUserViewModel.Street,
+                StreetNumber = registeringUserViewModel.StreetNumber
+            };
+            var success = await userService.RegisterUserAsync(user);
+
+            if (!success)
+            {
+                ModelState.AddModelError("", "Registration failed. Try again.");
+                return View(registeringUserViewModel);
+            }
+
+            return RedirectToAction("Login");
         }
         // Action methods here...
     }
