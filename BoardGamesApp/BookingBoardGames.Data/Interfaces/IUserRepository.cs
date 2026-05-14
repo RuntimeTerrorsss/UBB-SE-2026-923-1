@@ -13,5 +13,7 @@ namespace BookingBoardGames.Data.Interfaces
         public Task<decimal> GetUserBalance(int userId);
 
         public Task UpdateBalance(int userId, decimal newBalance);
+        Task<User?> Login(string emailOrUsername, string password);
+        Task<bool> Register(User newUser);
     }
 }

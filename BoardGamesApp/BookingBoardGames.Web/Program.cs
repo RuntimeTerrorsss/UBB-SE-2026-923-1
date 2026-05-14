@@ -62,6 +62,8 @@ builder.Services.AddScoped<IRentalService,  RentalService>();
 builder.Services.AddScoped<InterfaceSearchAndFilterService, SearchAndFilterService>();
 builder.Services.AddScoped<IServicePayment, ServicePayment>();
 builder.Services.AddScoped<ICashPaymentMapper, CashPaymentMapper>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 var app = builder.Build();
 

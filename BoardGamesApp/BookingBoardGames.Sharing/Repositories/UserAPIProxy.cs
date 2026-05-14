@@ -75,4 +75,21 @@ public class UserAPIProxy : IUserRepository
         var response = await this.httpClient.PutAsJsonAsync($"users/{userId}/balance", newBalance, JsonOptions);
         response.EnsureSuccessStatusCode();
     }
+
+    public async Task<User?> Login(string emailOrUsername, string password)
+    {
+        var loginData = new { Identifier = emailOrUsername, Password = password };
+        var response = await this.httpClient.PostAsJsonAsync("users/login", loginData, JsonOptions);
+        if (!response.IsSuccessStatusCode)
+        {
+            return null; 
+        }
+        return await response.Content.ReadFromJsonAsync<User>(JsonOptions);
+    }
+
+    public async Task<bool> Register(User newUser)
+    {
+        var response = await this.httpClient.PostAsJsonAsync("users/register", newUser, JsonOptions);
+        return response.IsSuccessStatusCode;
+    }
 }
