@@ -13,7 +13,7 @@ namespace BookingBoardGames.Sharing.Services
     public class MapService : IMapService
     {
         private const string NominatimUrlTemplate = "https://nominatim.openstreetmap.org/reverse?lat={0}&lon={1}&format=json";
-        private const string UserAgentValue = "BookingBoardgamesILoveBan/1.0";
+        private const string UserAgentValue = "BookingBoardgames/1.0";
         private const double DefaultCoordinate = 0.0;
         private readonly HttpClient httpClient;
 
