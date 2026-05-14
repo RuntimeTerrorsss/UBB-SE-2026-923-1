@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using BookingBoardGames.Sharing.Services;
-using BookingBoardGames.Sharing.Repositories;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Sharing.Mapper;
+using BookingBoardGames.Sharing.Repositories;
+using BookingBoardGames.Sharing.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 string apiBaseUrl = "https://localhost:7027/";
@@ -55,11 +56,12 @@ builder.Services.AddScoped<IConversationNotifier, ConversationNotifier>();
 builder.Services.AddScoped<IConversationService, ConversationService>();
 builder.Services.AddScoped<InterfaceGeographicalService, GeographicalService>();
 builder.Services.AddScoped<IMapService, MapService>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
+//builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
 builder.Services.AddScoped<IRentalService,  RentalService>();
 builder.Services.AddScoped<InterfaceSearchAndFilterService, SearchAndFilterService>();
 builder.Services.AddScoped<IServicePayment, ServicePayment>();
+builder.Services.AddScoped<ICashPaymentMapper, CashPaymentMapper>();
 
 var app = builder.Build();
 

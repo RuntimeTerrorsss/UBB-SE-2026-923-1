@@ -12,7 +12,7 @@ namespace BookingBoardGames.Sharing.Services
         protected readonly IPaymentRepository paymentRepository;
         protected readonly IReceiptService receiptService;
 
-        protected PaymentService(IPaymentRepository paymentRepository, IReceiptService receiptService)
+        public PaymentService(IPaymentRepository paymentRepository, IReceiptService receiptService)
         {
             this.receiptService = receiptService;
             this.paymentRepository = paymentRepository;
