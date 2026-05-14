@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-// TODO: Add the using statements for your shared project here
-// using BookingBoardGames.Shared.Services;
-// using BookingBoardGames.Shared.Repositories;
+using BookingBoardGames.Sharing.Services;
+using BookingBoardGames.Sharing.Repositories;
+using BookingBoardGames.Data.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
-
+string apiBaseUrl = "https://localhost:7027/";
 
 // ADD AUTHENTICATION (Requirement: Guard from unauthorized users)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -21,16 +21,45 @@ builder.Services.AddControllersWithViews();
 
 
 // DEPENDENCY INJECTION (Requirement: Use a DI framework)
-builder.Services.AddHttpClient<IYourProxyRepository, YourProxyRepository>(client =>
+builder.Services.AddHttpClient<IConversationRepository, ConversationAPIProxy>(client =>
 {
-    // TODO: Replace with the actual URL and port your API runs on
-    client.BaseAddress = new Uri("https://localhost:5001/");
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<InterfaceGamesRepository, GamesAPIProxy>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<IPaymentRepository, PaymentAPIProxy>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<IRentalRepository, RentalAPIProxy>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<IRepositoryPayment, RepositoryPaymentAPIProxy>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<IUserRepository, UserAPIProxy>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
 });
 
 // B. Register your Business Logic Services from your Shared Library
 // TODO: Replace these with your actual interface and implementation names
-builder.Services.AddScoped<IYourBusinessService, YourBusinessService>();
-
+builder.Services.AddScoped<InterfaceBookingService, BookingService>();
+builder.Services.AddScoped<ICardPaymentService, CardPaymentService>();
+builder.Services.AddScoped<ICashPaymentService, CashPaymentService>();
+builder.Services.AddScoped<IConversationNotifier, ConversationNotifier>();
+builder.Services.AddScoped<IConversationService, ConversationService>();
+builder.Services.AddScoped<InterfaceGeographicalService, GeographicalService>();
+builder.Services.AddScoped<IMapService, MapService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IReceiptService, ReceiptService>();
+builder.Services.AddScoped<IRentalService,  RentalService>();
+builder.Services.AddScoped<InterfaceSearchAndFilterService, SearchAndFilterService>();
+builder.Services.AddScoped<IServicePayment, ServicePayment>();
 
 var app = builder.Build();
 

@@ -18,7 +18,6 @@ namespace BookingBoardGames.Sharing.Services
     public class ConversationService : IConversationService
     {
         private IConversationRepository ConversationRepository { get; set; }
-
         private IUserRepository userRepository;
         private IConversationNotifier notifier;
 
