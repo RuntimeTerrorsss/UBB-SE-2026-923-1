@@ -31,8 +31,14 @@ namespace BookingBoardGames.Sharing.Services
 
             var user = await _userRepository.Login(identifier, password);
 
-            if (user != null && user.IsSuspended)
+            if (user == null)
             {
+                return null;
+            }
+
+            if (user.IsSuspended)
+            {
+
                 return null;
             }
 

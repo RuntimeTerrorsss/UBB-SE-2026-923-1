@@ -12,9 +12,35 @@ namespace BookingBoardGames.Web.Controllers
 
         public AccountController(IUserService userService)
         {
-            userService = userService;
+            this.userService = userService;
         }
 
-        // Action methods here...
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] 
+        public async Task<IActionResult> Login(string identifier, string password)
+        {
+            if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(password))
+            {
+                ViewBag.Error = "Please complete all fields";
+                return View();
+            }
+
+            var user = await userService.LoginAsync(identifier, password);
+
+            if (user != null)
+            {
+               
+                return RedirectToAction("Index", "Home");
+            }
+
+            ViewBag.Error = "Username/Email or password incorrect.";
+            return View();
+        }
     }
 }

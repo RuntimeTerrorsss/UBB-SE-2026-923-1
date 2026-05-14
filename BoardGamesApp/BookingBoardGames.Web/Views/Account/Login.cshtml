@@ -1,0 +1,27 @@
+﻿@* Views/Account/Login.cshtml *@
+@{
+    Layout = "_Layout";
+}
+
+<h2>Test Login</h2>
+
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
+
+<form asp-action="Login" method="post">
+    <div>
+        <label>Username sau Email:</label>
+        <input type="text" name="identifier" required />
+    </div>
+    <div>
+        <label>Parolă:</label>
+        <input type="password" name="password" required />
+    </div>
+    <button type="submit">Log In</button>
+</form>
+
+<p>
+    Nu ai cont? <a asp-action="Register">Register aici</a>
+</p>

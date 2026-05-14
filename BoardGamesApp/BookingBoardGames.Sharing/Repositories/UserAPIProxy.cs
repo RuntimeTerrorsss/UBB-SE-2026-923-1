@@ -78,7 +78,7 @@ public class UserAPIProxy : IUserRepository
 
     public async Task<User?> Login(string emailOrUsername, string password)
     {
-        var loginData = new { Identifier = emailOrUsername, Password = password };
+        var loginData = new { emailOrUsername = emailOrUsername, password = password };
         var response = await this.httpClient.PostAsJsonAsync("users/login", loginData, JsonOptions);
         if (!response.IsSuccessStatusCode)
         {
