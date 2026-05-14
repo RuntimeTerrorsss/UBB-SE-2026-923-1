@@ -11,6 +11,7 @@ using BookingBoardGames.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using BCrypt.Net;
 
 namespace BookingBoardGames.Api.Repositories
 {
@@ -75,6 +76,36 @@ namespace BookingBoardGames.Api.Repositories
             foundUser.Balance = newBalance;
 
             await this.context.SaveChangesAsync();
+        }
+        private async Task<User?> GetByIdentifier(string identifier)
+        {
+            return await this.context.Users
+                .FirstOrDefaultAsync(u => u.Email == identifier || u.Username == identifier);
+        }
+
+        public async Task<User?> Login(string emailOrUsername, string password)
+        {
+            var user = await GetByIdentifier(emailOrUsername);
+
+            if (user == null) return null;
+
+
+            bool isPasswordOk = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+
+            return isPasswordOk ? user : null;
+        }
+
+        public async Task<bool> Register(User newUser)
+        {
+            var exists = await this.context.Users
+                .AnyAsync(u => u.Username == newUser.Username || u.Email == newUser.Email);
+
+            if (exists) return false;
+
+            await this.context.Users.AddAsync(newUser);
+
+            var result = await this.context.SaveChangesAsync();
+            return result > 0;
         }
     }
 }
