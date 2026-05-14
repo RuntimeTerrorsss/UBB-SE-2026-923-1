@@ -1,0 +1,68 @@
+﻿@model BookingBoardGames.Sharing.DTO.ConversationDTO
+
+<div class="p-3 border-bottom bg-white d-flex align-items-center shadow-sm z-1">
+    <div class="bg-secondary rounded-circle text-white d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
+        <i class="bi bi-person-fill fs-5"></i>
+    </div>
+    <h5 class="mb-0 fw-bold">@ViewBag.OtherUserName</h5>
+</div>
+
+<div class="flex-grow-1 p-4 overflow-auto" id="chatScrollArea" style="background-color: #f3f2f1;">
+    @if (Model.MessageList == null || !Model.MessageList.Any())
+    {
+        <div class="text-center text-muted mt-4"><small>No messages yet. Say hi!</small></div>
+    }
+    else
+    {
+        foreach (var msg in Model.MessageList)
+        {
+            bool isMine = msg.SenderId == ViewBag.CurrentUserId;
+
+            <div class="d-flex mb-3 @(isMine ? "justify-content-end" : "justify-content-start")">
+                <div class="p-2 rounded-3 shadow-sm" style="max-width: 75%; background-color: @(isMine ? "#0078d4" : "#ffffff"); color: @(isMine ? "#ffffff" : "#242424");">
+
+                    @if (!string.IsNullOrEmpty(msg.ImageUrl))
+                    {
+                        <img src="~/Images/@msg.ImageUrl" class="img-fluid rounded mb-2" style="max-height: 200px;" />
+                    }
+
+                    <div style="word-wrap: break-word;">@msg.Content</div>
+
+                    <div class="text-end mt-1" style="font-size: 0.7rem; opacity: 0.8;">
+                        @msg.SentAt.ToString("HH:mm")
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<div class="p-3 bg-white border-top">
+    <form id="sendMessageForm" class="d-flex align-items-center gap-2">
+        <input type="hidden" id="activeConversationId" value="@Model.Id" />
+
+        <button type="button" class="btn btn-light rounded-circle" title="Attach Image">
+            <i class="bi bi-paperclip fs-5"></i>
+        </button>
+
+        <input type="text" id="messageInput" class="form-control rounded-pill px-3" placeholder="Type a message..." autocomplete="off" required />
+
+        <button type="submit" class="btn btn-primary rounded-circle shadow-sm" style="width: 44px; height: 44px;">
+            <i class="bi bi-send-fill"></i>
+        </button>
+    </form>
+</div>
+
+<script>
+    $('#sendMessageForm').on('submit', function (e) {
+        e.preventDefault();
+        var text = $('#messageInput').val();
+        var convoId = $('#activeConversationId').val();
+
+        if(text.trim() === '') return;
+
+        $.post('@Url.Action("SendMessage", "Chats")', { conversationId: convoId, content: text }, function() {
+            loadMessages(convoId);
+        });
+    });
+</script>
