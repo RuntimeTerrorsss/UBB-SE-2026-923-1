@@ -1,4 +1,5 @@
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Sharing.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,11 +8,11 @@ namespace BookingBoardGames.Web.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService userService;
 
-        public AccountController(IUserRepository userRepository)
+        public AccountController(IUserService userService)
         {
-            _userRepository = userRepository;
+            userService = userService;
         }
 
         // Action methods here...
