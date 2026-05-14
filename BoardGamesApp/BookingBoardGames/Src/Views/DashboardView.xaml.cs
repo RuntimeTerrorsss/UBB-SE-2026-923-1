@@ -3,7 +3,7 @@
 // </copyright>
 
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Src.Views.ChatViews;
 using BookingBoardGames;
 using Microsoft.UI.Xaml;

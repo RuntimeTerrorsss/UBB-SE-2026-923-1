@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Src.Navigation;
-using BookingBoardGames.Src.Validators;
+using BookingBoardGames.Sharing.Validators;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="Root"
     xmlns:viewModels="using:BookingBoardGames.Src.ViewModels"
-    xmlns:shared="using:BookingBoardGames.Src.DTO"
+    xmlns:shared="using:BookingBoardGames.Sharing.DTO"
     xmlns:converters="using:BookingBoardGames.Src.Converters"
     mc:Ignorable="d">
 

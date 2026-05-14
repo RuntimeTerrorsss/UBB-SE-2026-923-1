@@ -262,7 +262,7 @@ namespace BookingBoardGames.Sharing.Services
             {
                 try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(0.1), token);
+                    await Task.Delay(TimeSpan.FromSeconds(0.1));
                     var fetchedConversations = await ConversationRepository.GetConversationsForUser(UserId);
 
                     foreach (var fetchedConv in fetchedConversations)

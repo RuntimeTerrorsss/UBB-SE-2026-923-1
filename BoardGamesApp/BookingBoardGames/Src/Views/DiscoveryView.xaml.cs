@@ -6,7 +6,7 @@ using System;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Sharing.DTO;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Src.ViewModels;
 using BookingBoardGames.Src.Views.ChatViews;
 using Microsoft.UI.Xaml;

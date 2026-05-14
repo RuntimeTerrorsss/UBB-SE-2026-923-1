@@ -26,8 +26,9 @@ public class ChatPageViewModel : ViewModelBase
     private string currentUsername = string.Empty;
 
     public ChatPageViewModel(int currentUser)
-   : this(currentUser, new ConversationService(App.ConversationRepository, currentUser))
+        : this(currentUser, new ConversationService(App.ConversationRepository, App.UserRepository, App.ConversationNotifier))
     {
+        this.conversationService.Initialize(currentUser);
     }
 
     public ChatPageViewModel(int currentUser, ConversationService service)

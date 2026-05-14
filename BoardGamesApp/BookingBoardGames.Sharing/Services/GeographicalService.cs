@@ -1,10 +1,9 @@
-﻿// <copyright file="GeographicalService.cs" company="PlaceholderCompany">
+// <copyright file="GeographicalService.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
 using System.Globalization;
 using BookingBoardGames.Data.Enum;
-using Windows.Storage;
 
 namespace BookingBoardGames.Sharing.Services
 {
@@ -138,8 +137,7 @@ namespace BookingBoardGames.Sharing.Services
 
             try
             {
-                StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/RO.txt"));
-                return (await FileIO.ReadLinesAsync(file)).ToList();
+                throw new FileNotFoundException($"Could not find Assets/RO.txt at {nextToExecutable}");
             }
             catch (Exception ex)
             {
