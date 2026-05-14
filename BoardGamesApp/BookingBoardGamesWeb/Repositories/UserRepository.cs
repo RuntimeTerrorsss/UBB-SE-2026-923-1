@@ -11,7 +11,6 @@ using BookingBoardGames.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using BCrypt.Net;
 
 namespace BookingBoardGames.Api.Repositories
 {
@@ -90,9 +89,12 @@ namespace BookingBoardGames.Api.Repositories
             if (user == null) return null;
 
 
-            bool isPasswordOk = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+            if (user.PasswordHash == password)
+            {
+                return user;
+            }
 
-            return isPasswordOk ? user : null;
+            return null;
         }
 
         public async Task<bool> Register(User newUser)
