@@ -5,7 +5,7 @@ using BookingBoardGames.Sharing.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
-string apiBaseUrl = "https://localhost:7027/";
+string apiBaseUrl = "https://localhost:7027/api/";
 
 // ADD AUTHENTICATION (Requirement: Guard from unauthorized users)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

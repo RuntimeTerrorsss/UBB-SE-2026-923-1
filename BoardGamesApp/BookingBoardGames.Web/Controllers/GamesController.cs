@@ -1,3 +1,4 @@
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Sharing.DTO;
 using BookingBoardGames.Sharing.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -11,10 +12,17 @@ namespace BookingBoardGames.Web.Controllers
     public class GamesController : Controller
     {
         private readonly InterfaceBookingService _bookingService;
+        private readonly InterfaceSearchAndFilterService _searchService;
 
-        public GamesController(InterfaceBookingService bookingService)
+        public GamesController(InterfaceBookingService bookingService, InterfaceSearchAndFilterService searchService)
         {
             _bookingService = bookingService;
+            _searchService = searchService;
+        }
+        public async Task<IActionResult> Index()
+        {
+            var games = await _searchService.SearchGamesByFilter(new FilterCriteria());
+            return View(games);
         }
 
         public async Task<IActionResult> Details(int id)
