@@ -14,8 +14,5 @@ namespace BookingBoardGames.Sharing.DTO
         public string Password { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
-        public string? PhoneNumber { get; set; }
-        public string? Street { get; set; }
-        public string? StreetNumber { get; set; }
     }
 }
