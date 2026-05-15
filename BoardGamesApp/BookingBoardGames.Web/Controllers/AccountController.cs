@@ -13,7 +13,7 @@ namespace BookingBoardGames.Web.Controllers
 
         public AccountController(IUserService userService)
         {
-            userService = userService;
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -34,21 +34,17 @@ namespace BookingBoardGames.Web.Controllers
                 Email = registeringUserViewModel.Email,
                 PasswordHash = registeringUserViewModel.Password,
                 City = registeringUserViewModel.City,
-                Country = registeringUserViewModel.Country,
-                PhoneNumber = registeringUserViewModel.PhoneNumber,
-                Street = registeringUserViewModel.Street,
-                StreetNumber = registeringUserViewModel.StreetNumber
+                Country = registeringUserViewModel.Country
             };
             var success = await userService.RegisterUserAsync(user);
 
             if (!success)
             {
-                ModelState.AddModelError("", "Registration failed. Try again.");
+                ModelState.AddModelError(string.Empty, "Registration failed. The username or email may already be taken.");
                 return View(registeringUserViewModel);
             }
 
             return RedirectToAction("Login");
         }
-        // Action methods here...
     }
 }
