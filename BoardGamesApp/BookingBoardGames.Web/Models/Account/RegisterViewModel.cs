@@ -32,9 +32,5 @@ namespace BookingBoardGames.Web.Models.Account
 
         [Required(ErrorMessage = "Country is required.")]
         public string Country { get; set; } = string.Empty;
-
-        public string? PhoneNumber { get; set; }
-        public string? Street { get; set; }
-        public string? StreetNumber { get; set; }
     }
 }
