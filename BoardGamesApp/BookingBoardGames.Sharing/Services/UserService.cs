@@ -1,4 +1,4 @@
-﻿using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +51,8 @@ namespace BookingBoardGames.Sharing.Services
             {
                 return false;
             }
+
+
 
             return await _userRepository.Register(newUser);
         }

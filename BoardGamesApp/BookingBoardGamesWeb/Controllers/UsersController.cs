@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingBoardGames.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _repo;
@@ -51,6 +51,27 @@ namespace BookingBoardGames.Api.Controllers
         {
             await _repo.UpdateBalance(id, newBalance);
             return NoContent();
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<User>> Login([FromBody] LoginRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.EmailOrUsername) || string.IsNullOrWhiteSpace(request.Password))
+            {
+                return BadRequest();
+            }
+
+            var user = await _repo.Login(request.EmailOrUsername, request.Password);
+            if (user == null) return Unauthorized();
+
+            return Ok(user);
+        }
+
+        public class LoginRequest
+        {
+            public string EmailOrUsername { get; set; } = string.Empty;
+
+            public string Password { get; set; } = string.Empty;
         }
     }
 }
