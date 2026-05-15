@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingBoardGames.Web.Controllers
 {
     [Authorize]
-    public class ChatsController : Controller
+    public class ChatsController : BaseController
     {
         private readonly IConversationService _conversationService;
 

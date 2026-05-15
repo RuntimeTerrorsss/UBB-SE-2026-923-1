@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingBoardGames.Web.Controllers
 {
     [Authorize]
-    public class PaymentController : Controller
+    public class PaymentController : BaseController
     {
         private readonly IPaymentService _paymentService;
 

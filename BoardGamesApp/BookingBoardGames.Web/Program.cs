@@ -61,6 +61,13 @@ builder.Services.AddScoped<IServicePayment, ServicePayment>();
 builder.Services.AddScoped<ICashPaymentMapper, CashPaymentMapper>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(2);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -97,6 +104,8 @@ app.Use(async (context, next) =>
     await next();
 });
 // ==========================================
+
+app.UseSession();
 
 app.UseAuthorization();
 
