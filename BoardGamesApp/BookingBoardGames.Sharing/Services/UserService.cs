@@ -41,12 +41,12 @@ namespace BookingBoardGames.Sharing.Services
 
         private bool AreFieldsEmpty(User newUser)
         {
-            return !string.IsNullOrEmpty(newUser.Username)
-                && !string.IsNullOrEmpty(newUser.DisplayName)
-                && !string.IsNullOrEmpty(newUser.Email)
-                && !string.IsNullOrEmpty(newUser.PasswordHash)
-                && !string.IsNullOrEmpty(newUser.City)
-                && !string.IsNullOrEmpty(newUser.Country);
+            return string.IsNullOrEmpty(newUser.Username)
+                || string.IsNullOrEmpty(newUser.DisplayName)
+                || string.IsNullOrEmpty(newUser.Email)
+                || string.IsNullOrEmpty(newUser.PasswordHash)
+                || string.IsNullOrEmpty(newUser.City)
+                || string.IsNullOrEmpty(newUser.Country);
         }
 
         public async Task<bool> RegisterUserAsync(User newUser)

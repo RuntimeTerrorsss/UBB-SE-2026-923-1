@@ -102,6 +102,8 @@ namespace BookingBoardGames.Api.Repositories
 
             if (exists) return false;
 
+            Console.WriteLine("--------------------------user can be created now");
+
             newUser.CreatedAt = DateTime.Now;
             await this.context.Users.AddAsync(newUser);
 
