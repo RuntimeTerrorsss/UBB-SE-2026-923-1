@@ -100,10 +100,13 @@ namespace BookingBoardGames.Api.Repositories
         public async Task<bool> Register(User newUser)
         {
             var exists = await this.context.Users
-                .AnyAsync(u => u.Username == newUser.Username || u.Email == newUser.Email);
+                .AnyAsync(user => user.Username == newUser.Username || user.Email == newUser.Email);
 
             if (exists) return false;
 
+            Console.WriteLine("--------------------------user can be created now");
+
+            newUser.CreatedAt = DateTime.Now;
             await this.context.Users.AddAsync(newUser);
 
             var result = await this.context.SaveChangesAsync();

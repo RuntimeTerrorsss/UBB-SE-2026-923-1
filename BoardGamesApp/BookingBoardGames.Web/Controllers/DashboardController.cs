@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingBoardGames.Web.Controllers
 {
     [Authorize]
-    public class DashboardController : Controller
+    public class DashboardController : BaseController
     {
         private readonly InterfaceSearchAndFilterService _searchService;
 

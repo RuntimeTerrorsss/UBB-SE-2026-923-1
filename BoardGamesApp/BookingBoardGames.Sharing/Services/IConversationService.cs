@@ -12,6 +12,7 @@ namespace BookingBoardGames.Sharing.Services
 {
     public interface IConversationService
     {
+        void Initialize(int userIdInput);
         void OnMessageReceived(Message message);
 
         void OnMessageUpdateReceived(Message message);

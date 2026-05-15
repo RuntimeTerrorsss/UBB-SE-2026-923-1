@@ -1,4 +1,4 @@
-﻿using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,20 +31,38 @@ namespace BookingBoardGames.Sharing.Services
 
             var user = await _userRepository.Login(identifier, password);
 
-            if (user != null && user.IsSuspended)
+            if (user == null)
             {
+                return null;
+            }
+
+            if (user.IsSuspended)
+            {
+
                 return null;
             }
 
             return user;
         }
 
+        private bool AreFieldsEmpty(User newUser)
+        {
+            return string.IsNullOrEmpty(newUser.Username)
+                || string.IsNullOrEmpty(newUser.DisplayName)
+                || string.IsNullOrEmpty(newUser.Email)
+                || string.IsNullOrEmpty(newUser.PasswordHash)
+                || string.IsNullOrEmpty(newUser.City)
+                || string.IsNullOrEmpty(newUser.Country);
+        }
+
         public async Task<bool> RegisterUserAsync(User newUser)
         {
-            if (string.IsNullOrEmpty(newUser.Email) || string.IsNullOrEmpty(newUser.Username))
+            if (AreFieldsEmpty(newUser))
             {
                 return false;
             }
+
+
 
             return await _userRepository.Register(newUser);
         }
