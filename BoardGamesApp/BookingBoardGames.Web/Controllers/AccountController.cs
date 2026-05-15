@@ -19,28 +19,28 @@ namespace BookingBoardGames.Web.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View(new LoginViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken] 
-        public async Task<IActionResult> Login(string identifier, string password)
+        public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
-            if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(password))
+            if (!ModelState.IsValid)
             {
-                ViewBag.Error = "Please complete all fields";
-                return View();
+                return View(loginViewModel);
             }
 
-            var user = await userService.LoginAsync(identifier, password);
+            var user = await userService.LoginAsync(loginViewModel.Identifier, loginViewModel.Password);
 
             if (user != null)
             {
                
                 return RedirectToAction("Index", "Home");
             }
-            ViewBag.Error = "Username/Email or password incorrect.";
-            return View();
+
+            ModelState.AddModelError(string.Empty, "Username/email or password incorrect.");
+            return View(loginViewModel);
         }
 
         [HttpGet]
