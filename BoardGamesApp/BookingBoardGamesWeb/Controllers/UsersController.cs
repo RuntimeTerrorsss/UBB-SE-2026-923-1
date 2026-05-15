@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingBoardGames.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")] // was api/
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _repo;
