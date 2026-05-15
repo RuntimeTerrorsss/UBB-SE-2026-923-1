@@ -89,7 +89,9 @@ public class UserAPIProxy : IUserRepository
 
     public async Task<bool> Register(User newUser)
     {
+        Console.WriteLine("here");
         var response = await this.httpClient.PostAsJsonAsync("users/register", newUser, JsonOptions);
+        Console.WriteLine("here2");
         return response.IsSuccessStatusCode;
     }
 }

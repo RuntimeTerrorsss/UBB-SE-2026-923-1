@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingBoardGames.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]")] // was api/
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _repo;
@@ -72,6 +72,17 @@ namespace BookingBoardGames.Api.Controllers
             public string EmailOrUsername { get; set; } = string.Empty;
 
             public string Password { get; set; } = string.Empty;
+        }
+
+        [HttpPost("register")]
+        public async Task<ActionResult> Register([FromBody] User newUser)
+        {
+            var success = await _repo.Register(newUser);
+            if (!success)
+            {
+                return BadRequest("Registration failed. Username/Email already exists.");
+            }
+            return Ok();
         }
     }
 }
