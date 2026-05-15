@@ -1,5 +1,6 @@
 using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Sharing.Services;
+using BookingBoardGames.Web.Helpers;
 using BookingBoardGames.Web.Models.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,12 +36,19 @@ namespace BookingBoardGames.Web.Controllers
 
             if (user != null)
             {
-               
+                SessionHelper.SetUser(HttpContext.Session, user.Id, user.Username, user.DisplayName);
                 return RedirectToAction("Index", "Home");
             }
 
             ModelState.AddModelError(string.Empty, "Username/email or password incorrect.");
             return View(loginViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            SessionHelper.Clear(HttpContext.Session);
+            return RedirectToAction("Login");
         }
 
         [HttpGet]
