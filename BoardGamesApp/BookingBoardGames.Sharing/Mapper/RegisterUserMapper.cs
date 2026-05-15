@@ -18,10 +18,7 @@ namespace BookingBoardGames.Sharing.Mapper
                 Email = registeringUserDTO.Email,
                 PasswordHash = registeringUserDTO.Password,
                 City = registeringUserDTO.City,
-                Country = registeringUserDTO.Country,
-                PhoneNumber = registeringUserDTO.PhoneNumber,
-                Street = registeringUserDTO.Street,
-                StreetNumber = registeringUserDTO.StreetNumber
+                Country = registeringUserDTO.Country
             };
         }
     }
