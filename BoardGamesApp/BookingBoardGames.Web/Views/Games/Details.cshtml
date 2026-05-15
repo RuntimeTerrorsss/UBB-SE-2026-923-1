@@ -14,10 +14,10 @@
 
     <div class="row">
         <div class="col-md-4">
-            @if (Model.Image != null && Model.Image.Length > 0)
+            @if (Model.ImageUrl != null && Model.ImageUrl.Length > 0)
             {
-            <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Image)"
-                 class="img-fluid rounded" alt="@Model.Name" />
+                <img src="@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Name"
+                     style="height:250px; object-fit:cover; width:100%;" />
             }
             else
             {
