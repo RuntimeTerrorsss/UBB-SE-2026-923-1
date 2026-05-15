@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingBoardGames.Web.Controllers
 {
     [Authorize]
-    public class GamesController : Controller
+    public class GamesController : BaseController
     {
         private readonly InterfaceBookingService _bookingService;
 
