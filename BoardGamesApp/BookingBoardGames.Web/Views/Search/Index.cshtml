@@ -207,20 +207,24 @@
 
                     <div class="mb-4">
                         <label class="filter-label">
-                            Max price: <strong id="priceLabel">@priceVal</strong> $/day
+                            Max price: <strong id="priceLabel">@(Model.MaximumPrice.HasValue ? ((int)Model.MaximumPrice.Value).ToString() : "any")</strong> $/day
                         </label>
                         <input type="range" class="form-range" min="1" max="100" step="1"
-                               name="MaximumPrice" value="@priceVal"
-                               oninput="document.getElementById('priceLabel').textContent = this.value" />
+                               id="priceRange"
+                               value="@(Model.MaximumPrice.HasValue ? (int)Model.MaximumPrice.Value : 100)"
+                               oninput="document.getElementById('priceLabel').textContent = this.value; document.getElementById('priceHidden').value = this.value;" />
+                        <input type="hidden" id="priceHidden" name="MaximumPrice" value="@(Model.MaximumPrice.HasValue ? ((int)Model.MaximumPrice.Value).ToString() : "")" />
                     </div>
 
                     <div class="mb-4">
                         <label class="filter-label">
-                            Min players: <strong id="playersLabel">@playersVal</strong>
+                            Min players: <strong id="playersLabel">@(Model.MinimumPlayers.HasValue? Model.MinimumPlayers.Value.ToString() : "any")</strong>
                         </label>
                         <input type="range" class="form-range" min="1" max="20" step="1"
-                               name="MinimumPlayers" value="@playersVal"
-                               oninput="document.getElementById('playersLabel').textContent = this.value" />
+                               id="playersRange"
+                               value="@(Model.MinimumPlayers.HasValue? Model.MinimumPlayers.Value : 1)"
+                               oninput="document.getElementById('playersLabel').textContent = this.value; document.getElementById('playersHidden').value = this.value;" />
+                        <input type="hidden" id="playersHidden" name="MinimumPlayers" value="@(Model.MinimumPlayers.HasValue? Model.MinimumPlayers.Value.ToString() : "")" />
                     </div>
 
                     <div class="mb-4">
@@ -249,7 +253,7 @@
                         </div>
                     </div>
 
-                    <input type="hidden" name="Page" value="1" />
+                    <input type="hidden" name="Page" id="pageInput" value="@Model.Page" />
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary-app">Apply filters</button>
@@ -320,7 +324,15 @@
 
 <script>
     function setPage(page) {
-        var input = document.querySelector('input[name="Page"]');
-        if (input) { input.value = page; }
+        document.getElementById('pageInput').value = page;
+        document.querySelector('form').submit();
     }
+
+    document.querySelector('form').addEventListener('submit', function (e) {
+        var clickedBtn = document.activeElement;
+        if (clickedBtn && clickedBtn.getAttribute('onclick') && clickedBtn.getAttribute('onclick').includes('setPage')) {
+            return; 
+        }
+        document.getElementById('pageInput').value = 1;
+    });
 </script>
