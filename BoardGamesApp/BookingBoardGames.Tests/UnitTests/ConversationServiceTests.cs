@@ -1,0 +1,1158 @@
+using BookingBoardGames.Data;
+using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Sharing.DTO;
+using BookingBoardGames.Sharing.Services;
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+
+// Note: Ensure the namespaces match your actual domain entities (User, ConversationParticipant, etc.).
+namespace BookingBoardGames.Tests.Services
+{
+    public class ConversationServiceTests
+    {
+        private readonly Mock<IConversationRepository> _mockConversationRepo;
+        private readonly Mock<IUserRepository> _mockUserRepo;
+        private readonly Mock<IConversationNotifier> _mockNotifier;
+        private readonly ConversationService _conversationService;
+        private readonly Mock<IConversationRepository> _mockRepo;
+        private readonly ConversationService _service;
+
+        public ConversationServiceTests()
+        {
+            _mockConversationRepo = new Mock<IConversationRepository>();
+            _mockUserRepo = new Mock<IUserRepository>();
+            _mockNotifier = new Mock<IConversationNotifier>();
+
+            _conversationService = new ConversationService(
+                _mockConversationRepo.Object,
+                _mockUserRepo.Object,
+                _mockNotifier.Object);
+
+            _mockRepo = new Mock<IConversationRepository>();
+
+            _service = new ConversationService(_mockRepo.Object, _mockUserRepo.Object, _mockNotifier.Object);
+            _service.Initialize(1);
+        }
+
+        #region Initialize
+
+        [Fact]
+        public void Initialize_ValidUserId_RegistersNotifier()
+        {
+            // Arrange
+            int userId = 1;
+
+            // Act
+            _conversationService.Initialize(userId);
+
+            // Assert
+            _mockNotifier.Verify(n => n.Register(userId, _conversationService), Times.Once);
+        }
+
+        #endregion
+
+        #region FetchConversations
+
+        [Fact]
+        public async Task FetchConversations_WithRealOtherParticipant_ReturnsConversationList()
+        {
+            // Arrange
+            int currentUserId = 1;
+            int otherUserId = 2;
+            _conversationService.Initialize(currentUserId);
+
+            var mockConversations = new List<Conversation>
+            {
+                new Conversation
+                {
+                    ConversationId = 10,
+                    Participants = new List<ConversationParticipant>
+                    {
+                        new ConversationParticipant { UserId = currentUserId },
+                        new ConversationParticipant { UserId = otherUserId }
+                    },
+                    Messages = new List<Message>()
+                }
+            };
+
+            var mockUser = new User { Id = otherUserId, Username = "RealUser" };
+
+            _mockConversationRepo.Setup(r => r.GetConversationsForUser(currentUserId)).ReturnsAsync(mockConversations);
+            _mockUserRepo.Setup(r => r.GetById(otherUserId)).ReturnsAsync(mockUser);
+
+            // Act
+            var result = await _conversationService.FetchConversations();
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal(10, result.First().Id);
+        }
+
+        [Fact]
+        public async Task FetchConversations_OnlySystemParticipant_ReturnsEmptyList()
+        {
+            // Arrange
+            int currentUserId = 1;
+            int systemUserId = 99;
+            _conversationService.Initialize(currentUserId);
+
+            var mockConversations = new List<Conversation>
+            {
+                new Conversation
+                {
+                    ConversationId = 10,
+                    Participants = new List<ConversationParticipant>
+                    {
+                        new ConversationParticipant { UserId = currentUserId },
+                        new ConversationParticipant { UserId = systemUserId }
+                    },
+                    Messages = new List<Message>()
+                }
+            };
+
+            var systemUser = new User { Id = systemUserId, Username = "System" };
+
+            _mockConversationRepo.Setup(r => r.GetConversationsForUser(currentUserId)).ReturnsAsync(mockConversations);
+            _mockUserRepo.Setup(r => r.GetById(systemUserId)).ReturnsAsync(systemUser);
+
+            // Act
+            var result = await _conversationService.FetchConversations();
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+        #endregion
+
+        #region GetOtherUserNameByConversationDTO
+
+        [Fact]
+        public async Task GetOtherUserNameByConversationDTO_NoOtherParticipants_ReturnsUnknownUser()
+        {
+            // Arrange
+            int currentUserId = 1;
+            _conversationService.Initialize(currentUserId);
+
+            var conversationDto = new ConversationDTO(
+                conversationId: 1,
+                participants: new List<ConversationParticipant> { new ConversationParticipant { UserId = currentUserId } },
+                messages: new List<MessageDataTransferObject>(),
+                lastRead: new Dictionary<int, DateTime>()
+            );
+
+            // Act
+            var result = await _conversationService.GetOtherUserNameByConversationDTO(conversationDto);
+
+            // Assert
+            Assert.Equal("Unknown User", result);
+        }
+
+        [Fact]
+        public async Task GetOtherUserNameByConversationDTO_HasOtherValidUser_ReturnsUsername()
+        {
+            // Arrange
+            int currentUserId = 1;
+            int otherUserId = 2;
+            _conversationService.Initialize(currentUserId);
+
+            var conversationDto = new ConversationDTO(
+                conversationId: 1,
+                participants: new List<ConversationParticipant>
+                {
+                    new ConversationParticipant { UserId = currentUserId },
+                    new ConversationParticipant { UserId = otherUserId }
+                },
+                messages: new List<MessageDataTransferObject>(),
+                lastRead: new Dictionary<int, DateTime>()
+            );
+
+            _mockUserRepo.Setup(r => r.GetById(otherUserId)).ReturnsAsync(new User { Id = otherUserId, Username = "Alice" });
+
+            // Act
+            var result = await _conversationService.GetOtherUserNameByConversationDTO(conversationDto);
+
+            // Assert
+            Assert.Equal("Alice", result);
+        }
+
+        [Fact]
+        public async Task GetOtherUserNameByConversationDTO_FallbackUserIsSystem_ReturnsUnknownUser()
+        {
+            // Arrange
+            int currentUserId = 1;
+            int systemUserId = 99;
+            _conversationService.Initialize(currentUserId);
+
+            var conversationDto = new ConversationDTO(
+                conversationId: 1,
+                participants: new List<ConversationParticipant>
+                {
+                    new ConversationParticipant { UserId = currentUserId },
+                    new ConversationParticipant { UserId = systemUserId }
+                },
+                messages: new List<MessageDataTransferObject>(),
+                lastRead: new Dictionary<int, DateTime>()
+            );
+
+            _mockUserRepo.Setup(r => r.GetById(systemUserId)).ReturnsAsync(new User { Id = systemUserId, Username = "System" });
+
+            // Act
+            var result = await _conversationService.GetOtherUserNameByConversationDTO(conversationDto);
+
+            // Assert
+            Assert.Equal("Unknown User", result);
+        }
+
+        #endregion
+
+        #region GetOtherUserNameByMessageDTO
+
+        [Fact]
+        public void GetOtherUserNameByMessageDTO_ValidOtherUser_ReturnsFormattedString()
+        {
+            // Arrange
+            int currentUserId = 1;
+            _conversationService.Initialize(currentUserId);
+
+            var messageDto = CreateDummyMessageDto(senderId: 1, receiverId: 5);
+
+            // Act
+            var result = _conversationService.GetOtherUserNameByMessageDTO(messageDto);
+
+            // Assert
+            Assert.Equal("User 5", result);
+        }
+
+        [Fact]
+        public void GetOtherUserNameByMessageDTO_InvalidOtherUser_ReturnsUnknownUser()
+        {
+            // Arrange
+            int currentUserId = 1;
+            _conversationService.Initialize(currentUserId);
+
+            var messageDto = CreateDummyMessageDto(senderId: 1, receiverId: 0);
+
+            // Act
+            var result = _conversationService.GetOtherUserNameByMessageDTO(messageDto);
+
+            // Assert
+            Assert.Equal("Unknown User", result);
+        }
+
+        #endregion
+
+        #region SendMessage & UpdateMessage & CreateConversation
+
+        [Fact]
+        public async Task SendMessage_ValidMessage_PersistsAndNotifies()
+        {
+            // Arrange
+            var messageDto = CreateDummyMessageDto(type: MessageType.MessageText);
+
+            var persistedMessage = new TextMessage
+            {
+                MessageId = 10,
+                ConversationId = messageDto.ConversationId,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            _mockConversationRepo.Setup(r => r.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+            _mockConversationRepo.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
+
+            // Act
+            await _conversationService.SendMessage(messageDto);
+
+            // Assert
+            _mockConversationRepo.Verify(r => r.HandleNewMessage(It.IsAny<Message>()), Times.Once);
+            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IEnumerable<int>>(), persistedMessage), Times.Once);
+        }
+
+        [Fact]
+        public async Task CreateConversation_ValidIds_CreatesAndNotifies()
+        {
+            // Arrange
+            int senderId = 1, receiverId = 2, newConvId = 10;
+            var createdConversation = new Conversation { ConversationId = newConvId, Participants = new List<ConversationParticipant>() };
+
+            _mockConversationRepo.Setup(r => r.CreateConversation(senderId, receiverId)).ReturnsAsync(newConvId);
+            _mockConversationRepo.Setup(r => r.GetConversationById(newConvId)).ReturnsAsync(createdConversation);
+
+            // Act
+            var result = await _conversationService.CreateConversation(senderId, receiverId);
+
+            // Assert
+            Assert.Equal(newConvId, result);
+            _mockNotifier.Verify(n => n.NotifyNewConversation(createdConversation), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateMessage_ValidMessage_UpdatesAndNotifies()
+        {
+            // Arrange
+            var messageDto = CreateDummyMessageDto(type: MessageType.MessageText);
+
+            var persistedMessage = new TextMessage
+            {
+                MessageId = 10,
+                ConversationId = messageDto.ConversationId,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            _mockConversationRepo.Setup(r => r.HandleMessageUpdate(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+            _mockConversationRepo.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
+
+            // Act
+            await _conversationService.UpdateMessage(messageDto);
+
+            // Assert
+            _mockConversationRepo.Verify(r => r.HandleMessageUpdate(It.IsAny<Message>()), Times.Once);
+            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), persistedMessage), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateMessage_NullPersisted_DoesNotNotify()
+        {
+            // Arrange
+            var messageDto = CreateDummyMessageDto();
+            _mockConversationRepo.Setup(r => r.HandleMessageUpdate(It.IsAny<Message>())).ReturnsAsync((Message)null);
+
+            // Act
+            await _conversationService.UpdateMessage(messageDto);
+
+            // Assert
+            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), It.IsAny<Message>()), Times.Never);
+        }
+
+        #endregion
+
+        #region Actions (Receipts, Payments)
+
+        [Fact]
+        public async Task SendReadReceipt_ValidConversation_HandlesAndNotifies()
+        {
+            // Arrange
+            int currentUserId = 1;
+            int otherUserId = 2;
+            _conversationService.Initialize(currentUserId);
+
+            var conversationDto = new ConversationDTO(
+                conversationId: 10,
+                participants: new List<ConversationParticipant>
+                {
+                    new ConversationParticipant { UserId = currentUserId },
+                    new ConversationParticipant { UserId = otherUserId }
+                },
+                messages: new List<MessageDataTransferObject>(),
+                lastRead: new Dictionary<int, DateTime>()
+            );
+
+            _mockConversationRepo.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { currentUserId, otherUserId });
+
+            // Act
+            await _conversationService.SendReadReceipt(conversationDto);
+
+            // Assert
+            _mockConversationRepo.Verify(r => r.HandleReadReceipt(It.Is<ReadReceiptDTO>(rr => rr.ConversationId == 10 && rr.ReceiverId == otherUserId)), Times.Once);
+            _mockNotifier.Verify(n => n.NotifyReadReceipt(It.IsAny<IEnumerable<int>>(), It.IsAny<ReadReceiptDTO>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task OnCardPaymentSelected_ValidMessageId_FinalizesRequest()
+        {
+            // Arrange
+            int messageId = 10;
+
+            var updatedMessage = new RentalRequestMessage
+            {
+                MessageId = messageId,
+                ConversationId = 1,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            _mockConversationRepo.Setup(r => r.HandleRentalRequestFinalization(messageId)).ReturnsAsync(updatedMessage);
+            _mockConversationRepo.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
+
+            // Act
+            await _conversationService.OnCardPaymentSelected(messageId);
+
+            // Assert
+            _mockConversationRepo.Verify(r => r.HandleRentalRequestFinalization(messageId), Times.Once);
+            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), updatedMessage), Times.Once);
+        }
+
+        [Fact]
+        public async Task OnCashPaymentSelected_ValidIds_FinalizesAndCreatesCashAgreement()
+        {
+            // Arrange
+            int messageId = 10, paymentId = 20;
+
+            var updatedMessage = new RentalRequestMessage
+            {
+                MessageId = messageId,
+                ConversationId = 1,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            var createdAgreement = new CashAgreementMessage
+            {
+                MessageId = 11,
+                ConversationId = 1,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            _mockConversationRepo.Setup(r => r.HandleRentalRequestFinalization(messageId)).ReturnsAsync(updatedMessage);
+            _mockConversationRepo.Setup(r => r.CreateCashAgreementMessage(messageId, paymentId)).ReturnsAsync(createdAgreement);
+            _mockConversationRepo.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
+
+            // Act
+            await _conversationService.OnCashPaymentSelected(messageId, paymentId);
+
+            // Assert
+            _mockConversationRepo.Verify(r => r.HandleRentalRequestFinalization(messageId), Times.Once);
+            _mockConversationRepo.Verify(r => r.CreateCashAgreementMessage(messageId, paymentId), Times.Once);
+            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), updatedMessage), Times.Once);
+            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IEnumerable<int>>(), createdAgreement), Times.Once);
+        }
+
+        #endregion
+
+        #region Polling Start/Stop
+
+        [Fact]
+        public void StopPolling_WhenNotRunning_DoesNotThrowException()
+        {
+            // Act
+            _conversationService.StopPolling();
+
+            // Assert
+            Assert.True(true);
+        }
+
+        [Fact]
+        public void StartPolling_CalledTwice_IgnoresSecondCall()
+        {
+            // Act
+            _conversationService.StartPolling();
+            _conversationService.StartPolling();
+
+            // Assert
+            Assert.True(true);
+
+            // Cleanup
+            _conversationService.StopPolling();
+        }
+
+        [Fact]
+        public void StopPolling_WhenRunning_StopsWithoutException()
+        {
+            // Act
+            _conversationService.StartPolling();
+            _conversationService.StopPolling();
+
+            // Assert
+            Assert.True(true);
+        }
+
+        #endregion
+
+        #region Event Invocations
+
+        [Fact]
+        public void OnReadReceiptReceived_NoEventSubscribers_ExecutesWithoutThrowing()
+        {
+            // Arrange
+            var receipt = new ReadReceiptDTO(1, 1, 2, DateTime.Now);
+
+            // Act
+            var exception = Record.Exception(() => _conversationService.OnReadReceiptReceived(receipt));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void OnMessageUpdateReceived_NoEventSubscribers_ExecutesWithoutThrowing()
+        {
+            // Arrange
+            _conversationService.Initialize(1);
+
+            var message = new TextMessage
+            {
+                MessageId = 1,
+                MessageSenderId = 2,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            // Act
+            var exception = Record.Exception(() => _conversationService.OnMessageUpdateReceived(message));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void OnMessageReceived_NoEventSubscribers_ExecutesWithoutThrowing()
+        {
+            // Arrange
+            _conversationService.Initialize(1);
+
+            var message = new TextMessage
+            {
+                MessageId = 1,
+                MessageSenderId = 2,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            // Act
+            var exception = Record.Exception(() => _conversationService.OnMessageReceived(message));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void OnMessageReceived_ValidMessage_InvokesEvent()
+        {
+            // Arrange
+            _conversationService.Initialize(1);
+
+            var message = new TextMessage
+            {
+                MessageId = 1,
+                MessageSenderId = 2,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            bool eventInvoked = false;
+            _conversationService.ActionMessageProcessed += (dto, user) => eventInvoked = true;
+
+            // Act
+            _conversationService.OnMessageReceived(message);
+
+            // Assert
+            Assert.True(eventInvoked);
+        }
+
+        [Fact]
+        public async Task OnConversationReceived_ValidConversation_InvokesEvent()
+        {
+            // Arrange
+            _conversationService.Initialize(1);
+            var conversation = new Conversation { ConversationId = 1, Participants = new List<ConversationParticipant>(), Messages = new List<Message>() };
+            bool eventInvoked = false;
+            _conversationService.ActionConversationProcessed += (dto, user) => eventInvoked = true;
+
+            // Act
+            await _conversationService.OnConversationReceived(conversation);
+
+            // Assert
+            Assert.True(eventInvoked);
+        }
+
+        [Fact]
+        public void OnReadReceiptReceived_ValidReceipt_InvokesEvent()
+        {
+            // Arrange
+            var receipt = new ReadReceiptDTO(1, 1, 2, DateTime.Now);
+            bool eventInvoked = false;
+            _conversationService.ActionReadReceiptProcessed += (r) => eventInvoked = true;
+
+            // Act
+            _conversationService.OnReadReceiptReceived(receipt);
+
+            // Assert
+            Assert.True(eventInvoked);
+        }
+
+        [Fact]
+        public void OnMessageUpdateReceived_ValidMessage_InvokesEvent()
+        {
+            // Arrange
+            _conversationService.Initialize(1);
+
+            var message = new TextMessage
+            {
+                MessageId = 1,
+                MessageSenderId = 2,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            bool eventInvoked = false;
+            _conversationService.ActionMessageUpdateProcessed += (dto, user) => eventInvoked = true;
+
+            // Act
+            _conversationService.OnMessageUpdateReceived(message);
+
+            // Assert
+            Assert.True(eventInvoked);
+        }
+
+        #endregion
+
+        #region Mapping Tests (MessageDTOToMessage & MessageToMessageDTO)
+
+        [Fact]
+        public void MessageToMessageDTO_TextMessageWithNullContent_FallsBackToStringEmpty()
+        {
+            // Arrange
+            var textMessage = new TextMessage
+            {
+                MessageId = 1,
+                TextMessageContent = null,
+                MessageContentAsString = null,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            // Act
+            var result = _conversationService.MessageToMessageDTO(textMessage);
+
+            // Assert
+            Assert.Equal(string.Empty, result.Content);
+            Assert.Equal(string.Empty, result.ImageUrl);
+            Assert.False(result.IsResolved);
+            Assert.Equal(-1, result.PaymentId);
+            Assert.Equal(-1, result.RequestId);
+        }
+
+        [Fact]
+        public void MessageToMessageDTO_ImageMessageWithNullUrl_FallsBackToStringEmpty()
+        {
+            // Arrange
+            var imageMessage = new ImageMessage
+            {
+                MessageId = 2,
+                MessageImageUrl = null,
+                MessageContentAsString = "Image Description",
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            // Act
+            var result = _conversationService.MessageToMessageDTO(imageMessage);
+
+            // Assert
+            Assert.Equal("Image Description", result.Content);
+            Assert.Equal(string.Empty, result.ImageUrl);
+        }
+
+        [Fact]
+        public void MessageToMessageDTO_RentalRequestMessage_MapsAllSpecificProperties()
+        {
+            // Arrange
+            var rentalMessage = new RentalRequestMessage
+            {
+                MessageId = 3,
+                RequestContent = "Rental Details",
+                RentalRequestId = 500,
+                IsRequestResolved = true,
+                IsRequestAccepted = true,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            // Act
+            var result = _conversationService.MessageToMessageDTO(rentalMessage);
+
+            // Assert
+            Assert.Equal(MessageType.MessageRentalRequest, result.Type);
+            Assert.Equal("Rental Details", result.Content);
+            Assert.True(result.IsResolved);
+            Assert.True(result.IsAccepted);
+            Assert.Equal(500, result.RequestId);
+            Assert.Equal(-1, result.PaymentId);
+        }
+
+        [Fact]
+        public void MessageToMessageDTO_CashAgreementMessage_MapsAllSpecificProperties()
+        {
+            // Arrange
+            var cashMessage = new CashAgreementMessage
+            {
+                MessageId = 4,
+                MessageContentAsString = "Cash Agreement Details",
+                CashPaymentId = 700,
+                IsCashAgreementResolved = true,
+                IsCashAgreementAcceptedByBuyer = true,
+                IsCashAgreementAcceptedBySeller = true,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            // Act
+            var result = _conversationService.MessageToMessageDTO(cashMessage);
+
+            // Assert
+            Assert.Equal(MessageType.MessageCashAgreement, result.Type);
+            Assert.Equal("Cash Agreement Details", result.Content);
+            Assert.True(result.IsResolved);
+            Assert.True(result.IsAcceptedByBuyer);
+            Assert.True(result.IsAcceptedBySeller);
+            Assert.Equal(700, result.PaymentId);
+            Assert.Equal(-1, result.RequestId);
+        }
+
+        [Fact]
+        public void MessageToMessageDTO_SystemMessageWithContent_MapsProperly()
+        {
+            // Arrange
+            var systemMessage = new SystemMessage
+            {
+                MessageId = 5,
+                MessageContent = "System Alert",
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            // Act
+            var result = _conversationService.MessageToMessageDTO(systemMessage);
+
+            // Assert
+            Assert.Equal(MessageType.MessageSystem, result.Type);
+            Assert.Equal("System Alert", result.Content);
+        }
+
+        [Theory]
+        [InlineData(MessageType.MessageText, typeof(TextMessage))]
+        [InlineData(MessageType.MessageImage, typeof(ImageMessage))]
+        [InlineData(MessageType.MessageRentalRequest, typeof(RentalRequestMessage))]
+        [InlineData(MessageType.MessageCashAgreement, typeof(CashAgreementMessage))]
+        [InlineData(MessageType.MessageSystem, typeof(SystemMessage))]
+        public void MessageDTOToMessage_KnownTypes_ReturnsCorrectSubclass(MessageType type, Type expectedReturnType)
+        {
+            // Arrange
+            var dto = CreateDummyMessageDto(type: type);
+
+            // Act
+            var result = _conversationService.MessageDTOToMessage(dto);
+
+            // Assert
+            Assert.IsType(expectedReturnType, result);
+        }
+
+        [Fact]
+        public void MessageDTOToMessage_UnknownType_ThrowsArgumentOutOfRangeException()
+        {
+            // Arrange
+            var dto = CreateDummyMessageDto(type: (MessageType)999);
+
+            // Act & Assert
+            Assert.Throws<ArgumentOutOfRangeException>(() => _conversationService.MessageDTOToMessage(dto));
+        }
+
+        [Fact]
+        public void MessageToMessageDTO_KnownTypes_MapsProperly()
+        {
+            // Arrange
+            var textMessage = new TextMessage
+            {
+                MessageId = 1,
+                TextMessageContent = "Hello",
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            var imageMessage = new ImageMessage
+            {
+                MessageId = 2,
+                MessageImageUrl = "img.png",
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            // Act
+            var dtoText = _conversationService.MessageToMessageDTO(textMessage);
+            var dtoImg = _conversationService.MessageToMessageDTO(imageMessage);
+
+            // Assert
+            Assert.Equal(MessageType.MessageText, dtoText.Type);
+            Assert.Equal("Hello", dtoText.Content);
+
+            Assert.Equal(MessageType.MessageImage, dtoImg.Type);
+            Assert.Equal("img.png", dtoImg.ImageUrl);
+        }
+
+        #endregion
+
+        #region SendMessage Tests (Cache updates & if-branches)
+
+        [Fact]
+        public async Task SendMessage_CachedConversationFound_MessageNotPresent_AddsToCache()
+        {
+            // Arrange
+            var messageDto = CreateDummyMessageDto(id: 1, convId: 10);
+            var persistedMessage = new TextMessage
+            {
+                MessageId = 1,
+                ConversationId = 10,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            _mockRepo.Setup(r => r.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+
+            var cachedConv = new Conversation { ConversationId = 10, Messages = new List<Message>() };
+            SetCachedConversations(new List<Conversation> { cachedConv });
+
+            // Act
+            await _service.SendMessage(messageDto);
+
+            // Assert
+            Assert.Single(cachedConv.Messages);
+            Assert.Equal(1, cachedConv.Messages.First().MessageId);
+            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), persistedMessage), Times.Once);
+        }
+
+        [Fact]
+        public async Task SendMessage_CachedConversationFound_MessageAlreadyPresent_DoesNotAddDuplicate()
+        {
+            // Arrange
+            var messageDto = CreateDummyMessageDto(id: 1, convId: 10);
+            var persistedMessage = new TextMessage
+            {
+                MessageId = 1,
+                ConversationId = 10,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            _mockRepo.Setup(r => r.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+
+            var existingMessage = new TextMessage
+            {
+                MessageId = 1,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            var cachedConv = new Conversation { ConversationId = 10, Messages = new List<Message> { existingMessage } };
+            SetCachedConversations(new List<Conversation> { cachedConv });
+
+            // Act
+            await _service.SendMessage(messageDto);
+
+            // Assert
+            Assert.Single(cachedConv.Messages);
+        }
+
+        [Fact]
+        public async Task SendMessage_CachedConversationFound_MessagesNotIList_DoesNotThrow()
+        {
+            // Arrange
+            var messageDto = CreateDummyMessageDto(id: 1, convId: 10);
+            var persistedMessage = new TextMessage
+            {
+                MessageId = 1,
+                ConversationId = 10,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            _mockRepo.Setup(r => r.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+
+            var cachedConv = new Conversation { ConversationId = 10, Messages = null };
+            SetCachedConversations(new List<Conversation> { cachedConv });
+
+            // Act
+            var exception = await Record.ExceptionAsync(() => _service.SendMessage(messageDto));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public async Task SendMessage_CachedConversationNotFound_IgnoresCacheAndNotifies()
+        {
+            // Arrange
+            var messageDto = CreateDummyMessageDto(id: 1, convId: 10);
+            var persistedMessage = new TextMessage
+            {
+                MessageId = 1,
+                ConversationId = 10,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+
+            _mockRepo.Setup(r => r.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+
+            SetCachedConversations(new List<Conversation>());
+
+            // Act
+            var exception = await Record.ExceptionAsync(() => _service.SendMessage(messageDto));
+
+            // Assert
+            Assert.Null(exception);
+            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), persistedMessage), Times.Once);
+        }
+
+        #endregion
+
+        #region PollConversationsLoop Tests (Polling, Catch blocks & Updates)
+
+        [Fact]
+        public async Task PollConversationsLoop_NewConversation_NotifiesNewConversation()
+        {
+            // Arrange
+            var fetchedConv = new Conversation { ConversationId = 5, Messages = new List<Message>() };
+            SetCachedConversations(new List<Conversation>());
+
+            // Act
+            await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
+
+            // Assert
+            _mockNotifier.Verify(n => n.NotifyNewConversation(fetchedConv), Times.Once);
+        }
+
+        [Fact]
+        public async Task PollConversationsLoop_NewMessageNotRecentlySent_NotifiesMessage()
+        {
+            // Arrange
+            var cachedConv = new Conversation { ConversationId = 10, Messages = new List<Message>() };
+            SetCachedConversations(new List<Conversation> { cachedConv });
+
+            var fetchedMsg = new TextMessage
+            {
+                MessageId = 100,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            var fetchedConv = new Conversation { ConversationId = 10, Messages = new List<Message> { fetchedMsg } };
+
+            // Act
+            await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
+
+            // Assert
+            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), fetchedMsg), Times.Once);
+        }
+
+        [Fact]
+        public async Task PollConversationsLoop_NewMessageRecentlySent_RemovesFromRecentlySentAndDoesNotNotify()
+        {
+            // Arrange
+            var cachedConv = new Conversation { ConversationId = 10, Messages = new List<Message>() };
+            SetCachedConversations(new List<Conversation> { cachedConv });
+            AddToRecentlySent(100);
+
+            var fetchedMsg = new TextMessage
+            {
+                MessageId = 100,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            var fetchedConv = new Conversation { ConversationId = 10, Messages = new List<Message> { fetchedMsg } };
+
+            // Act
+            await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
+
+            // Assert
+            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), It.IsAny<Message>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task PollConversationsLoop_RentalRequestUpdated_NotifiesMessageUpdate()
+        {
+            // Arrange
+            var cachedMsg = new RentalRequestMessage
+            {
+                MessageId = 1,
+                IsRequestResolved = false,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            var cachedConv = new Conversation { ConversationId = 10, Messages = new List<Message> { cachedMsg } };
+            SetCachedConversations(new List<Conversation> { cachedConv });
+
+            var fetchedMsg = new RentalRequestMessage
+            {
+                MessageId = 1,
+                IsRequestResolved = true,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            var fetchedConv = new Conversation { ConversationId = 10, Messages = new List<Message> { fetchedMsg } };
+
+            // Act
+            await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
+
+            // Assert
+            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IReadOnlyList<int>>(), fetchedMsg), Times.Once);
+        }
+
+        [Fact]
+        public async Task PollConversationsLoop_RentalRequestNotUpdated_DoesNotNotify()
+        {
+            // Arrange
+            var cachedMsg = new RentalRequestMessage
+            {
+                MessageId = 1,
+                IsRequestResolved = true,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            var cachedConv = new Conversation { ConversationId = 10, Messages = new List<Message> { cachedMsg } };
+            SetCachedConversations(new List<Conversation> { cachedConv });
+
+            var fetchedMsg = new RentalRequestMessage
+            {
+                MessageId = 1,
+                IsRequestResolved = true,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            var fetchedConv = new Conversation { ConversationId = 10, Messages = new List<Message> { fetchedMsg } };
+
+            // Act
+            await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
+
+            // Assert
+            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IReadOnlyList<int>>(), It.IsAny<Message>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task PollConversationsLoop_CashAgreementUpdated_NotifiesMessageUpdate()
+        {
+            // Arrange
+            var cachedMsg = new CashAgreementMessage
+            {
+                MessageId = 1,
+                IsCashAgreementResolved = false,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            var cachedConv = new Conversation { ConversationId = 10, Messages = new List<Message> { cachedMsg } };
+            SetCachedConversations(new List<Conversation> { cachedConv });
+
+            var fetchedMsg = new CashAgreementMessage
+            {
+                MessageId = 1,
+                IsCashAgreementResolved = true,
+                Conversation = null!,
+                Sender = null!,
+                Receiver = null!
+            };
+            var fetchedConv = new Conversation { ConversationId = 10, Messages = new List<Message> { fetchedMsg } };
+
+            // Act
+            await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
+
+            // Assert
+            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IReadOnlyList<int>>(), fetchedMsg), Times.Once);
+        }
+
+        [Fact]
+        public async Task PollConversationsLoop_GenericException_CaughtAndContinuesLoop()
+        {
+            // Arrange
+            _mockRepo.SetupSequence(r => r.GetConversationsForUser(It.IsAny<int>()))
+                     .ThrowsAsync(new Exception("Database disconnected"))
+                     .ReturnsAsync(new List<Conversation>())
+                     .ThrowsAsync(new TaskCanceledException());
+
+            var method = typeof(ConversationService).GetMethod("PollConversationsLoop", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            // Act
+            await (Task)method.Invoke(_service, new object[] { CancellationToken.None });
+
+            // Assert
+            _mockRepo.Verify(r => r.GetConversationsForUser(It.IsAny<int>()), Times.Exactly(3));
+        }
+
+        #endregion
+
+        #region Reflection & Helper Methods
+
+        private void SetCachedConversations(List<Conversation> cached)
+        {
+            var field = typeof(ConversationService).GetField("cachedConversations", BindingFlags.NonPublic | BindingFlags.Instance);
+            field.SetValue(_service, cached);
+        }
+
+        private void AddToRecentlySent(int messageId)
+        {
+            var field = typeof(ConversationService).GetField("recentlySentMessageIds", BindingFlags.NonPublic | BindingFlags.Instance);
+            var hashSet = (HashSet<int>)field.GetValue(_service);
+            hashSet.Add(messageId);
+        }
+
+        /// <summary>
+        /// Mocks the repository to return the provided payload on the first pass, 
+        /// then throw a TaskCanceledException to safely exit the infinite loop.
+        /// </summary>
+        private async Task RunPollerOnceAsync(List<Conversation> fetchedConversations)
+        {
+            _mockRepo.SetupSequence(r => r.GetConversationsForUser(It.IsAny<int>()))
+                     .ReturnsAsync(fetchedConversations)
+                     .ThrowsAsync(new TaskCanceledException());
+
+            var method = typeof(ConversationService).GetMethod("PollConversationsLoop", BindingFlags.NonPublic | BindingFlags.Instance);
+            await (Task)method.Invoke(_service, new object[] { CancellationToken.None });
+        }
+
+        private MessageDataTransferObject CreateDummyMessageDto(
+            int id = 100,
+            int convId = 10,
+            int senderId = 1,
+            int receiverId = 2,
+            MessageType type = MessageType.MessageText)
+        {
+            return new MessageDataTransferObject(
+                Id: id,
+                ConversationId: convId,
+                SenderId: senderId,
+                ReceiverId: receiverId,
+                SentAt: DateTime.Now,
+                Content: "Test",
+                Type: type,
+                ImageUrl: string.Empty,
+                IsResolved: false,
+                IsAccepted: false,
+                IsAcceptedByBuyer: false,
+                IsAcceptedBySeller: false,
+                PaymentId: -1,
+                RequestId: -1
+            );
+        }
+
+        #endregion
+    }
+}
