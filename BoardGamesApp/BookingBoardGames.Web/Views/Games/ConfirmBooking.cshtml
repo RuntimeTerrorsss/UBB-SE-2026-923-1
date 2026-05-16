@@ -1,0 +1,84 @@
+@model BookingDTO
+@using BookingBoardGames.Sharing.DTO
+
+@{
+    ViewData["Title"] = "Confirm Booking";
+    DateTime startDate = (DateTime)ViewBag.StartDate;
+    DateTime endDate = (DateTime)ViewBag.EndDate;
+    decimal totalPrice = (decimal)ViewBag.TotalPrice;
+    int totalDays = (int)ViewBag.TotalDays;
+}
+
+<div class="container mt-4">
+    <h2>Confirm Booking</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Booking Summary</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <th>Game</th>
+                            <td>@Model.Name</td>
+                        </tr>
+                        <tr>
+                            <th>Owner</th>
+                            <td>@Model.DisplayName</td>
+                        </tr>
+                        <tr>
+                            <th>City</th>
+                            <td>@Model.City</td>
+                        </tr>
+                        <tr>
+                            <th>Start Date</th>
+                            <td>@startDate.ToShortDateString()</td>
+                        </tr>
+                        <tr>
+                            <th>End Date</th>
+                            <td>@endDate.ToShortDateString()</td>
+                        </tr>
+                        <tr>
+                            <th>Total Days</th>
+                            <td>@totalDays</td>
+                        </tr>
+                        <tr>
+                            <th>Price per Day</th>
+                            <td>@Model.Price.ToString("C")</td>
+                        </tr>
+                        <tr class="table-success">
+                            <th>Total Price</th>
+                            <td><strong>@totalPrice.ToString("C")</strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Name"
+                     style="height:250px; object-fit:cover; width:100%;" />
+            }
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <form asp-action="ConfirmBooking" asp-route-id="@Model.GameId" method="post">
+            <input type="hidden" name="startDate" value="@startDate.ToString("yyyy-MM-dd")" />
+            <input type="hidden" name="endDate" value="@endDate.ToString("yyyy-MM-dd")" />
+            <input type="hidden" name="confirm" value="true" />
+
+            <button type="submit" class="btn btn-success btn-lg me-2">
+                Confirm Booking
+            </button>
+            <a asp-action="Details" asp-route-id="@Model.GameId" class="btn btn-outline-secondary btn-lg">
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>
