@@ -52,8 +52,10 @@ builder.Services.AddScoped<ICardPaymentService, CardPaymentService>();
 builder.Services.AddScoped<ICashPaymentService, CashPaymentService>();
 builder.Services.AddScoped<IConversationNotifier, ConversationNotifier>();
 builder.Services.AddScoped<IConversationService, ConversationService>();
-builder.Services.AddScoped<InterfaceGeographicalService, GeographicalService>();
-builder.Services.AddScoped<IMapService, MapService>();
+builder.Services.AddSingleton<InterfaceGeographicalService>(provider =>
+{
+    return GeographicalService.LoadFromFileAsync().GetAwaiter().GetResult();
+}); builder.Services.AddScoped<IMapService, MapService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
 builder.Services.AddScoped<IRentalService, RentalService>();
 builder.Services.AddScoped<InterfaceSearchAndFilterService, SearchAndFilterService>();
