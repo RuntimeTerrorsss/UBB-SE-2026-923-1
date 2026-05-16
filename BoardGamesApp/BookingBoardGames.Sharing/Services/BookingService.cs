@@ -149,13 +149,13 @@ public class BookingService : InterfaceBookingService
 
     public async Task AddBooking(int gameId, int clientId, TimeRange timeRange)
     {
+        if (clientId <= 0)
+        {
+            throw new InvalidOperationException("A valid logged-in renter account is required to complete a booking.");
+        }
+
         try
         {
-            if (clientId <= 0)
-            {
-                throw new InvalidOperationException("A valid logged-in renter account is required to complete a booking.");
-            }
-
             await rentalsRepository.BookGameWithRentalRequest(
                 clientId,
                 gameId,

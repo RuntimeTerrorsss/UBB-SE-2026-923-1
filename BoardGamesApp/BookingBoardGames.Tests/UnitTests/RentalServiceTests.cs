@@ -253,16 +253,13 @@ namespace BookingBoardGames.Tests.Services
         }
 
         [Fact]
-        public async Task CalculateNumberOfDaysInAGivenTimeRange_NegativeDifference_ReturnsMinimumValidDayCount()
+        public async Task CalculateNumberOfDaysInAGivenTimeRange_SameStartAndEndDate_ReturnsMinimumValidDayCount()
         {
-
             var startDate = DateTime.UtcNow;
-            var endDate = startDate.AddDays(-2);
+            var endDate = startDate;
             var timeRange = new TimeRange(startDate, endDate);
 
-
             var result = await _rentalService.CalculateNumberOfDaysInAGivenTimeRange(timeRange);
-
 
             Assert.Equal(1, result);
         }

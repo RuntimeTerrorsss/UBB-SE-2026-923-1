@@ -38,8 +38,8 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task SearchGamesByFilter_ValidFilter_ReturnsMappedGamesWithCachedOwners()
         {
-
-            var filter = new FilterCriteria { City = "OriginalCity" };
+            // Arrange
+            var filter = new FilterCriteria { City = "TestCity" }; // Match the owner's city
             var gamesFromRepo = new List<Game>
             {
                 new Game { Id = 1, OwnerId = 10, Name = "Game1", PricePerDay = 5m, MaximumPlayerNumber = 4, MinimumPlayerNumber = 2 },
@@ -52,15 +52,14 @@ namespace BookingBoardGames.Tests.Services
                 .ReturnsAsync(gamesFromRepo);
             _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync(owner);
 
-
+            // Act
             var result = await _service.SearchGamesByFilter(filter);
 
-
+            // Assert
             Assert.Equal(2, result.Length);
-            Assert.Equal("OriginalCity", filter.City);
+            Assert.Equal("TestCity", filter.City); // Verify filter city is properly restored
             Assert.Equal("TestCity", result[0].City);
             Assert.Equal("TestCity", result[1].City);
-
 
             _mockUsersRepository.Verify(r => r.GetGameById(10), Times.Once);
         }

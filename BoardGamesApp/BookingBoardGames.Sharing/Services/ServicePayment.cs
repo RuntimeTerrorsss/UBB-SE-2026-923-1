@@ -127,10 +127,12 @@ namespace BookingBoardGames.Sharing.Services
             switch (filter)
             {
                 case FilterType.AlphabeticalAsc:
-                    payments = payments.OrderBy(transaction => transaction.GameName ?? "z");
+                    payments = payments.OrderBy(transaction =>
+                        string.IsNullOrWhiteSpace(transaction.GameName) ? PaymentHistoryConstants.NullGameNameDefaultValue : transaction.GameName);
                     break;
                 case FilterType.AlphabeticalDesc:
-                    payments = payments.OrderByDescending(transaction => transaction.GameName ?? "a");
+                    payments = payments.OrderByDescending(transaction =>
+                        string.IsNullOrWhiteSpace(transaction.GameName) ? PaymentHistoryConstants.NullGameNameDefaultValue : transaction.GameName);
                     break;
                 case FilterType.Newest:
                     payments = payments.OrderByDescending(transaction => transaction.DateOfTransaction ?? DateTime.MinValue);
@@ -139,7 +141,6 @@ namespace BookingBoardGames.Sharing.Services
                     payments = payments.OrderBy(transaction => transaction.DateOfTransaction ?? DateTime.MinValue);
                     break;
                 default:
-                    // Return all as is
                     break;
             }
 
