@@ -8,6 +8,15 @@ namespace BookingBoardGames.Web.Models.Payment
         public int PaymentId { get; set; }
 
         [Required]
+        public int RequestIdentifier { get; set; }
+
+        [Required]
+        public int ClientIdentifier { get; set; }
+
+        [Required]
+        public int OwnerIdentifier { get; set; }
+
+        [Required]
         [Display(Name = "Transaction Amount")]
         [DataType(DataType.Currency)]
         public decimal Amount { get; set; }
