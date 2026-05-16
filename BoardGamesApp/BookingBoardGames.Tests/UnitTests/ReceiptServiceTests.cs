@@ -7,7 +7,7 @@ using BookingBoardGames.Sharing.Services;
 using Moq;
 using Xunit;
 
-// Note: Replace 'YourDomainNamespace' with the actual namespace where your Payment, User, Rental, and Game entities are located.
+
 
 namespace BookingBoardGames.Tests.Services
 {
@@ -18,7 +18,7 @@ namespace BookingBoardGames.Tests.Services
         private readonly Mock<InterfaceGamesRepository> _mockGameRepository;
         private readonly ReceiptService _receiptService;
 
-        // Used to track and clean up PDF files generated in the real MyDocuments folder during testing
+
         private readonly List<string> _filesToCleanup = new();
 
         public ReceiptServiceTests()
@@ -37,7 +37,7 @@ namespace BookingBoardGames.Tests.Services
 
         public void Dispose()
         {
-            // Clean up any files created on the disk during the tests
+
             foreach (var filePath in _filesToCleanup)
             {
                 if (File.Exists(filePath))
@@ -48,7 +48,7 @@ namespace BookingBoardGames.Tests.Services
                     }
                     catch
                     {
-                        // Ignore exceptions during cleanup in tests
+
                     }
                 }
             }
@@ -71,13 +71,13 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public void GenerateReceiptRelativePath_ValidId_ReturnsExpectedFormat()
         {
-            // Arrange
+
             int requestId = 99;
 
-            // Act
+
             string result = _receiptService.GenerateReceiptRelativePath(requestId);
 
-            // Assert
+
             Assert.NotNull(result);
             Assert.StartsWith("receipts\\receipt_99_", result);
             Assert.EndsWith(".pdf", result);
@@ -92,10 +92,10 @@ namespace BookingBoardGames.Tests.Services
         [InlineData("")]
         public async Task GetReceiptDocument_ReceiptPathIsNullOrEmpty_ThrowsInvalidOperationException(string invalidPath)
         {
-            // Arrange
+
             var payment = new Payment { ReceiptFilePath = invalidPath };
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _receiptService.GetReceiptDocument(payment));
 
@@ -105,12 +105,12 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetReceiptDocument_ReceiptPathIsWhiteSpace_ThrowsFromPrepareDocumentPath()
         {
-            // Arrange
-            // A string with only spaces bypasses the (path == string.Empty) check in GetReceiptDocument,
-            // but correctly triggers the string.IsNullOrWhiteSpace() check inside PrepareDocumentPath.
+
+
+
             var payment = new Payment { ReceiptFilePath = "   " };
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _receiptService.GetReceiptDocument(payment));
 
@@ -124,7 +124,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetReceiptDocument_FileAlreadyExists_ReturnsPathWithoutRecreating()
         {
-            // Arrange
+
             var payment = new Payment
             {
                 RequestId = 1,
@@ -132,18 +132,18 @@ namespace BookingBoardGames.Tests.Services
                 ReceiptFilePath = "receipts\\test_existing_receipt.pdf"
             };
 
-            // Act 1: Call once to create the file physically on disk
+
             string createdPath = await _receiptService.GetReceiptDocument(payment);
             _filesToCleanup.Add(createdPath);
 
-            // Act 2: Call again. Because it exists, it should NOT rebuild the document.
+
             string existingPath = await _receiptService.GetReceiptDocument(payment);
 
-            // Assert
+
             Assert.Equal(createdPath, existingPath);
             Assert.True(File.Exists(existingPath));
 
-            // Verify the mocks were only called ONCE (during the first creation), proving the 2nd call bypassed generation
+
             _mockRentalService.Verify(r => r.GetRentalById(It.IsAny<int>()), Times.Once);
         }
 
@@ -154,26 +154,26 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetReceiptDocument_FileDoesNotExist_CashPayment_CreatesPdfAndHitsCatchBlockForDate()
         {
-            // Arrange
+
             var payment = new Payment
             {
                 RequestId = 2,
                 ClientId = 10,
                 OwnerId = 20,
                 PaidAmount = 50m,
-                PaymentMethod = "cash", // Hits the cash branch in BuildConfirmation
+                PaymentMethod = "cash",
                 DateConfirmedSeller = DateTime.Now,
                 DateConfirmedBuyer = DateTime.Now,
-                // Using a malformed filename to guarantee the DateTime.ParseExact fails 
-                // and hits the try-catch fallback branch in GetIssuedDateFromFilename
+
+
                 ReceiptFilePath = "receipts\\bad_format_name.pdf"
             };
 
-            // Act
+
             string generatedPath = await _receiptService.GetReceiptDocument(payment);
             _filesToCleanup.Add(generatedPath);
 
-            // Assert
+
             Assert.True(File.Exists(generatedPath));
 
             _mockRentalService.Verify(r => r.GetRentalById(payment.RequestId), Times.Once);
@@ -185,9 +185,9 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetReceiptDocument_FileDoesNotExist_CardPayment_CreatesPdfWithValidGeneratedPath()
         {
-            // Arrange
+
             int requestId = 3;
-            // Generate a valid path using the service itself to give ParseExact the best chance of succeeding
+
             string validRelativePath = _receiptService.GenerateReceiptRelativePath(requestId);
 
             var payment = new Payment
@@ -196,16 +196,16 @@ namespace BookingBoardGames.Tests.Services
                 ClientId = 10,
                 OwnerId = 20,
                 PaidAmount = 100m,
-                PaymentMethod = "card", // Hits the non-cash branch in BuildConfirmation
+                PaymentMethod = "card",
                 DateOfTransaction = DateTime.Now,
                 ReceiptFilePath = validRelativePath
             };
 
-            // Act
+
             string generatedPath = await _receiptService.GetReceiptDocument(payment);
             _filesToCleanup.Add(generatedPath);
 
-            // Assert
+
             Assert.True(File.Exists(generatedPath));
 
             _mockRentalService.Verify(r => r.GetRentalById(payment.RequestId), Times.Once);

@@ -38,12 +38,12 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task SearchGamesByFilter_ValidFilter_ReturnsMappedGamesWithCachedOwners()
         {
-            // Arrange
+
             var filter = new FilterCriteria { City = "OriginalCity" };
             var gamesFromRepo = new List<Game>
             {
                 new Game { Id = 1, OwnerId = 10, Name = "Game1", PricePerDay = 5m, MaximumPlayerNumber = 4, MinimumPlayerNumber = 2 },
-                new Game { Id = 2, OwnerId = 10, Name = "Game2", PricePerDay = 10m, MaximumPlayerNumber = 6, MinimumPlayerNumber = 3 } // Same owner
+                new Game { Id = 2, OwnerId = 10, Name = "Game2", PricePerDay = 10m, MaximumPlayerNumber = 6, MinimumPlayerNumber = 3 }
             };
 
             var owner = new User { Id = 10, City = "TestCity" };
@@ -52,28 +52,28 @@ namespace BookingBoardGames.Tests.Services
                 .ReturnsAsync(gamesFromRepo);
             _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync(owner);
 
-            // Act
+
             var result = await _service.SearchGamesByFilter(filter);
 
-            // Assert
+
             Assert.Equal(2, result.Length);
-            Assert.Equal("OriginalCity", filter.City); // Ensures the original filter city is restored
+            Assert.Equal("OriginalCity", filter.City);
             Assert.Equal("TestCity", result[0].City);
             Assert.Equal("TestCity", result[1].City);
 
-            // Verify caching: GetGameById should only be called once despite two games having OwnerId = 10
+
             _mockUsersRepository.Verify(r => r.GetGameById(10), Times.Once);
         }
 
         [Fact]
         public async Task SearchGamesByFilter_RepositoryThrows_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             var filter = new FilterCriteria();
             _mockGamesRepository.Setup(r => r.GetGamesByFilter(It.IsAny<FilterCriteria>()))
                 .ThrowsAsync(new Exception("DB Error"));
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _service.SearchGamesByFilter(filter));
             Assert.Contains("Failed to search for games.", exception.Message);
         }
@@ -85,7 +85,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetGamesFeedAvailableTonightByUser_ValidData_ReturnsMappedGames()
         {
-            // Arrange
+
             int userId = 1;
             var games = new List<Game> { new Game { Id = 1, OwnerId = 10, Name = "Game1" } };
             var owner = new User { Id = 10, City = "Cluj" };
@@ -93,10 +93,10 @@ namespace BookingBoardGames.Tests.Services
             _mockGamesRepository.Setup(r => r.GetGamesForFeedAvailableTonight(userId)).ReturnsAsync(games);
             _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync(owner);
 
-            // Act
+
             var result = await _service.GetGamesFeedAvailableTonightByUser(userId);
 
-            // Assert
+
             Assert.Single(result);
             Assert.Equal("Game1", result[0].Name);
         }
@@ -104,28 +104,28 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetGamesFeedAvailableTonightByUser_OwnerIsNull_SkipsGame()
         {
-            // Arrange
+
             int userId = 1;
             var games = new List<Game> { new Game { Id = 1, OwnerId = 10, Name = "Game1" } };
 
             _mockGamesRepository.Setup(r => r.GetGamesForFeedAvailableTonight(userId)).ReturnsAsync(games);
             _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync((User)null);
 
-            // Act
+
             var result = await _service.GetGamesFeedAvailableTonightByUser(userId);
 
-            // Assert
+
             Assert.Empty(result);
         }
 
         [Fact]
         public async Task GetGamesFeedAvailableTonightByUser_RepositoryThrows_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             _mockGamesRepository.Setup(r => r.GetGamesForFeedAvailableTonight(It.IsAny<int>()))
                 .ThrowsAsync(new Exception("DB Error"));
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _service.GetGamesFeedAvailableTonightByUser(1));
             Assert.Contains("Failed to retrieve <<Available tonight>> feed.", exception.Message);
         }
@@ -137,7 +137,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetOtherGamesFeedByUser_ValidData_ReturnsMappedGames()
         {
-            // Arrange
+
             int userId = 1;
             var games = new List<Game> { new Game { Id = 1, OwnerId = 10, Name = "Game1" } };
             var owner = new User { Id = 10, City = "Cluj" };
@@ -145,38 +145,38 @@ namespace BookingBoardGames.Tests.Services
             _mockGamesRepository.Setup(r => r.GetRemainingGamesForFeed(userId)).ReturnsAsync(games);
             _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync(owner);
 
-            // Act
+
             var result = await _service.GetOtherGamesFeedByUser(userId);
 
-            // Assert
+
             Assert.Single(result);
         }
 
         [Fact]
         public async Task GetOtherGamesFeedByUser_OwnerIsNull_SkipsGame()
         {
-            // Arrange
+
             int userId = 1;
             var games = new List<Game> { new Game { Id = 1, OwnerId = 10, Name = "Game1" } };
 
             _mockGamesRepository.Setup(r => r.GetRemainingGamesForFeed(userId)).ReturnsAsync(games);
             _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync((User)null);
 
-            // Act
+
             var result = await _service.GetOtherGamesFeedByUser(userId);
 
-            // Assert
+
             Assert.Empty(result);
         }
 
         [Fact]
         public async Task GetOtherGamesFeedByUser_RepositoryThrows_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             _mockGamesRepository.Setup(r => r.GetRemainingGamesForFeed(It.IsAny<int>()))
                 .ThrowsAsync(new Exception("DB Error"));
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _service.GetOtherGamesFeedByUser(1));
             Assert.Contains("Failed to retrieve <<Others>> feed.", exception.Message);
         }
@@ -188,7 +188,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task ApplyFilters_FilterByName_ReturnsMatchingGames()
         {
-            // Arrange
+
             var games = new[]
             {
                 new GameDTO { Name = "Catan" },
@@ -196,10 +196,10 @@ namespace BookingBoardGames.Tests.Services
             };
             var filter = new FilterCriteria { Name = "cat" };
 
-            // Act
+
             var result = await _service.ApplyFilters(games, filter);
 
-            // Assert
+
             Assert.Single(result);
             Assert.Equal("Catan", result[0].Name);
         }
@@ -207,7 +207,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task ApplyFilters_FilterByMaxPriceAndPlayerCount_ReturnsMatchingGames()
         {
-            // Arrange
+
             var games = new[]
             {
                 new GameDTO { Name = "G1", Price = 10m, MaximumPlayerNumber = 4 },
@@ -216,10 +216,10 @@ namespace BookingBoardGames.Tests.Services
             };
             var filter = new FilterCriteria { MaximumPrice = 15m, PlayerCount = 4 };
 
-            // Act
+
             var result = await _service.ApplyFilters(games, filter);
 
-            // Assert
+
             Assert.Single(result);
             Assert.Equal("G1", result[0].Name);
         }
@@ -227,21 +227,21 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task ApplyFilters_FilterByCity_AppliesNormalizationAndFiltering()
         {
-            // Arrange
+
             var games = new[]
             {
-                new GameDTO { Name = "G1", City = "București" }, // Diacritics
+                new GameDTO { Name = "G1", City = "București" },
                 new GameDTO { Name = "G2", City = "Cluj" }
             };
-            var filter = new FilterCriteria { City = "Bucharest" }; // "Bucharest" -> "bucuresti" in NormalizeCityName
+            var filter = new FilterCriteria { City = "Bucharest" };
 
             _mockGeographicalService.Setup(g => g.GetCityDetails("Bucharest"))
-                .Returns((false, "Bucharest", 0, 0)); // Simulate fallback to raw string
+                .Returns((false, "Bucharest", 0, 0));
 
-            // Act
+
             var result = await _service.ApplyFilters(games, filter);
 
-            // Assert
+
             Assert.Single(result);
             Assert.Equal("G1", result[0].Name);
         }
@@ -251,7 +251,7 @@ namespace BookingBoardGames.Tests.Services
         [InlineData(SortOption.PriceDescending, 20, 10)]
         public async Task ApplyFilters_SortByPrice_ReturnsSortedGames(SortOption sortOption, decimal expectedFirst, decimal expectedSecond)
         {
-            // Arrange
+
             var games = new[]
             {
                 new GameDTO { Name = "G1", Price = 20m },
@@ -259,10 +259,10 @@ namespace BookingBoardGames.Tests.Services
             };
             var filter = new FilterCriteria { SortOption = sortOption };
 
-            // Act
+
             var result = await _service.ApplyFilters(games, filter);
 
-            // Assert
+
             Assert.Equal(2, result.Length);
             Assert.Equal(expectedFirst, result[0].Price);
             Assert.Equal(expectedSecond, result[1].Price);
@@ -271,7 +271,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task ApplyFilters_SortByLocation_OrdersByDistance()
         {
-            // Arrange
+
             var games = new[]
             {
                 new GameDTO { Name = "FarGame", City = "Constanta" },
@@ -281,25 +281,25 @@ namespace BookingBoardGames.Tests.Services
             var filter = new FilterCriteria { City = "Cluj-Napoca", SortOption = SortOption.Location };
 
             _mockGeographicalService.Setup(g => g.GetCityDetails("Cluj-Napoca"))
-                .Returns((true, "Cluj-Napoca", 46.77, 23.59)); // User City
+                .Returns((true, "Cluj-Napoca", 46.77, 23.59));
 
             _mockGeographicalService.Setup(g => g.GetCityDetails("Constanta"))
-                .Returns((true, "Constanta", 44.15, 28.63)); // Far City
+                .Returns((true, "Constanta", 44.15, 28.63));
 
-            // Act
+
             var result = await _service.ApplyFilters(games, filter);
 
-            // Assert
+
             Assert.Equal(3, result.Length);
-            Assert.Equal("NearGame", result[0].Name); // Same city, distance 0
-            Assert.Equal("FarGame", result[1].Name); // Distant city
-            Assert.Equal("NoCityGame", result[2].Name); // Null city goes to double.MaxValue (end)
+            Assert.Equal("NearGame", result[0].Name);
+            Assert.Equal("FarGame", result[1].Name);
+            Assert.Equal("NoCityGame", result[2].Name);
         }
 
         [Fact]
         public async Task ApplyFilters_FilterByAvailability_ChecksRepository()
         {
-            // Arrange
+
             var games = new[]
             {
                 new GameDTO { GameId = 1, Name = "Available" },
@@ -310,10 +310,10 @@ namespace BookingBoardGames.Tests.Services
             _mockRentalsRepository.Setup(r => r.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), 1)).ReturnsAsync(true);
             _mockRentalsRepository.Setup(r => r.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), 2)).ReturnsAsync(false);
 
-            // Act
+
             var result = await _service.ApplyFilters(games, filter);
 
-            // Assert
+
             Assert.Single(result);
             Assert.Equal("Available", result[0].Name);
         }
@@ -321,14 +321,14 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task ApplyFilters_ExceptionThrown_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             var games = new[] { new GameDTO() };
             var filter = new FilterCriteria { AvailabilityRange = new TimeRange(DateTime.Now, DateTime.Now) };
 
             _mockRentalsRepository.Setup(r => r.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>()))
                 .ThrowsAsync(new Exception("DB Fault"));
 
-            // Act & Assert
+
             await Assert.ThrowsAsync<InvalidOperationException>(() => _service.ApplyFilters(games, filter));
         }
 
@@ -339,17 +339,17 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetDiscoveryFeedPaged_ReturnsCorrectlyPaginatedAndSeparatedLists()
         {
-            // Arrange
+
             int userId = 1;
 
-            // Available Tonight
+
             var availableGames = new List<Game>
             {
                 new Game { Id = 1, OwnerId = 10, Name = "Tonight1" },
                 new Game { Id = 2, OwnerId = 10, Name = "Tonight2" }
             };
 
-            // Others (id 3 and 4)
+
             var otherGames = new List<Game>
             {
                 new Game { Id = 3, OwnerId = 10, Name = "Other1" },
@@ -360,13 +360,13 @@ namespace BookingBoardGames.Tests.Services
             _mockGamesRepository.Setup(r => r.GetRemainingGamesForFeed(userId)).ReturnsAsync(otherGames);
             _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync(new User { Id = 10 });
 
-            // Act (Page 2, Size 2 - should return elements at index 2 and 3 -> Id 3 and 4)
+
             var (tonight, others, total) = await _service.GetDiscoveryFeedPaged(userId, page: 2, pageSize: 2);
 
-            // Assert
-            Assert.Equal(4, total); // Total distinct elements (1,2,3,4)
 
-            // Since we skip 2, we skip Tonight1 and Tonight2. We take 2, which are Other1 and Other2.
+            Assert.Equal(4, total);
+
+
             Assert.Empty(tonight);
             Assert.Equal(2, others.Count);
             Assert.Equal(3, others[0].GameId);
@@ -381,19 +381,19 @@ namespace BookingBoardGames.Tests.Services
         [InlineData(null, null, true)]
         [InlineData("2025-01-01", null, false)]
         [InlineData(null, "2025-01-01", false)]
-        [InlineData("2025-01-01", "2025-01-02", true)] // Start < End
-        [InlineData("2025-01-01", "2025-01-01", true)] // Start == End
-        [InlineData("2025-01-02", "2025-01-01", false)] // Start > End
+        [InlineData("2025-01-01", "2025-01-02", true)]
+        [InlineData("2025-01-01", "2025-01-01", true)]
+        [InlineData("2025-01-02", "2025-01-01", false)]
         public void IsValidDateRange_EvaluatesCorrectly(string? startStr, string? endStr, bool expected)
         {
-            // Arrange
+
             DateTime? start = startStr != null ? DateTime.Parse(startStr) : null;
             DateTime? end = endStr != null ? DateTime.Parse(endStr) : null;
 
-            // Act
+
             bool result = _service.IsValidDateRange(start, end);
 
-            // Assert
+
             Assert.Equal(expected, result);
         }
 
@@ -401,13 +401,13 @@ namespace BookingBoardGames.Tests.Services
         [InlineData(null, true)]
         [InlineData(0, true)]
         [InlineData(1, true)]
-        [InlineData(-1, false)] // MinimumAllowedPlayers is 0
+        [InlineData(-1, false)]
         public void IsValidPlayersCount_EvaluatesCorrectly(int? count, bool expected)
         {
-            // Act
+
             bool result = _service.IsValidPlayersCount(count);
 
-            // Assert
+
             Assert.Equal(expected, result);
         }
 
@@ -418,34 +418,34 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public void UpdateFilterFromUI_BothDatesNull_SetsAvailabilityRangeToNull()
         {
-            // Arrange
-            // Pre-populate it so we can verify it actually gets cleared
+
+
             var filter = new FilterCriteria
             {
                 AvailabilityRange = new TimeRange(DateTime.Now, DateTime.Now.AddDays(1))
             };
 
-            // Act
-            // Passing null for both dates makes IsValidDateRange return true,
-            // but the inner if (HasValue && HasValue) evaluates to false, hitting the missing else.
+
+
+
             _service.UpdateFilterFromUI(filter, 50.0, 4.0, null, null);
 
-            // Assert
+
             Assert.Null(filter.AvailabilityRange);
         }
 
         [Fact]
         public void UpdateFilterFromUI_UpdatesFieldsProperly_WhenValid()
         {
-            // Arrange
+
             var filter = new FilterCriteria();
             var startDate = DateTime.Today;
             var endDate = DateTime.Today.AddDays(1);
 
-            // Act
+
             _service.UpdateFilterFromUI(filter, 50.0, 4.0, startDate, endDate);
 
-            // Assert
+
             Assert.Equal(50m, filter.MaximumPrice);
             Assert.Equal(4, filter.PlayerCount);
             Assert.NotNull(filter.AvailabilityRange);
@@ -456,13 +456,13 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public void UpdateFilterFromUI_AssignsNull_WhenValuesAreZeroOrInvalid()
         {
-            // Arrange
+
             var filter = new FilterCriteria { MaximumPrice = 100m, PlayerCount = 4, AvailabilityRange = new TimeRange(DateTime.Now, DateTime.Now) };
 
-            // Act
-            _service.UpdateFilterFromUI(filter, 0.0, 0.0, DateTime.Now, DateTime.Now.AddDays(-1)); // Invalid date range
 
-            // Assert
+            _service.UpdateFilterFromUI(filter, 0.0, 0.0, DateTime.Now, DateTime.Now.AddDays(-1));
+
+
             Assert.Null(filter.MaximumPrice);
             Assert.Null(filter.PlayerCount);
             Assert.Null(filter.AvailabilityRange);
@@ -475,8 +475,8 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public void MapToGameDTO_OwnerIsNull_FallsBackToEmptyCity()
         {
-            // Arrange
-            // We use reflection to test the private method directly, covering the ?. null branch
+
+
             var methodInfo = typeof(SearchAndFilterService).GetMethod(
                 "MapToGameDTO",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -484,20 +484,20 @@ namespace BookingBoardGames.Tests.Services
             var gameEntity = new Game { Id = 1, Name = "Catan", PricePerDay = 10, MaximumPlayerNumber = 4, MinimumPlayerNumber = 2 };
             User? nullOwner = null;
 
-            // Act
+
             var result = (GameDTO)methodInfo.Invoke(_service, new object[] { gameEntity, nullOwner });
 
-            // Assert
+
             Assert.NotNull(result);
-            Assert.Equal(string.Empty, result.City); // Verifies ?. fallback
+            Assert.Equal(string.Empty, result.City);
             Assert.Equal(gameEntity.Id, result.GameId);
         }
 
         [Fact]
         public void MapToGameDTO_OwnerCityIsNull_FallsBackToEmptyString()
         {
-            // Arrange
-            // We use reflection to test the private method directly, covering the ?? string.Empty branch
+
+
             var methodInfo = typeof(SearchAndFilterService).GetMethod(
                 "MapToGameDTO",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -505,12 +505,12 @@ namespace BookingBoardGames.Tests.Services
             var gameEntity = new Game { Id = 2, Name = "Monopoly", PricePerDay = 15, MaximumPlayerNumber = 6, MinimumPlayerNumber = 2 };
             var ownerWithNullCity = new User { Id = 10, City = null };
 
-            // Act
+
             var result = (GameDTO)methodInfo.Invoke(_service, new object[] { gameEntity, ownerWithNullCity });
 
-            // Assert
+
             Assert.NotNull(result);
-            Assert.Equal(string.Empty, result.City); // Verifies ?? string.Empty fallback
+            Assert.Equal(string.Empty, result.City);
         }
 
         #endregion

@@ -30,15 +30,15 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetRentalById_ValidId_ReturnsRentalFromRepository()
         {
-            // Arrange
+
             int rentalId = 1;
             var expectedRental = new Rental { GameId = 2 };
             _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync(expectedRental);
 
-            // Act
+
             var result = await _rentalService.GetRentalById(rentalId);
 
-            // Assert
+
             Assert.Equal(expectedRental, result);
             _mockRentalRepository.Verify(r => r.GetById(rentalId), Times.Once);
         }
@@ -50,35 +50,35 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetRentalPrice_RentalNotFound_ReturnsZero()
         {
-            // Arrange
+
             int rentalId = 1;
             _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync((Rental)null);
 
-            // Act
+
             var result = await _rentalService.GetRentalPrice(rentalId);
 
-            // Assert
+
             Assert.Equal(0m, result);
         }
 
         [Fact]
         public async Task GetRentalPrice_RentalFound_CalculatesAndReturnsCorrectPrice()
         {
-            // Arrange
+
             int rentalId = 1;
             var startDate = DateTime.UtcNow;
-            var endDate = startDate.AddDays(2); // 2 days diff + 1 minimum = 3 days total
+            var endDate = startDate.AddDays(2);
             var rental = new Rental { GameId = 5, StartDate = startDate, EndDate = endDate };
             decimal pricePerDay = 15m;
-            decimal expectedTotalPrice = 45m; // 3 days * 15m
+            decimal expectedTotalPrice = 45m;
 
             _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync(rental);
             _mockGameRepository.Setup(g => g.GetPriceGameById(rental.GameId)).ReturnsAsync(pricePerDay);
 
-            // Act
+
             var result = await _rentalService.GetRentalPrice(rentalId);
 
-            // Assert
+
             Assert.Equal(expectedTotalPrice, result);
         }
 
@@ -89,38 +89,38 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetGameName_RentalNotFound_ReturnsUnknownRental()
         {
-            // Arrange
+
             int rentalId = 1;
             _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync((Rental)null);
 
-            // Act
+
             var result = await _rentalService.GetGameName(rentalId);
 
-            // Assert
+
             Assert.Equal("Unknown Rental", result);
         }
 
         [Fact]
         public async Task GetGameName_GameNotFound_ReturnsUnknownGame()
         {
-            // Arrange
+
             int rentalId = 1;
             var rental = new Rental { GameId = 5 };
 
             _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync(rental);
             _mockGameRepository.Setup(g => g.GetGameById(rental.GameId)).ReturnsAsync((Game)null);
 
-            // Act
+
             var result = await _rentalService.GetGameName(rentalId);
 
-            // Assert
+
             Assert.Equal("Unknown Game", result);
         }
 
         [Fact]
         public async Task GetGameName_ValidRentalAndGame_ReturnsGameName()
         {
-            // Arrange
+
             int rentalId = 1;
             var rental = new Rental { GameId = 5 };
             var game = new Game { Name = "Catan" };
@@ -128,10 +128,10 @@ namespace BookingBoardGames.Tests.Services
             _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync(rental);
             _mockGameRepository.Setup(g => g.GetGameById(rental.GameId)).ReturnsAsync(game);
 
-            // Act
+
             var result = await _rentalService.GetGameName(rentalId);
 
-            // Assert
+
             Assert.Equal("Catan", result);
         }
 
@@ -142,7 +142,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetUnavailableTimeRanges_ValidGameId_ReturnsRangesFromRepository()
         {
-            // Arrange
+
             int gameId = 1;
             var expectedRanges = new List<TimeRange>
             {
@@ -151,10 +151,10 @@ namespace BookingBoardGames.Tests.Services
 
             _mockRentalRepository.Setup(r => r.GetUnavailableTimeRanges(gameId)).ReturnsAsync(expectedRanges);
 
-            // Act
+
             var result = await _rentalService.GetUnavailableTimeRanges(gameId);
 
-            // Assert
+
             Assert.Equal(expectedRanges, result);
         }
 
@@ -165,15 +165,15 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task CheckGameAvailability_EndDateBeforeStartDate_ReturnsFalse()
         {
-            // Arrange
+
             int gameId = 1;
             var startDate = DateTime.UtcNow;
-            var endDate = startDate.AddDays(-1); // End date before start date
+            var endDate = startDate.AddDays(-1);
 
-            // Act
+
             var result = await _rentalService.CheckGameAvailability(gameId, startDate, endDate);
 
-            // Assert
+
             Assert.False(result);
             _mockRentalRepository.Verify(r => r.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>()), Times.Never);
         }
@@ -183,17 +183,17 @@ namespace BookingBoardGames.Tests.Services
         [InlineData(false)]
         public async Task CheckGameAvailability_ValidDates_ReturnsRepositoryResult(bool repositoryResult)
         {
-            // Arrange
+
             int gameId = 1;
             var startDate = DateTime.UtcNow;
             var endDate = startDate.AddDays(1);
 
             _mockRentalRepository.Setup(r => r.CheckGameAvailability(startDate, endDate, gameId)).ReturnsAsync(repositoryResult);
 
-            // Act
+
             var result = await _rentalService.CheckGameAvailability(gameId, startDate, endDate);
 
-            // Assert
+
             Assert.Equal(repositoryResult, result);
         }
 
@@ -204,18 +204,18 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task CalculateTotalPriceForRentingASpecificGame_ValidInput_ReturnsCorrectTotal()
         {
-            // Arrange
+
             decimal price = 20m;
             var startDate = DateTime.UtcNow;
-            var endDate = startDate.AddDays(2); // 3 days total
+            var endDate = startDate.AddDays(2);
             var timeRange = new TimeRange(startDate, endDate);
 
-            decimal expectedTotal = 60m; // 3 * 20
+            decimal expectedTotal = 60m;
 
-            // Act
+
             var result = await _rentalService.CalculateTotalPriceForRentingASpecificGame(price, timeRange);
 
-            // Assert
+
             Assert.Equal(expectedTotal, result);
         }
 
@@ -226,45 +226,45 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task CalculateNumberOfDaysInAGivenTimeRange_PositiveDifference_ReturnsActualDaysPlusOne()
         {
-            // Arrange
+
             var startDate = DateTime.UtcNow;
-            var endDate = startDate.AddDays(4); // Diff is 4
+            var endDate = startDate.AddDays(4);
             var timeRange = new TimeRange(startDate, endDate);
 
-            // Act
+
             var result = await _rentalService.CalculateNumberOfDaysInAGivenTimeRange(timeRange);
 
-            // Assert
-            Assert.Equal(5, result); // 4 + 1 MinimumValidDayCount
+
+            Assert.Equal(5, result);
         }
 
         [Fact]
         public async Task CalculateNumberOfDaysInAGivenTimeRange_ZeroDifference_ReturnsMinimumValidDayCount()
         {
-            // Arrange
-            var sameDate = DateTime.UtcNow;
-            var timeRange = new TimeRange(sameDate, sameDate); // Diff is 0
 
-            // Act
+            var sameDate = DateTime.UtcNow;
+            var timeRange = new TimeRange(sameDate, sameDate);
+
+
             var result = await _rentalService.CalculateNumberOfDaysInAGivenTimeRange(timeRange);
 
-            // Assert
-            Assert.Equal(1, result); // 0 + 1 MinimumValidDayCount
+
+            Assert.Equal(1, result);
         }
 
         [Fact]
         public async Task CalculateNumberOfDaysInAGivenTimeRange_NegativeDifference_ReturnsMinimumValidDayCount()
         {
-            // Arrange
+
             var startDate = DateTime.UtcNow;
-            var endDate = startDate.AddDays(-2); // Diff is -2. (-2) + 1 = -1
+            var endDate = startDate.AddDays(-2);
             var timeRange = new TimeRange(startDate, endDate);
 
-            // Act
+
             var result = await _rentalService.CalculateNumberOfDaysInAGivenTimeRange(timeRange);
 
-            // Assert
-            Assert.Equal(1, result); // Fallbacks to MinimumValidDayCount (1)
+
+            Assert.Equal(1, result);
         }
 
         #endregion
@@ -274,12 +274,12 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task CreateRental_EndDateBeforeStartDate_ThrowsArgumentException()
         {
-            // Arrange
+
             int gameId = 1, clientId = 2, ownerId = 3;
             var startDate = DateTime.UtcNow;
             var endDate = startDate.AddDays(-1);
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<ArgumentException>(
                 () => _rentalService.CreateRental(gameId, clientId, ownerId, startDate, endDate));
 
@@ -289,14 +289,14 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task CreateRental_GameUnavailable_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             int gameId = 1, clientId = 2, ownerId = 3;
             var startDate = DateTime.UtcNow;
             var endDate = startDate.AddDays(1);
 
             _mockRentalRepository.Setup(r => r.CheckGameAvailability(startDate, endDate, gameId)).ReturnsAsync(false);
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _rentalService.CreateRental(gameId, clientId, ownerId, startDate, endDate));
 
@@ -306,10 +306,10 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task CreateRental_ValidRequest_CreatesCalculatesPriceAndReturnsRental()
         {
-            // Arrange
+
             int gameId = 1, clientId = 2, ownerId = 3;
             var startDate = DateTime.UtcNow;
-            var endDate = startDate.AddDays(2); // 3 days total
+            var endDate = startDate.AddDays(2);
             decimal pricePerDay = 10m;
             decimal expectedTotalPrice = 30m;
 
@@ -318,10 +318,10 @@ namespace BookingBoardGames.Tests.Services
 
             _mockRentalRepository.Setup(r => r.AddRental(It.IsAny<Rental>())).Returns(Task.CompletedTask);
 
-            // Act
+
             var result = await _rentalService.CreateRental(gameId, clientId, ownerId, startDate, endDate);
 
-            // Assert
+
             Assert.NotNull(result);
             Assert.Equal(gameId, result.GameId);
             Assert.Equal(clientId, result.ClientId);

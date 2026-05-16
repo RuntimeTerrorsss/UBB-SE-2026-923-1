@@ -33,11 +33,11 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetBookingInformationForSpecificGame_GameIsNull_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             var gameId = 1;
             _mockGamesRepository.Setup(r => r.GetGameById(gameId)).ReturnsAsync((Game)null);
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _bookingService.GetBookingInformationForSpecificGame(gameId));
 
@@ -47,7 +47,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetBookingInformationForSpecificGame_OwnerIsNull_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             var gameId = 1;
             var ownerId = 2;
             var mockGame = new Game { Id = gameId, Name = "Test Game", OwnerId = ownerId };
@@ -55,7 +55,7 @@ namespace BookingBoardGames.Tests.Services
             _mockGamesRepository.Setup(r => r.GetGameById(gameId)).ReturnsAsync(mockGame);
             _mockUsersRepository.Setup(r => r.GetGameById(ownerId)).ReturnsAsync((User)null);
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _bookingService.GetBookingInformationForSpecificGame(gameId));
 
@@ -65,32 +65,32 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public void CalculateTotalPriceForRentingASpecificGame_NegativeDays_HitsMinimumDayCountBranch()
         {
-            // Arrange
+
             var pricePerDay = 15m;
             var startTime = DateTime.UtcNow;
 
-            // Fix: Subtract at least 1 full day (e.g., 2 days) to force TimeSpan.Days to be negative.
-            // (startTime.AddDays(-2) - startTime).Days evaluates to -2. 
-            // -2 + 1 = -1. 
-            // -1 < 1 is TRUE (Hits the if statement)
+
+
+
+
             var endTime = startTime.AddDays(-2);
 
             var timeRange = new TimeRange { StartTime = startTime, EndTime = endTime };
 
-            // The if statement will override the -1 back to 1
+
             var expectedPrice = 1 * pricePerDay;
 
-            // Act
+
             var result = _bookingService.CalculateTotalPriceForRentingASpecificGame(pricePerDay, timeRange);
 
-            // Assert
+
             Assert.Equal(expectedPrice, result);
         }
 
         [Fact]
         public async Task GetBookingInformationForSpecificGame_ValidData_ReturnsBookingDTO()
         {
-            // Arrange
+
             var gameId = 1;
             var ownerId = 2;
             var mockGame = new Game
@@ -117,10 +117,10 @@ namespace BookingBoardGames.Tests.Services
             _mockGamesRepository.Setup(r => r.GetGameById(gameId)).ReturnsAsync(mockGame);
             _mockUsersRepository.Setup(r => r.GetGameById(ownerId)).ReturnsAsync(mockOwner);
 
-            // Act
+
             var result = await _bookingService.GetBookingInformationForSpecificGame(gameId);
 
-            // Assert
+
             Assert.NotNull(result);
             Assert.Equal(mockGame.Id, result.GameId);
             Assert.Equal(mockGame.Name, result.Name);
@@ -131,12 +131,12 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetBookingInformationForSpecificGame_RepositoryThrows_RethrowsException()
         {
-            // Arrange
+
             var gameId = 1;
             var expectedException = new Exception("Database failure");
             _mockGamesRepository.Setup(r => r.GetGameById(gameId)).ThrowsAsync(expectedException);
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<Exception>(
                 () => _bookingService.GetBookingInformationForSpecificGame(gameId));
 
@@ -150,7 +150,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetUnavailableTimeRanges_ValidRequest_ReturnsTimeRangeArray()
         {
-            // Arrange
+
             var gameId = 1;
             var mockRanges = new List<TimeRange>
             {
@@ -160,10 +160,10 @@ namespace BookingBoardGames.Tests.Services
             _mockRentalsRepository.Setup(r => r.GetUnavailableTimeRanges(gameId))
                                   .ReturnsAsync(mockRanges);
 
-            // Act
+
             var result = await _bookingService.GetUnavailableTimeRanges(gameId);
 
-            // Assert
+
             Assert.NotNull(result);
             Assert.Single(result);
         }
@@ -171,12 +171,12 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task GetUnavailableTimeRanges_RepositoryThrows_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             var gameId = 1;
             _mockRentalsRepository.Setup(r => r.GetUnavailableTimeRanges(gameId))
                                   .ThrowsAsync(new Exception("DB Error"));
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _bookingService.GetUnavailableTimeRanges(gameId));
 
@@ -190,7 +190,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task CheckGameAvailability_AvailableGame_ReturnsTrue()
         {
-            // Arrange
+
             var gameId = 1;
             var startTime = DateTime.UtcNow;
             var endTime = DateTime.UtcNow.AddDays(1);
@@ -199,17 +199,17 @@ namespace BookingBoardGames.Tests.Services
             _mockRentalsRepository.Setup(r => r.CheckGameAvailability(startTime, endTime, gameId))
                                   .ReturnsAsync(true);
 
-            // Act
+
             var result = await _bookingService.CheckGameAvailability(gameId, timeRange);
 
-            // Assert
+
             Assert.True(result);
         }
 
         [Fact]
         public async Task CheckGameAvailability_RepositoryThrows_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             var gameId = 1;
             var startTime = DateTime.UtcNow;
             var endTime = DateTime.UtcNow.AddDays(1);
@@ -218,7 +218,7 @@ namespace BookingBoardGames.Tests.Services
             _mockRentalsRepository.Setup(r => r.CheckGameAvailability(startTime, endTime, gameId))
                                   .ThrowsAsync(new Exception("DB Error"));
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _bookingService.CheckGameAvailability(gameId, timeRange));
 
@@ -232,38 +232,38 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public void CalculateTotalPriceForRentingASpecificGame_MultipleDays_ReturnsCorrectPrice()
         {
-            // Arrange
+
             var pricePerDay = 10m;
             var startTime = DateTime.UtcNow;
-            var endTime = startTime.AddDays(3); // 3 days difference
+            var endTime = startTime.AddDays(3);
             var timeRange = new TimeRange { StartTime = startTime, EndTime = endTime };
 
-            // Expected days: (3) + 1 = 4 days
+
             var expectedPrice = 4 * pricePerDay;
 
-            // Act
+
             var result = _bookingService.CalculateTotalPriceForRentingASpecificGame(pricePerDay, timeRange);
 
-            // Assert
+
             Assert.Equal(expectedPrice, result);
         }
 
         [Fact]
         public void CalculateTotalPriceForRentingASpecificGame_NegativeOrZeroDays_AppliesMinimumDayCount()
         {
-            // Arrange
+
             var pricePerDay = 15m;
             var startTime = DateTime.UtcNow;
-            var endTime = startTime.AddHours(-5); // End time before start time
+            var endTime = startTime.AddHours(-5);
             var timeRange = new TimeRange { StartTime = startTime, EndTime = endTime };
 
-            // Expected days should be fallback to MinimumValidDayCount (1)
+
             var expectedPrice = 1 * pricePerDay;
 
-            // Act
+
             var result = _bookingService.CalculateTotalPriceForRentingASpecificGame(pricePerDay, timeRange);
 
-            // Assert
+
             Assert.Equal(expectedPrice, result);
         }
 
@@ -274,45 +274,45 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public void CalculateNumberOfDaysInAGivenTimeRange_ValidDifference_ReturnsCalculatedDays()
         {
-            // Arrange
+
             var startTime = DateTime.UtcNow;
             var endTime = startTime.AddDays(2);
             var timeRange = new TimeRange { StartTime = startTime, EndTime = endTime };
 
-            // Act
+
             var result = _bookingService.CalculateNumberOfDaysInAGivenTimeRange(timeRange);
 
-            // Assert
-            Assert.Equal(3, result); // 2 days diff + 1 MinimumValidDayCount
+
+            Assert.Equal(3, result);
         }
 
         [Fact]
         public void CalculateNumberOfDaysInAGivenTimeRange_ZeroDifference_ReturnsMinimumValidDayCount()
         {
-            // Arrange
-            var time = DateTime.UtcNow;
-            var timeRange = new TimeRange { StartTime = time, EndTime = time }; // 0 days diff
 
-            // Act
+            var time = DateTime.UtcNow;
+            var timeRange = new TimeRange { StartTime = time, EndTime = time };
+
+
             var result = _bookingService.CalculateNumberOfDaysInAGivenTimeRange(timeRange);
 
-            // Assert
-            Assert.Equal(1, result); // 0 + 1 = 1, >= 1
+
+            Assert.Equal(1, result);
         }
 
         [Fact]
         public void CalculateNumberOfDaysInAGivenTimeRange_NegativeDifference_ReturnsMinimumValidDayCount()
         {
-            // Arrange
+
             var startTime = DateTime.UtcNow;
             var endTime = startTime.AddDays(-2);
             var timeRange = new TimeRange { StartTime = startTime, EndTime = endTime };
 
-            // Act
+
             var result = _bookingService.CalculateNumberOfDaysInAGivenTimeRange(timeRange);
 
-            // Assert
-            Assert.Equal(1, result); // -2 + 1 = -1, which is < 1, so falls back to 1
+
+            Assert.Equal(1, result);
         }
 
         #endregion
@@ -322,12 +322,12 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task AddBooking_ClientIdIsZeroOrLess_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             var gameId = 1;
             var clientId = 0;
             var timeRange = new TimeRange { StartTime = DateTime.UtcNow, EndTime = DateTime.UtcNow.AddDays(1) };
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _bookingService.AddBooking(gameId, clientId, timeRange));
 
@@ -337,7 +337,7 @@ namespace BookingBoardGames.Tests.Services
         [Fact]
         public async Task AddBooking_ValidRequest_CallsBookGameWithRentalRequest()
         {
-            // Arrange
+
             var gameId = 1;
             var clientId = 2;
             var startTime = DateTime.UtcNow;
@@ -347,17 +347,17 @@ namespace BookingBoardGames.Tests.Services
             _mockRentalsRepository.Setup(r => r.BookGameWithRentalRequest(clientId, gameId, startTime, endTime))
                                   .Returns(Task.CompletedTask);
 
-            // Act
+
             await _bookingService.AddBooking(gameId, clientId, timeRange);
 
-            // Assert
+
             _mockRentalsRepository.Verify(r => r.BookGameWithRentalRequest(clientId, gameId, startTime, endTime), Times.Once);
         }
 
         [Fact]
         public async Task AddBooking_RepositoryThrows_ThrowsInvalidOperationException()
         {
-            // Arrange
+
             var gameId = 1;
             var clientId = 2;
             var startTime = DateTime.UtcNow;
@@ -367,7 +367,7 @@ namespace BookingBoardGames.Tests.Services
             _mockRentalsRepository.Setup(r => r.BookGameWithRentalRequest(clientId, gameId, startTime, endTime))
                                   .ThrowsAsync(new Exception("DB Connection Failed"));
 
-            // Act & Assert
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _bookingService.AddBooking(gameId, clientId, timeRange));
 
