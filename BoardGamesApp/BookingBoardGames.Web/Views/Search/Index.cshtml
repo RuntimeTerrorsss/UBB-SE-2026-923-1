@@ -1,4 +1,4 @@
-﻿@model BookingBoardGames.Web.Models.Search.SearchFilterViewModel
+@model BookingBoardGames.Web.Models.Search.SearchFilterViewModel
 @{
     ViewData["Title"] = "Search Games";
     var priceVal = Model.MaximumPrice.HasValue ? (int)Model.MaximumPrice.Value : 100;
@@ -284,7 +284,7 @@
                     <div class="d-flex flex-column">
                         @foreach (var game in Model.Results)
                         {
-                            <a asp-controller="Game" asp-action="Details" asp-route-id="@game.GameId" class="game-card">
+                            <a asp-controller="Games" asp-action="Details" asp-route-id="@game.GameId" class="game-card">
                                 <img class="game-card-img" src="@game.Image" alt="@game.Name"
                                      onerror="this.src='/images/placeholder-game.png'" />
                                 <div class="game-card-body">

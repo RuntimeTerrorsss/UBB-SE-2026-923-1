@@ -1,4 +1,4 @@
-@model BookingDTO
+ï»¿@model BookingDTO
 @using BookingBoardGames.Sharing.DTO
 
 @{
@@ -42,7 +42,7 @@
                 </tr>
                 <tr>
                     <th>Players</th>
-                    <td>@Model.MinimumNrPlayers – @Model.MaximumNumberPlayers</td>
+                    <td>@Model.MinimumNrPlayers â€“ @Model.MaximumNumberPlayers</td>
                 </tr>
                 <tr>
                     <th>Owner</th>
@@ -60,13 +60,15 @@
                 <ul class="mb-0">
                     @foreach (var range in unavailableRanges)
                         {
-                    <li>@range.StartTime.ToShortDateString() – @range.EndTime.ToShortDateString()</li>
+                    <li>@range.StartTime.ToShortDateString() â€“ @range.EndTime.ToShortDateString()</li>
                         }
                 </ul>
             </div>
             }
 
-            <form asp-action="ConfirmBooking" asp-route-id="@Model.GameId" method="get">
+            @if (ViewBag.IsLoggedIn == true)
+            {
+                <form asp-action="ConfirmBooking" asp-route-id="@Model.GameId" method="get">
                 <div class="row g-3">
                     <div class="col-md-5">
                         <label class="form-label">Start Date</label>
@@ -83,6 +85,15 @@
                     </div>
                 </div>
             </form>
+            }
+            else
+            {
+                <div class="alert alert-info mt-3">
+                    You need to <a asp-controller="Account" asp-action="Login">log in</a> to book a game.
+                </div>
+            }
         </div>
     </div>
 </div>
+
+

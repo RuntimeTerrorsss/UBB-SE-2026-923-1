@@ -26,6 +26,7 @@ namespace BookingBoardGames.Web.Controllers
             return View(games);
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
             var booking = await _bookingService.GetBookingInformationForSpecificGame(id);
