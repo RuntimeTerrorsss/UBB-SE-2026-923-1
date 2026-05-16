@@ -86,9 +86,7 @@ app.UseRouting();
 // MIDDLEWARE PIPELINE 
 app.UseAuthentication();
 
-// ==========================================
 // FAKE LOGIN MIDDLEWARE (TEMPORARY FOR TESTING)
-// ==========================================
 app.Use(async (context, next) =>
 {
     // Ensure you change "1" to a valid User ID that actually exists in your database!
@@ -103,7 +101,6 @@ app.Use(async (context, next) =>
 
     await next();
 });
-// ==========================================
 
 app.UseSession();
 

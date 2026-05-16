@@ -9,11 +9,8 @@ using System.Threading.Tasks;
 
 namespace BookingBoardGames.Web.Controllers
 {
-    //[Authorize]
-    public class GamesController : Controller
     [Authorize]
     public class GamesController : BaseController
->>>>>>> GUImain
     {
         private readonly InterfaceBookingService _bookingService;
         private readonly InterfaceSearchAndFilterService _searchService;
