@@ -1,0 +1,87 @@
+@model BookingBoardGames.Web.Models.Payment.PaymentViewModel
+
+@{
+    ViewData["Title"] = "Card Payment";
+}
+
+<link rel="stylesheet" href="~/css/card-payment.css" />
+
+<div class="card-payment-wrapper">
+    <div class="card-payment-card">
+        <h2>Card Payment</h2>
+        <p class="subtitle">Complete your payment securely</p>
+
+        <form id="cardPaymentForm" asp-controller="Payment" asp-action="CardPayment" method="post" novalidate>
+            @Html.AntiForgeryToken()
+
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+            {
+                <div class="alert alert-danger py-2 small">
+                    @Html.ValidationSummary(true)
+                </div>
+            }
+
+            @if (ViewBag.SuccessMessage != null)
+            {
+                <div class="alert alert-success py-2 small">
+                    @ViewBag.SuccessMessage
+                </div>
+            }
+
+            <div class="mb-3">
+                <label asp-for="Amount" class="form-label"></label>
+                <input asp-for="Amount" class="form-control" placeholder="Amount" />
+                <span asp-validation-for="Amount" class="text-danger small d-block"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Payment Method</label>
+                <input asp-for="PaymentMethod" class="form-control" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="DateOfTransaction" class="form-label"></label>
+                <input asp-for="DateOfTransaction" class="form-control" />
+                <span asp-validation-for="DateOfTransaction" class="text-danger small d-block"></span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-sm-8">
+                    <label class="form-label">Card Number</label>
+                    <input class="form-control" name="CardNumber" placeholder="1234 5678 9012 3456" />
+                </div>
+                <div class="col-sm-4">
+                    <label class="form-label">CVV</label>
+                    <input class="form-control" name="Cvv" placeholder="123" />
+                </div>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-sm-7">
+                    <label class="form-label">Cardholder Name</label>
+                    <input class="form-control" name="CardholderName" placeholder="Name on card" />
+                </div>
+                <div class="col-sm-5">
+                    <label class="form-label">Expiry</label>
+                    <input class="form-control" name="Expiry" placeholder="MM/YY" />
+                </div>
+            </div>
+
+            <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" id="termsCheck" />
+                <label class="form-check-label" for="termsCheck">
+                    I agree to the terms and conditions
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-payment" id="submitBtn">
+                Pay now
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="~/js/card-payment.js" asp-append-version="true"></script>
+}
