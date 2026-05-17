@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Interfaces;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Src.Validators;
+using BookingBoardGames.Sharing.Services;
+using BookingBoardGames.Sharing.Validators;
 
 namespace BookingBoardGames.Src.ViewModels
 {

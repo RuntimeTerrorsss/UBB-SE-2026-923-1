@@ -8,12 +8,12 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using BookingBoardGames.Data;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Repositories;
-using BookingBoardGames.Src.Services;
-using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames;
+using BookingBoardGames.Data;
+using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Sharing.DTO;
+using BookingBoardGames.Sharing.Repositories;
+using BookingBoardGames.Sharing.Services;
 
 namespace BookingBoardGames.Src.ViewModels;
 
@@ -26,8 +26,9 @@ public class ChatPageViewModel : ViewModelBase
     private string currentUsername = string.Empty;
 
     public ChatPageViewModel(int currentUser)
-   : this(currentUser, new ConversationService(App.ConversationRepository, currentUser))
+        : this(currentUser, new ConversationService(App.ConversationRepository, App.UserRepository, App.ConversationNotifier))
     {
+        this.conversationService.Initialize(currentUser);
     }
 
     public ChatPageViewModel(int currentUser, ConversationService service)

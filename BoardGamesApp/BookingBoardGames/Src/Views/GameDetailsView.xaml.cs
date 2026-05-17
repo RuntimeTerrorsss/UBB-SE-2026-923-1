@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

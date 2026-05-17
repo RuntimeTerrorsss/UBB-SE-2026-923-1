@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Sharing.DTO;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

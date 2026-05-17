@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Src.DTO;
+using BookingBoardGames.Sharing.DTO;
 using BookingBoardGames.Src.ViewModels;
 using BookingBoardGames.Src.Views;
 using Microsoft.UI.Xaml;

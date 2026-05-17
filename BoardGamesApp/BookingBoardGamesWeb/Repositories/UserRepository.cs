@@ -76,5 +76,41 @@ namespace BookingBoardGames.Api.Repositories
 
             await this.context.SaveChangesAsync();
         }
+        private async Task<User?> GetByIdentifier(string identifier)
+        {
+            return await this.context.Users
+                .FirstOrDefaultAsync(u => u.Email == identifier || u.Username == identifier);
+        }
+
+        public async Task<User?> Login(string emailOrUsername, string password)
+        {
+            var user = await GetByIdentifier(emailOrUsername);
+
+            if (user == null) return null;
+
+
+            if (user.PasswordHash == password)
+            {
+                return user;
+            }
+
+            return null;
+        }
+
+        public async Task<bool> Register(User newUser)
+        {
+            var exists = await this.context.Users
+                .AnyAsync(user => user.Username == newUser.Username || user.Email == newUser.Email);
+
+            if (exists) return false;
+
+            Console.WriteLine("--------------------------user can be created now");
+
+            newUser.CreatedAt = DateTime.Now;
+            await this.context.Users.AddAsync(newUser);
+
+            var result = await this.context.SaveChangesAsync();
+            return result > 0;
+        }
     }
 }

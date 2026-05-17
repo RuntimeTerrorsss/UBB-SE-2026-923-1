@@ -7,8 +7,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Src.DTO;
-using BookingBoardGames.Src.Services;
+using BookingBoardGames.Sharing.DTO;
+using BookingBoardGames.Sharing.Services;
 using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace BookingBoardGames.Src.ViewModels
