@@ -1,4 +1,5 @@
-using BookingBoardGames.Data.Enum;
+﻿using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Sharing.DTO;
 using BookingBoardGames.Sharing.Mapper;
 using BookingBoardGames.Sharing.Services;
@@ -14,11 +15,15 @@ namespace BookingBoardGames.Web.Controllers
     {
         private readonly InterfaceBookingService _bookingService;
         private readonly InterfaceSearchAndFilterService _searchService;
+        private readonly IConversationService _conversationService;
+        private readonly IConversationRepository _conversationRepository;
 
-        public GamesController(InterfaceBookingService bookingService, InterfaceSearchAndFilterService searchService)
+        public GamesController(InterfaceBookingService bookingService, InterfaceSearchAndFilterService searchService, IConversationService conversationService, IConversationRepository conversationRepository)
         {
             _bookingService = bookingService;
             _searchService = searchService;
+            _conversationService = conversationService;
+            _conversationRepository = conversationRepository;
         }
         public async Task<IActionResult> Index()
         {
@@ -73,17 +78,62 @@ namespace BookingBoardGames.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmBooking(int id, DateTime startDate, DateTime endDate, string confirm)
         {
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int clientId))
-            {
-                return Unauthorized();
-            }
+            var redirect = RequireLogin();
+            if (redirect != null) return redirect;
+
+            int clientId = CurrentUserId ?? -1;
+            if (clientId == -1) return Unauthorized();
 
             var timeRange = new TimeRange(startDate, endDate);
-            await _bookingService.AddBooking(id, clientId, timeRange);
+            var booking = await _bookingService.GetBookingInformationForSpecificGame(id);
+            if (booking == null) return NotFound();
 
-            TempData["Success"] = "Booking confirmed successfully!";
-            return RedirectToAction("Index", "Dashboard");
+            try
+            {
+                await _bookingService.AddBooking(id, clientId, timeRange);
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "This game is already booked for the selected period.";
+                return RedirectToAction("Details", new { id });
+            }
+
+            try
+            {
+                _conversationService.Initialize(clientId);
+                int conversationId = await _conversationRepository.FindOrCreateConversationBetweenUsers(clientId, booking.UserId);
+
+                int totalDays = _bookingService.CalculateNumberOfDaysInAGivenTimeRange(timeRange);
+                decimal totalPrice = _bookingService.CalculateTotalPriceForRentingASpecificGame(booking.Price, timeRange);
+
+                var rentalMessage = new MessageDataTransferObject(
+                    Id: 0,
+                    ConversationId: conversationId,
+                    SenderId: clientId,
+                    ReceiverId: booking.UserId,
+                    SentAt: DateTime.Now,
+                    Content: $"{booking.Name}: {startDate:dd MMM yyyy} – {endDate:dd MMM yyyy} ({totalDays} day(s), total {totalPrice})",
+                    Type: MessageType.MessageRentalRequest,
+                    ImageUrl: string.Empty,
+                    IsResolved: false,
+                    IsAccepted: false,
+                    IsAcceptedByBuyer: false,
+                    IsAcceptedBySeller: false,
+                    PaymentId: -1,
+                    RequestId: id
+                );
+
+                await _conversationService.SendMessage(rentalMessage);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Booking saved but message failed: {ex.Message}";
+                return RedirectToAction("Index", "Games");
+            }
+
+            TempData["Success"] = "Booking request sent!";
+            return RedirectToAction("Index", "Home");
         }
+
     }
 }
