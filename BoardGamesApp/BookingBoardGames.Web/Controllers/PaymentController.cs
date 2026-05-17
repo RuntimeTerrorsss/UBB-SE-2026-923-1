@@ -53,7 +53,13 @@ namespace BookingBoardGames.Web.Controllers
             model.PaymentMethod = "Card";
 
             if (!ModelState.IsValid)
+            {
+                model.CardNumber = string.Empty;
+                model.Cvv = string.Empty;
+                model.CardholderName = string.Empty;
+                model.Expiry = string.Empty;
                 return View(model);
+            }
 
             try
             {

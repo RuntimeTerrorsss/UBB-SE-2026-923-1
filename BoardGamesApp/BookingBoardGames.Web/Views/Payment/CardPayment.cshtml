@@ -53,22 +53,26 @@
             <div class="row g-3">
                 <div class="col-sm-8">
                     <label class="form-label">Card Number</label>
-                    <input class="form-control" name="CardNumber" placeholder="1234 5678 9012 3456" />
+                    <input asp-for="CardNumber" class="form-control" placeholder="1234 5678 9012 3456" />
+                    <span asp-validation-for="CardNumber" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-sm-4">
                     <label class="form-label">CVV</label>
-                    <input class="form-control" name="Cvv" placeholder="123" />
+                    <input asp-for="Cvv" class="form-control" placeholder="123" />
+                    <span asp-validation-for="Cvv" class="text-danger small d-block"></span>
                 </div>
             </div>
 
             <div class="row g-3 mt-1">
                 <div class="col-sm-7">
                     <label class="form-label">Cardholder Name</label>
-                    <input class="form-control" name="CardholderName" placeholder="Name on card" />
+                    <input asp-for="CardholderName" class="form-control" placeholder="Name on card" />
+                    <span asp-validation-for="CardholderName" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-sm-5">
                     <label class="form-label">Expiry</label>
-                    <input class="form-control" name="Expiry" placeholder="MM/YY" />
+                    <input asp-for="Expiry" class="form-control" placeholder="MM/YY" />
+                    <span asp-validation-for="Expiry" class="text-danger small d-block"></span>
                 </div>
             </div>
 
