@@ -1,4 +1,4 @@
-﻿@using BookingBoardGames.Sharing.DTO
+@using BookingBoardGames.Sharing.DTO
 @using BookingBoardGames.Data.Enum
 @model BookingBoardGames.Sharing.DTO.PagedResult<PaymentDataTransferObject>
 
@@ -14,6 +14,7 @@
 
     <div class="ph-header">
         <div>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mb-3">← Back to Homepage</a>
             <h2 class="ph-title">Payment History</h2>
             @if (ViewBag.IsLoggedIn == true)
             {

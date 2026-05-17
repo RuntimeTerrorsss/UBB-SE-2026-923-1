@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookingBoardGames.Web.Controllers
 {
-    [Authorize]
     public class ChatsController : BaseController
     {
         private readonly IConversationService _conversationService;
@@ -23,11 +22,10 @@ namespace BookingBoardGames.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!int.TryParse(userIdString, out int userId))
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            var redirect = RequireLogin();
+            if (redirect != null) return redirect;
+
+            int userId = CurrentUserId ?? -1;
 
             _conversationService.Initialize(userId);
 
@@ -38,8 +36,10 @@ namespace BookingBoardGames.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetChat(int conversationId)
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int.TryParse(userIdString, out int currentUserId);
+            var redirect = RequireLogin();
+            if (redirect != null) return redirect;
+
+            int currentUserId = CurrentUserId ?? -1;
 
             _conversationService.Initialize(currentUserId);
 
@@ -57,8 +57,10 @@ namespace BookingBoardGames.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage(int conversationId, string content)
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!int.TryParse(userIdString, out int senderId)) return Unauthorized();
+            var redirect = RequireLogin();
+            if (redirect != null) return Unauthorized();
+
+            int senderId = CurrentUserId ?? -1;
 
             _conversationService.Initialize(senderId);
 
