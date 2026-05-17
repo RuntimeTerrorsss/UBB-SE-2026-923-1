@@ -62,6 +62,7 @@ builder.Services.AddScoped<InterfaceSearchAndFilterService, SearchAndFilterServi
 builder.Services.AddScoped<IServicePayment, ServicePayment>();
 builder.Services.AddScoped<ICashPaymentMapper, CashPaymentMapper>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPaymentService, CardPaymentService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
