@@ -178,7 +178,7 @@
                                         <TextBlock Foreground="Gray">
                                             <Run Text="Price: " FontWeight="SemiBold"/>
                                             <Run Text="{x:Bind Price}"/>
-                                            <Run Text=" $/day"/>
+                                            <Run Text=" RON/day"/>
                                         </TextBlock>
 
                                         <TextBlock Foreground="Gray">

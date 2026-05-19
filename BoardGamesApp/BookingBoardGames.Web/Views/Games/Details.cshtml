@@ -1,4 +1,4 @@
-﻿@model BookingDTO
+@model BookingDTO
 @using BookingBoardGames.Sharing.DTO
 @{
     ViewData["Title"] = Model.Name;
@@ -273,7 +273,7 @@
                 <div style="display:flex; flex-direction:column; gap:10px; justify-content:center;">
                     <div class="info-row"><span>📍</span><span>@Model.City</span></div>
                     <div class="info-row"><span>👥</span><span>@Model.MinimumNrPlayers – @Model.MaximumNumberPlayers players</span></div>
-                    <div class="info-row"><span>💰</span><span>@Model.Price $/day</span></div>
+                    <div class="info-row"><span>💰</span><span>@Model.Price RON/day</span></div>
                 </div>
             </div>
 
@@ -308,7 +308,7 @@
         <div class="booking-panel">
             <h3>Book this game</h3>
             <div class="price-display">
-                <span class="price-num">@Model.Price $</span>
+                <span class="price-num">@Model.Price RON</span>
                 <span class="per-day">/ day</span>
             </div>
             <hr class="divider" />
@@ -336,7 +336,7 @@
             <hr class="divider" />
             <div class="total-price-row">
                 <span class="label">Total price</span>
-                <span class="amount" id="totalPrice">0 $</span>
+                <span class="amount" id="totalPrice">0 RON</span>
             </div>
 
             <form asp-action="ConfirmBooking" asp-route-id="@Model.GameId" method="get" id="bookingForm">
@@ -484,9 +484,9 @@
         if (selectedStart && end) {
             const diffMs = end - selectedStart;
             const days = Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1;
-            el.textContent = (days * pricePerDay).toFixed(2) + " $";
+            el.textContent = (days * pricePerDay).toFixed(2) + " RON";
         } else {
-            el.textContent = "0 $";
+            el.textContent = "0 RON";
         }
     }
 

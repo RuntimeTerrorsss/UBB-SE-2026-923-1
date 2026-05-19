@@ -106,12 +106,12 @@
                                     <Run Text="{Binding NumberOfDays}"/>
                                     <Run Text=" days x "/>
                                     <Run Text="{Binding GameAndUserDetails.Price}"/>
-                                    <Run Text=" $/day"/>
+                                    <Run Text=" RON/day"/>
                                 </TextBlock>
                                 <TextBlock Grid.Column="1"
                                            FontWeight="SemiBold">
                                     <Run Text="{Binding TotalPrice}"/>
-                                    <Run Text=" $"/>
+                                    <Run Text=" RON"/>
                                 </TextBlock>
                             </Grid>
 
@@ -134,7 +134,7 @@
                                        FontWeight="Bold"
                                        VerticalAlignment="Center">
                                 <Run Text="{Binding TotalPrice}"/>
-                                <Run Text=" $"/>
+                                <Run Text=" RON"/>
                             </TextBlock>
                         </Grid>
                     </Border>

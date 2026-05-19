@@ -1,4 +1,4 @@
-﻿@model BookingDTO
+@model BookingDTO
 @using BookingBoardGames.Sharing.DTO
 @{
     ViewData["Title"] = "Confirm Booking";
@@ -198,8 +198,8 @@
                     <div class="section-label">Details</div>
                 </div>
                 <div class="section-row">
-                    <div class="section-value">@totalDays days x @Model.Price $/day</div>
-                    <div class="section-value">@totalPrice.ToString("F2") $</div>
+                    <div class="section-value">@totalDays days x @Model.Price RON/day</div>
+                    <div class="section-value">@totalPrice.ToString("F2") RON</div>
                 </div>
             </div>
 
@@ -207,7 +207,7 @@
             <div class="section-card">
                 <div class="total-row">
                     <span>Total</span>
-                    <span>@totalPrice.ToString("F2") $</span>
+                    <span>@totalPrice.ToString("F2") RON</span>
                 </div>
             </div>
 

@@ -207,7 +207,7 @@
 
                     <div class="mb-4">
                         <label class="filter-label">
-                            Max price: <strong id="priceLabel">@(Model.MaximumPrice.HasValue ? ((int)Model.MaximumPrice.Value).ToString() : "any")</strong> $/day
+                            Max price: <strong id="priceLabel">@(Model.MaximumPrice.HasValue ? ((int)Model.MaximumPrice.Value).ToString() : "any")</strong> RON/day
                         </label>
                         <input type="range" class="form-range" min="1" max="100" step="1"
                                id="priceRange"
@@ -289,7 +289,7 @@
                                      onerror="this.src='/images/placeholder-game.png'" />
                                 <div class="game-card-body">
                                     <h6>@game.Name</h6>
-                                    <p class="meta"><span>Price:</span> @game.Price $/day</p>
+                                    <p class="meta"><span>Price:</span> @game.Price RON/day</p>
                                     <p class="meta"><span>City:</span> @game.City</p>
                                     <p class="meta"><span>Players:</span> @game.MinimumPlayerNumber - @game.MaximumPlayerNumber</p>
                                 </div>
