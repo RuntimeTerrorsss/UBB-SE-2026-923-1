@@ -52,6 +52,21 @@ namespace BookingBoardGames.Web.Controllers
 
             model.PaymentMethod = "Card";
 
+            if (model.RequestIdentifier <= 0)
+            {
+                ModelState.AddModelError(nameof(model.RequestIdentifier), "Invalid request identifier.");
+            }
+
+            if (model.ClientIdentifier <= 0)
+            {
+                ModelState.AddModelError(nameof(model.ClientIdentifier), "Invalid client identifier.");
+            }
+
+            if (model.OwnerIdentifier <= 0)
+            {
+                ModelState.AddModelError(nameof(model.OwnerIdentifier), "Invalid owner identifier.");
+            }
+
             if (!ModelState.IsValid)
             {
                 model.CardNumber = string.Empty;
