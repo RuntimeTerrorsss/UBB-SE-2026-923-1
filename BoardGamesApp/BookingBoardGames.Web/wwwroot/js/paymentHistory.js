@@ -108,7 +108,7 @@
 
         if (!items || items.length === 0) {
             $tbody.append(
-                '<tr><td colspan="5" class="ph-empty">No payments found.</td></tr>'
+                '<tr><td colspan="8" class="ph-empty">No rentals or payments found.</td></tr>'
             );
             return;
         }
@@ -117,12 +117,21 @@
             var methodLower = (item.paymentMethod || 'unknown').toLowerCase();
             var badgeClass = 'ph-badge ph-badge--' + methodLower;
 
+            var receiptUrl = item.hasPayment
+                ? '/PaymentHistory/DownloadReceipt?paymentId=' + item.paymentId
+                : '/PaymentHistory/DownloadReceipt?rentalId=' + item.rentalId;
+
             var row = '<tr>' +
-                '<td>' + escapeHtml(item.dateText || 'Pending') + '</td>' +
+                '<td>' + escapeHtml(item.dateText || '—') + '</td>' +
                 '<td>' + escapeHtml(item.productName || 'Unknown Game') + '</td>' +
-                '<td>' + escapeHtml(item.receiverName || 'Unknown Owner') + '</td>' +
-                '<td><span class="' + badgeClass + '">' + escapeHtml(item.paymentMethod || 'Unknown') + '</span></td>' +
+                '<td>' + escapeHtml(item.role || '—') + '</td>' +
+                '<td>' + escapeHtml(item.period || '—') + '</td>' +
+                '<td>' + escapeHtml(item.status || '—') + '</td>' +
+                '<td><span class="' + badgeClass + '">' + escapeHtml(item.paymentMethod || '—') + '</span></td>' +
                 '<td class="text-end fw-semibold">' + escapeHtml(item.amountText || '0.00 lei') + '</td>' +
+                '<td class="text-end">' +
+                '<a class="btn btn-sm btn-outline-primary ph-receipt-btn" href="' + receiptUrl + '" title="Download receipt PDF">Receipt</a>' +
+                '</td>' +
                 '</tr>';
 
             $tbody.append(row);
@@ -147,7 +156,7 @@
 
     function updateSummary(totalAmount, shownCount, totalCount) {
         $('#totalAmount').text(totalAmount);
-        $('#countInfo').text('Showing ' + shownCount + ' of ' + totalCount + ' payments');
+        $('#countInfo').text('Showing ' + shownCount + ' of ' + totalCount + ' records');
     }
 
     function escapeHtml(str) {

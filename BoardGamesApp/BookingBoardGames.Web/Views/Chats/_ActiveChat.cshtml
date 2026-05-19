@@ -33,18 +33,62 @@
 
                 bool isMine = msg.SenderId == ViewBag.CurrentUserId;
 
-                <div class="d-flex mb-3 @(isMine ? "justify-content-end" : "justify-content-start")">
-                    <div class="p-2 rounded-3 shadow-sm" style="max-width: 75%; background-color: @(isMine ? "#0078d4" : "#ffffff"); color: @(isMine ? "#ffffff" : "#242424");">
-
-                        @if (msg.Type == MessageType.MessageRentalRequest)
-                        {
-                            <div class="d-flex align-items-center mb-2 pb-2 border-bottom @(isMine ? "border-light" : "border-secondary")" style="opacity: 0.9;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                if (msg.Type == MessageType.MessageRentalRequest)
+                {
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="rental-request-card p-3 rounded-3 shadow-sm bg-white border" style="max-width: 420px; width: 100%;">
+                            <div class="d-flex align-items-center justify-content-center mb-2 pb-2 border-bottom">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 text-primary" viewBox="0 0 16 16">
                                     <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
                                 </svg>
                                 <strong>Rental Request</strong>
                             </div>
-                        }
+                            <p class="text-center text-secondary mb-3 small" style="word-wrap: break-word;">@msg.Content</p>
+
+                            @if (!msg.IsResolved && !msg.IsAccepted && !isMine)
+                            {
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button type="button" class="btn btn-primary btn-sm rental-accept-btn"
+                                            data-message-id="@msg.Id" data-conversation-id="@Model.Id">Accept</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm rental-decline-btn"
+                                            data-message-id="@msg.Id" data-conversation-id="@Model.Id">Decline</button>
+                                </div>
+                            }
+                            else if (isMine && !msg.IsResolved && !msg.IsAccepted)
+                            {
+                                <div class="text-center">
+                                    <span class="badge bg-warning text-dark mb-2 d-block">Awaiting owner response</span>
+                                    <button type="button" class="btn btn-outline-danger btn-sm rental-cancel-btn"
+                                            data-message-id="@msg.Id" data-conversation-id="@Model.Id">Cancel request</button>
+                                </div>
+                            }
+                            else if (isMine && msg.IsAccepted && !msg.IsResolved)
+                            {
+                                <div class="text-center">
+                                    <a asp-controller="Rentals" asp-action="Checkout"
+                                       asp-route-rentalId="@msg.RequestId" asp-route-messageId="@msg.Id"
+                                       class="btn btn-success btn-sm">Proceed to payment</a>
+                                </div>
+                            }
+                            else if (msg.IsResolved && !msg.IsAccepted)
+                            {
+                                <div class="text-center">
+                                    <span class="badge bg-danger">Declined</span>
+                                </div>
+                            }
+                            else if (msg.IsResolved)
+                            {
+                                <div class="text-center">
+                                    <span class="badge bg-success">Completed</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    continue;
+                }
+
+                <div class="d-flex mb-3 @(isMine ? "justify-content-end" : "justify-content-start")">
+                    <div class="p-2 rounded-3 shadow-sm" style="max-width: 75%; background-color: @(isMine ? "#0078d4" : "#ffffff"); color: @(isMine ? "#ffffff" : "#242424");">
 
                         @if (msg.Type == MessageType.MessageCashAgreement)
                         {
@@ -65,7 +109,12 @@
                         <div style="word-wrap: break-word;">@msg.Content</div>
 
                         <div class="text-end mt-1" style="font-size: 0.7rem; opacity: @(isMine ? "0.8" : "0.5");">
-                            @msg.SentAt.ToString("HH:mm")
+                            @{
+                                var sentAt = msg.SentAt.Kind == DateTimeKind.Utc
+                                    ? msg.SentAt.ToLocalTime()
+                                    : msg.SentAt;
+                            }
+                            @sentAt.ToString("HH:mm")
                         </div>
                     </div>
                 </div>
@@ -77,16 +126,10 @@
         <form id="sendMessageForm" class="d-flex align-items-center gap-2 m-0">
             <input type="hidden" id="activeConversationId" value="@Model.Id" />
 
-            <button type="button" class="btn btn-light rounded-circle d-flex justify-content-center align-items-center" style="width: 44px; height: 44px;" title="Attach Image">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0z" />
-                </svg>
-            </button>
-
             <input type="text" id="messageInput" class="form-control rounded-pill px-3" placeholder="Type a message..." autocomplete="off" required />
 
             <button type="submit" class="btn btn-primary rounded-circle shadow-sm d-flex justify-content-center align-items-center" style="width: 44px; height: 44px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="transform: translateX(-1px) translateY(1px);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
                 </svg>
             </button>
@@ -96,17 +139,52 @@
 </div>
 
 <script>
-    $('#sendMessageForm').off('submit').on('submit', function (e) {
-        e.preventDefault();
-        var text = $('#messageInput').val();
-        var convoId = $('#activeConversationId').val();
+    (function () {
+        var conversationId = @Model.Id;
 
-        if(text.trim() === '') return;
+        function reloadChat() {
+            loadMessages(conversationId);
+        }
 
-        $('#messageInput').val('');
+        $('.rental-cancel-btn').off('click').on('click', function () {
+            var btn = $(this);
+            if (!confirm('Cancel this rental request?')) return;
 
-        $.post('@Url.Action("SendMessage", "Chats")', { conversationId: convoId, content: text }, function() {
-            loadMessages(convoId);
+            btn.prop('disabled', true);
+            $.post('@Url.Action("CancelRentalRequest", "Chats")', {
+                messageId: btn.data('message-id'),
+                conversationId: conversationId
+            }).done(reloadChat).fail(function () {
+                alert('Could not cancel the rental request.');
+                btn.prop('disabled', false);
+            });
         });
-    });
+
+        $('.rental-accept-btn, .rental-decline-btn').off('click').on('click', function () {
+            var btn = $(this);
+            var messageId = btn.data('message-id');
+            var accepted = btn.hasClass('rental-accept-btn');
+
+            btn.prop('disabled', true);
+
+            $.post('@Url.Action("ResolveRentalRequest", "Chats")', {
+                messageId: messageId,
+                conversationId: conversationId,
+                accepted: accepted
+            }).done(reloadChat).fail(function () {
+                alert('Could not update the rental request. Please try again.');
+                btn.prop('disabled', false);
+            });
+        });
+
+        $('#sendMessageForm').off('submit').on('submit', function (e) {
+            e.preventDefault();
+            var text = $('#messageInput').val();
+            if (text.trim() === '') return;
+
+            $('#messageInput').val('');
+
+            $.post('@Url.Action("SendMessage", "Chats")', { conversationId: conversationId, content: text }, reloadChat);
+        });
+    })();
 </script>

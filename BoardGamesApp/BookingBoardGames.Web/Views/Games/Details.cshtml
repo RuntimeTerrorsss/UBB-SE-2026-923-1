@@ -354,6 +354,18 @@
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    function parseLocalDate(isoDate) {
+        const parts = isoDate.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    function formatLocalDate(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+    }
+
     let currentYear = today.getFullYear();
     let currentMonth = today.getMonth();
     let selectedStart = null;
@@ -365,8 +377,8 @@
 
     function isUnavailable(date) {
         return unavailableRanges.some(r => {
-            const s = new Date(r.start);
-            const e = new Date(r.end);
+            const s = parseLocalDate(r.start);
+            const e = parseLocalDate(r.end);
             return date >= s && date <= e;
         });
     }
@@ -376,8 +388,9 @@
     }
 
     function isInSelectedRange(date) {
-        if (!selectedStart || !selectedEnd) return false;
-        return date >= selectedStart && date <= selectedEnd;
+        if (!selectedStart) return false;
+        const end = selectedEnd || selectedStart;
+        return date >= selectedStart && date <= end;
     }
 
     function renderCalendar() {
@@ -439,10 +452,7 @@
                 selectedEnd = selectedStart;
                 selectedStart = date;
             } else if (date.getTime() === selectedStart.getTime()) {
-                selectedStart = null;
-                selectedEnd = null;
-                renderCalendar();
-                return;
+                selectedEnd = date;
             } else {
                 selectedEnd = date;
             }
@@ -470,8 +480,9 @@
 
     function updateTotalPrice() {
         const el = document.getElementById("totalPrice");
-        if (selectedStart && selectedEnd) {
-            const diffMs = selectedEnd - selectedStart;
+        const end = selectedEnd || selectedStart;
+        if (selectedStart && end) {
+            const diffMs = end - selectedStart;
             const days = Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1;
             el.textContent = (days * pricePerDay).toFixed(2) + " $";
         } else {
@@ -492,12 +503,13 @@
     }
 
     function submitBooking() {
-        if (!selectedStart || !selectedEnd) {
-            alert("Please select a start and end date.");
+        if (!selectedStart) {
+            alert("Please select at least one date.");
             return;
         }
-        document.getElementById("startDateInput").value = selectedStart.toISOString().split("T")[0];
-        document.getElementById("endDateInput").value = selectedEnd.toISOString().split("T")[0];
+        const end = selectedEnd || selectedStart;
+        document.getElementById("startDateInput").value = formatLocalDate(selectedStart);
+        document.getElementById("endDateInput").value = formatLocalDate(end);
         document.getElementById("bookingForm").submit();
     }
 

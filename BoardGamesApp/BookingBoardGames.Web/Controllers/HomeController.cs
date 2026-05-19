@@ -20,7 +20,13 @@ namespace BookingBoardGames.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var games = await _searchService.SearchGamesByFilter(new FilterCriteria());
+            var filter = new FilterCriteria();
+            if (IsLoggedIn)
+            {
+                filter.UserId = CurrentUserId;
+            }
+
+            var games = await _searchService.SearchGamesByFilter(filter);
             return View(games);
         }
 

@@ -19,6 +19,11 @@ namespace BookingBoardGames.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var filter = new FilterCriteria();
+            if (IsLoggedIn)
+            {
+                filter.UserId = CurrentUserId;
+            }
+
             var results = await searchService.SearchGamesByFilter(filter);
             var distinct = results.DistinctBy(game => game.Name).ToArray();
 
@@ -51,6 +56,7 @@ namespace BookingBoardGames.Web.Controllers
                 City = model.City,
                 MaximumPrice = model.MaximumPrice,
                 PlayerCount = model.MinimumPlayers,
+                UserId = IsLoggedIn ? CurrentUserId : null,
                 SortOption = model.SortOption switch
                 {
                     "price_asc" => SortOption.PriceAscending,

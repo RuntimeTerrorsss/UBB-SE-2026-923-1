@@ -75,7 +75,7 @@
             <span class="ph-total-amount" id="totalAmount">@initialTotal.ToString("C")</span>
         </div>
         <div class="ph-count-info">
-            <span id="countInfo">Showing @initialCount of @Model.TotalCount payments</span>
+            <span id="countInfo">Showing @initialCount of @Model.TotalCount records</span>
         </div>
     </div>
 
@@ -85,9 +85,12 @@
                 <tr>
                     <th>Date</th>
                     <th>Game</th>
-                    <th>Owner</th>
+                    <th>Role</th>
+                    <th>Period</th>
+                    <th>Status</th>
                     <th>Method</th>
                     <th class="text-end">Amount</th>
+                    <th class="text-end">Receipt</th>
                 </tr>
             </thead>
             <tbody id="paymentsBody">
@@ -96,19 +99,29 @@
                     <tr>
                         <td>@item.DateText</td>
                         <td>@item.ProductName</td>
-                        <td>@item.ReceiverName</td>
+                        <td>@item.Role</td>
+                        <td>@item.Period</td>
+                        <td>@item.Status</td>
                         <td>
                             <span class="ph-badge ph-badge--@(item.PaymentMethod?.ToLower() ?? "unknown")">
-                                @(item.PaymentMethod ?? "Unknown")
+                                @(item.PaymentMethod ?? "—")
                             </span>
                         </td>
                         <td class="text-end fw-semibold">@item.AmountText</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary ph-receipt-btn"
+                               asp-action="DownloadReceipt"
+                               asp-controller="PaymentHistory"
+                               asp-route-paymentId="@(item.HasPayment ? item.PaymentId : (int?)null)"
+                               asp-route-rentalId="@(item.HasPayment ? (int?)null : item.RentalId)"
+                               title="Download receipt PDF">Receipt</a>
+                        </td>
                     </tr>
                 }
                 @if (!Model.Items.Any())
                 {
                     <tr>
-                        <td colspan="5" class="ph-empty">No payments found.</td>
+                        <td colspan="8" class="ph-empty">No rentals or payments found.</td>
                     </tr>
                 }
             </tbody>

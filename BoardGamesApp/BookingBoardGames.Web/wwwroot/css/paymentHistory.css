@@ -275,3 +275,7 @@
     pointer-events: none;
     transition: opacity 0.15s;
 }
+
+.ph-receipt-btn {
+    white-space: nowrap;
+}

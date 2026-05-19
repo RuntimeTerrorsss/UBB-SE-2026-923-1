@@ -38,6 +38,15 @@ namespace BookingBoardGames.Api.Repositories
                 payment.DateOfTransaction = DateTime.Now;
             }
 
+            if (payment.TransactionIdentifier <= 0)
+            {
+                payment.TransactionIdentifier = 0;
+            }
+
+            payment.Request = null;
+            payment.Client = null;
+            payment.Owner = null;
+
             await this.context.Payments.AddAsync(payment);
             await this.context.SaveChangesAsync();
 

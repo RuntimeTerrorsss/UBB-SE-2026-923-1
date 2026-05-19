@@ -4,8 +4,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BookingBoardGames.Data.Interfaces;
+using BookingBoardGames.Sharing.DTO;
 
 namespace BookingBoardGames.Sharing.Services
 {
@@ -20,6 +22,23 @@ namespace BookingBoardGames.Sharing.Services
         {
             this.rentalRepository = rentalRepository;
             this.gameRepository = gameRepository;
+        }
+
+        public async Task<List<RentalDataTransferObject>> GetRentalsForUser(int userId)
+        {
+            var rentals = await rentalRepository.GetRentalsForUser(userId);
+
+            return rentals.Select(rental => new RentalDataTransferObject(
+                rental.RentalId,
+                rental.GameId,
+                rental.Game?.Name ?? "Unknown Game",
+                rental.ClientId,
+                rental.Client?.DisplayName ?? "Unknown Renter",
+                rental.OwnerId,
+                rental.Owner?.DisplayName ?? "Unknown Owner",
+                rental.StartDate,
+                rental.EndDate,
+                rental.TotalPrice ?? 0m)).ToList();
         }
 
         public async Task<Rental> GetRentalById(int rentalId)
@@ -68,12 +87,12 @@ namespace BookingBoardGames.Sharing.Services
 
         public async Task<bool> CheckGameAvailability(int gameId, DateTime startDate, DateTime endDate)
         {
-            if (endDate < startDate)
+            if (endDate.Date < startDate.Date)
             {
                 return false;
             }
 
-            return await rentalRepository.CheckGameAvailability(startDate, endDate, gameId);
+            return await rentalRepository.CheckGameAvailability(startDate.Date, endDate.Date, gameId);
         }
 
         public async Task<decimal> CalculateTotalPriceForRentingASpecificGame(decimal price, TimeRange timeRange)
@@ -84,16 +103,19 @@ namespace BookingBoardGames.Sharing.Services
 
         public async Task<int> CalculateNumberOfDaysInAGivenTimeRange(TimeRange selectedTimeRange)
         {
-            int days = (selectedTimeRange.EndTime - selectedTimeRange.StartTime).Days + MinimumValidDayCount;
+            int days = (selectedTimeRange.EndTime.Date - selectedTimeRange.StartTime.Date).Days + MinimumValidDayCount;
             return days < MinimumValidDayCount ? MinimumValidDayCount : days;
         }
 
         public async Task<Rental> CreateRental(int gameId, int clientId, int ownerId, DateTime startDate, DateTime endDate)
         {
-            if (endDate < startDate)
+            if (endDate.Date < startDate.Date)
             {
-                throw new ArgumentException("End date must be after start date.");
+                throw new ArgumentException("End date must be on or after the start date.");
             }
+
+            startDate = startDate.Date;
+            endDate = endDate.Date;
 
             bool isAvailable = await CheckGameAvailability(gameId, startDate, endDate);
 

@@ -2,6 +2,7 @@
 using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Web.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace BookingBoardGames.Web.Controllers
 {
@@ -67,6 +68,49 @@ namespace BookingBoardGames.Web.Controllers
                 pageNumber = result.PageNumber,
                 totalAmount = totalAmount.ToString("C")
             });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadReceipt(int? paymentId, int? rentalId)
+        {
+            var redirect = RequireLogin();
+            if (redirect != null) return redirect;
+
+            BookingBoardGames.Data.Enum.SessionContext.GetInstance().UserId = CurrentUserId ?? -1;
+
+            try
+            {
+                string filePath;
+                if (paymentId is > 0)
+                {
+                    filePath = await _servicePayment.GetReceiptDocumentPath(paymentId.Value);
+                }
+                else if (rentalId is > 0)
+                {
+                    filePath = await _servicePayment.GetReceiptDocumentPathForRental(rentalId.Value);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    return NotFound();
+                }
+
+                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                string fileName = Path.GetFileName(filePath);
+                return File(fileBytes, "application/pdf", fileName);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
     }
 }
