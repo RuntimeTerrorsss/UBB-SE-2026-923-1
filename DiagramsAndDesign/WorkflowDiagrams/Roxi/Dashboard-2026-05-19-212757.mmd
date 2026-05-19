@@ -1,0 +1,63 @@
+sequenceDiagram
+    actor User
+    participant View as Client Browser
+    participant Ctrl as PaymentHistoryController
+    participant Svc as ServicePayment
+    participant Repo as RepositoryPaymentAPIProxy
+    participant ApiCtrl as PaymentsController
+    participant PayRepo as RepositoryPayment
+    participant DB as AppDbContext
+
+    User->>Ctrl: GET /PaymentHistory/Index
+
+    alt User is NOT logged in
+        Ctrl-->>View: Redirect to /Account/Login
+        View-->>User: Displays Login page
+    else User is logged in
+        Note over Ctrl: RequireLogin check and set SessionContext UserId
+        Ctrl->>Svc: GetFilteredPayments(Newest, ALL, empty search, page 1, size 10)
+
+        Svc->>Repo: GetAllPayments()
+        Repo->>ApiCtrl: HTTP GET api/payments/history
+        ApiCtrl->>PayRepo: GetAllPayments()
+        PayRepo->>DB: BuildPaymentQuery().ToListAsync()
+        DB-->>PayRepo: List<HistoryPayment>
+        PayRepo-->>ApiCtrl: List<HistoryPayment>
+        ApiCtrl-->>Repo: JSON response
+        Repo-->>Svc: List<HistoryPayment>
+
+        Note over Svc: BuildMergedHistoryAsync
+        Note over Svc: FilterPaymentsByCurrentUser
+        Note over Svc: ApplyDtoFilters, ApplyDtoSorting, GetPagedResultDto
+
+        Svc-->>Ctrl: PagedResult<PaymentDataTransferObject>
+        Ctrl->>View: return View(result)
+        Note over View: Renders dashboard components
+        View-->>User: Displays Payment History dashboard
+    end
+
+    User->>View: Opens filters and clicks Apply
+    View->>Ctrl: POST /PaymentHistory/Filter
+
+    Note over Ctrl: RequireLogin check and set SessionContext UserId
+    Ctrl->>Svc: GetFilteredPayments(filter, paymentMethod, searchQuery, pageNumber, pageSize)
+
+    Svc->>Repo: GetAllPayments()
+    Repo->>ApiCtrl: HTTP GET api/payments/history
+    ApiCtrl->>PayRepo: GetAllPayments()
+    PayRepo->>DB: BuildPaymentQuery().ToListAsync()
+    DB-->>PayRepo: List<HistoryPayment>
+    PayRepo-->>ApiCtrl: List<HistoryPayment>
+    ApiCtrl-->>Repo: JSON response
+    Repo-->>Svc: List<HistoryPayment>
+
+    Note over Svc: Filter by current user
+    Note over Svc: Filter by method, search and date
+    Note over Svc: Sort and paginate result
+
+    Svc-->>Ctrl: PagedResult<PaymentDataTransferObject>
+    Ctrl->>Svc: CalculateTotalAmount(result.Items)
+    Svc-->>Ctrl: totalAmount
+    Ctrl-->>View: JSON { items, totalCount, totalPages, pageNumber, totalAmount }
+    Note over View: jQuery updates dashboard without reload
+    View-->>User: Displays filtered and sorted payments
