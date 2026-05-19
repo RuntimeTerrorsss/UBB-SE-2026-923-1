@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
 using BookingBoardGames.Sharing.DTO;
 
 namespace BookingBoardGames.Sharing.Mapper
@@ -14,12 +15,12 @@ namespace BookingBoardGames.Sharing.Mapper
         {
             return new Payment
             {
-                TransactionIdentifier = paymentDto.Id,
                 RequestId = paymentDto.RequestId,
                 ClientId = paymentDto.ClientId,
                 OwnerId = paymentDto.OwnerId,
                 PaidAmount = paymentDto.PaidAmount,
                 PaymentMethod = CashPaymentMethod,
+                DateOfTransaction = DateTime.Now,
             };
         }
 

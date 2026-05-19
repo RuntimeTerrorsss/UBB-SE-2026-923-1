@@ -52,10 +52,13 @@ namespace BookingBoardGames.Api.Repositories
 
         public async Task<bool> CheckGameAvailability(DateTime startTime, DateTime endTime, int gameId)
         {
+            var requestStart = startTime.Date;
+            var requestEnd = endTime.Date;
+
             bool hasOverlap = await this.context.Rentals.AnyAsync(rental =>
                 rental.GameId == gameId &&
-                rental.StartDate < endTime &&
-                startTime < rental.EndDate);
+                rental.StartDate.Date <= requestEnd &&
+                rental.EndDate.Date >= requestStart);
             return !hasOverlap;
         }
 
@@ -63,6 +66,17 @@ namespace BookingBoardGames.Api.Repositories
         {
             await this.context.Rentals.AddAsync(rental);
             await this.context.SaveChangesAsync();
+        }
+
+        public async Task<List<Rental>> GetRentalsForUser(int userId)
+        {
+            return await this.context.Rentals
+                .Include(rental => rental.Game)
+                .Include(rental => rental.Client)
+                .Include(rental => rental.Owner)
+                .Where(rental => rental.ClientId == userId || rental.OwnerId == userId)
+                .OrderByDescending(rental => rental.StartDate)
+                .ToListAsync();
         }
 
         public Task BookGameWithRentalRequest(int clientId, int gameId, DateTime startDate, DateTime endDate)

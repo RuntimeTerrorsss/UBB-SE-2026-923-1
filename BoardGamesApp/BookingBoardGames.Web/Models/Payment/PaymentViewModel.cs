@@ -10,6 +10,16 @@ namespace BookingBoardGames.Web.Models.Payment
     {
         public int PaymentId { get; set; }
 
+        public int MessageId { get; set; }
+
+        public string GameName { get; set; } = string.Empty;
+
+        public string OwnerName { get; set; } = string.Empty;
+
+        public string RentalPeriod { get; set; } = string.Empty;
+
+        public decimal AccountBalance { get; set; }
+
         [Required]
         public int RequestIdentifier { get; set; }
 

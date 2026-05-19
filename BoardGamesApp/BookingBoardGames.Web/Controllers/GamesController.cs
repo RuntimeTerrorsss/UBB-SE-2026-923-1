@@ -1,12 +1,11 @@
-﻿using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Data.Interfaces;
+﻿using System;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Sharing.DTO;
 using BookingBoardGames.Sharing.Mapper;
 using BookingBoardGames.Sharing.Services;
+using BookingBoardGames.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
 
 namespace BookingBoardGames.Web.Controllers
 {
@@ -15,19 +14,22 @@ namespace BookingBoardGames.Web.Controllers
     {
         private readonly InterfaceBookingService _bookingService;
         private readonly InterfaceSearchAndFilterService _searchService;
-        private readonly IConversationService _conversationService;
-        private readonly IConversationRepository _conversationRepository;
 
-        public GamesController(InterfaceBookingService bookingService, InterfaceSearchAndFilterService searchService, IConversationService conversationService, IConversationRepository conversationRepository)
+        public GamesController(InterfaceBookingService bookingService, InterfaceSearchAndFilterService searchService)
         {
             _bookingService = bookingService;
             _searchService = searchService;
-            _conversationService = conversationService;
-            _conversationRepository = conversationRepository;
         }
+
         public async Task<IActionResult> Index()
         {
-            var games = await _searchService.SearchGamesByFilter(new FilterCriteria());
+            var filter = new FilterCriteria();
+            if (IsLoggedIn)
+            {
+                filter.UserId = CurrentUserId;
+            }
+
+            var games = await _searchService.SearchGamesByFilter(filter);
             return View(games);
         }
 
@@ -42,13 +44,20 @@ namespace BookingBoardGames.Web.Controllers
 
             var unavailableRanges = await _bookingService.GetUnavailableTimeRanges(id);
             ViewBag.UnavailableRanges = unavailableRanges;
-            booking = booking with { ImageUrl = GameImageMapper.GetImageUrl(booking.Name) };
+            booking = booking with
+            {
+                ImageUrl = GameImageMapper.GetImageUrl(booking.Name),
+                AvatarUrl = MediaUrlHelper.ResolveUserImageUrl(booking.AvatarUrl),
+            };
             return View(booking);
         }
 
         [HttpGet]
         public async Task<IActionResult> ConfirmBooking(int id, DateTime startDate, DateTime endDate)
         {
+            startDate = startDate.Date;
+            endDate = endDate.Date;
+
             var booking = await _bookingService.GetBookingInformationForSpecificGame(id);
             if (booking == null)
             {
@@ -84,6 +93,9 @@ namespace BookingBoardGames.Web.Controllers
             int clientId = CurrentUserId ?? -1;
             if (clientId == -1) return Unauthorized();
 
+            startDate = startDate.Date;
+            endDate = endDate.Date;
+
             var timeRange = new TimeRange(startDate, endDate);
             var booking = await _bookingService.GetBookingInformationForSpecificGame(id);
             if (booking == null) return NotFound();
@@ -94,46 +106,12 @@ namespace BookingBoardGames.Web.Controllers
             }
             catch (Exception)
             {
-                TempData["Error"] = "This game is already booked for the selected period.";
+                TempData["Error"] = "This game is not available for the selected period.";
                 return RedirectToAction("Details", new { id });
             }
 
-            try
-            {
-                _conversationService.Initialize(clientId);
-                int conversationId = await _conversationRepository.FindOrCreateConversationBetweenUsers(clientId, booking.UserId);
-
-                int totalDays = _bookingService.CalculateNumberOfDaysInAGivenTimeRange(timeRange);
-                decimal totalPrice = _bookingService.CalculateTotalPriceForRentingASpecificGame(booking.Price, timeRange);
-
-                var rentalMessage = new MessageDataTransferObject(
-                    Id: 0,
-                    ConversationId: conversationId,
-                    SenderId: clientId,
-                    ReceiverId: booking.UserId,
-                    SentAt: DateTime.Now,
-                    Content: $"{booking.Name}: {startDate:dd MMM yyyy} – {endDate:dd MMM yyyy} ({totalDays} day(s), total {totalPrice})",
-                    Type: MessageType.MessageRentalRequest,
-                    ImageUrl: string.Empty,
-                    IsResolved: false,
-                    IsAccepted: false,
-                    IsAcceptedByBuyer: false,
-                    IsAcceptedBySeller: false,
-                    PaymentId: -1,
-                    RequestId: id
-                );
-
-                await _conversationService.SendMessage(rentalMessage);
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"Booking saved but message failed: {ex.Message}";
-                return RedirectToAction("Index", "Games");
-            }
-
-            TempData["Success"] = "Booking request sent!";
-            return RedirectToAction("Index", "Home");
+            TempData["Success"] = "Rental request sent! The owner can accept it in Messages.";
+            return RedirectToAction("Index", "Chats");
         }
-
     }
 }

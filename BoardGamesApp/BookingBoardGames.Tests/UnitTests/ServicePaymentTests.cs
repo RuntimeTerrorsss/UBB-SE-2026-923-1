@@ -17,13 +17,23 @@ namespace BookingBoardGames.Tests.Services
     {
         private readonly Mock<IRepositoryPayment> _mockPaymentRepository;
         private readonly Mock<IReceiptService> _mockReceiptService;
+        private readonly Mock<IRentalService> _mockRentalService;
+        private readonly Mock<IConversationService> _mockConversationService;
         private readonly ServicePayment _service;
 
         public ServicePaymentTests()
         {
             _mockPaymentRepository = new Mock<IRepositoryPayment>();
             _mockReceiptService = new Mock<IReceiptService>();
-            _service = new ServicePayment(_mockPaymentRepository.Object, _mockReceiptService.Object);
+            _mockRentalService = new Mock<IRentalService>();
+            _mockConversationService = new Mock<IConversationService>();
+            _mockRentalService.Setup(r => r.GetRentalsForUser(It.IsAny<int>())).ReturnsAsync(new List<RentalDataTransferObject>());
+            _mockConversationService.Setup(c => c.FetchConversations()).ReturnsAsync(new List<ConversationDTO>());
+            _service = new ServicePayment(
+                _mockPaymentRepository.Object,
+                _mockReceiptService.Object,
+                _mockRentalService.Object,
+                _mockConversationService.Object);
 
 
 

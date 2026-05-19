@@ -112,7 +112,9 @@ public class GamesRepository : InterfaceGamesRepository
         {
             var startDateFilter = filter.AvailabilityRange.StartTime;
             var endDateFilter = filter.AvailabilityRange.EndTime;
-            query = query.Where(game => !game.Rentals.Any(rental => rental.StartDate < endDateFilter && rental.EndDate > startDateFilter));
+            query = query.Where(game => !game.Rentals.Any(rental =>
+                rental.StartDate.Date <= endDateFilter.Date &&
+                rental.EndDate.Date >= startDateFilter.Date));
         }
 
         return await query.ToListAsync();
@@ -131,7 +133,7 @@ public class GamesRepository : InterfaceGamesRepository
         var todayDate = DateTime.Today;
         var tomorrowDate = todayDate.AddDays(1);
 
-        return await this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId && !game.Rentals.Any(rental => rental.StartDate < tomorrowDate && rental.EndDate > todayDate)).ToListAsync();
+        return await this.appContext.Games.Include(game => game.Owner).Where(game => game.IsActive && game.OwnerId != userId && !game.Rentals.Any(rental => rental.StartDate.Date <= tomorrowDate && rental.EndDate.Date >= todayDate)).ToListAsync();
     }
 
     /// <summary>
@@ -147,7 +149,7 @@ public class GamesRepository : InterfaceGamesRepository
         var todayDate = DateTime.Today;
         var tomorrowDate = todayDate.AddDays(1);
 
-        return await this.appContext.Games.Where(game => game.IsActive && game.OwnerId != userId && game.Rentals.Any(rental => rental.StartDate < tomorrowDate && rental.EndDate > todayDate)).ToListAsync();
+        return await this.appContext.Games.Where(game => game.IsActive && game.OwnerId != userId && game.Rentals.Any(rental => rental.StartDate.Date <= tomorrowDate && rental.EndDate.Date >= todayDate)).ToListAsync();
     }
 
     // Used to convert game data to Game object

@@ -32,6 +32,9 @@ namespace BookingBoardGames.Sharing.Services
             paymentEntity.PaymentState = PaymentConstrants.StateCompleted;
 
             int paymentIdentifier = await paymentRepository.AddPaymentAsync(paymentEntity);
+            paymentEntity.TransactionIdentifier = paymentIdentifier;
+            paymentEntity.ReceiptFilePath = receiptService.GenerateReceiptRelativePath(paymentEntity.RequestId);
+            await paymentRepository.UpdatePaymentAsync(paymentEntity);
 
             return paymentIdentifier;
         }

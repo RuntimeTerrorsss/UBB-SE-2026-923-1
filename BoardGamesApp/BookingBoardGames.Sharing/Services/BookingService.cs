@@ -126,7 +126,7 @@ public class BookingService : InterfaceBookingService
     /// <returns>Total price calculated as a decimal.</returns>
     public decimal CalculateTotalPriceForRentingASpecificGame(decimal price, TimeRange timeRange)
     {
-        int days = (timeRange.EndTime - timeRange.StartTime).Days + MinimumValidDayCount;
+        int days = (timeRange.EndTime.Date - timeRange.StartTime.Date).Days + MinimumValidDayCount;
 
         if (days < MinimumValidDayCount)
         {
@@ -143,7 +143,7 @@ public class BookingService : InterfaceBookingService
     /// <returns>The number of days in the given time range, ensuring at least 1 day.</returns>
     public int CalculateNumberOfDaysInAGivenTimeRange(TimeRange selectedTimeRange)
     {
-        int days = (selectedTimeRange.EndTime - selectedTimeRange.StartTime).Days + MinimumValidDayCount;
+        int days = (selectedTimeRange.EndTime.Date - selectedTimeRange.StartTime.Date).Days + MinimumValidDayCount;
         return days < MinimumValidDayCount ? MinimumValidDayCount : days;
     }
 
@@ -159,8 +159,8 @@ public class BookingService : InterfaceBookingService
             await rentalsRepository.BookGameWithRentalRequest(
                 clientId,
                 gameId,
-                timeRange.StartTime,
-                timeRange.EndTime);
+                timeRange.StartTime.Date,
+                timeRange.EndTime.Date);
         }
         catch (Exception exception)
         {

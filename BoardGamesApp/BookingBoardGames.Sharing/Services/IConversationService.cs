@@ -29,6 +29,10 @@ namespace BookingBoardGames.Sharing.Services
 
         Task SendMessage(MessageDataTransferObject message);
 
+        Task OnCardPaymentSelected(int messageId);
+
+        Task OnCashPaymentSelected(int messageId, int paymentId);
+
         void StartPolling();
 
         void StopPolling();

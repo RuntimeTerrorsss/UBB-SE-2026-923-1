@@ -74,6 +74,8 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath, "images"));
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

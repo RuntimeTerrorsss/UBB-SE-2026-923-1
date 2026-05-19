@@ -76,4 +76,10 @@ public class HistoryPayment : Payment
 
     [Column("owner_name")]
     public string? OwnerName { get; set; }
+
+    public DateTime? RentalStartDate { get; set; }
+
+    public DateTime? RentalEndDate { get; set; }
+
+    public string? ClientName { get; set; }
 }

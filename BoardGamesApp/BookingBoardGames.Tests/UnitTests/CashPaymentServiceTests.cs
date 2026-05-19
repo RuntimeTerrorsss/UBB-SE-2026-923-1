@@ -44,7 +44,8 @@ namespace BookingBoardGames.Tests.Services
 
             _mockPaymentRepository.Setup(r => r.AddPaymentAsync(paymentEntity))
                                   .ReturnsAsync(expectedIdentifier);
-
+            _mockReceiptService.Setup(r => r.GenerateReceiptRelativePath(100))
+                               .Returns("receipts\\receipt_100.pdf");
 
             var result = await _cashPaymentService.AddCashPaymentAsync(dto);
 
@@ -53,6 +54,7 @@ namespace BookingBoardGames.Tests.Services
             Assert.Equal("CASH", paymentEntity.PaymentMethod);
             Assert.Equal(PaymentConstrants.StateCompleted, paymentEntity.PaymentState);
             _mockPaymentRepository.Verify(r => r.AddPaymentAsync(paymentEntity), Times.Once);
+            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(paymentEntity), Times.Once);
         }
 
         #endregion

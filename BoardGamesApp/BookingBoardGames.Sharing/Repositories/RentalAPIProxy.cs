@@ -83,6 +83,18 @@ namespace BookingBoardGames.Sharing.Repositories
             response.EnsureSuccessStatusCode();
         }
 
+        public async Task<List<Rental>> GetRentalsForUser(int userId)
+        {
+            var response = await this.httpClient.GetAsync($"rentals/user/{userId}");
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<Rental>();
+            }
+
+            return await response.Content.ReadFromJsonAsync<List<Rental>>(JsonOptions)
+                   ?? new List<Rental>();
+        }
+
         public async Task BookGameWithRentalRequest(int clientId, int gameId, DateTime startDate, DateTime endDate)
         {
             var response = await this.httpClient.PostAsJsonAsync(
