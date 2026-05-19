@@ -133,7 +133,7 @@ namespace BookingBoardGames.Sharing.Services
                 if (user is not null &&
                     !string.Equals(user.Username, "System", StringComparison.OrdinalIgnoreCase))
                 {
-                    return user.Username;
+                    return FormatUserDisplayName(user);
                 }
             }
 
@@ -144,7 +144,7 @@ namespace BookingBoardGames.Sharing.Services
                 return "Unknown User";
             }
 
-            return fallbackUser.Username;
+            return FormatUserDisplayName(fallbackUser);
         }
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
@@ -496,6 +496,11 @@ namespace BookingBoardGames.Sharing.Services
                 participants: participantsOrdered,
                 messages: messageDTOs,
                 lastRead: lastRead);
+        }
+
+        private static string FormatUserDisplayName(User user)
+        {
+            return !string.IsNullOrWhiteSpace(user.DisplayName) ? user.DisplayName : user.Username;
         }
     }
 }

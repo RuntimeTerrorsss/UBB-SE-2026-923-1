@@ -1,20 +1,38 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BookingBoardGames.Data;
 using BookingBoardGames.Data.Enum;
+using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Sharing.DTO;
 using BookingBoardGames.Sharing.Services;
+using BookingBoardGames.Web.Helpers;
+using BookingBoardGames.Web.Models.Chats;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingBoardGames.Web.Controllers
 {
     public class ChatsController : BaseController
     {
-        private readonly IConversationService _conversationService;
+        private static readonly string[] AllowedImageExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        private const long MaxImageBytes = 5 * 1024 * 1024;
 
-        public ChatsController(IConversationService conversationService)
+        private readonly IConversationService _conversationService;
+        private readonly IUserRepository _userRepository;
+        private readonly IWebHostEnvironment _environment;
+
+        public ChatsController(
+            IConversationService conversationService,
+            IUserRepository userRepository,
+            IWebHostEnvironment environment)
         {
             _conversationService = conversationService;
+            _userRepository = userRepository;
+            _environment = environment;
         }
 
         [HttpGet]
@@ -27,7 +45,27 @@ namespace BookingBoardGames.Web.Controllers
             _conversationService.Initialize(userId);
 
             var conversations = await _conversationService.FetchConversations();
-            return View(conversations);
+            var items = new List<ConversationListItemViewModel>();
+
+            foreach (var conversation in conversations)
+            {
+                var otherUser = await GetOtherParticipantUserAsync(conversation, userId);
+                var lastMessage = conversation.MessageList
+                    .OrderByDescending(message => message.SentAt)
+                    .FirstOrDefault();
+
+                items.Add(new ConversationListItemViewModel
+                {
+                    ConversationId = conversation.Id,
+                    OtherUserName = otherUser != null
+                        ? FormatDisplayName(otherUser)
+                        : await _conversationService.GetOtherUserNameByConversationDTO(conversation),
+                    OtherUserAvatarUrl = MediaUrlHelper.ResolveUserImageUrl(otherUser?.AvatarUrl),
+                    LastMessagePreview = lastMessage?.GetChatMessagePreview() ?? "No messages yet",
+                });
+            }
+
+            return View(items);
         }
 
         [HttpGet]
@@ -44,8 +82,13 @@ namespace BookingBoardGames.Web.Controllers
 
             if (conversation == null) return NotFound();
 
+            var otherUser = await GetOtherParticipantUserAsync(conversation, currentUserId);
+
             ViewBag.CurrentUserId = currentUserId;
-            ViewBag.OtherUserName = await _conversationService.GetOtherUserNameByConversationDTO(conversation);
+            ViewBag.OtherUserName = otherUser != null
+                ? FormatDisplayName(otherUser)
+                : await _conversationService.GetOtherUserNameByConversationDTO(conversation);
+            ViewBag.OtherUserAvatarUrl = MediaUrlHelper.ResolveUserImageUrl(otherUser?.AvatarUrl);
 
             return PartialView("_ActiveChat", conversation);
         }
@@ -56,32 +99,75 @@ namespace BookingBoardGames.Web.Controllers
             var redirect = RequireLogin();
             if (redirect != null) return Unauthorized();
 
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return BadRequest();
+            }
+
             int senderId = CurrentUserId ?? -1;
             _conversationService.Initialize(senderId);
 
-            var conversations = await _conversationService.FetchConversations();
-            var conversation = conversations.FirstOrDefault(c => c.Id == conversationId);
-            if (conversation == null) return NotFound();
+            var receiver = await GetReceiverParticipantAsync(conversationId, senderId);
+            if (receiver == null) return NotFound();
 
-            var receiver = conversation.Participants.FirstOrDefault(p => p.UserId != senderId);
-            if (receiver == null) return BadRequest();
+            var dto = BuildMessageDto(
+                conversationId,
+                senderId,
+                receiver.UserId,
+                content.Trim(),
+                MessageType.MessageText,
+                string.Empty);
 
-            var dto = new MessageDataTransferObject(
-                Id: 0,
-                ConversationId: conversationId,
-                SenderId: senderId,
-                ReceiverId: receiver.UserId,
-                SentAt: DateTime.Now,
-                Content: content,
-                Type: MessageType.MessageText,
-                ImageUrl: string.Empty,
-                IsResolved: false,
-                IsAccepted: false,
-                IsAcceptedByBuyer: false,
-                IsAcceptedBySeller: false,
-                PaymentId: -1,
-                RequestId: -1
-            );
+            await _conversationService.SendMessage(dto);
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendImage(int conversationId, IFormFile image)
+        {
+            var redirect = RequireLogin();
+            if (redirect != null) return Unauthorized();
+
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest("No image provided.");
+            }
+
+            if (image.Length > MaxImageBytes)
+            {
+                return BadRequest("Image must be 5 MB or smaller.");
+            }
+
+            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+            if (!AllowedImageExtensions.Contains(extension))
+            {
+                return BadRequest("Only JPG, PNG, GIF, and WebP images are allowed.");
+            }
+
+            int senderId = CurrentUserId ?? -1;
+            _conversationService.Initialize(senderId);
+
+            var receiver = await GetReceiverParticipantAsync(conversationId, senderId);
+            if (receiver == null) return NotFound();
+
+            string imagesDirectory = Path.Combine(_environment.WebRootPath, "images");
+            Directory.CreateDirectory(imagesDirectory);
+
+            string storedFileName = $"{Guid.NewGuid()}{extension}";
+            string fullPath = Path.Combine(imagesDirectory, storedFileName);
+
+            await using (var stream = System.IO.File.Create(fullPath))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            var dto = BuildMessageDto(
+                conversationId,
+                senderId,
+                receiver.UserId,
+                "[Image]",
+                MessageType.MessageImage,
+                storedFileName);
 
             await _conversationService.SendMessage(dto);
             return Ok();
@@ -151,6 +237,69 @@ namespace BookingBoardGames.Web.Controllers
 
             await _conversationService.UpdateMessage(updated);
             return Ok();
+        }
+
+        private async Task<User?> GetOtherParticipantUserAsync(ConversationDTO conversation, int currentUserId)
+        {
+            var otherParticipantIds = conversation.Participants
+                .Select(participant => participant.UserId)
+                .Where(participantId => participantId != currentUserId)
+                .Distinct()
+                .ToList();
+
+            if (otherParticipantIds.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (var otherUserId in otherParticipantIds)
+            {
+                var user = await _userRepository.GetById(otherUserId);
+                if (user is not null &&
+                    !string.Equals(user.Username, "System", StringComparison.OrdinalIgnoreCase))
+                {
+                    return user;
+                }
+            }
+
+            return await _userRepository.GetById(otherParticipantIds.First());
+        }
+
+        private async Task<ConversationParticipant?> GetReceiverParticipantAsync(int conversationId, int senderId)
+        {
+            var conversations = await _conversationService.FetchConversations();
+            var conversation = conversations.FirstOrDefault(c => c.Id == conversationId);
+            return conversation?.Participants.FirstOrDefault(p => p.UserId != senderId);
+        }
+
+        private static MessageDataTransferObject BuildMessageDto(
+            int conversationId,
+            int senderId,
+            int receiverId,
+            string content,
+            MessageType type,
+            string imageUrl)
+        {
+            return new MessageDataTransferObject(
+                Id: 0,
+                ConversationId: conversationId,
+                SenderId: senderId,
+                ReceiverId: receiverId,
+                SentAt: DateTime.Now,
+                Content: content,
+                Type: type,
+                ImageUrl: imageUrl,
+                IsResolved: false,
+                IsAccepted: false,
+                IsAcceptedByBuyer: false,
+                IsAcceptedBySeller: false,
+                RequestId: -1,
+                PaymentId: -1);
+        }
+
+        private static string FormatDisplayName(User user)
+        {
+            return !string.IsNullOrWhiteSpace(user.DisplayName) ? user.DisplayName : user.Username;
         }
     }
 }

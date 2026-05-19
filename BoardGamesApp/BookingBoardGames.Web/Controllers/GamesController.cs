@@ -3,6 +3,7 @@ using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Sharing.DTO;
 using BookingBoardGames.Sharing.Mapper;
 using BookingBoardGames.Sharing.Services;
+using BookingBoardGames.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,7 +44,11 @@ namespace BookingBoardGames.Web.Controllers
 
             var unavailableRanges = await _bookingService.GetUnavailableTimeRanges(id);
             ViewBag.UnavailableRanges = unavailableRanges;
-            booking = booking with { ImageUrl = GameImageMapper.GetImageUrl(booking.Name) };
+            booking = booking with
+            {
+                ImageUrl = GameImageMapper.GetImageUrl(booking.Name),
+                AvatarUrl = MediaUrlHelper.ResolveUserImageUrl(booking.AvatarUrl),
+            };
             return View(booking);
         }
 
