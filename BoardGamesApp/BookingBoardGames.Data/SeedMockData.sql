@@ -1,3 +1,4 @@
+
 DELETE FROM messages;
 DELETE FROM conversation_participants;
 DELETE FROM conversations;
@@ -22,7 +23,7 @@ SET IDENTITY_INSERT users OFF;
 SET IDENTITY_INSERT games ON;
 INSERT INTO games (id, name, price, minimum_player_number, maximum_player_number, description, is_active, owner_id) VALUES
 (1, 'Catan', 15.00, 3, 4, 'Trade and build on the island of Catan.', 1, 1),
-(2, 'Monopoly', 10.00, 2, 6, 'Classic property trading game.', 1, 3), 
+(2, 'Monopoly', 10.00, 2, 6, 'Classic property trading game.', 1, 3), -- Schimbat owner la Carol (id 3) pentru a se potrivi cu restul logicii
 (3, 'Carcassonne', 12.50, 2, 5, 'Tile placement game.', 1, 1),
 (4, 'Terraforming Mars', 20.00, 1, 5, 'Strategy game about developing Mars.', 0, 3),
 (5, 'Ticket to Ride', 13.50, 2, 5, 'Build railway routes across the world.', 1, 1),
@@ -56,23 +57,23 @@ SET IDENTITY_INSERT games OFF;
 SET IDENTITY_INSERT rentals ON;
 INSERT INTO rentals (id, game_id, client_id, owner_id, start_date, end_date, total_price) VALUES
 (1, 1, 2, 1, '2026-05-10T00:00:00', '2026-05-15T00:00:00', 75.00),
-(2, 2, 1, 3, '2026-05-12T00:00:00', '2026-05-14T00:00:00', 20.00), 
+(2, 2, 1, 3, '2026-05-20T00:00:00', '2026-05-22T00:00:00', 20.00),
 (3, 1, 4, 1, '2026-04-01T00:00:00', '2026-04-05T00:00:00', 20.00),
-(4, 5, 5, 1, '2026-05-01T00:00:00', '2026-05-10T00:00:00', 135.00), 
-(5, 7, 6, 3, '2026-04-15T00:00:00', '2026-04-18T00:00:00', 48.00), 
-(6, 12, 7, 5, '2026-05-01T00:00:00', '2026-05-07T00:00:00', 69.00), 
-(7, 23, 2, 4, '2026-05-15T00:00:00', '2026-05-17T00:00:00', 19.00);
+(4, 5, 5, 1, '2026-06-01T00:00:00', '2026-06-10T00:00:00', 135.00),
+(5, 7, 6, 3, '2026-06-15T00:00:00', '2026-06-18T00:00:00', 48.00),
+(6, 12, 7, 5, '2026-07-01T00:00:00', '2026-07-07T00:00:00', 69.00),
+(7, 23, 2, 4, '2026-07-10T00:00:00', '2026-07-12T00:00:00', 19.00);
 SET IDENTITY_INSERT rentals OFF;
 
 SET IDENTITY_INSERT payments ON;
 INSERT INTO payments (id, request_id, client_id, owner_id, paid_amount, payment_method, date_of_transaction, date_confirmed_buyer, date_confirmed_seller, payment_state, PaymentCategory) VALUES
 (1, 1, 2, 1, 75.00, 'CARD', '2026-05-01 10:00:00', '2026-05-01 10:00:00', NULL, 1, 'Standard'),
-(2, 2, 1, 3, 20.00, 'CASH', '2026-05-10 14:30:00', NULL, NULL, 1, 'Standard'), 
+(2, 2, 1, 3, 20.00, 'CASH', '2026-05-18 14:30:00', NULL,                NULL, 1, 'Standard'),
 (3, 3, 4, 1, 20.00, 'CARD', '2026-03-25 09:00:00', '2026-03-25 09:00:00', NULL, 0, 'Standard'),
-(4, 4, 5, 1, 135.00, 'CASH', '2026-04-25 08:00:00', NULL, NULL, 1, 'Standard'),
-(5, 5, 6, 3, 48.00, 'CARD', '2026-04-10 11:00:00', '2026-04-10 11:00:00', NULL, 1, 'Standard'), 
-(6, 6, 7, 5, 69.00, 'CASH', '2026-04-25 16:00:00', NULL, NULL, 0, 'Standard'),
-(7, 7, 2, 4, 19.00, 'CARD', '2026-05-10 10:00:00', '2026-05-10 10:00:00', '2026-05-10 10:00:00', 1, 'Standard'); 
+(4, 4, 5, 1, 135.00, 'CASH', '2026-05-25 08:00:00', NULL,                  NULL, 1, 'Standard'),
+(5, 5, 6, 3, 48.00, 'CARD', '2026-06-10 11:00:00', '2026-06-10 11:00:00', NULL, 1, 'Standard'),
+(6, 6, 7, 5, 69.00, 'CASH', '2026-06-25 16:00:00', NULL,                  NULL, 0, 'Standard'),
+(7, 7, 2, 4, 19.00, 'CARD', '2026-07-05 10:00:00', '2026-07-05 10:00:00', '2026-07-05 10:00:00', 1, 'Standard');
 SET IDENTITY_INSERT payments OFF;
 
 
@@ -82,12 +83,12 @@ SET IDENTITY_INSERT conversations OFF;
 
 INSERT INTO conversation_participants (conversation_id, user_id, last_message_read_time, unread_messages_count) VALUES
 (1, 1, '2026-04-01 12:00:00', 0), (1, 2, '2026-04-01 11:45:00', 0),
-(2, 3, '2026-05-05 11:00:00', 0), (2, 1, '2026-05-05 11:00:00', 0), 
+(2, 3, '2026-05-10 11:00:00', 0), (2, 1, '2026-05-10 11:00:00', 0),
 (3, 1, '2026-03-20 10:00:00', 0), (3, 4, '2026-03-20 09:55:00', 0),
-(4, 1, '2026-04-20 09:00:00', 0), (4, 5, '2026-04-20 09:00:00', 0), 
-(5, 3, '2026-04-01 12:00:00', 0), (5, 6, '2026-04-01 12:00:00', 0), 
-(6, 5, '2026-04-15 17:00:00', 0), (6, 7, '2026-04-15 17:00:00', 0), 
-(7, 4, '2026-05-08 10:00:00', 0), (7, 2, '2026-05-08 10:00:00', 0); 
+(4, 1, '2026-05-20 09:00:00', 0), (4, 5, '2026-05-20 09:00:00', 0),
+(5, 3, '2026-06-01 12:00:00', 0), (5, 6, '2026-06-01 12:00:00', 0),
+(6, 5, '2026-06-15 17:00:00', 0), (6, 7, '2026-06-15 17:00:00', 0),
+(7, 4, '2026-07-01 10:00:00', 0), (7, 2, '2026-07-01 10:00:00', 0);
 
 
 SET IDENTITY_INSERT messages ON;
@@ -98,31 +99,38 @@ INSERT INTO messages (id, conversation_id, message_sender_id, message_receiver_i
 (3, 1, 2, 1, '2026-04-01 09:08:00', 'hamster.jpg', 'Image', NULL, NULL, NULL, NULL, NULL, 'hamster.jpg'),
 (4, 1, 2, 1, '2026-04-01 09:10:00', 'Perfect, thanks a lot!', 'Text', 'Perfect, thanks a lot!', NULL, NULL, NULL, NULL, NULL),
 
-(5, 2, 1, 3, '2026-05-05 10:00:00', 'Can I borrow Monopoly May 12-14?', 'RentalRequest', NULL, 2, 1, 1, 'Can I borrow Monopoly May 12-14?', NULL),
-(6, 2, 3, 1, '2026-05-05 10:10:00', 'Sure, I can bring it over Monday.', 'Text', 'Sure, I can bring it over Monday.', NULL, NULL, NULL, NULL, NULL),
-(7, 2, 1, 3, '2026-05-05 10:15:00', 'Great, see you then!', 'Text', 'Great, see you then!', NULL, NULL, NULL, NULL, NULL),
+
+(5, 2, 1, 3, '2026-05-10 10:00:00', 'Can I borrow Monopoly May 20-22?', 'RentalRequest', NULL, 2, 1, 1, 'Can I borrow Monopoly May 20-22?', NULL),
+(6, 2, 3, 1, '2026-05-10 10:10:00', 'Sure, I can bring it over Monday.', 'Text', 'Sure, I can bring it over Monday.', NULL, NULL, NULL, NULL, NULL),
+(7, 2, 1, 3, '2026-05-10 10:15:00', 'Great, see you then!', 'Text', 'Great, see you then!', NULL, NULL, NULL, NULL, NULL),
+
 
 (8, 3, 4, 1, '2026-03-20 09:00:00', 'Hi, is Catan free from the 1st of April?', 'RentalRequest', NULL, 3, 1, 1, 'Hi, is Catan free from the 1st of April?', NULL),
 (9, 3, 1, 4, '2026-03-20 09:05:00', 'Of course, come pick it up anytime.', 'Text', 'Of course, come pick it up anytime.', NULL, NULL, NULL, NULL, NULL),
 (10, 3, 4, 1, '2026-03-20 09:08:00', 'hamster.jpg', 'Image', NULL, NULL, NULL, NULL, NULL, 'hamster.jpg'),
 (11, 3, 1, 4, '2026-03-20 09:12:00', 'Will be there Tuesday morning!', 'Text', 'Will be there Tuesday morning!', NULL, NULL, NULL, NULL, NULL),
 
-(12, 4, 5, 1, '2026-04-20 08:00:00', 'Would love to rent Ticket to Ride.', 'RentalRequest', NULL, 4, 1, 1, 'Would love to rent Ticket to Ride.', NULL), 
-(13, 4, 1, 5, '2026-04-20 08:10:00', 'Sure, it''s available. Want to meet Saturday?', 'Text', 'Sure, it''s available. Want to meet Saturday?', NULL, NULL, NULL, NULL, NULL),
-(14, 4, 5, 1, '2026-04-20 08:20:00', 'Saturday works perfectly for me.', 'Text', 'Saturday works perfectly for me.', NULL, NULL, NULL, NULL, NULL),
 
-(15, 5, 6, 3, '2026-04-01 11:00:00', 'Is 7 Wonders available?', 'RentalRequest', NULL, 5, 1, 1, 'Is 7 Wonders available?', NULL),  
-(16, 5, 3, 6, '2026-04-01 11:05:00', 'Yep, I''ll have it ready by Tuesday.', 'Text', 'Yep, I''ll have it ready by Tuesday.', NULL, NULL, NULL, NULL, NULL),
-(17, 5, 6, 3, '2026-04-01 11:10:00', 'hamster.jpg', 'Image', NULL, NULL, NULL, NULL, NULL, 'hamster.jpg'),
+(12, 4, 5, 1, '2026-05-20 08:00:00', 'Would love to rent Ticket to Ride.', 'RentalRequest', NULL, 4, 1, 1, 'Would love to rent Ticket to Ride.', NULL),
+(13, 4, 1, 5, '2026-05-20 08:10:00', 'Sure, it''s available. Want to meet Saturday?', 'Text', 'Sure, it''s available. Want to meet Saturday?', NULL, NULL, NULL, NULL, NULL),
+(14, 4, 5, 1, '2026-05-20 08:20:00', 'Saturday works perfectly for me.', 'Text', 'Saturday works perfectly for me.', NULL, NULL, NULL, NULL, NULL),
 
-(18, 6, 7, 5, '2026-04-15 16:00:00', 'Can I get Risk from May 1st to 7th?', 'RentalRequest', NULL, 6, 1, 1, 'Can I get Risk from May 1st to 7th?', NULL), 
-(19, 6, 5, 7, '2026-04-15 16:10:00', 'Sounds good, just message me before you come.', 'Text', 'Sounds good, just message me before you come.', NULL, NULL, NULL, NULL, NULL),
-(20, 6, 7, 5, '2026-04-15 16:20:00', 'Will do, cheers!', 'Text', 'Will do, cheers!', NULL, NULL, NULL, NULL, NULL),
 
-(21, 7, 2, 4, '2026-05-08 09:00:00', 'Is The Crew free?', 'RentalRequest', NULL, 7, 1, 1, 'Is The Crew free?', NULL),  
-(22, 7, 4, 2, '2026-05-08 09:10:00', 'Yes, grab it.', 'Text', 'Yes, grab it.', NULL, NULL, NULL, NULL, NULL);
+(15, 5, 6, 3, '2026-06-01 11:00:00', 'Is 7 Wonders available?', 'RentalRequest', NULL, 5, 1, 1, 'Is 7 Wonders available?', NULL),
+(16, 5, 3, 6, '2026-06-01 11:05:00', 'Yep, I''ll have it ready by Tuesday.', 'Text', 'Yep, I''ll have it ready by Tuesday.', NULL, NULL, NULL, NULL, NULL),
+(17, 5, 6, 3, '2026-06-01 11:10:00', 'hamster.jpg', 'Image', NULL, NULL, NULL, NULL, NULL, 'hamster.jpg'),
+
+
+(18, 6, 7, 5, '2026-06-15 16:00:00', 'Can I get Risk from July 1st to 7th?', 'RentalRequest', NULL, 6, 1, 1, 'Can I get Risk from July 1st to 7th?', NULL),
+(19, 6, 5, 7, '2026-06-15 16:10:00', 'Sounds good, just message me before you come.', 'Text', 'Sounds good, just message me before you come.', NULL, NULL, NULL, NULL, NULL),
+(20, 6, 7, 5, '2026-06-15 16:20:00', 'Will do, cheers!', 'Text', 'Will do, cheers!', NULL, NULL, NULL, NULL, NULL),
+
+
+(21, 7, 2, 4, '2026-07-01 09:00:00', 'Is The Crew free?', 'RentalRequest', NULL, 7, 1, 1, 'Is The Crew free?', NULL),
+(22, 7, 4, 2, '2026-07-01 09:10:00', 'Yes, grab it.', 'Text', 'Yes, grab it.', NULL, NULL, NULL, NULL, NULL);
 
 SET IDENTITY_INSERT messages OFF;
+
 
 SELECT * FROM users;
 SELECT * FROM games;

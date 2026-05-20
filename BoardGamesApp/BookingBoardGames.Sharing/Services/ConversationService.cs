@@ -59,11 +59,6 @@ namespace BookingBoardGames.Sharing.Services
             notifier.NotifyMessageUpdate(participants, message);
         }
 
-        public async Task<int> FindOrCreateConversationBetweenUsers(int userIdA, int userIdB)
-        {
-            return await ConversationRepository.FindOrCreateConversationBetweenUsers(userIdA, userIdB);
-        }
-
         private async Task NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
         {
             IReadOnlyList<int> participants = await ConversationRepository.GetParticipantUserIds(readReceipt.ConversationId);
@@ -138,7 +133,7 @@ namespace BookingBoardGames.Sharing.Services
                 if (user is not null &&
                     !string.Equals(user.Username, "System", StringComparison.OrdinalIgnoreCase))
                 {
-                    return FormatUserDisplayName(user);
+                    return user.Username;
                 }
             }
 
@@ -149,7 +144,7 @@ namespace BookingBoardGames.Sharing.Services
                 return "Unknown User";
             }
 
-            return FormatUserDisplayName(fallbackUser);
+            return fallbackUser.Username;
         }
 
         public string GetOtherUserNameByMessageDTO(MessageDataTransferObject message)
@@ -501,11 +496,6 @@ namespace BookingBoardGames.Sharing.Services
                 participants: participantsOrdered,
                 messages: messageDTOs,
                 lastRead: lastRead);
-        }
-
-        private static string FormatUserDisplayName(User user)
-        {
-            return !string.IsNullOrWhiteSpace(user.DisplayName) ? user.DisplayName : user.Username;
         }
     }
 }

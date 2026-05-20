@@ -20,44 +20,172 @@ namespace BookingBoardGames.Sharing.Services
     {
         private readonly IRepositoryPayment paymentRepository;
         private readonly IReceiptService receiptService;
-        private readonly IRentalService rentalService;
-        private readonly IConversationService conversationService;
 
-        public ServicePayment(
-            IRepositoryPayment paymentRepository,
-            IReceiptService receiptService,
-            IRentalService rentalService,
-            IConversationService conversationService)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServicePayment"/> class.
+        /// </summary>
+        /// <param name="repository">The transactions repository providing data access.</param>
+        /// <param name="receiptService">Service to handle generating and opening receipts.</param>
+        public ServicePayment(IRepositoryPayment paymentRepository, IReceiptService receiptService)
         {
             this.paymentRepository = paymentRepository;
             this.receiptService = receiptService;
-            this.rentalService = rentalService;
-            this.conversationService = conversationService;
         }
 
+        /// <summary>
+        /// Retrieves all transactions without any filtering, mapped to DTOs for UI display.
+        /// </summary>
+        /// <returns>A list of all mapped TransactionDto objects.</returns>
         public async Task<List<PaymentDataTransferObject>> GetAllPaymentsForUI()
         {
-            int currentUserId = SessionContext.GetInstance().UserId;
-            var items = await BuildMergedHistoryAsync(currentUserId);
-            return items.ToList();
+            var allPayments = await paymentRepository.GetAllPayments();
+            allPayments = FilterPaymentsByCurrentUser(allPayments).ToList();
+            return MapToDataTransferObject(allPayments);
         }
 
-        public async Task<PagedResult<PaymentDataTransferObject>> GetFilteredPayments(
-            FilterType filter,
-            PaymentMethod paymentMethod = PaymentMethod.ALL,
-            string searchQuery = "",
-            int pageNumber = 1,
-            int pageSize = 10)
+        private IEnumerable<HistoryPayment> FilterPaymentsByCurrentUser(IEnumerable<HistoryPayment> payments)
         {
             int currentUserId = SessionContext.GetInstance().UserId;
-            IEnumerable<PaymentDataTransferObject> items = await BuildMergedHistoryAsync(currentUserId);
+            if (currentUserId <= 0)
+            {
+                return Enumerable.Empty<HistoryPayment>();
+            }
 
-            items = ApplyDtoFilters(items, paymentMethod, searchQuery, filter);
-            items = ApplyDtoSorting(items, filter);
-
-            return GetPagedResultDto(items, pageSize, pageNumber);
+            return payments.Where(payment =>
+                payment.ClientId == currentUserId ||
+                payment.OwnerId == currentUserId);
         }
 
+        private bool IsPaymentMethodFilterApplied(PaymentMethod paymentMethod)
+        {
+            return paymentMethod != PaymentMethod.ALL;
+        }
+
+        private IEnumerable<HistoryPayment> FilterPaymentsByPaymentMethod(string paymentMethod, IEnumerable<HistoryPayment> payments)
+        {
+            return payments.Where(transaction => transaction.PaymentMethod?.ToLower() == paymentMethod);
+        }
+
+        private bool IsUserSearching(string searchQuery)
+        {
+            return !string.IsNullOrWhiteSpace(searchQuery);
+        }
+
+        private IEnumerable<HistoryPayment> FilterPaymentsBySearchQuery(string searchQuery, IEnumerable<HistoryPayment> payments)
+        {
+            return payments.Where(transaction =>
+            {
+                string gameName = transaction.GameName ?? string.Empty;
+                return gameName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase);
+            });
+        }
+
+        private IEnumerable<HistoryPayment> ApplyDateFilters(IEnumerable<HistoryPayment> payments, FilterType filter)
+        {
+            DateTime currentDateTime = DateTime.Now;
+
+            switch (filter)
+            {
+                case FilterType.Last3Months:
+                    payments = payments.Where(transaction => transaction.DateOfTransaction.HasValue && transaction.DateOfTransaction.Value >= currentDateTime.AddMonths(-3));
+                    break;
+                case FilterType.Last6Months:
+                    payments = payments.Where(transaction => transaction.DateOfTransaction.HasValue && transaction.DateOfTransaction.Value >= currentDateTime.AddMonths(-6));
+                    break;
+                case FilterType.Last9Months:
+                    payments = payments.Where(transaction => transaction.DateOfTransaction.HasValue && transaction.DateOfTransaction.Value >= currentDateTime.AddMonths(-9));
+                    break;
+                case FilterType.AllTime:
+                default:
+                    // Return all as is
+                    break;
+            }
+
+            return payments;
+        }
+
+        private IEnumerable<HistoryPayment> ApplyFilters(IEnumerable<HistoryPayment> payments, PaymentMethod paymentMethod, string searchQuery, FilterType filter)
+        {
+            if (IsPaymentMethodFilterApplied(paymentMethod))
+            {
+                string paymentMethodString = paymentMethod.ToString().ToLower();
+                payments = FilterPaymentsByPaymentMethod(paymentMethodString, payments);
+            }
+
+            if (IsUserSearching(searchQuery))
+            {
+                payments = FilterPaymentsBySearchQuery(searchQuery, payments);
+            }
+
+            payments = ApplyDateFilters(payments, filter);
+
+            return payments;
+        }
+
+        private IEnumerable<HistoryPayment> ApplySorting(IEnumerable<HistoryPayment> payments, FilterType filter)
+        {
+            switch (filter)
+            {
+                case FilterType.AlphabeticalAsc:
+                    payments = payments.OrderBy(transaction => transaction.GameName ?? "z");
+                    break;
+                case FilterType.AlphabeticalDesc:
+                    payments = payments.OrderByDescending(transaction => transaction.GameName ?? "a");
+                    break;
+                case FilterType.Newest:
+                    payments = payments.OrderByDescending(transaction => transaction.DateOfTransaction ?? DateTime.MinValue);
+                    break;
+                case FilterType.Oldest:
+                    payments = payments.OrderBy(transaction => transaction.DateOfTransaction ?? DateTime.MinValue);
+                    break;
+                default:
+                    // Return all as is
+                    break;
+            }
+
+            return payments;
+        }
+
+        private PagedResult<PaymentDataTransferObject> GetPagedResult(IEnumerable<HistoryPayment> payments, int pageSize, int pageNumber)
+        {
+            int totalCount = payments.Count();
+
+            var pagedSource = payments
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+
+            return new PagedResult<PaymentDataTransferObject>
+            {
+                Items = MapToDataTransferObject(pagedSource),
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+
+        /// <summary>
+        /// Retrieves transactions mapped to DTOs, filtered or sorted by the given criteria and payment method.
+        /// </summary>
+        /// <param name="filter">The chosen filter or sort type (e.g. Last3Months, Newest, AlphabeticalAsc).</param>
+        /// <param name="paymentMethod">The chosen payment method filter.</param>
+        /// <param name="searchQuery">Text used to search by Product Name.</param>
+        /// <returns>A filtered/sorted list of mapped TransactionDto objects.</returns>
+        public async Task<PagedResult<PaymentDataTransferObject>> GetFilteredPayments(FilterType filter, PaymentMethod paymentMethod = PaymentMethod.ALL, string searchQuery = "", int pageNumber = 1, int pageSize = 10)
+        {
+            IEnumerable<HistoryPayment> payments = await paymentRepository.GetAllPayments();
+            payments = FilterPaymentsByCurrentUser(payments);
+
+            payments = ApplyFilters(payments, paymentMethod, searchQuery, filter);
+            payments = ApplySorting(payments, filter);
+
+            return GetPagedResult(payments, pageSize, pageNumber);
+        }
+
+        /// <summary>
+        /// Computes the sum total amount from a given sequence of displayed transactions.
+        /// </summary>
+        /// <param name="displayedPayments">The sequence to sum.</param>
+        /// <returns>The total raw sum.</returns>
         public decimal CalculateTotalAmount(IEnumerable<PaymentDataTransferObject> displayedPayments)
         {
             if (displayedPayments == null)
@@ -68,6 +196,11 @@ namespace BookingBoardGames.Sharing.Services
             return displayedPayments.Sum(transaction => transaction.Amount);
         }
 
+        /// <summary>
+        /// Retrieves the full file path of the receipt, ensuring it exists.
+        /// </summary>
+        /// <param name="paymentId">The ID of the transaction.</param>
+        /// <returns>The string file path to the Receipt PDF.</returns>
         public async Task<string> GetReceiptDocumentPath(int paymentId)
         {
             Payment foundPayment = await paymentRepository.GetPaymentById(paymentId);
@@ -84,294 +217,26 @@ namespace BookingBoardGames.Sharing.Services
             return await receiptService.GetReceiptDocument(foundPayment);
         }
 
-        public async Task<string> GetReceiptDocumentPathForRental(int rentalId)
+        /// <summary>
+        /// Maps domain Transaction models into UI-friendly TransactionDto objects.
+        /// </summary>
+        /// <param name="payments">The collection of transactions to map.</param>
+        /// <returns>A mapped list of TransactionDto objects.</returns>
+        private List<PaymentDataTransferObject> MapToDataTransferObject(IEnumerable<HistoryPayment> payments)
         {
-            int currentUserId = SessionContext.GetInstance().UserId;
-            IEnumerable<HistoryPayment> payments = await paymentRepository.GetAllPayments();
-            payments = FilterPaymentsByCurrentUser(payments);
-            HistoryPayment? existing = payments.FirstOrDefault(p => p.RequestId == rentalId);
-
-            if (existing != null)
+            return payments.Select(transaction =>
             {
-                return await GetReceiptDocumentPath(existing.TransactionIdentifier);
-            }
-
-            Rental rental = await rentalService.GetRentalById(rentalId);
-            if (rental.ClientId != currentUserId && rental.OwnerId != currentUserId)
-            {
-                throw new UnauthorizedAccessException("You do not have access to this rental.");
-            }
-
-            decimal paidAmount = rental.TotalPrice ?? await rentalService.GetRentalPrice(rentalId);
-
-            var provisionalPayment = new HistoryPayment
-            {
-                RequestId = rentalId,
-                ClientId = rental.ClientId,
-                OwnerId = rental.OwnerId,
-                PaidAmount = paidAmount,
-                PaymentMethod = "Pending",
-                DateOfTransaction = DateTime.Now,
-                ReceiptFilePath = receiptService.GenerateReceiptRelativePath(rentalId),
-            };
-
-            return await receiptService.GetReceiptDocument(provisionalPayment);
-        }
-
-        private async Task<List<PaymentDataTransferObject>> BuildMergedHistoryAsync(int userId)
-        {
-            if (userId <= 0)
-            {
-                return new List<PaymentDataTransferObject>();
-            }
-
-            IEnumerable<HistoryPayment> payments = await paymentRepository.GetAllPayments();
-            payments = FilterPaymentsByCurrentUser(payments);
-
-            var rentalStatuses = await GetRentalRequestStatusMapAsync(userId);
-            var paidRentalIds = payments.Select(p => p.RequestId).ToHashSet();
-
-            var items = payments
-                .Select(p => MapPaymentToDto(p, userId, rentalStatuses))
-                .ToList();
-
-            var rentals = await rentalService.GetRentalsForUser(userId);
-            foreach (var rental in rentals)
-            {
-                if (paidRentalIds.Contains(rental.Id))
+                return new PaymentDataTransferObject
                 {
-                    continue;
-                }
-
-                rentalStatuses.TryGetValue(rental.Id, out var requestMessage);
-                items.Add(MapRentalToDto(rental, userId, requestMessage));
-            }
-
-            return items;
-        }
-
-        private async Task<Dictionary<int, MessageDataTransferObject>> GetRentalRequestStatusMapAsync(int userId)
-        {
-            conversationService.Initialize(userId);
-            var conversations = await conversationService.FetchConversations();
-
-            return conversations
-                .SelectMany(conversation => conversation.MessageList)
-                .Where(message => message.Type == MessageType.MessageRentalRequest && message.RequestId > 0)
-                .GroupBy(message => message.RequestId)
-                .ToDictionary(
-                    group => group.Key,
-                    group => group.OrderByDescending(message => message.SentAt).First());
-        }
-
-        private static PaymentDataTransferObject MapPaymentToDto(
-            HistoryPayment payment,
-            int userId,
-            Dictionary<int, MessageDataTransferObject> rentalStatuses)
-        {
-            bool isBorrowing = payment.ClientId == userId;
-            string period = FormatPeriod(payment.RentalStartDate, payment.RentalEndDate);
-            rentalStatuses.TryGetValue(payment.RequestId, out var requestMessage);
-
-            return new PaymentDataTransferObject
-            {
-                PaymentId = payment.TransactionIdentifier,
-                RentalId = payment.RequestId,
-                HasPayment = true,
-                SortDate = payment.DateOfTransaction ?? payment.RentalStartDate ?? DateTime.MinValue,
-                DateText = payment.DateOfTransaction?.ToString("d") ?? PaymentHistoryConstants.NullDateOfTransactionDefaultValue,
-                ProductName = !string.IsNullOrWhiteSpace(payment.GameName) ? payment.GameName : PaymentHistoryConstants.NullGameNameDefaultValue,
-                ReceiverName = !string.IsNullOrWhiteSpace(payment.OwnerName) ? payment.OwnerName : PaymentHistoryConstants.NullOwnerNameDefaultValue,
-                OtherPartyName = isBorrowing ? payment.OwnerName : payment.ClientName,
-                Role = isBorrowing ? "Borrowing" : "Lending",
-                Period = period,
-                Status = GetPaidStatus(payment, requestMessage),
-                Amount = payment.PaidAmount,
-                PaymentMethod = FormatPaymentMethod(payment.PaymentMethod),
-                FilePath = payment.ReceiptFilePath,
-            };
-        }
-
-        private static PaymentDataTransferObject MapRentalToDto(
-            RentalDataTransferObject rental,
-            int userId,
-            MessageDataTransferObject? requestMessage)
-        {
-            bool isBorrowing = rental.ClientId == userId;
-
-            return new PaymentDataTransferObject
-            {
-                PaymentId = 0,
-                RentalId = rental.Id,
-                HasPayment = false,
-                SortDate = rental.StartDate,
-                DateText = rental.StartDate.ToString("d"),
-                ProductName = rental.GameName,
-                ReceiverName = isBorrowing ? rental.OwnerName : rental.ClientName,
-                OtherPartyName = isBorrowing ? rental.OwnerName : rental.ClientName,
-                Role = isBorrowing ? "Borrowing" : "Lending",
-                Period = FormatPeriod(rental.StartDate, rental.EndDate),
-                Status = GetRentalRequestStatus(requestMessage, userId),
-                Amount = rental.Price,
-                PaymentMethod = "—",
-                FilePath = null,
-            };
-        }
-
-        private static string FormatPeriod(DateTime? start, DateTime? end)
-        {
-            if (!start.HasValue || !end.HasValue)
-            {
-                return "—";
-            }
-
-            return $"{start.Value:dd MMM yyyy} – {end.Value:dd MMM yyyy}";
-        }
-
-        private static string FormatPaymentMethod(string? method)
-        {
-            if (string.IsNullOrWhiteSpace(method))
-            {
-                return "Unknown";
-            }
-
-            return method.Equals("CASH", StringComparison.OrdinalIgnoreCase) ? "Cash"
-                : method.Contains("card", StringComparison.OrdinalIgnoreCase) ? "Card"
-                : method;
-        }
-
-        private static string GetPaidStatus(HistoryPayment payment, MessageDataTransferObject? requestMessage)
-        {
-            if (requestMessage is { IsResolved: true, IsAccepted: true })
-            {
-                return "Completed";
-            }
-
-            return FormatPaymentMethod(payment.PaymentMethod) switch
-            {
-                "Cash" => "Paid (Cash)",
-                "Card" => "Paid (Card)",
-                _ => "Paid",
-            };
-        }
-
-        private static string GetRentalRequestStatus(MessageDataTransferObject? message, int currentUserId)
-        {
-            if (message == null)
-            {
-                return "Pending";
-            }
-
-            if (!message.IsResolved && !message.IsAccepted)
-            {
-                return "Pending";
-            }
-
-            if (!message.IsResolved && message.IsAccepted)
-            {
-                return "Accepted";
-            }
-
-            if (message.IsResolved && !message.IsAccepted)
-            {
-                return message.SenderId == currentUserId ? "Cancelled" : "Declined";
-            }
-
-            return "Completed";
-        }
-
-        private IEnumerable<HistoryPayment> FilterPaymentsByCurrentUser(IEnumerable<HistoryPayment> payments)
-        {
-            int currentUserId = SessionContext.GetInstance().UserId;
-            if (currentUserId <= 0)
-            {
-                return Enumerable.Empty<HistoryPayment>();
-            }
-
-            return payments.Where(payment =>
-                payment.ClientId == currentUserId ||
-                payment.OwnerId == currentUserId);
-        }
-
-        private static IEnumerable<PaymentDataTransferObject> ApplyDtoFilters(
-            IEnumerable<PaymentDataTransferObject> items,
-            PaymentMethod paymentMethod,
-            string searchQuery,
-            FilterType filter)
-        {
-            if (paymentMethod != PaymentMethod.ALL)
-            {
-                items = items.Where(item => MatchesPaymentMethod(item, paymentMethod));
-            }
-
-            if (!string.IsNullOrWhiteSpace(searchQuery))
-            {
-                items = items.Where(item =>
-                    (item.ProductName ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
-            }
-
-            items = ApplyDtoDateFilters(items, filter);
-            return items;
-        }
-
-        private static bool MatchesPaymentMethod(PaymentDataTransferObject item, PaymentMethod paymentMethod)
-        {
-            if (!item.HasPayment)
-            {
-                return false;
-            }
-
-            var method = item.PaymentMethod?.ToLowerInvariant() ?? string.Empty;
-            return paymentMethod switch
-            {
-                PaymentMethod.CASH => method.Contains("cash"),
-                PaymentMethod.CARD => method.Contains("card"),
-                _ => true,
-            };
-        }
-
-        private static IEnumerable<PaymentDataTransferObject> ApplyDtoDateFilters(IEnumerable<PaymentDataTransferObject> items, FilterType filter)
-        {
-            DateTime currentDateTime = DateTime.Now;
-
-            return filter switch
-            {
-                FilterType.Last3Months => items.Where(item => item.SortDate >= currentDateTime.AddMonths(-3)),
-                FilterType.Last6Months => items.Where(item => item.SortDate >= currentDateTime.AddMonths(-6)),
-                FilterType.Last9Months => items.Where(item => item.SortDate >= currentDateTime.AddMonths(-9)),
-                _ => items,
-            };
-        }
-
-        private static IEnumerable<PaymentDataTransferObject> ApplyDtoSorting(IEnumerable<PaymentDataTransferObject> items, FilterType filter)
-        {
-            return filter switch
-            {
-                FilterType.AlphabeticalAsc => items.OrderBy(item =>
-                    string.IsNullOrWhiteSpace(item.ProductName) ? PaymentHistoryConstants.NullGameNameDefaultValue : item.ProductName),
-                FilterType.AlphabeticalDesc => items.OrderByDescending(item =>
-                    string.IsNullOrWhiteSpace(item.ProductName) ? PaymentHistoryConstants.NullGameNameDefaultValue : item.ProductName),
-                FilterType.Oldest => items.OrderBy(item => item.SortDate),
-                FilterType.Newest => items.OrderByDescending(item => item.SortDate),
-                _ => items.OrderByDescending(item => item.SortDate),
-            };
-        }
-
-        private static PagedResult<PaymentDataTransferObject> GetPagedResultDto(
-            IEnumerable<PaymentDataTransferObject> items,
-            int pageSize,
-            int pageNumber)
-        {
-            var list = items.ToList();
-            int totalCount = list.Count;
-
-            return new PagedResult<PaymentDataTransferObject>
-            {
-                Items = list.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(),
-                TotalCount = totalCount,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-            };
+                    PaymentId = transaction.TransactionIdentifier,
+                    DateText = transaction.DateOfTransaction?.ToString("d") ?? PaymentHistoryConstants.NullDateOfTransactionDefaultValue,
+                    ProductName = !string.IsNullOrWhiteSpace(transaction.GameName) ? transaction.GameName : PaymentHistoryConstants.NullGameNameDefaultValue,
+                    ReceiverName = !string.IsNullOrWhiteSpace(transaction.OwnerName) ? transaction.OwnerName : PaymentHistoryConstants.NullOwnerNameDefaultValue,
+                    Amount = transaction.PaidAmount,
+                    PaymentMethod = transaction.PaymentMethod,
+                    FilePath = transaction.ReceiptFilePath,
+                };
+            }).ToList();
         }
     }
 }

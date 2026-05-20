@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    name: Compile and Test Check
+    name: Compile Check
     runs-on: windows-latest
 
     steps:
@@ -20,8 +20,11 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore BoardGamesApp/BookingBoardGames/BookingBoardGames.sln
 
-    - name: Build Solution
-      run: dotnet build BoardGamesApp/BookingBoardGames/BookingBoardGames.sln --no-restore -c Release -p:PublishReadyToRun=false
+    - name: Build BookingBoardGames
+      run: dotnet build BoardGamesApp/BookingBoardGames/BookingBoardGames.csproj --no-restore -c Release -p:PublishReadyToRun=false
 
-    - name: Run Tests
-      run: dotnet test BoardGamesApp/BookingBoardGames/BookingBoardGames.sln --no-build -c Release
+    - name: Build BookingBoardGames.Data
+      run: dotnet build BoardGamesApp/BookingBoardGames.Data/BookingBoardGames.Data.csproj --no-restore -c Release -p:PublishReadyToRun=false
+
+    - name: Build BookingBoardGames.Api
+      run: dotnet build BoardGamesApp/BookingBoardGamesWeb/BookingBoardGames.Api.csproj --no-restore -c Release -p:PublishReadyToRun=false

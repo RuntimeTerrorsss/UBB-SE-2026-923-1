@@ -76,13 +76,4 @@ public class HistoryPayment : Payment
 
     [Column("owner_name")]
     public string? OwnerName { get; set; }
-
-    [NotMapped]
-    public DateTime? RentalStartDate { get; set; }
-
-    [NotMapped]
-    public DateTime? RentalEndDate { get; set; }
-
-    [NotMapped]
-    public string? ClientName { get; set; }
 }

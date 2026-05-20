@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BookingBoardGames.Web.Models.Chats.ConversationListItemViewModel>
+﻿@model IEnumerable<BookingBoardGames.Sharing.DTO.ConversationDTO>
 @{
     ViewData["Title"] = "Messages";
 }
@@ -34,17 +34,6 @@
         background-color: #e9ecef;
         border-left: 4px solid #0078d4;
     }
-
-    .chat-avatar {
-        width: 44px;
-        height: 44px;
-        object-fit: cover;
-    }
-
-    .chat-avatar-fallback {
-        width: 44px;
-        height: 44px;
-    }
 </style>
 
 <div class="container-fluid chat-container mt-3">
@@ -70,27 +59,17 @@
                 {
                     foreach (var convo in Model)
                     {
-                        <div class="d-flex align-items-center p-2 mb-1 conversation-item" id="convo-@convo.ConversationId" onclick="loadMessages(@convo.ConversationId)">
+                        <div class="d-flex align-items-center p-2 mb-1 conversation-item" id="convo-@convo.Id" onclick="loadMessages(@convo.Id)">
                             <div class="flex-shrink-0">
-                                @if (!string.IsNullOrEmpty(convo.OtherUserAvatarUrl))
-                                {
-                                    <img src="@convo.OtherUserAvatarUrl" alt="@convo.OtherUserName" class="rounded-circle chat-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                                    <div class="bg-secondary rounded-circle text-white d-none justify-content-center align-items-center chat-avatar-fallback">
-                                        <i class="bi bi-person-fill fs-5"></i>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="bg-secondary rounded-circle text-white d-flex justify-content-center align-items-center chat-avatar-fallback">
-                                        <i class="bi bi-person-fill fs-5"></i>
-                                    </div>
-                                }
+                                <div class="bg-secondary rounded-circle text-white d-flex justify-content-center align-items-center" style="width: 44px; height: 44px;">
+                                    <i class="bi bi-person-fill fs-5"></i>
+                                </div>
                             </div>
                             <div class="flex-grow-1 ms-3 overflow-hidden">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h6 class="mb-0 text-truncate fw-semibold">@convo.OtherUserName</h6>
+                                    <h6 class="mb-0 text-truncate fw-semibold">Conversation #@convo.Id</h6>
                                 </div>
-                                <small class="text-muted text-truncate d-block">@convo.LastMessagePreview</small>
+                                <small class="text-muted text-truncate d-block">Click to view messages...</small>
                             </div>
                         </div>
                     }
@@ -109,14 +88,6 @@
 
 @section Scripts {
     <script>
-        $('#searchBox').on('input', function () {
-            var query = $(this).val().toLowerCase();
-            $('#conversationList .conversation-item').each(function () {
-                var name = $(this).find('h6').text().toLowerCase();
-                $(this).toggle(name.indexOf(query) >= 0);
-            });
-        });
-
         function loadMessages(conversationId) {
             $('.conversation-item').removeClass('conversation-selected');
             $('#convo-' + conversationId).addClass('conversation-selected');
@@ -129,7 +100,7 @@
                 success: function (result) {
                     $('#rightPanelArea').html(result);
                     var chatBox = document.getElementById("chatScrollArea");
-                    if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+                    if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
                 },
                 error: function () {
                     $('#rightPanelArea').html('<div class="h-100 d-flex justify-content-center align-items-center text-danger"><h5>Error loading messages.</h5></div>');

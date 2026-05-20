@@ -51,32 +51,11 @@ namespace BookingBoardGames.Sharing.Repositories
                 payment.DateOfTransaction = DateTime.Now;
             }
 
-            if (payment.TransactionIdentifier <= 0)
-            {
-                payment.TransactionIdentifier = 0;
-            }
-
-            payment.Request = null;
-            payment.Client = null;
-            payment.Owner = null;
-
             var response = await this.httpClient.PostAsJsonAsync("payments", payment, JsonOptions);
-            if (!response.IsSuccessStatusCode)
-            {
-                var errorBody = await response.Content.ReadAsStringAsync();
-                throw new HttpRequestException(
-                    $"Payment API returned {(int)response.StatusCode}: {errorBody}",
-                    null,
-                    response.StatusCode);
-            }
+            response.EnsureSuccessStatusCode();
 
-            var newId = await response.Content.ReadFromJsonAsync<int>(JsonOptions);
-            if (newId <= 0)
-            {
-                throw new InvalidOperationException("Payment API did not return a valid payment id.");
-            }
-
-            return newId;
+            var raw = await response.Content.ReadAsStringAsync();
+            return int.Parse(raw, System.Globalization.CultureInfo.InvariantCulture);
         }
 
         public async Task<Payment?> UpdatePaymentAsync(Payment payment)

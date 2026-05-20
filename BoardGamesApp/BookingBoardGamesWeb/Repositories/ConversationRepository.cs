@@ -194,7 +194,7 @@ namespace BookingBoardGames.Api.Repositories
                 MessageSenderId = parent.MessageSenderId,
                 MessageReceiverId = parent.MessageReceiverId,
                 CashPaymentId = paymentId,
-                MessageSentTime = DateTime.Now,
+                MessageSentTime = DateTime.UtcNow,
                 Conversation = null!,
                 Sender = null!,
                 Receiver = null!,

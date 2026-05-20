@@ -42,10 +42,5 @@ namespace BookingBoardGames.Sharing.Services
         /// <param name="paymentId">The ID of the transaction.</param>
         /// <returns>The string file path to the Receipt PDF.</returns>
         Task<string> GetReceiptDocumentPath(int paymentId);
-
-        /// <summary>
-        /// Retrieves or generates a receipt PDF for a rental (paid or unpaid).
-        /// </summary>
-        Task<string> GetReceiptDocumentPathForRental(int rentalId);
     }
 }

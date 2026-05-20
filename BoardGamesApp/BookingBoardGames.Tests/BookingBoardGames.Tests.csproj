@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BookingBoardGames.Sharing\BookingBoardGames.Sharing.csproj" />
+    <ProjectReference Include="..\BookingBoardGames.Data\BookingBoardGames.Data.csproj" />
+    <ProjectReference Include="..\BookingBoardGames\BookingBoardGames.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,8 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="IntegrationTests\" />
-    <Folder Include="UnitTests\" />
+    <ProjectReference Include="..\BookingBoardGames.Data\BookingBoardGames.Data.csproj" />
   </ItemGroup>
 
 </Project>
