@@ -16,23 +16,9 @@ namespace BookingBoardGames.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var filter = new FilterCriteria();
-            if (IsLoggedIn)
-            {
-                filter.UserId = CurrentUserId;
-            }
-
-            var results = await searchService.SearchGamesByFilter(filter);
-            var distinct = results.DistinctBy(game => game.Name).ToArray();
-
-            var model = new SearchFilterViewModel();
-            model.TotalPages = (int)Math.Ceiling(distinct.Length / (double)model.PageSize);
-            model.TotalPages = Math.Max(1, model.TotalPages);
-            model.Results = distinct.Take(model.PageSize).ToList();
-
-            return View(model);
+            return View(new SearchFilterViewModel());
         }
 
         [HttpGet]
@@ -44,7 +30,8 @@ namespace BookingBoardGames.Web.Controllers
                 return View("Index", model);
             }
 
-            if (model.StartDate.HasValue && model.EndDate.HasValue && model.StartDate > model.EndDate)
+            if (model.StartDate.HasValue && model.EndDate.HasValue
+                && model.StartDate > model.EndDate)
             {
                 model.ErrorMessage = "Start date must be before end date.";
                 return View("Index", model);
@@ -56,7 +43,6 @@ namespace BookingBoardGames.Web.Controllers
                 City = model.City,
                 MaximumPrice = model.MaximumPrice,
                 PlayerCount = model.MinimumPlayers,
-                UserId = IsLoggedIn ? CurrentUserId : null,
                 SortOption = model.SortOption switch
                 {
                     "price_asc" => SortOption.PriceAscending,
@@ -70,13 +56,10 @@ namespace BookingBoardGames.Web.Controllers
             };
 
             var results = await searchService.SearchGamesByFilter(filter);
-            var distinct = results.DistinctBy(game => game.Name).ToArray();
 
-            model.TotalPages = (int)Math.Ceiling(distinct.Length / (double)model.PageSize);
-            model.TotalPages = Math.Max(1, model.TotalPages);
-            model.Page = Math.Clamp(model.Page, 1, model.TotalPages);
-
-            model.Results = distinct
+            model.TotalPages = (int)Math.Ceiling(results.Length / (double)model.PageSize);
+            model.Page = Math.Clamp(model.Page, 1, Math.Max(1, model.TotalPages));
+            model.Results = results
                 .Skip((model.Page - 1) * model.PageSize)
                 .Take(model.PageSize)
                 .ToList();

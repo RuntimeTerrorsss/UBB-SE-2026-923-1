@@ -90,7 +90,7 @@
                                 <TextBlock Text="💰" VerticalAlignment="Center"/>
                                 <TextBlock VerticalAlignment="Center">
                                     <Run Text="{Binding GameAndUserDetails.Price}"/>
-                                    <Run Text=" RON/day"/>
+                                    <Run Text=" $/day"/>
                                 </TextBlock>
                             </StackPanel>
 
@@ -159,7 +159,7 @@
                             <StackPanel Orientation="Horizontal" Spacing="6">
                                 <TextBlock FontSize="22" FontWeight="Bold">
                                     <Run Text="{Binding GameAndUserDetails.Price}"/>
-                                    <Run Text="RON"/>
+                                    <Run Text="$"/>
                                 </TextBlock>
                                 <TextBlock Text="/ day"
                                            VerticalAlignment="Bottom"
@@ -201,7 +201,7 @@
                                            FontWeight="Bold"
                                            VerticalAlignment="Center">
                                     <Run Text="{Binding TotalPrice}"/>
-                                    <Run Text=" RON"/>
+                                    <Run Text=" $"/>
                                 </TextBlock>
                             </Grid>
 

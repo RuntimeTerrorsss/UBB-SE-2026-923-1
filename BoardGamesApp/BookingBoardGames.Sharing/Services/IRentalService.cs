@@ -5,14 +5,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BookingBoardGames.Sharing.DTO;
 
 namespace BookingBoardGames.Sharing.Services
 {
     public interface IRentalService
     {
-        public Task<List<RentalDataTransferObject>> GetRentalsForUser(int userId);
-
         public Task<Rental> GetRentalById(int rentalId);
 
         public Task<decimal> GetRentalPrice(int rentalId);

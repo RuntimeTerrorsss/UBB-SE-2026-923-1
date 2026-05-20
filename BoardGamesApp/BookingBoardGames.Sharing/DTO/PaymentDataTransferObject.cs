@@ -16,20 +16,6 @@ namespace BookingBoardGames.Sharing.DTO
 
         public string? ReceiverName { get; set; }
 
-        public string? OtherPartyName { get; set; }
-
-        public string? Role { get; set; }
-
-        public string? Period { get; set; }
-
-        public string? Status { get; set; }
-
-        public int RentalId { get; set; }
-
-        public bool HasPayment { get; set; }
-
-        public DateTime SortDate { get; set; }
-
         /// <summary>
         /// Gets or sets numeric amount used strictly for service-level total calculations.
         /// </summary>

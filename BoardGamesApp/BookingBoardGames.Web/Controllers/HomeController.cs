@@ -1,6 +1,3 @@
-using BookingBoardGames.Data.Enum;
-using BookingBoardGames.Sharing.DTO;
-using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -10,24 +7,15 @@ namespace BookingBoardGames.Web.Controllers
     public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly InterfaceSearchAndFilterService _searchService;
 
-        public HomeController(ILogger<HomeController> logger, InterfaceSearchAndFilterService searchService)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _searchService = searchService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var filter = new FilterCriteria();
-            if (IsLoggedIn)
-            {
-                filter.UserId = CurrentUserId;
-            }
-
-            var games = await _searchService.SearchGamesByFilter(filter);
-            return View(games);
+            return View();
         }
 
         public IActionResult Privacy()

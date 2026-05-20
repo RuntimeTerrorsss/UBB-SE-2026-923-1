@@ -27,7 +27,6 @@ public record BookingDTO
     /// Gets or sets the image data as a byte array.
     /// </summary>
     public byte[]? Image { get; set; }
-    public string ImageUrl { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the price of the item.

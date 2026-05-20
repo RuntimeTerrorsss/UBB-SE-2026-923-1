@@ -52,10 +52,8 @@ builder.Services.AddScoped<ICardPaymentService, CardPaymentService>();
 builder.Services.AddScoped<ICashPaymentService, CashPaymentService>();
 builder.Services.AddScoped<IConversationNotifier, ConversationNotifier>();
 builder.Services.AddScoped<IConversationService, ConversationService>();
-builder.Services.AddSingleton<InterfaceGeographicalService>(provider =>
-{
-    return GeographicalService.LoadFromFileAsync().GetAwaiter().GetResult();
-}); builder.Services.AddScoped<IMapService, MapService>();
+builder.Services.AddScoped<InterfaceGeographicalService, GeographicalService>();
+builder.Services.AddScoped<IMapService, MapService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
 builder.Services.AddScoped<IRentalService, RentalService>();
 builder.Services.AddScoped<InterfaceSearchAndFilterService, SearchAndFilterService>();
@@ -74,8 +72,6 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath, "images"));
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -91,7 +87,9 @@ app.UseRouting();
 // MIDDLEWARE PIPELINE 
 app.UseAuthentication();
 
+// ==========================================
 // FAKE LOGIN MIDDLEWARE (TEMPORARY FOR TESTING)
+// ==========================================
 app.Use(async (context, next) =>
 {
     // Ensure you change "1" to a valid User ID that actually exists in your database!
@@ -106,6 +104,7 @@ app.Use(async (context, next) =>
 
     await next();
 });
+// ==========================================
 
 app.UseSession();
 
@@ -113,6 +112,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Register}/{id?}");
+    //pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

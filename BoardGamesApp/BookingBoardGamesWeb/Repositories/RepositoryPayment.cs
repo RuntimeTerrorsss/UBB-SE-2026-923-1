@@ -35,9 +35,8 @@ namespace BookingBoardGames.Api.Repositories
         {
             return this.context.Payments
                 .Include(payment => payment.Request)
-                    .ThenInclude(rental => rental!.Game)
+                    .ThenInclude(rental => rental.Game)
                 .Include(payment => payment.Owner)
-                .Include(payment => payment.Client)
                 .Select(payment => new HistoryPayment
                 {
                     TransactionIdentifier = payment.TransactionIdentifier,
@@ -51,16 +50,12 @@ namespace BookingBoardGames.Api.Repositories
                     RequestId = payment.RequestId,
                     ClientId = payment.ClientId,
                     OwnerId = payment.OwnerId,
-                    RentalStartDate = payment.Request != null ? payment.Request.StartDate : null,
-                    RentalEndDate = payment.Request != null ? payment.Request.EndDate : null,
+
                     GameName = payment.Request != null && payment.Request.Game != null
                                     ? payment.Request.Game.Name
                                     : PaymentHistoryConstants.NullGameNameDefaultValue,
                     OwnerName = payment.Owner != null
                                     ? payment.Owner.DisplayName
-                                    : PaymentHistoryConstants.NullOwnerNameDefaultValue,
-                    ClientName = payment.Client != null
-                                    ? payment.Client.DisplayName
                                     : PaymentHistoryConstants.NullOwnerNameDefaultValue,
                 });
         }

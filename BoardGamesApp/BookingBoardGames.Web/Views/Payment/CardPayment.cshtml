@@ -11,26 +11,13 @@
         <h2>Card Payment</h2>
         <p class="subtitle">Complete your payment securely</p>
 
-        @if (!string.IsNullOrEmpty(Model.GameName))
-        {
-            <div class="alert alert-light border small mb-3">
-                <div><strong>@Model.GameName</strong> — @Model.RentalPeriod</div>
-                <div>Owner: @Model.OwnerName</div>
-                <div>Your balance: <strong>@Model.AccountBalance.ToString("C")</strong></div>
-            </div>
-        }
-
         <form id="cardPaymentForm" asp-controller="Payment" asp-action="CardPayment" method="post" novalidate>
             @Html.AntiForgeryToken()
 
+            @* Hidden fields to carry IDs through the POST *@
             <input type="hidden" asp-for="RequestIdentifier" />
             <input type="hidden" asp-for="ClientIdentifier" />
             <input type="hidden" asp-for="OwnerIdentifier" />
-            <input type="hidden" asp-for="MessageId" />
-            <input type="hidden" asp-for="Amount" />
-            <input type="hidden" asp-for="GameName" />
-            <input type="hidden" asp-for="OwnerName" />
-            <input type="hidden" asp-for="RentalPeriod" />
 
             @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
             {
@@ -39,14 +26,17 @@
                 </div>
             }
 
-            @if (TempData["Success"] != null)
+            @if (ViewBag.SuccessMessage != null)
             {
-                <div class="alert alert-success py-2 small">@TempData["Success"]</div>
+                <div class="alert alert-success py-2 small">
+                    @ViewBag.SuccessMessage
+                </div>
             }
 
             <div class="mb-3">
                 <label asp-for="Amount" class="form-label"></label>
-                <input asp-for="Amount" class="form-control" readonly />
+                <input asp-for="Amount" class="form-control" placeholder="Amount" />
+                <span asp-validation-for="Amount" class="text-danger small d-block"></span>
             </div>
 
             <div class="mb-3">
@@ -87,18 +77,15 @@
             </div>
 
             <div class="form-check mt-3">
-                <input class="form-check-input" type="checkbox" id="termsCheck" required />
+                <input class="form-check-input" type="checkbox" id="termsCheck" />
                 <label class="form-check-label" for="termsCheck">
                     I agree to the terms and conditions
                 </label>
             </div>
 
             <button type="submit" class="btn btn-primary btn-payment" id="submitBtn">
-                Pay @Model.Amount.ToString("C")
+                Pay now
             </button>
-            <a asp-controller="Rentals" asp-action="Checkout"
-               asp-route-rentalId="@Model.RequestIdentifier" asp-route-messageId="@Model.MessageId"
-               class="btn btn-outline-secondary w-100 mt-2">Back</a>
         </form>
     </div>
 </div>

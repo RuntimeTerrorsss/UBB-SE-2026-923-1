@@ -9,9 +9,7 @@ public class TimeRange
 
     public TimeRange(DateTime startTime, DateTime endTime)
     {
-        if (endTime.Date < startTime.Date) throw new ArgumentException("End date must be on or after the start date.");
-        startTime = startTime.Date;
-        endTime = endTime.Date;
+        if (endTime < startTime) throw new ArgumentException("EndTime must be after StartTime");
         StartTime = startTime;
         EndTime = endTime;
     }

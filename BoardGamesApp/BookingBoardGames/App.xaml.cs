@@ -52,8 +52,7 @@ namespace BookingBoardGames
             ReceiptService = new ReceiptService(UserRepository, RentalService, GameRepository);
             CardPaymentService = new CardPaymentService(PaymentRepository, UserRepository, ReceiptService, RentalService);
             MapService = new MapService();
-            var conversationService = new ConversationService(ConversationRepository, UserRepository, ConversationNotifier);
-            ServicePayment = new ServicePayment(HistoryRepository, ReceiptService, RentalService, conversationService);
+            ServicePayment = new ServicePayment(HistoryRepository, ReceiptService);
             CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);
             BookingService = new BookingService(GameRepository, RentalRepository, UserRepository);
             SearchAndFilterService = new SearchAndFilterService(GameRepository, UserRepository, RentalRepository, GlobalGeographicalService);
