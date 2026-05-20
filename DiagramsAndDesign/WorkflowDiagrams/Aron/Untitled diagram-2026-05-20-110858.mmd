@@ -1,0 +1,44 @@
+sequenceDiagram
+    autonumber
+    actor User as User (Browser)
+    participant WebCtrl as ChatsController (Web App)
+    participant Svc as ConversationService
+    participant Proxy as ConversationAPIProxy
+    participant APICtrl as ConversationController (API)
+    participant Repo as ConversationRepository (DB)
+
+    User->>WebCtrl: POST /Chats/SendMessage (convoId, text)
+    
+    
+    WebCtrl->>Svc: Initialize(senderId)
+    WebCtrl->>Svc: FetchConversations()
+    Svc-->>WebCtrl: List<ConversationDTO>
+    WebCtrl->>WebCtrl: Find Receiver ID from Participants
+
+    
+    WebCtrl->>WebCtrl: Create MessageDataTransferObject (DTO)
+    WebCtrl->>Svc: SendMessage(DTO)
+    Svc->>Svc: Convert DTO to Message Entity
+
+   
+    Svc->>Proxy: HandleNewMessage(Message)
+    Proxy->>Proxy: Convert Message to MessageDto
+    Proxy->>APICtrl: POST api/Conversation/messages (JSON)
+
+   
+    APICtrl->>APICtrl: Convert MessageDto to Message Entity
+    APICtrl->>Repo: HandleNewMessage(Message)
+    Repo->>Repo: Save to SQL Database
+    Repo-->>APICtrl: Return Persisted Message (with new ID)
+
+
+    APICtrl->>APICtrl: Convert to MessageDto
+    APICtrl-->>Proxy: 200 OK (MessageDto JSON)
+    Proxy->>Proxy: Convert back to Message Entity
+    Proxy-->>Svc: Return Persisted Message
+    Svc->>Svc: Update Local Cached Conversations
+    Svc->>Svc: NotifySubscribersAboutMessage()
+    Svc-->>WebCtrl: Task Completed
+    WebCtrl-->>User: 200 OK (AJAX Success)
+    
+    User->>WebCtrl: AJAX triggers loadMessages() UI Refresh

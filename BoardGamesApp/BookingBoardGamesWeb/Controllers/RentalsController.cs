@@ -56,6 +56,18 @@ namespace BookingBoardGames.Api.Controllers
             return Ok(range);
         }
 
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<List<Rental>>> GetRentalsForUser(int userId)
+        {
+            if (userId <= 0)
+            {
+                return this.BadRequest("A valid user id is required.");
+            }
+
+            var rentals = await this.rentalRepository.GetRentalsForUser(userId);
+            return Ok(rentals);
+        }
+
         [HttpPost("book")]
         public async Task<ActionResult<int>> BookGameWithRentalRequest([FromBody] BookGameWithRentalRequestBody request)
         {
@@ -63,6 +75,12 @@ namespace BookingBoardGames.Api.Controllers
             {
                 return this.BadRequest("A valid renter account is required.");
             }
+
+            request = request with
+            {
+                StartDate = request.StartDate.Date,
+                EndDate = request.EndDate.Date,
+            };
 
             if (request.EndDate < request.StartDate)
             {
@@ -121,7 +139,7 @@ namespace BookingBoardGames.Api.Controllers
                 ConversationId = conversationId,
                 MessageSenderId = request.ClientId,
                 MessageReceiverId = game.OwnerId,
-                MessageSentTime = DateTime.UtcNow,
+                MessageSentTime = DateTime.Now,
                 RentalRequestId = rental.RentalId,
                 RequestContent = requestSummary,
                 MessageContentAsString = "Rental Request",

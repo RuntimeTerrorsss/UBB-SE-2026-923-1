@@ -1,21 +1,20 @@
 using System;
 using System.Threading.Tasks;
-using BookingBoardGames.Data.Interfaces;
 using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Web.Models.Payment;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingBoardGames.Web.Controllers
 {
-    [Authorize]
     public class PaymentController : BaseController
     {
         private readonly ICardPaymentService _cardPaymentService;
+        private readonly IConversationService _conversationService;
 
-        public PaymentController(ICardPaymentService cardPaymentService)
+        public PaymentController(ICardPaymentService cardPaymentService, IConversationService conversationService)
         {
             _cardPaymentService = cardPaymentService;
+            _conversationService = conversationService;
         }
 
         [HttpGet]
@@ -28,18 +27,32 @@ namespace BookingBoardGames.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult CardPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier)
+        public async Task<IActionResult> CardPayment(int requestIdentifier, int clientIdentifier, int ownerIdentifier, int messageId = 0)
         {
             var redirect = RequireLogin();
             if (redirect != null) return redirect;
+
+            if ((CurrentUserId ?? -1) != clientIdentifier)
+            {
+                return Forbid();
+            }
+
+            var rental = await _cardPaymentService.GetRequestDataTransferObject(requestIdentifier);
+            decimal balance = await _cardPaymentService.GetCurrentBalance(clientIdentifier);
 
             return View(new PaymentViewModel
             {
                 RequestIdentifier = requestIdentifier,
                 ClientIdentifier = clientIdentifier,
                 OwnerIdentifier = ownerIdentifier,
+                MessageId = messageId,
+                Amount = rental.Price,
                 PaymentMethod = "Card",
                 DateOfTransaction = DateTime.Now,
+                GameName = rental.GameName,
+                OwnerName = rental.OwnerName,
+                RentalPeriod = $"{rental.StartDate:dd MMM yyyy} – {rental.EndDate:dd MMM yyyy}",
+                AccountBalance = balance,
             });
         }
 
@@ -50,7 +63,27 @@ namespace BookingBoardGames.Web.Controllers
             var redirect = RequireLogin();
             if (redirect != null) return redirect;
 
+            if ((CurrentUserId ?? -1) != model.ClientIdentifier)
+            {
+                return Forbid();
+            }
+
             model.PaymentMethod = "Card";
+
+            if (model.RequestIdentifier <= 0)
+            {
+                ModelState.AddModelError(nameof(model.RequestIdentifier), "Invalid request identifier.");
+            }
+
+            if (model.ClientIdentifier <= 0)
+            {
+                ModelState.AddModelError(nameof(model.ClientIdentifier), "Invalid client identifier.");
+            }
+
+            if (model.OwnerIdentifier <= 0)
+            {
+                ModelState.AddModelError(nameof(model.OwnerIdentifier), "Invalid owner identifier.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -58,6 +91,7 @@ namespace BookingBoardGames.Web.Controllers
                 model.Cvv = string.Empty;
                 model.CardholderName = string.Empty;
                 model.Expiry = string.Empty;
+                model.AccountBalance = await _cardPaymentService.GetCurrentBalance(model.ClientIdentifier);
                 return View(model);
             }
 
@@ -67,15 +101,21 @@ namespace BookingBoardGames.Web.Controllers
                     model.RequestIdentifier,
                     model.ClientIdentifier,
                     model.OwnerIdentifier,
-                    model.Amount
-                );
+                    model.Amount);
 
-                ViewBag.SuccessMessage = $"Payment successful! Transaction ID: {result.TransactionIdentifier}";
-                return View(model);
+                if (model.MessageId > 0)
+                {
+                    _conversationService.Initialize(model.ClientIdentifier);
+                    await _conversationService.OnCardPaymentSelected(model.MessageId);
+                }
+
+                TempData["Success"] = $"Payment successful! Transaction ID: {result.TransactionIdentifier}";
+                return RedirectToAction("Index", "PaymentHistory");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
+                model.AccountBalance = await _cardPaymentService.GetCurrentBalance(model.ClientIdentifier);
                 return View(model);
             }
         }

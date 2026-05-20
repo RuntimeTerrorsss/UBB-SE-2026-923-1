@@ -78,7 +78,14 @@ namespace BookingBoardGames.Web.Controllers
                 ModelState.AddModelError(string.Empty, "Registration failed. The username or email may already be taken.");
                 return View(registeringUserViewModel);
             }
-            return RedirectToAction("Login");
+
+            var loggedInUser = await userService.LoginAsync(user.Username, registeringUserViewModel.Password);
+            if (loggedInUser != null)
+            {
+                SessionHelper.SetUser(HttpContext.Session, loggedInUser.Id, loggedInUser.Username, loggedInUser.DisplayName);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -52,9 +52,20 @@ namespace BookingBoardGames.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> AddPayment([FromBody] Payment payment)
         {
-            if (payment.DateOfTransaction == default) payment.DateOfTransaction = DateTime.Now;
-            int newId = await _repo.AddPaymentAsync(payment);
-            return Ok(newId);
+            try
+            {
+                if (payment.DateOfTransaction == default)
+                {
+                    payment.DateOfTransaction = DateTime.Now;
+                }
+
+                int newId = await _repo.AddPaymentAsync(payment);
+                return Ok(newId);
+            }
+            catch (Exception ex)
+            {
+                return Problem(detail: ex.InnerException?.Message ?? ex.Message, statusCode: 500);
+            }
         }
 
         [HttpPut("{id}")]
