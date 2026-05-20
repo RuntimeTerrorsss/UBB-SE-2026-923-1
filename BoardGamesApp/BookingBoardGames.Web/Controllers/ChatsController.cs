@@ -69,6 +69,26 @@ namespace BookingBoardGames.Web.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> StartChatWithOwner(int ownerUserId)
+        {
+            var redirect = RequireLogin();
+            if (redirect != null) return redirect;
+
+            int currentUserId = CurrentUserId ?? -1;
+
+            if (currentUserId == ownerUserId)
+            {
+                return RedirectToAction("Index");
+            }
+
+            _conversationService.Initialize(currentUserId);
+            int conversationId = await _conversationService.FindOrCreateConversationBetweenUsers(
+                currentUserId, ownerUserId);
+
+            return RedirectToAction("Index", new { openConversationId = conversationId });
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetChat(int conversationId)
         {
             var redirect = RequireLogin();

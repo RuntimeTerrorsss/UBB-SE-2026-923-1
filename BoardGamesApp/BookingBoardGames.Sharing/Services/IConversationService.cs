@@ -33,6 +33,8 @@ namespace BookingBoardGames.Sharing.Services
 
         Task OnCashPaymentSelected(int messageId, int paymentId);
 
+        Task<int> FindOrCreateConversationBetweenUsers(int userIdA, int userIdB);
+
         void StartPolling();
 
         void StopPolling();

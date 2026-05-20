@@ -300,7 +300,8 @@
                 }
                 <div style="margin-top:8px; font-weight:600;">@Model.DisplayName</div>
                 <div style="font-size:12px; color:#666;">Since @Model.CreatedAt.ToShortDateString()</div>
-                <a href="#" class="btn btn-outline-secondary btn-sm mt-2">Chat with user</a>
+                <a href="@Url.Action("StartChatWithOwner", "Chats", new { ownerUserId = Model.UserId })"
+                   class="btn btn-outline-secondary btn-sm mt-2">Chat with user</a>
             </div>
         </div>
 
