@@ -59,6 +59,11 @@ namespace BookingBoardGames.Sharing.Services
             notifier.NotifyMessageUpdate(participants, message);
         }
 
+        public async Task<int> FindOrCreateConversationBetweenUsers(int userIdA, int userIdB)
+        {
+            return await ConversationRepository.FindOrCreateConversationBetweenUsers(userIdA, userIdB);
+        }
+
         private async Task NotifySubscribersAboutReadReceipt(ReadReceiptDTO readReceipt)
         {
             IReadOnlyList<int> participants = await ConversationRepository.GetParticipantUserIds(readReceipt.ConversationId);
