@@ -1,0 +1,67 @@
+sequenceDiagram
+    actor Renter
+    participant GamesController
+    participant BookingService
+    participant GamesAPIProxy
+    participant UserAPIProxy
+    participant RentalAPIProxy
+    participant API_GamesController as API GamesController
+    participant API_UsersController as API UsersController
+    participant API_RentalsController as API RentalsController
+    participant ConversationRepository
+    participant AppDbContext
+
+    Renter->>GamesController: GET /Games/ConfirmBooking?id&startDate&endDate
+    GamesController->>BookingService: GetBookingInformationForSpecificGame(id)
+    BookingService->>GamesAPIProxy: GetGameById(id)
+    GamesAPIProxy->>API_GamesController: GET /api/games/{id}
+    API_GamesController->>AppDbContext: GetGameById(id)
+    AppDbContext-->>API_GamesController: return Game
+    API_GamesController-->>GamesAPIProxy: return Game
+    GamesAPIProxy-->>BookingService: return Game
+    BookingService->>UserAPIProxy: GetGameById(ownerId)
+    UserAPIProxy->>API_UsersController: GET /api/users/{ownerId}
+    API_UsersController->>AppDbContext: GetById(ownerId)
+    AppDbContext-->>API_UsersController: return User
+    API_UsersController-->>UserAPIProxy: return User
+    UserAPIProxy-->>BookingService: return User (owner)
+    BookingService-->>GamesController: return BookingDTO
+    GamesController->>BookingService: CheckGameAvailability(id, timeRange)
+    BookingService->>RentalAPIProxy: CheckGameAvailability(startTime, endTime, id)
+    RentalAPIProxy->>API_RentalsController: POST /api/rentals/{id}/check
+    API_RentalsController->>AppDbContext: CheckGameAvailability(start, end, id)
+    AppDbContext-->>API_RentalsController: return bool
+    API_RentalsController-->>RentalAPIProxy: return bool
+    RentalAPIProxy-->>BookingService: return bool
+    BookingService-->>GamesController: return bool
+
+    alt not available
+        GamesController-->>Renter: redirect to Details with error
+    else available
+        GamesController-->>Renter: return View (confirm page + total price)
+        Renter->>GamesController: POST /Games/ConfirmBooking
+        GamesController->>BookingService: GetBookingInformationForSpecificGame(id)
+        Note over BookingService,AppDbContext: same flow as above (GetGameById + GetGameById owner)
+        BookingService-->>GamesController: return BookingDTO
+        GamesController->>BookingService: AddBooking(id, clientId, timeRange)
+        BookingService->>RentalAPIProxy: BookGameWithRentalRequest(clientId, gameId, startDate, endDate)
+        RentalAPIProxy->>API_RentalsController: POST /api/rentals/book
+        API_RentalsController->>AppDbContext: GetGameById(gameId)
+        AppDbContext-->>API_RentalsController: return Game
+        API_RentalsController->>AppDbContext: CheckGameAvailability(start, end, gameId)
+        AppDbContext-->>API_RentalsController: return bool (available)
+        API_RentalsController->>AppDbContext: AddRental(rental)
+        AppDbContext-->>API_RentalsController: saved
+        API_RentalsController->>ConversationRepository: FindOrCreateConversationBetweenUsers(clientId, ownerId)
+        ConversationRepository->>AppDbContext: query + insert if needed
+        AppDbContext-->>ConversationRepository: return conversationId
+        ConversationRepository-->>API_RentalsController: return conversationId
+        API_RentalsController->>ConversationRepository: HandleNewMessage(RentalRequestMessage)
+        ConversationRepository->>AppDbContext: save RentalRequestMessage
+        AppDbContext-->>ConversationRepository: saved
+        ConversationRepository-->>API_RentalsController: done
+        API_RentalsController-->>RentalAPIProxy: HTTP 200 OK (rentalId)
+        RentalAPIProxy-->>BookingService: done
+        BookingService-->>GamesController: done
+        GamesController-->>Renter: redirect to /Chats (success)
+    end
