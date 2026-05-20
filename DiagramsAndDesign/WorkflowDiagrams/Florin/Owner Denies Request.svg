@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg baseProfile="tiny" height="510" version="1.2" viewBox="0 0 951 510" width="951" xmlns="http://www.w3.org/2000/svg">
+  <text fill="black" font-family="sans-serif" font-size="20" font-weight="bold" x="347.5953776041666" y="30.406249999999886">
+    Owner Denies Request  </text>
+  <path d="M-807,-311.8750000000001 L-807,0" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M198.96900000000002,57.13499999999999 C198.96900000000002,25.576999999999884,224.50499999999997,-1.1368683772161603e-13,256.0099999999999,-1.1368683772161603e-13 C287.5129999999999,-1.1368683772161603e-13,313.053,25.576999999999884,313.053,57.13499999999999 C313.053,88.6919999999999,287.5129999999999,114.26999999999998,256.0099999999999,114.26999999999998 C224.50499999999997,114.26999999999998,198.96900000000002,88.69099999999992,198.96900000000002,57.13499999999999 Z M377.006,245.18299999999988 C376.83799999999997,244.07299999999998,348.6099999999999,155.80299999999988,348.6099999999999,155.80299999999988 C347.047,150.93600000000004,343.33899999999994,146.61199999999985,339.342,144.07299999999998 C326.908,136.61199999999985,295.8109999999999,124.77599999999995,256.0099999999999,124.77599999999995 C216.20900000000003,124.77599999999995,185.112,136.61199999999997,172.67799999999997,144.07299999999998 C168.68199999999993,146.61199999999985,164.97299999999998,150.93600000000004,163.41,155.80299999999988 C163.41,155.80299999999988,135.16,244.16599999999983,134.992,245.32499999999993 C134.82399999999998,246.48399999999992,136.82200000000003,317.2819999999999,136.82200000000003,317.2819999999999 C137.093,328.7109999999999,146.427,337.7869999999998,157.77899999999997,337.7869999999998 C157.94899999999998,337.7869999999998,158.11900000000006,337.78499999999985,158.29099999999997,337.78099999999984 C169.871,337.5039999999999,179.03299999999993,327.87699999999995,178.75799999999995,316.2779999999999 L176.80100000000002,251.3789999999999 L194.364,197.36699999999996 C198.54599999999996,197.34799999999996,199.44400000000005,202.43400000000008,199.44400000000005,206.57799999999986 L199.55699999999993,486.31600000000003 C199.55699999999993,500.4979999999998,211.13899999999998,512,225.424,512 C239.71299999999994,512,251.29299999999998,500.4979999999998,251.29299999999998,486.3159999999998 L251.29299999999998,336.7889999999999 L260.727,336.7889999999999 L260.727,486.3159999999998 C260.727,500.4979999999998,272.3069999999999,512,286.596,512 C300.8810000000001,512,312.4630000000001,500.4979999999998,312.4630000000001,486.3159999999998 L312.576,206.57799999999986 C312.576,202.43399999999986,313.47400000000005,197.34899999999993,317.65599999999995,197.36699999999996 L335.21900000000005,251.3789999999999 L333.26200000000006,316.2779999999999 C332.9870000000001,327.87699999999995,342.149,337.5039999999999,353.72900000000004,337.78099999999984 C353.90100000000007,337.78499999999985,354.0709999999999,337.7869999999998,354.241,337.7869999999998 C365.59299999999996,337.7869999999998,374.927,328.7109999999999,375.198,317.2819999999999 C375.197,317.2819999999999,377.188,246.38899999999978,377.006,245.18299999999988 Z" fill="white" stroke="black" stroke-width="10.995973154362416" transform="matrix(0.0909423828125,0,0,0.0909423828125,18.828776041666515,53.0208333333332)"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="26.914713541666515" y="120.67708333333316">
+    User  </text>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="26.914713541666515" y="464.59374999999994">
+    User  </text>
+  <path d="M-639,-311.8750000000001 L-639,0" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="32" stroke="black" stroke-width="1" width="86" x="167.5" y="99.5"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="179.30208333333326" y="120.67708333333316">
+    ChatView  </text>
+  <rect fill="white" height="32" stroke="black" stroke-width="1" width="86" x="167.5" y="443.5"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="179.30208333333326" y="464.59375">
+    ChatView  </text>
+  <path d="M-453,-311.8750000000001 L-453,0" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="32" stroke="black" stroke-width="1" width="159" x="316.5" y="99.5"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="328.1998697916665" y="120.67708333333316">
+    ChatPageViewModel  </text>
+  <rect fill="white" height="32" stroke="black" stroke-width="1" width="159" x="316.5" y="443.5"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="328.1998697916665" y="464.59375">
+    ChatPageViewModel  </text>
+  <path d="M-284,-311.8750000000001 L-284,0" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="32" stroke="black" stroke-width="1" width="160" x="485.5" y="99.5"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="497.21028645833326" y="120.67708333333316">
+    ConversationService  </text>
+  <rect fill="white" height="32" stroke="black" stroke-width="1" width="160" x="485.5" y="443.5"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="497.21028645833326" y="464.59375">
+    ConversationService  </text>
+  <path d="M-101,-311.8750000000001 L-101,0" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="32" stroke="black" stroke-width="1" width="183" x="656.5" y="99.5"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="668.3476562499999" y="120.67708333333316">
+    ConversationRepository  </text>
+  <rect fill="white" height="32" stroke="black" stroke-width="1" width="183" x="656.5" y="443.5"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="668.3476562499999" y="464.59375">
+    ConversationRepository  </text>
+  <path d="M43,-311.8750000000001 L43,0" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="32" stroke="black" stroke-width="1" width="87" x="849.5" y="99.5"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="861.0039062499998" y="120.67708333333316">
+    Database  </text>
+  <rect fill="white" height="32" stroke="black" stroke-width="1" width="87" x="849.5" y="443.5"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="861.0039062499998" y="464.59375">
+    Database  </text>
+  <rect fill="white" height="15.333333333333314" width="140.234375" x="56.361979166666515" y="144.9583333333332"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="56.361979166666515" y="158.29166666666654">
+    OnDeclineRequested  </text>
+  <path d="M-806.8899739583335,-282 L-639.1516927083335,-282" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M-640,-282 L-640,-282 L-648,-290 L-648,-282 L-648,-274 L-640,-282" fill="black" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="15.333333333333343" width="156.84895833333337" x="225.10026041666663" y="174.8124999999999"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="225.10026041666663" y="188.14583333333323">
+    UpdateBookingRequest  </text>
+  <path d="M-638.1516927083334,-252 L-453.798828125,-252" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M-454,-252 L-454,-252 L-462,-260 L-462,-252 L-462,-244 L-454,-252" fill="black" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="15.333333333333343" width="106.72526041666669" x="427.70019531249994" y="204.66666666666657"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="427.70019531249994" y="217.99999999999991">
+    UpdateMessage  </text>
+  <path d="M-452.7988281250001,-222 L-284.07552083333326,-222" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M-285,-222 L-285,-222 L-293,-230 L-293,-222 L-293,-214 L-285,-222" fill="black" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="15.333333333333343" width="153.74348958333337" x="580.1764322916666" y="234.52083333333326"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="580.1764322916666" y="247.8541666666666">
+    HandleMessageUpdate  </text>
+  <path d="M-283.07552083333337,-192 L-101.828125,-192" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M-102,-192 L-102,-192 L-110,-200 L-110,-192 L-110,-184 L-102,-192" fill="black" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="15.333333333333314" width="26.04817708333337" x="807.4687499999999" y="264.37499999999994"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="807.4687499999999" y="277.70833333333326">
+    Add  </text>
+  <path d="M-100.828125,-163 L42.813802083333144,-163" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M42,-163 L42,-163 L34,-171 L34,-163 L34,-155 L42,-163" fill="black" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="15.333333333333371" width="26.04817708333337" x="807.4687499999999" y="294.22916666666663"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="807.4687499999999" y="307.56249999999994">
+    Add  </text>
+  <path d="M-100.828125,-133 L42.81380208333326,-133" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M-100,-133 L-100,-133 L-92,-141 L-92,-133 L-92,-125 L-100,-133" fill="black" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="15.333333333333314" width="153.74348958333337" x="580.1764322916666" y="324.0833333333333"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="580.1764322916666" y="337.41666666666663">
+    HandleMessageUpdate  </text>
+  <path d="M-283.07552083333337,-103 L-101.828125,-103" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M-283,-103 L-283,-103 L-275,-111 L-275,-103 L-275,-95 L-283,-103" fill="black" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="15.333333333333314" width="106.72526041666669" x="427.70019531249994" y="353.9375"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="427.70019531249994" y="367.2708333333333">
+    UpdateMessage  </text>
+  <path d="M-452.7988281250001,-73 L-284.07552083333326,-73" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M-452,-73 L-452,-73 L-444,-81 L-444,-73 L-444,-65 L-452,-73" fill="black" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="15.333333333333371" width="156.84895833333337" x="225.10026041666652" y="383.79166666666663"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="225.10026041666652" y="397.12499999999994">
+    UpdateBookingRequest  </text>
+  <path d="M-638.1516927083335,-43 L-453.7988281250001,-43" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M-638,-43 L-638,-43 L-630,-51 L-630,-43 L-630,-35 L-638,-43" fill="black" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <rect fill="white" height="15.333333333333371" width="140.234375" x="56.361979166666515" y="413.6458333333333"/>
+  <text fill="black" font-family="sans-serif" font-size="13.333333333333334" x="56.361979166666515" y="426.97916666666663">
+    OnDeclineRequested  </text>
+  <path d="M-806.8899739583335,-13 L-639.1516927083335,-13" fill="none" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <path d="M-806,-13 L-806,-13 L-798,-21 L-798,-13 L-798,-5 L-806,-13" fill="black" stroke="black" stroke-width="1" transform="translate(849.5 443.5)"/>
+  <text fill="black" font-family="Arial" font-size="14" x="732.8736979166665" y="500.4062499999999">
+    www.websequencediagrams.com  </text>
+</svg>
