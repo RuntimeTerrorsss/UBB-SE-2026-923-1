@@ -57,6 +57,7 @@ namespace BookingBoardGames
             CashPaymentService = new CashPaymentService(PaymentRepository, new CashPaymentMapper(), ReceiptService);
             BookingService = new BookingService(GameRepository, RentalRepository, UserRepository);
             SearchAndFilterService = new SearchAndFilterService(GameRepository, UserRepository, RentalRepository, GlobalGeographicalService);
+            UserService = new UserService(UserRepository);
         }
 
         // AppDbContext
@@ -76,6 +77,8 @@ namespace BookingBoardGames
         public static IConversationRepository? ConversationRepository { get; private set; }
 
         // Services
+        public static SessionService Session { get; private set; } = new SessionService();
+
         public static IConversationNotifier? ConversationNotifier { get; private set; }
 
         public static InterfaceGeographicalService? GlobalGeographicalService { get; private set; }
@@ -97,6 +100,7 @@ namespace BookingBoardGames
         public static InterfaceSearchAndFilterService? SearchAndFilterService { get; private set; }
 
         public static ConversationService? ActiveConversationService { get; set; }
+        public static IUserService? UserService { get; set; }
 
         public int DashboardUser { get; set; } = 3;
 

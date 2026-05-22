@@ -62,8 +62,6 @@ namespace BookingBoardGames.Sharing.Services
                 return false;
             }
 
-
-
             return await _userRepository.Register(newUser);
         }
 
