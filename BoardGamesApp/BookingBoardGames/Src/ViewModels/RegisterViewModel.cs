@@ -14,6 +14,23 @@ namespace BookingBoardGames.Src.ViewModels
     {
         private readonly IUserService userService;
 
+        private string username = string.Empty;
+        private string displayName = string.Empty;
+        private string email = string.Empty;
+        private string password = string.Empty;
+        private string confirmPassword = string.Empty;
+        private string city = string.Empty;
+        private string country = string.Empty;
+        private bool isLoading;
+
+        private string usernameError = string.Empty;
+        private string displayNameError = string.Empty;
+        private string emailError = string.Empty;
+        private string passwordError = string.Empty;
+        private string confirmPasswordError = string.Empty;
+        private string cityError = string.Empty;
+        private string countryError = string.Empty;
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public event Action? NavigateToLogin;
