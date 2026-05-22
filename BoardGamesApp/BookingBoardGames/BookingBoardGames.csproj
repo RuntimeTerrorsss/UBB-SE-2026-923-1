@@ -104,4 +104,12 @@
   <ItemGroup>
     <PRIResource Remove="BookingBoardGames\**" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Src\Views\RegisterView.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Src\Views\RegisterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
 </Project>
