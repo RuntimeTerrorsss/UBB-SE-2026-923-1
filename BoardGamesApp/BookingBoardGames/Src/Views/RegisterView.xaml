@@ -20,33 +20,33 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Spacing="4">
                     <TextBlock Text="Username" FontSize="13" FontWeight="SemiBold"/>
-                    <TextBox PlaceholderText="Enter username"/>
-                    <TextBlock Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                    <TextBox Text="{Binding Username, Mode=TwoWay}" PlaceholderText="Enter username"/>
+                    <TextBlock Text="{Binding UsernameError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Spacing="4">
                     <TextBlock Text="Display Name" FontSize="13" FontWeight="SemiBold"/>
-                    <TextBox PlaceholderText="Enter display name"/>
-                    <TextBlock Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                    <TextBox Text="{Binding DisplayName, Mode=TwoWay}" PlaceholderText="Enter display name"/>
+                    <TextBlock Text="{Binding DisplayNameError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
                 </StackPanel>
             </Grid>
 
 
             <StackPanel Spacing="4" Margin="0,0,0,20">
                 <TextBlock Text="Email" FontSize="13" FontWeight="SemiBold"/>
-                <TextBox PlaceholderText="Enter email"/>
-                <TextBlock Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                <TextBox Text="{Binding Email, Mode=TwoWay}" PlaceholderText="Enter email"/>
+                <TextBlock Text="{Binding EmailError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
             </StackPanel>
 
             <StackPanel Spacing="4" Margin="0,0,0,12">
                 <TextBlock Text="Password" FontSize="13" FontWeight="SemiBold"/>
-                <PasswordBox PlaceholderText="Min. 6 characters"/>
-                <TextBlock Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                <PasswordBox Password="{Binding Password, Mode=TwoWay}" PlaceholderText="Min. 6 characters"/>
+                <TextBlock Text="{Binding PasswordError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
             </StackPanel>
 
             <StackPanel Spacing="4" Margin="0,0,0,12">
                 <TextBlock Text="Confirm Password" FontSize="13" FontWeight="SemiBold"/>
-                <PasswordBox PlaceholderText="Repeat your password"/>
-                <TextBlock Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                <PasswordBox Password="{Binding ConfirmPassword, Mode=TwoWay}" PlaceholderText="Repeat your password"/>
+                <TextBlock Text="{Binding ConfirmPasswordError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
             </StackPanel>
 
 
@@ -57,19 +57,19 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Spacing="4">
                     <TextBlock Text="City" FontSize="13" FontWeight="SemiBold"/>
-                    <TextBox PlaceholderText="e.g. Cluj-Napoca"/>
-                    <TextBlock Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                    <TextBox Text="{Binding City, Mode=TwoWay}" PlaceholderText="e.g. Cluj-Napoca"/>
+                    <TextBlock Text="{Binding CityError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Spacing="4">
                     <TextBlock Text="Country" FontSize="13" FontWeight="SemiBold"/>
-                    <TextBox PlaceholderText="e.g. Romania"/>
-                    <TextBlock Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                    <TextBox Text="{Binding Country, Mode=TwoWay}" PlaceholderText="e.g. Romania"/>
+                    <TextBlock Text="{Binding CountryError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
                 </StackPanel>
             </Grid>
 
-            <Button Content="Create account" HorizontalAlignment="Stretch" Margin="0,10,0,0"/>
+            <Button Content="Create account" x:Name="RegisterButton" Command="{Binding RegisterCommand}" HorizontalAlignment="Stretch" Margin="0,10,0,0"/>
 
-            <HyperlinkButton Content="Already have an account? Sign in" HorizontalAlignment="Stretch" Margin="0,12,0,0"/>
+            <HyperlinkButton Command="{Binding GoToLoginCommand}" Content="Already have an account? Sign in" HorizontalAlignment="Stretch" Margin="0,12,0,0"/>
 
         </StackPanel>
     </ScrollViewer>

@@ -31,6 +31,14 @@ namespace BookingBoardGames.Src.Views
             InitializeComponent();
             ViewModel = new RegisterViewModel(App.UserService);
             //ViewModel.NavigateToLogin += () => Frame.Navigate(typeof(LoginPage));
+            ViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(ViewModel.IsLoading))
+                {
+                    RegisterButton.IsEnabled = !ViewModel.IsLoading;
+                    RegisterButton.Content = ViewModel.IsLoading ? "Creating account…" : "Create account";
+                }
+            };
             DataContext = ViewModel;
         }
     }

@@ -149,6 +149,7 @@ namespace BookingBoardGames.Src.ViewModels
 
         private async Task RegisterAsync()
         {
+            System.Diagnostics.Debug.WriteLine("clicked register");
             if (!ValidateUser())
             {
                 return;
