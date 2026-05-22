@@ -31,6 +31,7 @@ namespace BookingBoardGames.Src.ViewModels
         private string confirmPasswordError = string.Empty;
         private string cityError = string.Empty;
         private string countryError = string.Empty;
+        private string errorMessage = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -135,6 +136,12 @@ namespace BookingBoardGames.Src.ViewModels
             set { countryError = value; OnPropertyChanged(); }
         }
 
+        public string ErrorMessage
+        {
+            get => errorMessage;
+            set { errorMessage = value; OnPropertyChanged(); }
+        }
+
         public RegisterViewModel(IUserService userService)
         {
             this.userService = userService;
@@ -156,6 +163,7 @@ namespace BookingBoardGames.Src.ViewModels
             }
 
             IsLoading = true;
+            ErrorMessage = string.Empty;
 
             var newUser = new User
             {
@@ -171,6 +179,7 @@ namespace BookingBoardGames.Src.ViewModels
 
             if (!result)
             {
+                ErrorMessage = "Registration failed. The username or email may already be taken.";
                 IsLoading = false;
                 return;
             }
@@ -188,6 +197,15 @@ namespace BookingBoardGames.Src.ViewModels
             ConfirmPasswordError = Password != ConfirmPassword ? "Passwords do not match." : string.Empty;
             CityError = string.IsNullOrWhiteSpace(City) ? "City is required." : string.Empty;
             CountryError = string.IsNullOrWhiteSpace(Country) ? "Country is required." : string.Empty;
+
+            System.Diagnostics.Debug.WriteLine("validation");
+            System.Diagnostics.Debug.WriteLine($"{UsernameError}");
+            System.Diagnostics.Debug.WriteLine($"{DisplayNameError}");
+            System.Diagnostics.Debug.WriteLine($"{EmailError}");
+            System.Diagnostics.Debug.WriteLine($"{PasswordError}");
+            System.Diagnostics.Debug.WriteLine($"{ConfirmPasswordError}");
+            System.Diagnostics.Debug.WriteLine($"{CityError}");
+            System.Diagnostics.Debug.WriteLine($"{CountryError}");
 
             return string.IsNullOrEmpty(UsernameError)
                 && string.IsNullOrEmpty(DisplayNameError)

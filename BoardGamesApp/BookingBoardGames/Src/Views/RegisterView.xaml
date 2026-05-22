@@ -13,6 +13,8 @@
 
             <TextBlock Text="Create an account" FontSize="28" FontWeight="Bold" Margin="0,0,0,10"/>
 
+            <InfoBar x:Name="ErrorBar" IsOpen="False" Severity="Error" Margin="0,0,0,16"/>
+
             <Grid ColumnSpacing="12" Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -21,12 +23,12 @@
                 <StackPanel Grid.Column="0" Spacing="4">
                     <TextBlock Text="Username" FontSize="13" FontWeight="SemiBold"/>
                     <TextBox Text="{Binding Username, Mode=TwoWay}" PlaceholderText="Enter username"/>
-                    <TextBlock Text="{Binding UsernameError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                    <TextBlock x:Name="UsernameErrorText" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Spacing="4">
                     <TextBlock Text="Display Name" FontSize="13" FontWeight="SemiBold"/>
                     <TextBox Text="{Binding DisplayName, Mode=TwoWay}" PlaceholderText="Enter display name"/>
-                    <TextBlock Text="{Binding DisplayNameError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                    <TextBlock x:Name="DisplayNameErrorText" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
                 </StackPanel>
             </Grid>
 
@@ -34,19 +36,19 @@
             <StackPanel Spacing="4" Margin="0,0,0,20">
                 <TextBlock Text="Email" FontSize="13" FontWeight="SemiBold"/>
                 <TextBox Text="{Binding Email, Mode=TwoWay}" PlaceholderText="Enter email"/>
-                <TextBlock Text="{Binding EmailError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                <TextBlock x:Name="EmailErrorText" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
             </StackPanel>
 
             <StackPanel Spacing="4" Margin="0,0,0,12">
                 <TextBlock Text="Password" FontSize="13" FontWeight="SemiBold"/>
-                <PasswordBox Password="{Binding Password, Mode=TwoWay}" PlaceholderText="Min. 6 characters"/>
-                <TextBlock Text="{Binding PasswordError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                <PasswordBox x:Name="PasswordInput" PlaceholderText="Min. 6 characters"/>
+                <TextBlock x:Name="PasswordErrorText" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
             </StackPanel>
 
             <StackPanel Spacing="4" Margin="0,0,0,12">
                 <TextBlock Text="Confirm Password" FontSize="13" FontWeight="SemiBold"/>
-                <PasswordBox Password="{Binding ConfirmPassword, Mode=TwoWay}" PlaceholderText="Repeat your password"/>
-                <TextBlock Text="{Binding ConfirmPasswordError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                <PasswordBox x:Name="ConfirmPasswordInput" PlaceholderText="Repeat your password"/>
+                <TextBlock x:Name="ConfirmPasswordErrorText" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
             </StackPanel>
 
 
@@ -58,12 +60,12 @@
                 <StackPanel Grid.Column="0" Spacing="4">
                     <TextBlock Text="City" FontSize="13" FontWeight="SemiBold"/>
                     <TextBox Text="{Binding City, Mode=TwoWay}" PlaceholderText="e.g. Cluj-Napoca"/>
-                    <TextBlock Text="{Binding CityError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                    <TextBlock x:Name="CityErrorText" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Spacing="4">
                     <TextBlock Text="Country" FontSize="13" FontWeight="SemiBold"/>
                     <TextBox Text="{Binding Country, Mode=TwoWay}" PlaceholderText="e.g. Romania"/>
-                    <TextBlock Text="{Binding CountryError, Mode=OneWay}" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
+                    <TextBlock x:Name="CountryErrorText" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
                 </StackPanel>
             </Grid>
 
