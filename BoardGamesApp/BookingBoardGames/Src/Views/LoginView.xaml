@@ -17,7 +17,7 @@
 
             <StackPanel Spacing="4" Margin="0,0,0,20">
                 <TextBlock Text="Username/Email" FontSize="13" FontWeight="SemiBold"/>
-                <TextBox Text="{Binding UsernameOrEmail, Mode=TwoWay}" PlaceholderText="Enter username or email"/>
+                <TextBox Text="{Binding Identifier, Mode=TwoWay}" PlaceholderText="Enter username or email"/>
                 <TextBlock x:Name="ErrorText" Foreground="Red" FontSize="11" Visibility="Collapsed"/>
             </StackPanel>
 
