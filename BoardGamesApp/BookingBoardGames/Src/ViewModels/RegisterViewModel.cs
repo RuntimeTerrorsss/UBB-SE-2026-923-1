@@ -151,5 +151,24 @@ namespace BookingBoardGames.Src.ViewModels
         {
 
         }
+
+        private bool ValidateUser()
+        {
+            UsernameError = Username.Trim().Length < 3 ? "Username must be at least 3 characters." : string.Empty;
+            DisplayNameError = string.IsNullOrWhiteSpace(DisplayName) ? "Display name is required." : string.Empty;
+            EmailError = !Email.Contains('@') ? "Invalid email address." : string.Empty;
+            PasswordError = Password.Length < 6 ? "Password must be at least 6 characters." : string.Empty;
+            ConfirmPasswordError = Password != ConfirmPassword ? "Passwords do not match." : string.Empty;
+            CityError = string.IsNullOrWhiteSpace(City) ? "City is required." : string.Empty;
+            CountryError = string.IsNullOrWhiteSpace(Country) ? "Country is required." : string.Empty;
+
+            return string.IsNullOrEmpty(UsernameError)
+                && string.IsNullOrEmpty(DisplayNameError)
+                && string.IsNullOrEmpty(EmailError)
+                && string.IsNullOrEmpty(PasswordError)
+                && string.IsNullOrEmpty(ConfirmPasswordError)
+                && string.IsNullOrEmpty(CityError)
+                && string.IsNullOrEmpty(CountryError);
+        }
     }
 }
