@@ -149,7 +149,33 @@ namespace BookingBoardGames.Src.ViewModels
 
         private async Task RegisterAsync()
         {
+            if (!ValidateUser())
+            {
+                return;
+            }
 
+            IsLoading = true;
+
+            var newUser = new User
+            {
+                Username = Username.Trim(),
+                DisplayName = DisplayName.Trim(),
+                Email = Email.Trim(),
+                PasswordHash = Password,
+                City = City.Trim(),
+                Country = Country.Trim(),
+            };
+
+            var result = await userService.RegisterUserAsync(newUser);
+
+            if (!result)
+            {
+                IsLoading = false;
+                return;
+            }
+
+            IsLoading = false;
+            NavigateToLogin?.Invoke();
         }
 
         private bool ValidateUser()
