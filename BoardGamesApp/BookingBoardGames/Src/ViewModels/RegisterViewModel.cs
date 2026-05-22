@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -39,11 +40,68 @@ namespace BookingBoardGames.Src.ViewModels
 
         public ICommand GoToLoginCommand { get; }
 
+        public string Username
+        {
+            get => username;
+            set { username = value; OnPropertyChanged(); }
+        }
+
+        public string DisplayName
+        {
+            get => displayName;
+            set { displayName = value; OnPropertyChanged(); }
+        }
+
+        public string Email
+        {
+            get => email;
+            set { email = value; OnPropertyChanged(); }
+        }
+
+        public string Password
+        {
+            get => password;
+            set { password = value; OnPropertyChanged(); }
+        }
+
+        public string ConfirmPassword
+        {
+            get => confirmPassword;
+            set { confirmPassword = value; OnPropertyChanged(); }
+        }
+
+        public string City
+        {
+            get => city;
+            set { city = value; OnPropertyChanged(); }
+        }
+
+        public string Country
+        {
+            get => country;
+            set { country = value; OnPropertyChanged(); }
+        }
+
+        public bool IsLoading
+        {
+            get => isLoading;
+            set
+            {
+                isLoading = value;
+                OnPropertyChanged();
+            }
+        }
+
         public RegisterViewModel(IUserService userService)
         {
             this.userService = userService;
             RegisterCommand = new RelayCommand(async _ => await RegisterAsync());
             GoToLoginCommand = new RelayCommand(_ => NavigateToLogin?.Invoke());
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private async Task RegisterAsync()
