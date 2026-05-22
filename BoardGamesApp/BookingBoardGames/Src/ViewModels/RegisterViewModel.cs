@@ -93,6 +93,48 @@ namespace BookingBoardGames.Src.ViewModels
             }
         }
 
+        public string UsernameError
+        {
+            get => usernameError;
+            set { usernameError = value; OnPropertyChanged(); }
+        }
+
+        public string DisplayNameError
+        {
+            get => displayNameError;
+            set { displayNameError = value; OnPropertyChanged(); }
+        }
+
+        public string EmailError
+        {
+            get => emailError;
+            set { emailError = value; OnPropertyChanged(); }
+        }
+
+        public string PasswordError
+        {
+            get => passwordError;
+            set { passwordError = value; OnPropertyChanged(); }
+        }
+
+        public string ConfirmPasswordError
+        {
+            get => confirmPasswordError;
+            set { confirmPasswordError = value; OnPropertyChanged(); }
+        }
+
+        public string CityError
+        {
+            get => cityError;
+            set { cityError = value; OnPropertyChanged(); }
+        }
+
+        public string CountryError
+        {
+            get => countryError;
+            set { countryError = value; OnPropertyChanged(); }
+        }
+
         public RegisterViewModel(IUserService userService)
         {
             this.userService = userService;
