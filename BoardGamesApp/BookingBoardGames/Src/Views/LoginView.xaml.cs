@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -23,9 +24,47 @@ namespace BookingBoardGames.Src.Views
     /// </summary>
     public sealed partial class LoginView : Page
     {
+        public LoginViewModel ViewModel { get; }
+
         public LoginView()
         {
             InitializeComponent();
+            ViewModel = new LoginViewModel(App.UserService, App.Session);
+            ViewModel.NavigateToHome += () => Frame.Navigate(typeof(DiscoveryView));
+            ViewModel.NavigateToRegister += () => Frame.Navigate(typeof(RegisterView));
+
+            DataContext = ViewModel;
+
+            // PasswordBox can't use Binding
+            PasswordInput.PasswordChanged += (s, e) => ViewModel.Password = PasswordInput.Password;
+
+            ViewModel.PropertyChanged += (s, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(ViewModel.IdentifierError):
+                        ErrorText.Text = ViewModel.IdentifierError;
+                        ErrorText.Visibility = string.IsNullOrEmpty(ViewModel.IdentifierError)
+                            ? Visibility.Collapsed : Visibility.Visible;
+                        break;
+
+                    case nameof(ViewModel.PasswordError):
+                        PasswordErrorText.Text = ViewModel.PasswordError;
+                        PasswordErrorText.Visibility = string.IsNullOrEmpty(ViewModel.PasswordError)
+                            ? Visibility.Collapsed : Visibility.Visible;
+                        break;
+
+                    case nameof(ViewModel.ErrorMessage):
+                        ErrorBar.IsOpen = !string.IsNullOrEmpty(ViewModel.ErrorMessage);
+                        ErrorBar.Message = ViewModel.ErrorMessage;
+                        break;
+
+                    case nameof(ViewModel.IsLoading):
+                        LoginButton.IsEnabled = !ViewModel.IsLoading;
+                        LoginButton.Content = ViewModel.IsLoading ? "Signing in…" : "Sign in";
+                        break;
+                }
+            };
         }
     }
 }
