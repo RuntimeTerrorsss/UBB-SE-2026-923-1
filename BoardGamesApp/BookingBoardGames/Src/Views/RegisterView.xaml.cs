@@ -29,8 +29,9 @@ namespace BookingBoardGames.Src.Views
         public RegisterView()
         {
             InitializeComponent();
-            ViewModel = new RegisterViewModel(App.UserService);
+            ViewModel = new RegisterViewModel(App.UserService, App.Session);
             //ViewModel.NavigateToLogin += () => Frame.Navigate(typeof(LoginPage));
+            ViewModel.NavigateToHome += () => Frame.Navigate(typeof(DiscoveryView));
             ViewModel.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(ViewModel.IsLoading))
