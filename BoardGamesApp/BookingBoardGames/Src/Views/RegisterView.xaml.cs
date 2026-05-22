@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -23,9 +24,14 @@ namespace BookingBoardGames.Src.Views
     /// </summary>
     public sealed partial class RegisterView : Page
     {
+        public RegisterViewModel ViewModel { get; }
+
         public RegisterView()
         {
             InitializeComponent();
+            ViewModel = new RegisterViewModel(App.UserService);
+            //ViewModel.NavigateToLogin += () => Frame.Navigate(typeof(LoginPage));
+            DataContext = ViewModel;
         }
     }
 }
