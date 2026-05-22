@@ -77,6 +77,8 @@ namespace BookingBoardGames
         public static IConversationRepository? ConversationRepository { get; private set; }
 
         // Services
+        public static SessionService Session { get; private set; } = new SessionService();
+
         public static IConversationNotifier? ConversationNotifier { get; private set; }
 
         public static InterfaceGeographicalService? GlobalGeographicalService { get; private set; }
