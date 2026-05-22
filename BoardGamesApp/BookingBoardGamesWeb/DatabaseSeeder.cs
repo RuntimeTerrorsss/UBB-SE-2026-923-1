@@ -15,7 +15,7 @@ namespace BookingBoardGames.Api
             {
                 // Note: We skip Migrate() here because EnsureCreated() in Program.cs handles the schema for now
 
-                if (!context.Users.Any(u => u.Username == "henry_08"))
+                if (!context.Users.Any(user => user.Username == "henry_08"))
                 {
                     Console.WriteLine("Database is missing Henry. Re-seeding...");
 
@@ -87,7 +87,7 @@ namespace BookingBoardGames.Api
                     context.Conversations.AddRange(conversation1, conversation2);
                     context.SaveChanges();
 
-                    var msgs = new List<Message>
+                    var messages = new List<Message>
                     {
                         new SystemMessage { Conversation = conversation1, Sender = systemUser, Receiver = systemUser, MessageSentTime = new DateTime(2026, 3, 1, 8, 55, 0), MessageContent = "New conversation", MessageContentAsString = "New conversation" },
                         new RentalRequestMessage { Conversation = conversation1, Sender = bob, Receiver = alice, MessageSentTime = new DateTime(2026, 3, 1, 9, 0, 0), RequestContent = "Hey, is Catan available March 1–7?", IsRequestResolved = false, IsRequestAccepted = false, RentalRequest = rental1, MessageContentAsString = "Rental Request" },
@@ -98,7 +98,7 @@ namespace BookingBoardGames.Api
                         new TextMessage { Conversation = conversation2, Sender = carol, Receiver = bob, MessageSentTime = new DateTime(2026, 3, 10, 10, 10, 0), TextMessageContent = "Perfect, thanks a lot!", MessageContentAsString = "Perfect, thanks a lot!" },
                     };
 
-                    context.Messages.AddRange(msgs);
+                    context.Messages.AddRange(messages);
                     context.SaveChanges();
 
                     Console.WriteLine("Mock Data successfully injected via EF Core!");

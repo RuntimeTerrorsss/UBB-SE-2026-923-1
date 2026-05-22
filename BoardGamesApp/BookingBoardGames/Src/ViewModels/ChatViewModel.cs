@@ -101,11 +101,11 @@ public class ChatViewModel : INotifyPropertyChanged
             .ToList();
 
         this.Messages.Clear();
-        for (int i = 0; i < orderedMessages.Count; i++)
+        for (int messageIndex = 0; messageIndex < orderedMessages.Count; messageIndex++)
         {
-            var currentMessage = orderedMessages[i];
+            var currentMessage = orderedMessages[messageIndex];
             var newMessageViewModel = new MessageViewModel(currentMessage, this.CurrentUserId);
-            if (i < orderedMessages.Count - theirUnreadCount)
+            if (messageIndex < orderedMessages.Count - theirUnreadCount)
             {
                 newMessageViewModel.IsRead = true;
             }

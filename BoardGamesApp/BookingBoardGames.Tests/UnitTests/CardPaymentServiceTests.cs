@@ -40,8 +40,8 @@ namespace BookingBoardGames.Tests.Services
             int requestId = 1, clientId = 2, ownerId = 3;
             decimal amount = 50m;
 
-            _mockRentalService.Setup(r => r.GetRentalPrice(requestId)).ReturnsAsync(100m);
-            _mockUserRepository.Setup(u => u.GetUserBalance(clientId)).ReturnsAsync(50m);
+            _mockRentalService.Setup(rentalService => rentalService.GetRentalPrice(requestId)).ReturnsAsync(100m);
+            _mockUserRepository.Setup(userRepository => userRepository.GetUserBalance(clientId)).ReturnsAsync(50m);
 
 
             var exception = await Assert.ThrowsAsync<Exception>(() =>
@@ -62,13 +62,12 @@ namespace BookingBoardGames.Tests.Services
             int newTransactionId = 99;
             string receiptPath = "/receipts/1.pdf";
 
-            _mockRentalService.Setup(r => r.GetRentalPrice(requestId)).ReturnsAsync(rentalPrice);
-            _mockUserRepository.Setup(u => u.GetUserBalance(clientId)).ReturnsAsync(clientBalance);
-            _mockUserRepository.Setup(u => u.GetUserBalance(ownerId)).ReturnsAsync(ownerBalance);
+            _mockRentalService.Setup(rentalService => rentalService.GetRentalPrice(requestId)).ReturnsAsync(rentalPrice);
+            _mockUserRepository.Setup(userRepository => userRepository.GetUserBalance(clientId)).ReturnsAsync(clientBalance);
+            _mockUserRepository.Setup(userRepository => userRepository.GetUserBalance(ownerId)).ReturnsAsync(ownerBalance);
 
-            _mockPaymentRepository.Setup(p => p.AddPaymentAsync(It.IsAny<Payment>())).ReturnsAsync(newTransactionId);
-            _mockReceiptService.Setup(r => r.GenerateReceiptRelativePath(requestId)).Returns(receiptPath);
-
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.AddPaymentAsync(It.IsAny<Payment>())).ReturnsAsync(newTransactionId);
+            _mockReceiptService.Setup(receiptService => receiptService.GenerateReceiptRelativePath(requestId)).Returns(receiptPath);
 
             var result = await _cardPaymentService.AddCardPayment(requestId, clientId, ownerId, amount);
 
@@ -77,9 +76,9 @@ namespace BookingBoardGames.Tests.Services
             Assert.Equal(newTransactionId, result.TransactionIdentifier);
             Assert.Equal(requestId, result.RequestIdentifier);
 
-            _mockUserRepository.Verify(u => u.UpdateBalance(clientId, clientBalance - rentalPrice), Times.Once);
-            _mockUserRepository.Verify(u => u.UpdateBalance(ownerId, ownerBalance + rentalPrice), Times.Once);
-            _mockPaymentRepository.Verify(p => p.UpdatePaymentAsync(It.Is<Payment>(pay => pay.ReceiptFilePath == receiptPath)), Times.Once);
+            _mockUserRepository.Verify(userRepository => userRepository.UpdateBalance(clientId, clientBalance - rentalPrice), Times.Once);
+            _mockUserRepository.Verify(userRepository => userRepository.UpdateBalance(ownerId, ownerBalance + rentalPrice), Times.Once);
+            _mockPaymentRepository.Verify(paymentRepository => paymentRepository.UpdatePaymentAsync(It.Is<Payment>(pay => pay.ReceiptFilePath == receiptPath)), Times.Once);
         }
 
         #endregion
@@ -94,8 +93,8 @@ namespace BookingBoardGames.Tests.Services
         {
 
             int requestId = 1, clientId = 2;
-            _mockRentalService.Setup(r => r.GetRentalPrice(requestId)).ReturnsAsync(price);
-            _mockUserRepository.Setup(u => u.GetUserBalance(clientId)).ReturnsAsync(balance);
+            _mockRentalService.Setup(rentalService => rentalService.GetRentalPrice(requestId)).ReturnsAsync(price);
+            _mockUserRepository.Setup(userRepository => userRepository.GetUserBalance(clientId)).ReturnsAsync(balance);
 
 
             var result = await _cardPaymentService.CheckBalanceSufficiency(requestId, clientId);
@@ -113,7 +112,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             int paymentId = 1;
-            _mockPaymentRepository.Setup(p => p.GetPaymentByIdentifierAsync(paymentId)).ReturnsAsync((Payment)null);
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId)).ReturnsAsync((Payment)null);
 
 
             var result = await _cardPaymentService.GetCardPaymentAsync(paymentId);
@@ -138,7 +137,7 @@ namespace BookingBoardGames.Tests.Services
                 DateOfTransaction = DateTime.Now
             };
 
-            _mockPaymentRepository.Setup(p => p.GetPaymentByIdentifierAsync(paymentId)).ReturnsAsync(payment);
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId)).ReturnsAsync(payment);
 
 
             var result = await _cardPaymentService.GetCardPaymentAsync(paymentId);
@@ -159,7 +158,7 @@ namespace BookingBoardGames.Tests.Services
 
             int clientId = 1;
             decimal expectedBalance = 250.5m;
-            _mockUserRepository.Setup(u => u.GetUserBalance(clientId)).ReturnsAsync(expectedBalance);
+            _mockUserRepository.Setup(userRepository => userRepository.GetUserBalance(clientId)).ReturnsAsync(expectedBalance);
 
 
             var result = await _cardPaymentService.GetCurrentBalance(clientId);
@@ -177,8 +176,8 @@ namespace BookingBoardGames.Tests.Services
         {
 
             int rentalId = 1, clientId = 2, ownerId = 3;
-            _mockRentalService.Setup(r => r.GetRentalPrice(rentalId)).ReturnsAsync(100m);
-            _mockUserRepository.Setup(u => u.GetUserBalance(clientId)).ReturnsAsync(50m);
+            _mockRentalService.Setup(rentalService => rentalService.GetRentalPrice(rentalId)).ReturnsAsync(100m);
+            _mockUserRepository.Setup(userRepository => userRepository.GetUserBalance(clientId)).ReturnsAsync(50m);
 
 
             var exception = await Assert.ThrowsAsync<Exception>(() =>
@@ -196,16 +195,16 @@ namespace BookingBoardGames.Tests.Services
             decimal clientBalance = 150m;
             decimal ownerBalance = 200m;
 
-            _mockRentalService.Setup(r => r.GetRentalPrice(rentalId)).ReturnsAsync(rentalPrice);
-            _mockUserRepository.Setup(u => u.GetUserBalance(clientId)).ReturnsAsync(clientBalance);
-            _mockUserRepository.Setup(u => u.GetUserBalance(ownerId)).ReturnsAsync(ownerBalance);
+            _mockRentalService.Setup(rentalService => rentalService.GetRentalPrice(rentalId)).ReturnsAsync(rentalPrice);
+            _mockUserRepository.Setup(userRepository => userRepository.GetUserBalance(clientId)).ReturnsAsync(clientBalance);
+            _mockUserRepository.Setup(userRepository => userRepository.GetUserBalance(ownerId)).ReturnsAsync(ownerBalance);
 
 
             await _cardPaymentService.ProcessPayment(rentalId, clientId, ownerId);
 
 
-            _mockUserRepository.Verify(u => u.UpdateBalance(clientId, 50m), Times.Once);
-            _mockUserRepository.Verify(u => u.UpdateBalance(ownerId, 300m), Times.Once);
+            _mockUserRepository.Verify(userRepository => userRepository.UpdateBalance(clientId, 50m), Times.Once);
+            _mockUserRepository.Verify(userRepository => userRepository.UpdateBalance(ownerId, 300m), Times.Once);
         }
 
         #endregion
@@ -258,7 +257,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             int rentalId = 1;
-            _mockRentalService.Setup(r => r.GetRentalById(rentalId)).ReturnsAsync((Rental)null);
+            _mockRentalService.Setup(rentalService => rentalService.GetRentalById(rentalId)).ReturnsAsync((Rental)null);
 
 
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
@@ -274,13 +273,12 @@ namespace BookingBoardGames.Tests.Services
             int rentalId = 1;
             var rental = new Rental { RentalId = rentalId, GameId = 2, OwnerId = 3, ClientId = 4, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(1) };
 
-            _mockRentalService.Setup(r => r.GetRentalById(rentalId)).ReturnsAsync(rental);
-            _mockRentalService.Setup(r => r.GetGameName(rentalId)).ReturnsAsync("Catan");
-            _mockRentalService.Setup(r => r.GetRentalPrice(rentalId)).ReturnsAsync(50m);
+            _mockRentalService.Setup(rentalService => rentalService.GetRentalById(rentalId)).ReturnsAsync(rental);
+            _mockRentalService.Setup(rentalService => rentalService.GetGameName(rentalId)).ReturnsAsync("Catan");
+            _mockRentalService.Setup(rentalService => rentalService.GetRentalPrice(rentalId)).ReturnsAsync(50m);
 
-            _mockUserRepository.Setup(u => u.GetById(rental.OwnerId)).ReturnsAsync((User)null);
-            _mockUserRepository.Setup(u => u.GetById(rental.ClientId)).ReturnsAsync((User)null);
-
+            _mockUserRepository.Setup(userRepository => userRepository.GetById(rental.OwnerId)).ReturnsAsync((User)null);
+            _mockUserRepository.Setup(userRepository => userRepository.GetById(rental.ClientId)).ReturnsAsync((User)null);
 
             var result = await _cardPaymentService.GetRequestDataTransferObject(rentalId);
 
@@ -300,13 +298,12 @@ namespace BookingBoardGames.Tests.Services
             var owner = new User { Id = 3, Username = "Alice" };
             var client = new User { Id = 4, Username = "Bob" };
 
-            _mockRentalService.Setup(r => r.GetRentalById(rentalId)).ReturnsAsync(rental);
-            _mockRentalService.Setup(r => r.GetGameName(rentalId)).ReturnsAsync("Monopoly");
-            _mockRentalService.Setup(r => r.GetRentalPrice(rentalId)).ReturnsAsync(30m);
+            _mockRentalService.Setup(rentalService => rentalService.GetRentalById(rentalId)).ReturnsAsync(rental);
+            _mockRentalService.Setup(rentalService => rentalService.GetGameName(rentalId)).ReturnsAsync("Monopoly");
+            _mockRentalService.Setup(rentalService => rentalService.GetRentalPrice(rentalId)).ReturnsAsync(30m);
 
-            _mockUserRepository.Setup(u => u.GetById(rental.OwnerId)).ReturnsAsync(owner);
-            _mockUserRepository.Setup(u => u.GetById(rental.ClientId)).ReturnsAsync(client);
-
+            _mockUserRepository.Setup(userRepository => userRepository.GetById(rental.OwnerId)).ReturnsAsync(owner);
+            _mockUserRepository.Setup(userRepository => userRepository.GetById(rental.ClientId)).ReturnsAsync(client);
 
             var result = await _cardPaymentService.GetRequestDataTransferObject(rentalId);
 

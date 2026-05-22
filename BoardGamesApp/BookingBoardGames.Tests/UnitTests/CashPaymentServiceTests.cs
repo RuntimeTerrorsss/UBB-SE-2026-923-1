@@ -39,12 +39,12 @@ namespace BookingBoardGames.Tests.Services
             var paymentEntity = new Payment();
             int expectedIdentifier = 10;
 
-            _mockCashPaymentMapper.Setup(m => m.TurnDataTransferObjectIntoEntity(dto))
+            _mockCashPaymentMapper.Setup(cashPaymentMapper => cashPaymentMapper.TurnDataTransferObjectIntoEntity(dto))
                                   .Returns(paymentEntity);
 
-            _mockPaymentRepository.Setup(r => r.AddPaymentAsync(paymentEntity))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.AddPaymentAsync(paymentEntity))
                                   .ReturnsAsync(expectedIdentifier);
-            _mockReceiptService.Setup(r => r.GenerateReceiptRelativePath(100))
+            _mockReceiptService.Setup(receiptService => receiptService.GenerateReceiptRelativePath(100))
                                .Returns("receipts\\receipt_100.pdf");
 
             var result = await _cashPaymentService.AddCashPaymentAsync(dto);
@@ -53,8 +53,8 @@ namespace BookingBoardGames.Tests.Services
             Assert.Equal(expectedIdentifier, result);
             Assert.Equal("CASH", paymentEntity.PaymentMethod);
             Assert.Equal(PaymentConstrants.StateCompleted, paymentEntity.PaymentState);
-            _mockPaymentRepository.Verify(r => r.AddPaymentAsync(paymentEntity), Times.Once);
-            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(paymentEntity), Times.Once);
+            _mockPaymentRepository.Verify(paymentRepository => paymentRepository.AddPaymentAsync(paymentEntity), Times.Once);
+            _mockPaymentRepository.Verify(paymentRepository => paymentRepository.UpdatePaymentAsync(paymentEntity), Times.Once);
         }
 
         #endregion
@@ -69,10 +69,10 @@ namespace BookingBoardGames.Tests.Services
             var paymentEntity = new Payment();
             var expectedDto = new CashPaymentDataTransferObject(0, 100, 2, 3, 50.0m);
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(paymentEntity);
 
-            _mockCashPaymentMapper.Setup(m => m.TurnEntityIntoDataTransferObject(paymentEntity))
+            _mockCashPaymentMapper.Setup(cashPaymentMapper => cashPaymentMapper.TurnEntityIntoDataTransferObject(paymentEntity))
                                   .Returns(expectedDto);
 
 
@@ -100,10 +100,10 @@ namespace BookingBoardGames.Tests.Services
             };
             string expectedReceiptPath = "/receipts/100.pdf";
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
-            _mockReceiptService.Setup(s => s.GenerateReceiptRelativePath(payment.RequestId))
+            _mockReceiptService.Setup(receiptService => receiptService.GenerateReceiptRelativePath(payment.RequestId))
                                .Returns(expectedReceiptPath);
 
 
@@ -113,8 +113,8 @@ namespace BookingBoardGames.Tests.Services
             Assert.NotNull(payment.DateConfirmedBuyer);
             Assert.Equal(expectedReceiptPath, payment.ReceiptFilePath);
             Assert.Equal(PaymentConstrants.StateConfirmed, payment.PaymentState);
-            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(payment), Times.Once);
-            _mockReceiptService.Verify(s => s.GenerateReceiptRelativePath(payment.RequestId), Times.Once);
+            _mockPaymentRepository.Verify(paymentRepository => paymentRepository.UpdatePaymentAsync(payment), Times.Once);
+            _mockReceiptService.Verify(receiptService => receiptService.GenerateReceiptRelativePath(payment.RequestId), Times.Once);
         }
 
         [Fact]
@@ -129,7 +129,7 @@ namespace BookingBoardGames.Tests.Services
                 DateConfirmedBuyer = null
             };
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
 
@@ -138,8 +138,8 @@ namespace BookingBoardGames.Tests.Services
 
             Assert.NotNull(payment.DateConfirmedBuyer);
             Assert.Null(payment.ReceiptFilePath);
-            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(payment), Times.Once);
-            _mockReceiptService.Verify(s => s.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
+            _mockPaymentRepository.Verify(paymentRepository => paymentRepository.UpdatePaymentAsync(payment), Times.Once);
+            _mockReceiptService.Verify(receiptService => receiptService.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
         }
 
         #endregion
@@ -159,10 +159,10 @@ namespace BookingBoardGames.Tests.Services
             };
             string expectedReceiptPath = "/receipts/100.pdf";
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
-            _mockReceiptService.Setup(s => s.GenerateReceiptRelativePath(payment.RequestId))
+            _mockReceiptService.Setup(receiptService => receiptService.GenerateReceiptRelativePath(payment.RequestId))
                                .Returns(expectedReceiptPath);
 
 
@@ -172,8 +172,8 @@ namespace BookingBoardGames.Tests.Services
             Assert.NotNull(payment.DateConfirmedSeller);
             Assert.Equal(expectedReceiptPath, payment.ReceiptFilePath);
             Assert.Equal(PaymentConstrants.StateConfirmed, payment.PaymentState);
-            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(payment), Times.Once);
-            _mockReceiptService.Verify(s => s.GenerateReceiptRelativePath(payment.RequestId), Times.Once);
+            _mockPaymentRepository.Verify(paymentRepository => paymentRepository.UpdatePaymentAsync(payment), Times.Once);
+            _mockReceiptService.Verify(receiptService => receiptService.GenerateReceiptRelativePath(payment.RequestId), Times.Once);
         }
 
         [Fact]
@@ -188,7 +188,7 @@ namespace BookingBoardGames.Tests.Services
                 DateConfirmedSeller = null
             };
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
 
@@ -197,8 +197,8 @@ namespace BookingBoardGames.Tests.Services
 
             Assert.NotNull(payment.DateConfirmedSeller);
             Assert.Null(payment.ReceiptFilePath);
-            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(payment), Times.Once);
-            _mockReceiptService.Verify(s => s.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
+            _mockPaymentRepository.Verify(paymentRepository => paymentRepository.UpdatePaymentAsync(payment), Times.Once);
+            _mockReceiptService.Verify(receiptService => receiptService.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
         }
 
         #endregion
@@ -217,7 +217,7 @@ namespace BookingBoardGames.Tests.Services
                 PaymentState = PaymentConstrants.StateCompleted
             };
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
 
@@ -239,7 +239,7 @@ namespace BookingBoardGames.Tests.Services
                 DateConfirmedBuyer = null
             };
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
 
@@ -260,7 +260,7 @@ namespace BookingBoardGames.Tests.Services
             int paymentId = 1;
             var payment = new Payment { DateConfirmedBuyer = DateTime.Now };
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
 
@@ -277,7 +277,7 @@ namespace BookingBoardGames.Tests.Services
             int paymentId = 1;
             var payment = new Payment { DateConfirmedBuyer = null };
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
 
@@ -298,7 +298,7 @@ namespace BookingBoardGames.Tests.Services
             int paymentId = 1;
             var payment = new Payment { DateConfirmedSeller = DateTime.Now };
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
 
@@ -315,7 +315,7 @@ namespace BookingBoardGames.Tests.Services
             int paymentId = 1;
             var payment = new Payment { DateConfirmedSeller = null };
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(paymentRepository => paymentRepository.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
 

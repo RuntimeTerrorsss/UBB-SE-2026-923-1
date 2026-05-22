@@ -83,7 +83,7 @@
         margin-bottom: 4px;
     }
 
-    .no-results-msg {
+    .no-results-message {
         font-size: 16px;
         color: gray;
         margin: 4px 0 10px 0;
@@ -195,7 +195,7 @@
         <div class="center-col">
             
             <h2 class="section-title">Available Tonight</h2>
-            <p class="no-results-msg">
+            <p class="no-results-message">
                 @(Model.Length == 0 ? "No games found." : "")
             </p>
 
@@ -223,7 +223,7 @@
             @if (Model.Length > 0)
             {
                 <h2 class="section-title" style="margin-top:20px;">Others games</h2>
-                <p class="no-results-msg"></p>
+                <p class="no-results-message"></p>
                 <!-- Omitted actual logic for "others" since it requires availability checks, just putting the header to match the view -->
             }
         </div>

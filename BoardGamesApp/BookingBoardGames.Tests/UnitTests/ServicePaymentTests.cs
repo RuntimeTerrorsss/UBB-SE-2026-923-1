@@ -27,8 +27,8 @@ namespace BookingBoardGames.Tests.Services
             _mockReceiptService = new Mock<IReceiptService>();
             _mockRentalService = new Mock<IRentalService>();
             _mockConversationService = new Mock<IConversationService>();
-            _mockRentalService.Setup(r => r.GetRentalsForUser(It.IsAny<int>())).ReturnsAsync(new List<RentalDataTransferObject>());
-            _mockConversationService.Setup(c => c.FetchConversations()).ReturnsAsync(new List<ConversationDTO>());
+            _mockRentalService.Setup(mockRentalService => mockRentalService.GetRentalsForUser(It.IsAny<int>())).ReturnsAsync(new List<RentalDataTransferObject>());
+            _mockConversationService.Setup(mockConversationService => mockConversationService.FetchConversations()).ReturnsAsync(new List<ConversationDTO>());
             _service = new ServicePayment(
                 _mockPaymentRepository.Object,
                 _mockReceiptService.Object,
@@ -53,7 +53,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             SessionContext.GetInstance().UserId = 0;
-            _mockPaymentRepository.Setup(r => r.GetAllPayments()).ReturnsAsync(GetDummyHistoryPayments());
+            _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetAllPayments()).ReturnsAsync(GetDummyHistoryPayments());
 
 
             var result = await _service.GetAllPaymentsForUI();
@@ -67,7 +67,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             SessionContext.GetInstance().UserId = 1;
-            _mockPaymentRepository.Setup(r => r.GetAllPayments()).ReturnsAsync(GetDummyHistoryPayments());
+            _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetAllPayments()).ReturnsAsync(GetDummyHistoryPayments());
 
 
             var result = await _service.GetAllPaymentsForUI();
@@ -76,7 +76,7 @@ namespace BookingBoardGames.Tests.Services
             Assert.Equal(2, result.Count);
 
 
-            var paymentWithNulls = result.First(p => p.PaymentId == 2);
+            var paymentWithNulls = result.First(payment => payment.PaymentId == 2);
             Assert.Equal(PaymentHistoryConstants.NullGameNameDefaultValue, paymentWithNulls.ProductName);
             Assert.Equal(PaymentHistoryConstants.NullOwnerNameDefaultValue, paymentWithNulls.ReceiverName);
             Assert.Equal(PaymentHistoryConstants.NullDateOfTransactionDefaultValue, paymentWithNulls.DateText);
@@ -104,7 +104,7 @@ namespace BookingBoardGames.Tests.Services
                 new HistoryPayment { TransactionIdentifier = 4, ClientId = 1, DateOfTransaction = DateTime.Now.AddMonths(-12) }
             };
 
-            _mockPaymentRepository.Setup(r => r.GetAllPayments()).ReturnsAsync(payments);
+            _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetAllPayments()).ReturnsAsync(payments);
 
 
             var result = await _service.GetFilteredPayments(filter);
@@ -123,7 +123,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             SessionContext.GetInstance().UserId = 1;
-            _mockPaymentRepository.Setup(r => r.GetAllPayments()).ReturnsAsync(GetDummyHistoryPayments());
+            _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetAllPayments()).ReturnsAsync(GetDummyHistoryPayments());
 
 
             var result = await _service.GetFilteredPayments(FilterType.AllTime, PaymentMethod.CASH);
@@ -138,7 +138,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             SessionContext.GetInstance().UserId = 1;
-            _mockPaymentRepository.Setup(r => r.GetAllPayments()).ReturnsAsync(GetDummyHistoryPayments());
+            _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetAllPayments()).ReturnsAsync(GetDummyHistoryPayments());
 
 
             var result = await _service.GetFilteredPayments(FilterType.AllTime, PaymentMethod.ALL, "cata");
@@ -161,7 +161,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             SessionContext.GetInstance().UserId = 1;
-            _mockPaymentRepository.Setup(r => r.GetAllPayments()).ReturnsAsync(GetDummyHistoryPayments());
+            _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetAllPayments()).ReturnsAsync(GetDummyHistoryPayments());
 
 
             var result = await _service.GetFilteredPayments(filter);
@@ -180,7 +180,7 @@ namespace BookingBoardGames.Tests.Services
 
             SessionContext.GetInstance().UserId = 1;
             var payments = Enumerable.Range(1, 15).Select(i => new HistoryPayment { TransactionIdentifier = i, ClientId = 1 }).ToList();
-            _mockPaymentRepository.Setup(r => r.GetAllPayments()).ReturnsAsync(payments);
+            _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetAllPayments()).ReturnsAsync(payments);
 
 
             var result = await _service.GetFilteredPayments(FilterType.AllTime, pageNumber: 2, pageSize: 5);
@@ -236,9 +236,9 @@ namespace BookingBoardGames.Tests.Services
             string generatedPath = "receipts\\generated_123.pdf";
             string fullPath = "C:\\Documents\\receipts\\generated_123.pdf";
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentById(1)).ReturnsAsync(payment);
-            _mockReceiptService.Setup(s => s.GenerateReceiptRelativePath(5)).Returns(generatedPath);
-            _mockReceiptService.Setup(s => s.GetReceiptDocument(payment)).ReturnsAsync(fullPath);
+            _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetPaymentById(1)).ReturnsAsync(payment);
+            _mockReceiptService.Setup(mockReceiptService => mockReceiptService.GenerateReceiptRelativePath(5)).Returns(generatedPath);
+            _mockReceiptService.Setup(mockReceiptService => mockReceiptService.GetReceiptDocument(payment)).ReturnsAsync(fullPath);
 
 
             var result = await _service.GetReceiptDocumentPath(1);
@@ -246,7 +246,7 @@ namespace BookingBoardGames.Tests.Services
 
             Assert.Equal(generatedPath, payment.ReceiptFilePath);
             Assert.Equal(fullPath, result);
-            _mockReceiptService.Verify(s => s.GetReceiptDocument(payment), Times.Once);
+            _mockReceiptService.Verify(mockReceiptService => mockReceiptService.GetReceiptDocument(payment), Times.Once);
         }
 
         [Fact]
@@ -256,8 +256,8 @@ namespace BookingBoardGames.Tests.Services
 
             var payment = new HistoryPayment { RequestId = 5, ReceiptFilePath = "no_slash_file.pdf" };
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentById(1)).ReturnsAsync(payment);
-            _mockReceiptService.Setup(s => s.GetReceiptDocument(payment)).ReturnsAsync("C:\\full\\path.pdf");
+            _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetPaymentById(1)).ReturnsAsync(payment);
+            _mockReceiptService.Setup(mockReceiptService => mockReceiptService.GetReceiptDocument(payment)).ReturnsAsync("C:\\full\\path.pdf");
 
 
             await _service.GetReceiptDocumentPath(1);
@@ -274,15 +274,15 @@ namespace BookingBoardGames.Tests.Services
 
             var payment = new HistoryPayment { RequestId = 5, ReceiptFilePath = "receipts\\valid_file.pdf" };
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentById(1)).ReturnsAsync(payment);
-            _mockReceiptService.Setup(s => s.GetReceiptDocument(payment)).ReturnsAsync("C:\\full\\path.pdf");
+            _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetPaymentById(1)).ReturnsAsync(payment);
+            _mockReceiptService.Setup(mockReceiptService => mockReceiptService.GetReceiptDocument(payment)).ReturnsAsync("C:\\full\\path.pdf");
 
 
             await _service.GetReceiptDocumentPath(1);
 
 
             Assert.Equal("receipts\\valid_file.pdf", payment.ReceiptFilePath);
-            _mockReceiptService.Verify(s => s.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
+            _mockReceiptService.Verify(mockReceiptService => mockReceiptService.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
         }
 
         #endregion

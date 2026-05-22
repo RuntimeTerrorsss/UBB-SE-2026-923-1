@@ -129,10 +129,10 @@ namespace BookingBoardGames.Sharing.Services
             payments = FilterPaymentsByCurrentUser(payments);
 
             var rentalStatuses = await GetRentalRequestStatusMapAsync(userId);
-            var paidRentalIds = payments.Select(p => p.RequestId).ToHashSet();
+            var paidRentalIds = payments.Select(payment => payment.RequestId).ToHashSet();
 
             var items = payments
-                .Select(p => MapPaymentToDto(p, userId, rentalStatuses))
+                .Select(payment => MapPaymentToDto(payment, userId, rentalStatuses))
                 .ToList();
 
             var rentals = await rentalService.GetRentalsForUser(userId);

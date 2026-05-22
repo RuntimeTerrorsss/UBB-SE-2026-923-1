@@ -104,11 +104,11 @@ var document = window.document;
 		noModule: true
 	};
 
-	function DOMEval( code, node, doc ) {
-		doc = doc || document;
+	function DOMEval( code, node, document ) {
+		document = document || document;
 
 		var i, val,
-			script = doc.createElement( "script" );
+			script = document.createElement( "script" );
 
 		script.text = code;
 		if ( node ) {
@@ -130,7 +130,7 @@ var document = window.document;
 				}
 			}
 		}
-		doc.head.appendChild( script ).parentNode.removeChild( script );
+		document.head.appendChild( script ).parentNode.removeChild( script );
 	}
 
 
@@ -334,8 +334,8 @@ jQuery.extend( {
 	// Assume jQuery is ready without the ready module
 	isReady: true,
 
-	error: function( msg ) {
-		throw new Error( msg );
+	error: function( message ) {
+		throw new Error( message );
 	},
 
 	noop: function() {},
@@ -372,8 +372,8 @@ jQuery.extend( {
 
 	// Evaluates a script in a provided context; falls back to the global one
 	// if not specified.
-	globalEval: function( code, options, doc ) {
-		DOMEval( code, { nonce: options && options.nonce }, doc );
+	globalEval: function( code, options, document ) {
+		DOMEval( code, { nonce: options && options.nonce }, document );
 	},
 
 	each: function( obj, callback ) {
@@ -721,7 +721,7 @@ var i,
 		function( elem ) {
 			return elem.disabled === true && elem.nodeName.toLowerCase() === "fieldset";
 		},
-		{ dir: "parentNode", next: "legend" }
+		{ directory: "parentNode", next: "legend" }
 	);
 
 // Optimize for push.apply( _, NodeList )
@@ -1123,24 +1123,24 @@ isXML = Sizzle.isXML = function( elem ) {
 
 /**
  * Sets document-related variables once based on the current document
- * @param {Element|Object} [doc] An element or document object to use to set the document
+ * @param {Element|Object} [document] An element or document object to use to set the document
  * @returns {Object} Returns the current document
  */
 setDocument = Sizzle.setDocument = function( node ) {
 	var hasCompare, subWindow,
-		doc = node ? node.ownerDocument || node : preferredDoc;
+		document = node ? node.ownerDocument || node : preferredDoc;
 
-	// Return early if doc is invalid or already selected
+	// Return early if document is invalid or already selected
 	// Support: IE 11+, Edge 17 - 18+
 	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
 	// two documents; shallow comparisons work.
 	// eslint-disable-next-line eqeqeq
-	if ( doc == document || doc.nodeType !== 9 || !doc.documentElement ) {
+	if ( document == document || document.nodeType !== 9 || !document.documentElement ) {
 		return document;
 	}
 
 	// Update global variables
-	document = doc;
+	document = document;
 	docElem = document.documentElement;
 	documentIsHTML = !isXML( document );
 
@@ -1677,8 +1677,8 @@ Sizzle.escape = function( sel ) {
 	return ( sel + "" ).replace( rcssescape, fcssescape );
 };
 
-Sizzle.error = function( msg ) {
-	throw new Error( "Syntax error, unrecognized expression: " + msg );
+Sizzle.error = function( message ) {
+	throw new Error( "Syntax error, unrecognized expression: " + message );
 };
 
 /**
@@ -1768,10 +1768,10 @@ Expr = Sizzle.selectors = {
 	find: {},
 
 	relative: {
-		">": { dir: "parentNode", first: true },
-		" ": { dir: "parentNode" },
-		"+": { dir: "previousSibling", first: true },
-		"~": { dir: "previousSibling" }
+		">": { directory: "parentNode", first: true },
+		" ": { directory: "parentNode" },
+		"+": { directory: "previousSibling", first: true },
+		"~": { directory: "previousSibling" }
 	},
 
 	preFilter: {
@@ -1927,7 +1927,7 @@ Expr = Sizzle.selectors = {
 
 				function( elem, _context, xml ) {
 					var cache, uniqueCache, outerCache, node, nodeIndex, start,
-						dir = simple !== forward ? "nextSibling" : "previousSibling",
+						directory = simple !== forward ? "nextSibling" : "previousSibling",
 						parent = elem.parentNode,
 						name = ofType && elem.nodeName.toLowerCase(),
 						useCache = !xml && !ofType,
@@ -1937,9 +1937,9 @@ Expr = Sizzle.selectors = {
 
 						// :(first|last|only)-(child|of-type)
 						if ( simple ) {
-							while ( dir ) {
+							while ( directory ) {
 								node = elem;
-								while ( ( node = node[ dir ] ) ) {
+								while ( ( node = node[ directory ] ) ) {
 									if ( ofType ?
 										node.nodeName.toLowerCase() === name :
 										node.nodeType === 1 ) {
@@ -1949,7 +1949,7 @@ Expr = Sizzle.selectors = {
 								}
 
 								// Reverse direction for :only-* (if we haven't yet done so)
-								start = dir = type === "only" && !start && "nextSibling";
+								start = directory = type === "only" && !start && "nextSibling";
 							}
 							return true;
 						}
@@ -1975,7 +1975,7 @@ Expr = Sizzle.selectors = {
 							diff = nodeIndex && cache[ 2 ];
 							node = nodeIndex && parent.childNodes[ nodeIndex ];
 
-							while ( ( node = ++nodeIndex && node && node[ dir ] ||
+							while ( ( node = ++nodeIndex && node && node[ directory ] ||
 
 								// Fallback to seeking `elem` from the start
 								( diff = nodeIndex = 0 ) || start.pop() ) ) {
@@ -2011,7 +2011,7 @@ Expr = Sizzle.selectors = {
 							if ( diff === false ) {
 
 								// Use the same loop as above to seek `elem` from the start
-								while ( ( node = ++nodeIndex && node && node[ dir ] ||
+								while ( ( node = ++nodeIndex && node && node[ directory ] ||
 									( diff = nodeIndex = 0 ) || start.pop() ) ) {
 
 									if ( ( ofType ?
@@ -2395,9 +2395,9 @@ function toSelector( tokens ) {
 }
 
 function addCombinator( matcher, combinator, base ) {
-	var dir = combinator.dir,
+	var directory = combinator.directory,
 		skip = combinator.next,
-		key = skip || dir,
+		key = skip || directory,
 		checkNonElements = base && key === "parentNode",
 		doneName = done++;
 
@@ -2405,7 +2405,7 @@ function addCombinator( matcher, combinator, base ) {
 
 		// Check against closest ancestor/preceding element
 		function( elem, context, xml ) {
-			while ( ( elem = elem[ dir ] ) ) {
+			while ( ( elem = elem[ directory ] ) ) {
 				if ( elem.nodeType === 1 || checkNonElements ) {
 					return matcher( elem, context, xml );
 				}
@@ -2420,7 +2420,7 @@ function addCombinator( matcher, combinator, base ) {
 
 			// We can't set arbitrary data on XML nodes, so they don't benefit from combinator caching
 			if ( xml ) {
-				while ( ( elem = elem[ dir ] ) ) {
+				while ( ( elem = elem[ directory ] ) ) {
 					if ( elem.nodeType === 1 || checkNonElements ) {
 						if ( matcher( elem, context, xml ) ) {
 							return true;
@@ -2428,7 +2428,7 @@ function addCombinator( matcher, combinator, base ) {
 					}
 				}
 			} else {
-				while ( ( elem = elem[ dir ] ) ) {
+				while ( ( elem = elem[ directory ] ) ) {
 					if ( elem.nodeType === 1 || checkNonElements ) {
 						outerCache = elem[ expando ] || ( elem[ expando ] = {} );
 
@@ -2438,7 +2438,7 @@ function addCombinator( matcher, combinator, base ) {
 							( outerCache[ elem.uniqueID ] = {} );
 
 						if ( skip && skip === elem.nodeName.toLowerCase() ) {
-							elem = elem[ dir ] || elem;
+							elem = elem[ directory ] || elem;
 						} else if ( ( oldCache = uniqueCache[ key ] ) &&
 							oldCache[ 0 ] === dirruns && oldCache[ 1 ] === doneName ) {
 
@@ -2993,11 +2993,11 @@ jQuery.escapeSelector = Sizzle.escape;
 
 
 
-var dir = function( elem, dir, until ) {
+var directory = function( elem, directory, until ) {
 	var matched = [],
 		truncate = until !== undefined;
 
-	while ( ( elem = elem[ dir ] ) && elem.nodeType !== 9 ) {
+	while ( ( elem = elem[ directory ] ) && elem.nodeType !== 9 ) {
 		if ( elem.nodeType === 1 ) {
 			if ( truncate && jQuery( elem ).is( until ) ) {
 				break;
@@ -3112,7 +3112,7 @@ jQuery.fn.extend( {
 			this,
 
 			// If this is a positional/relative selector, check membership in the returned set
-			// so $("p:first").is("p:last") won't return true for a doc with two "p".
+			// so $("p:first").is("p:last") won't return true for a document with two "p".
 			typeof selector === "string" && rneedsContext.test( selector ) ?
 				jQuery( selector ) :
 				selector || [],
@@ -3331,8 +3331,8 @@ jQuery.fn.extend( {
 	}
 } );
 
-function sibling( cur, dir ) {
-	while ( ( cur = cur[ dir ] ) && cur.nodeType !== 1 ) {}
+function sibling( cur, directory ) {
+	while ( ( cur = cur[ directory ] ) && cur.nodeType !== 1 ) {}
 	return cur;
 }
 
@@ -3342,10 +3342,10 @@ jQuery.each( {
 		return parent && parent.nodeType !== 11 ? parent : null;
 	},
 	parents: function( elem ) {
-		return dir( elem, "parentNode" );
+		return directory( elem, "parentNode" );
 	},
 	parentsUntil: function( elem, _i, until ) {
-		return dir( elem, "parentNode", until );
+		return directory( elem, "parentNode", until );
 	},
 	next: function( elem ) {
 		return sibling( elem, "nextSibling" );
@@ -3354,16 +3354,16 @@ jQuery.each( {
 		return sibling( elem, "previousSibling" );
 	},
 	nextAll: function( elem ) {
-		return dir( elem, "nextSibling" );
+		return directory( elem, "nextSibling" );
 	},
 	prevAll: function( elem ) {
-		return dir( elem, "previousSibling" );
+		return directory( elem, "previousSibling" );
 	},
 	nextUntil: function( elem, _i, until ) {
-		return dir( elem, "nextSibling", until );
+		return directory( elem, "nextSibling", until );
 	},
 	prevUntil: function( elem, _i, until ) {
-		return dir( elem, "previousSibling", until );
+		return directory( elem, "previousSibling", until );
 	},
 	siblings: function( elem ) {
 		return siblings( ( elem.parentNode || {} ).firstChild, elem );
@@ -4809,7 +4809,7 @@ var defaultDisplayMap = {};
 
 function getDefaultDisplay( elem ) {
 	var temp,
-		doc = elem.ownerDocument,
+		document = elem.ownerDocument,
 		nodeName = elem.nodeName,
 		display = defaultDisplayMap[ nodeName ];
 
@@ -4817,7 +4817,7 @@ function getDefaultDisplay( elem ) {
 		return display;
 	}
 
-	temp = doc.body.appendChild( doc.createElement( nodeName ) );
+	temp = document.body.appendChild( document.createElement( nodeName ) );
 	display = jQuery.css( temp, "display" );
 
 	temp.parentNode.removeChild( temp );
@@ -6035,7 +6035,7 @@ function domManip( collection, args, callback, ignored ) {
 	// Flatten any nested arrays
 	args = flat( args );
 
-	var fragment, first, scripts, hasScripts, node, doc,
+	var fragment, first, scripts, hasScripts, node, document,
 		i = 0,
 		l = collection.length,
 		iNoClone = l - 1,
@@ -6090,7 +6090,7 @@ function domManip( collection, args, callback, ignored ) {
 			}
 
 			if ( hasScripts ) {
-				doc = scripts[ scripts.length - 1 ].ownerDocument;
+				document = scripts[ scripts.length - 1 ].ownerDocument;
 
 				// Reenable scripts
 				jQuery.map( scripts, restoreScript );
@@ -6100,7 +6100,7 @@ function domManip( collection, args, callback, ignored ) {
 					node = scripts[ i ];
 					if ( rscriptType.test( node.type || "" ) &&
 						!dataPriv.access( node, "globalEval" ) &&
-						jQuery.contains( doc, node ) ) {
+						jQuery.contains( document, node ) ) {
 
 						if ( node.src && ( node.type || "" ).toLowerCase()  !== "module" ) {
 
@@ -6108,10 +6108,10 @@ function domManip( collection, args, callback, ignored ) {
 							if ( jQuery._evalUrl && !node.noModule ) {
 								jQuery._evalUrl( node.src, {
 									nonce: node.nonce || node.getAttribute( "nonce" )
-								}, doc );
+								}, document );
 							}
 						} else {
-							DOMEval( node.textContent.replace( rcleanScript, "" ), node, doc );
+							DOMEval( node.textContent.replace( rcleanScript, "" ), node, document );
 						}
 					}
 				}
@@ -8827,24 +8827,24 @@ if ( !support.focusin ) {
 
 				// Handle: regular nodes (via `this.ownerDocument`), window
 				// (via `this.document`) & document (via `this`).
-				var doc = this.ownerDocument || this.document || this,
-					attaches = dataPriv.access( doc, fix );
+				var document = this.ownerDocument || this.document || this,
+					attaches = dataPriv.access( document, fix );
 
 				if ( !attaches ) {
-					doc.addEventListener( orig, handler, true );
+					document.addEventListener( orig, handler, true );
 				}
-				dataPriv.access( doc, fix, ( attaches || 0 ) + 1 );
+				dataPriv.access( document, fix, ( attaches || 0 ) + 1 );
 			},
 			teardown: function() {
-				var doc = this.ownerDocument || this.document || this,
-					attaches = dataPriv.access( doc, fix ) - 1;
+				var document = this.ownerDocument || this.document || this,
+					attaches = dataPriv.access( document, fix ) - 1;
 
 				if ( !attaches ) {
-					doc.removeEventListener( orig, handler, true );
-					dataPriv.remove( doc, fix );
+					document.removeEventListener( orig, handler, true );
+					dataPriv.remove( document, fix );
 
 				} else {
-					dataPriv.access( doc, fix, attaches );
+					dataPriv.access( document, fix, attaches );
 				}
 			}
 		};
@@ -9863,7 +9863,7 @@ jQuery.ajaxPrefilter( function( s ) {
 } );
 
 
-jQuery._evalUrl = function( url, options, doc ) {
+jQuery._evalUrl = function( url, options, document ) {
 	return jQuery.ajax( {
 		url: url,
 
@@ -9881,7 +9881,7 @@ jQuery._evalUrl = function( url, options, doc ) {
 			"text script": function() {}
 		},
 		dataFilter: function( response ) {
-			jQuery.globalEval( response, options, doc );
+			jQuery.globalEval( response, options, document );
 		}
 	} );
 };
@@ -10526,7 +10526,7 @@ jQuery.fn.extend( {
 			return;
 		}
 
-		var offsetParent, offset, doc,
+		var offsetParent, offset, document,
 			elem = this[ 0 ],
 			parentOffset = { top: 0, left: 0 };
 
@@ -10541,10 +10541,10 @@ jQuery.fn.extend( {
 
 			// Account for the *real* offset parent, which can be the document or its root element
 			// when a statically positioned element is identified
-			doc = elem.ownerDocument;
-			offsetParent = elem.offsetParent || doc.documentElement;
+			document = elem.ownerDocument;
+			offsetParent = elem.offsetParent || document.documentElement;
 			while ( offsetParent &&
-				( offsetParent === doc.body || offsetParent === doc.documentElement ) &&
+				( offsetParent === document.body || offsetParent === document.documentElement ) &&
 				jQuery.css( offsetParent, "position" ) === "static" ) {
 
 				offsetParent = offsetParent.parentNode;
@@ -10656,7 +10656,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 				extra = defaultExtra || ( margin === true || value === true ? "margin" : "border" );
 
 			return access( this, function( elem, type, value ) {
-				var doc;
+				var document;
 
 				if ( isWindow( elem ) ) {
 
@@ -10668,14 +10668,14 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 				// Get document width or height
 				if ( elem.nodeType === 9 ) {
-					doc = elem.documentElement;
+					document = elem.documentElement;
 
 					// Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height],
 					// whichever is greatest
 					return Math.max(
-						elem.body[ "scroll" + name ], doc[ "scroll" + name ],
-						elem.body[ "offset" + name ], doc[ "offset" + name ],
-						doc[ "client" + name ]
+						elem.body[ "scroll" + name ], document[ "scroll" + name ],
+						elem.body[ "offset" + name ], document[ "offset" + name ],
+						document[ "client" + name ]
 					);
 				}
 

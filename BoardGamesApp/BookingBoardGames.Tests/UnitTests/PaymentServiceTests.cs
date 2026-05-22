@@ -29,15 +29,15 @@ namespace BookingBoardGames.Tests.Services
         {
 
             int paymentId = 1;
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(mockPaymentRepo => mockPaymentRepo.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync((Payment)null);
 
 
             await _paymentService.GenerateReceiptAsync(paymentId);
 
 
-            _mockReceiptService.Verify(s => s.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
-            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(It.IsAny<Payment>()), Times.Never);
+            _mockReceiptService.Verify(mockReceiptService => mockReceiptService.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
+            _mockPaymentRepository.Verify(mockPaymentRepo => mockPaymentRepo.UpdatePaymentAsync(It.IsAny<Payment>()), Times.Never);
         }
 
         [Fact]
@@ -48,10 +48,10 @@ namespace BookingBoardGames.Tests.Services
             var payment = new Payment { RequestId = 100, ReceiptFilePath = null };
             string generatedPath = "/receipts/100.pdf";
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(mockPaymentRepo => mockPaymentRepo.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
-            _mockReceiptService.Setup(s => s.GenerateReceiptRelativePath(payment.RequestId))
+            _mockReceiptService.Setup(mockReceiptService => mockReceiptService.GenerateReceiptRelativePath(payment.RequestId))
                                .Returns(generatedPath);
 
 
@@ -59,7 +59,7 @@ namespace BookingBoardGames.Tests.Services
 
 
             Assert.Equal(generatedPath, payment.ReceiptFilePath);
-            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(payment), Times.Once);
+            _mockPaymentRepository.Verify(mockPaymentRepo => mockPaymentRepo.UpdatePaymentAsync(payment), Times.Once);
         }
 
         #endregion
@@ -89,10 +89,10 @@ namespace BookingBoardGames.Tests.Services
             var payment = new Payment { RequestId = 100, ReceiptFilePath = "/receipts/100.pdf" };
             string expectedDocument = "Base64PDFContentOrFullPath";
 
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(mockPaymentRepo => mockPaymentRepo.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(payment);
 
-            _mockReceiptService.Setup(s => s.GetReceiptDocument(payment))
+            _mockReceiptService.Setup(mockReceiptService => mockReceiptService.GetReceiptDocument(payment))
                                .ReturnsAsync(expectedDocument);
 
 
@@ -102,8 +102,8 @@ namespace BookingBoardGames.Tests.Services
             Assert.Equal(expectedDocument, result);
 
 
-            _mockReceiptService.Verify(s => s.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
-            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(It.IsAny<Payment>()), Times.Never);
+            _mockReceiptService.Verify(mockReceiptService => mockReceiptService.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
+            _mockPaymentRepository.Verify(mockPaymentRepo => mockPaymentRepo.UpdatePaymentAsync(It.IsAny<Payment>()), Times.Never);
         }
 
         [Fact]
@@ -121,15 +121,15 @@ namespace BookingBoardGames.Tests.Services
 
 
 
-            _mockPaymentRepository.SetupSequence(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.SetupSequence(mockPaymentRepo => mockPaymentRepo.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(paymentWithoutPath)
                                   .ReturnsAsync(paymentWithoutPath)
                                   .ReturnsAsync(paymentWithPath);
 
-            _mockReceiptService.Setup(s => s.GenerateReceiptRelativePath(paymentWithoutPath.RequestId))
+            _mockReceiptService.Setup(mockReceiptService => mockReceiptService.GenerateReceiptRelativePath(paymentWithoutPath.RequestId))
                                .Returns(generatedPath);
 
-            _mockReceiptService.Setup(s => s.GetReceiptDocument(paymentWithPath))
+            _mockReceiptService.Setup(mockReceiptService => mockReceiptService.GetReceiptDocument(paymentWithPath))
                                .ReturnsAsync(expectedDocument);
 
 
@@ -137,7 +137,7 @@ namespace BookingBoardGames.Tests.Services
 
 
             Assert.Equal(expectedDocument, result);
-            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(paymentWithoutPath), Times.Once);
+            _mockPaymentRepository.Verify(mockPaymentRepo => mockPaymentRepo.UpdatePaymentAsync(paymentWithoutPath), Times.Once);
         }
 
         [Fact]
@@ -149,12 +149,12 @@ namespace BookingBoardGames.Tests.Services
             string generatedPath = "/receipts/100.pdf";
 
 
-            _mockPaymentRepository.SetupSequence(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.SetupSequence(mockPaymentRepo => mockPaymentRepo.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync(paymentWithoutPath)
                                   .ReturnsAsync(paymentWithoutPath)
                                   .ReturnsAsync((Payment)null);
 
-            _mockReceiptService.Setup(s => s.GenerateReceiptRelativePath(paymentWithoutPath.RequestId))
+            _mockReceiptService.Setup(mockReceiptService => mockReceiptService.GenerateReceiptRelativePath(paymentWithoutPath.RequestId))
                                .Returns(generatedPath);
 
 
@@ -164,8 +164,8 @@ namespace BookingBoardGames.Tests.Services
             Assert.Equal(string.Empty, result);
 
 
-            _mockPaymentRepository.Verify(r => r.UpdatePaymentAsync(paymentWithoutPath), Times.Once);
-            _mockReceiptService.Verify(s => s.GetReceiptDocument(It.IsAny<Payment>()), Times.Never);
+            _mockPaymentRepository.Verify(mockPaymentRepo => mockPaymentRepo.UpdatePaymentAsync(paymentWithoutPath), Times.Once);
+            _mockReceiptService.Verify(mockReceiptService => mockReceiptService.GetReceiptDocument(It.IsAny<Payment>()), Times.Never);
         }
 
         #endregion

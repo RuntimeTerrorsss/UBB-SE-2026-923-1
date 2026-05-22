@@ -47,26 +47,26 @@ namespace BookingBoardGames.Src.ViewModels
 
         public int CurrentPage
         {
-            get => currentPage;
+            get => this.currentPage;
             set
             {
-                if (SetProperty(ref currentPage, value))
+                if (this.SetProperty(ref this.currentPage, value))
                 {
-                    NextPageCommand?.RaiseCanExecuteChanged();
-                    PreviousPageCommand?.RaiseCanExecuteChanged();
+                    this.NextPageCommand?.RaiseCanExecuteChanged();
+                    this.PreviousPageCommand?.RaiseCanExecuteChanged();
                 }
             }
         }
 
         public int TotalPages
         {
-            get => totalPages;
+            get => this.totalPages;
             set
             {
-                if (SetProperty(ref totalPages, value))
+                if (this.SetProperty(ref this.totalPages, value))
                 {
-                    NextPageCommand?.RaiseCanExecuteChanged();
-                    PreviousPageCommand?.RaiseCanExecuteChanged();
+                    this.NextPageCommand?.RaiseCanExecuteChanged();
+                    this.PreviousPageCommand?.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -77,14 +77,14 @@ namespace BookingBoardGames.Src.ViewModels
 
         public string SearchText
         {
-            get => searchText;
+            get => this.searchText;
             set
             {
-                if (SetProperty(ref searchText, value))
+                if (this.SetProperty(ref this.searchText, value))
                 {
-                    searchCancellationTokenSource?.Cancel();
-                    searchCancellationTokenSource = new CancellationTokenSource();
-                    _ = DebounceSearch(searchCancellationTokenSource.Token);
+                    this.searchCancellationTokenSource?.Cancel();
+                    this.searchCancellationTokenSource = new CancellationTokenSource();
+                    _ = this.DebounceSearch(this.searchCancellationTokenSource.Token);
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace BookingBoardGames.Src.ViewModels
                 await Task.Delay(PaymentHistoryViewModelConstants.TaskDelayTime, searchCancellationToken);
                 if (!searchCancellationToken.IsCancellationRequested)
                 {
-                    await ApplyFilter(resetPage: true);
+                    await this.ApplyFilter(resetPage: true);
                 }
             }
             catch (TaskCanceledException)
@@ -106,24 +106,24 @@ namespace BookingBoardGames.Src.ViewModels
 
         public FilterOption SelectedFilterOption
         {
-            get => selectedFilterOption;
+            get => this.selectedFilterOption;
             set
             {
-                if (SetProperty(ref selectedFilterOption, value))
+                if (this.SetProperty(ref this.selectedFilterOption, value))
                 {
-                    _ = ApplyFilter(resetPage: true);
+                    _ = this.ApplyFilter(resetPage: true);
                 }
             }
         }
 
         public PaymentMethod SelectedPaymentMethod
         {
-            get => selectedPaymentMethod;
+            get => this.selectedPaymentMethod;
             set
             {
-                if (SetProperty(ref selectedPaymentMethod, value))
+                if (this.SetProperty(ref this.selectedPaymentMethod, value))
                 {
-                    _ = ApplyFilter(resetPage: true);
+                    _ = this.ApplyFilter(resetPage: true);
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace BookingBoardGames.Src.ViewModels
             {
                 if (this.SetProperty(ref this.totalAmount, value))
                 {
-                    this.OnPropertyChanged(nameof(TotalAmountText));
+                    this.OnPropertyChanged(nameof(this.TotalAmountText));
                 }
             }
         }
@@ -145,9 +145,9 @@ namespace BookingBoardGames.Src.ViewModels
         public PaymentHistoryViewModel(IServicePayment paymentService)
         {
             this.paymentService = paymentService;
-            Payments = new ObservableCollection<PaymentDataTransferObject>();
+            this.Payments = new ObservableCollection<PaymentDataTransferObject>();
 
-            FilterOptions = new ObservableCollection<FilterOption>
+            this.FilterOptions = new ObservableCollection<FilterOption>
             {
                 new FilterOption { Type = FilterType.AllTime, DisplayName = "All Time" },
                 new FilterOption { Type = FilterType.Last3Months, DisplayName = "Last 3 Months" },
@@ -159,40 +159,40 @@ namespace BookingBoardGames.Src.ViewModels
                 new FilterOption { Type = FilterType.AlphabeticalDesc, DisplayName = "Alphabetical (Z-A)" },
             };
 
-            OpenReceiptCommand = new RelayCommand<PaymentDataTransferObject>(async dto => await OpenReceipt(dto));
-            NextPageCommand = new RelayCommandNoParam(async () => await OnNextPage(), () => CurrentPage < TotalPages);
-            PreviousPageCommand = new RelayCommandNoParam(async () => await OnPreviousPage(), () => CurrentPage > PaymentHistoryViewModelConstants.FirstPage);
+            this.OpenReceiptCommand = new RelayCommand<PaymentDataTransferObject>(async dto => await this.OpenReceipt(dto));
+            this.NextPageCommand = new RelayCommandNoParam(async () => await this.OnNextPage(), () => this.CurrentPage < this.TotalPages);
+            this.PreviousPageCommand = new RelayCommandNoParam(async () => await this.OnPreviousPage(), () => this.CurrentPage > PaymentHistoryViewModelConstants.FirstPage);
 
             // Default to display all
-            SelectedFilterOption = FilterOptions.First(filter => filter.Type == FilterType.AllTime);
-            SelectedPaymentMethod = PaymentMethod.ALL;
+            this.SelectedFilterOption = this.FilterOptions.First(filter => filter.Type == FilterType.AllTime);
+            this.SelectedPaymentMethod = PaymentMethod.ALL;
         }
 
         private bool OnLastPage()
         {
-            return CurrentPage == TotalPages;
+            return this.CurrentPage == this.TotalPages;
         }
 
         private async Task OnNextPage()
         {
-            if (!OnLastPage())
+            if (!this.OnLastPage())
             {
-                CurrentPage++;
-                await ApplyFilter(resetPage: false);
+                this.CurrentPage++;
+                await this.ApplyFilter(resetPage: false);
             }
         }
 
         private bool OnFirstPage()
         {
-            return CurrentPage == PaymentHistoryViewModelConstants.FirstPage;
+            return this.CurrentPage == PaymentHistoryViewModelConstants.FirstPage;
         }
 
         private async Task OnPreviousPage()
         {
-            if (!OnFirstPage())
+            if (!this.OnFirstPage())
             {
-                CurrentPage--;
-                await ApplyFilter(resetPage: false);
+                this.CurrentPage--;
+                await this.ApplyFilter(resetPage: false);
             }
         }
 
@@ -203,7 +203,7 @@ namespace BookingBoardGames.Src.ViewModels
                 return;
             }
 
-            string receiptFilePath = await paymentService.GetReceiptDocumentPath(selectedPayment.PaymentId);
+            string receiptFilePath = await this.paymentService.GetReceiptDocumentPath(selectedPayment.PaymentId);
 
             try
             {
@@ -222,27 +222,27 @@ namespace BookingBoardGames.Src.ViewModels
 
         private async Task ApplyFilter(bool resetPage = false)
         {
-            if (selectedFilterOption == null)
+            if (this.selectedFilterOption == null)
             {
                 return;
             }
 
             if (resetPage)
             {
-                CurrentPage = PaymentHistoryViewModelConstants.FirstPage;
+                this.CurrentPage = PaymentHistoryViewModelConstants.FirstPage;
             }
 
-            var pagedResult = await paymentService.GetFilteredPayments(selectedFilterOption.Type, selectedPaymentMethod, searchText, CurrentPage, pageSize);
+            var pagedResult = await this.paymentService.GetFilteredPayments(this.selectedFilterOption.Type, this.selectedPaymentMethod, this.searchText, this.CurrentPage, this.pageSize);
 
-            Payments.Clear();
+            this.Payments.Clear();
             foreach (var payment in pagedResult.Items)
             {
-                Payments.Add(payment);
+                this.Payments.Add(payment);
             }
 
-            TotalPages = pagedResult.TotalPages == PaymentHistoryViewModelConstants.NoPages ? MinimumPageCount : pagedResult.TotalPages;
+            this.TotalPages = pagedResult.TotalPages == PaymentHistoryViewModelConstants.NoPages ? MinimumPageCount : pagedResult.TotalPages;
 
-            TotalAmount = paymentService.CalculateTotalAmount(pagedResult.Items);
+            this.TotalAmount = this.paymentService.CalculateTotalAmount(pagedResult.Items);
         }
     }
 }

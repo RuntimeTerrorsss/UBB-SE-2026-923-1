@@ -25,7 +25,7 @@ namespace BookingBoardGames.Src.Views
             this.ViewModel = viewModel;
         }
 
-        public void OnReceiptButtonClicked(object sender, RoutedEventArgs e)
+        public void OnReceiptButtonClicked(object sender, RoutedEventArgs routedArgs)
         {
             if (sender is Button clickedButton && clickedButton.DataContext is PaymentDataTransferObject selectedPayment)
             {
@@ -45,7 +45,7 @@ namespace BookingBoardGames.Src.Views
             }
         }
 
-        public void OnBackToDashboardClicked(object sender, RoutedEventArgs e)
+        public void OnBackToDashboardClicked(object sender, RoutedEventArgs routedArgs)
         {
             var currentParentElement = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(this);
             while (currentParentElement != null && !(currentParentElement is Frame))

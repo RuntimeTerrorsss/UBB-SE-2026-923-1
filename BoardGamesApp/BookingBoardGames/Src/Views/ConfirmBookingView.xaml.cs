@@ -141,12 +141,12 @@ public sealed partial class ConfirmBookingView : Page
                 return;
             }
 
-            var sorted = selectedDates.Select(d => d.DateTime).OrderBy(d => d).ToList();
+            var sorted = selectedDates.Select(date => date.DateTime).OrderBy(date => date).ToList();
             this.modifySelectedStart = sorted[0];
             this.modifySelectedEnd = sorted[sorted.Count - 1];
         };
 
-        calendar.Loaded += async (s, e) =>
+        calendar.Loaded += async (sender, eventArgs) =>
         {
             await Task.Delay(200);
             calendar.DispatcherQueue.TryEnqueue(() =>
@@ -176,7 +176,7 @@ public sealed partial class ConfirmBookingView : Page
             var selectedDates = calendar.SelectedDates;
             if (selectedDates.Count < MinimumSelectedDates) return;
 
-            var sorted = selectedDates.Select(d => d.DateTime).OrderBy(d => d).ToList();
+            var sorted = selectedDates.Select(date => date.DateTime).OrderBy(date => date).ToList();
             viewModel.UpdateSelectedRange(new TimeRange(sorted[0], sorted[sorted.Count - 1]));
         }
     }

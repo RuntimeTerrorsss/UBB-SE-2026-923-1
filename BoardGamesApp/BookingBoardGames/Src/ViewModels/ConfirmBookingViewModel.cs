@@ -75,9 +75,9 @@ namespace BookingBoardGames.Src.ViewModels
         {
             try
             {
-                this.bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
-                this.GameAndUserDetails = gameAndUserDetails ?? throw new ArgumentNullException(nameof(gameAndUserDetails));
-                this.SelectedTimeRange = selectedTimeRange ?? throw new ArgumentNullException(nameof(selectedTimeRange));
+                this.bookingService = this.bookingService ?? throw new ArgumentNullException(nameof(this.bookingService));
+                this.GameAndUserDetails = gameAndUserDetails ?? throw new ArgumentNullException(nameof(this.GameAndUserDetails));
+                this.SelectedTimeRange = this.selectedTimeRange ?? throw new ArgumentNullException(nameof(this.SelectedTimeRange));
 
                 this.UnavailableTimeRanges = await this.bookingService.GetUnavailableTimeRanges(this.GameAndUserDetails.GameId) ?? Array.Empty<TimeRange>();
                 this.TotalPrice = this.CalculatePrice();

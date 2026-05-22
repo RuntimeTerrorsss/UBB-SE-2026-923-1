@@ -35,7 +35,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             var gameId = 1;
-            _mockGamesRepository.Setup(r => r.GetGameById(gameId)).ReturnsAsync((Game)null);
+            _mockGamesRepository.Setup(gameRepo => gameRepo.GetGameById(gameId)).ReturnsAsync((Game)null);
 
 
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
@@ -52,8 +52,8 @@ namespace BookingBoardGames.Tests.Services
             var ownerId = 2;
             var mockGame = new Game { Id = gameId, Name = "Test Game", OwnerId = ownerId };
 
-            _mockGamesRepository.Setup(r => r.GetGameById(gameId)).ReturnsAsync(mockGame);
-            _mockUsersRepository.Setup(r => r.GetGameById(ownerId)).ReturnsAsync((User)null);
+            _mockGamesRepository.Setup(gameRepo => gameRepo.GetGameById(gameId)).ReturnsAsync(mockGame);
+            _mockUsersRepository.Setup(userRepo => userRepo.GetGameById(ownerId)).ReturnsAsync((User)null);
 
 
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
@@ -114,8 +114,8 @@ namespace BookingBoardGames.Tests.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            _mockGamesRepository.Setup(r => r.GetGameById(gameId)).ReturnsAsync(mockGame);
-            _mockUsersRepository.Setup(r => r.GetGameById(ownerId)).ReturnsAsync(mockOwner);
+            _mockGamesRepository.Setup(gameRepo => gameRepo.GetGameById(gameId)).ReturnsAsync(mockGame);
+            _mockUsersRepository.Setup(userRepo => userRepo.GetGameById(ownerId)).ReturnsAsync(mockOwner);
 
 
             var result = await _bookingService.GetBookingInformationForSpecificGame(gameId);
@@ -134,7 +134,7 @@ namespace BookingBoardGames.Tests.Services
 
             var gameId = 1;
             var expectedException = new Exception("Database failure");
-            _mockGamesRepository.Setup(r => r.GetGameById(gameId)).ThrowsAsync(expectedException);
+            _mockGamesRepository.Setup(gameRepo => gameRepo.GetGameById(gameId)).ThrowsAsync(expectedException);
 
 
             var exception = await Assert.ThrowsAsync<Exception>(
@@ -157,7 +157,7 @@ namespace BookingBoardGames.Tests.Services
                 new TimeRange { StartTime = DateTime.UtcNow, EndTime = DateTime.UtcNow.AddDays(1) }
             };
 
-            _mockRentalsRepository.Setup(r => r.GetUnavailableTimeRanges(gameId))
+            _mockRentalsRepository.Setup(rentalRepo => rentalRepo.GetUnavailableTimeRanges(gameId))
                                   .ReturnsAsync(mockRanges);
 
 
@@ -173,7 +173,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             var gameId = 1;
-            _mockRentalsRepository.Setup(r => r.GetUnavailableTimeRanges(gameId))
+            _mockRentalsRepository.Setup(rentalRepo => rentalRepo.GetUnavailableTimeRanges(gameId))
                                   .ThrowsAsync(new Exception("DB Error"));
 
 
@@ -196,7 +196,7 @@ namespace BookingBoardGames.Tests.Services
             var endTime = DateTime.UtcNow.AddDays(1);
             var timeRange = new TimeRange { StartTime = startTime, EndTime = endTime };
 
-            _mockRentalsRepository.Setup(r => r.CheckGameAvailability(startTime, endTime, gameId))
+            _mockRentalsRepository.Setup(rentalRepo => rentalRepo.CheckGameAvailability(startTime, endTime, gameId))
                                   .ReturnsAsync(true);
 
 
@@ -215,7 +215,7 @@ namespace BookingBoardGames.Tests.Services
             var endTime = DateTime.UtcNow.AddDays(1);
             var timeRange = new TimeRange { StartTime = startTime, EndTime = endTime };
 
-            _mockRentalsRepository.Setup(r => r.CheckGameAvailability(startTime, endTime, gameId))
+            _mockRentalsRepository.Setup(rentalRepo => rentalRepo.CheckGameAvailability(startTime, endTime, gameId))
                                   .ThrowsAsync(new Exception("DB Error"));
 
 
@@ -344,14 +344,14 @@ namespace BookingBoardGames.Tests.Services
             var endTime = startTime.AddDays(2);
             var timeRange = new TimeRange { StartTime = startTime, EndTime = endTime };
 
-            _mockRentalsRepository.Setup(r => r.BookGameWithRentalRequest(clientId, gameId, startTime, endTime))
+            _mockRentalsRepository.Setup(rentalRepo => rentalRepo.BookGameWithRentalRequest(clientId, gameId, startTime, endTime))
                                   .Returns(Task.CompletedTask);
 
 
             await _bookingService.AddBooking(gameId, clientId, timeRange);
 
 
-            _mockRentalsRepository.Verify(r => r.BookGameWithRentalRequest(clientId, gameId, startTime, endTime), Times.Once);
+            _mockRentalsRepository.Verify(rentalRepo => rentalRepo.BookGameWithRentalRequest(clientId, gameId, startTime, endTime), Times.Once);
         }
 
         [Fact]
@@ -364,7 +364,7 @@ namespace BookingBoardGames.Tests.Services
             var endTime = startTime.AddDays(2);
             var timeRange = new TimeRange { StartTime = startTime, EndTime = endTime };
 
-            _mockRentalsRepository.Setup(r => r.BookGameWithRentalRequest(clientId, gameId, startTime, endTime))
+            _mockRentalsRepository.Setup(rentalRepo => rentalRepo.BookGameWithRentalRequest(clientId, gameId, startTime, endTime))
                                   .ThrowsAsync(new Exception("DB Connection Failed"));
 
 

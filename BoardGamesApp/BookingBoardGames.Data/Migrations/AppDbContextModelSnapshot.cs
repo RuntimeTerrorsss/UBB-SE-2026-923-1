@@ -22,649 +22,636 @@ namespace BookingBoardGames.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("City", b =>
+            modelBuilder.Entity("City", builderCity =>
                 {
-                    b.Property<int>("CityId")
+                    builderCity.Property<int>("CityId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CityId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(builderCity.Property<int>("CityId"));
 
-                    b.Property<double>("Latitude")
+                    builderCity.Property<double>("Latitude")
                         .HasColumnType("float")
                         .HasColumnName("latitude");
 
-                    b.Property<double>("Longitude")
+                    builderCity.Property<double>("Longitude")
                         .HasColumnType("float")
                         .HasColumnName("longitude");
 
-                    b.Property<string>("MainName")
+                    builderCity.Property<string>("MainName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("main_name");
 
-                    b.Property<string>("Names")
+                    builderCity.Property<string>("Names")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("names");
 
-                    b.HasKey("CityId");
+                    builderCity.HasKey("CityId");
 
-                    b.ToTable("cities");
+                    builderCity.ToTable("cities");
                 });
 
-            modelBuilder.Entity("Conversation", b =>
+            modelBuilder.Entity("Conversation", builderConversation =>
                 {
-                    b.Property<int>("ConversationId")
+                    builderConversation.Property<int>("ConversationId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConversationId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(builderConversation.Property<int>("ConversationId"));
 
-                    b.HasKey("ConversationId");
+                    builderConversation.HasKey("ConversationId");
 
-                    b.ToTable("conversations");
+                    builderConversation.ToTable("conversations");
                 });
 
-            modelBuilder.Entity("ConversationParticipant", b =>
+            modelBuilder.Entity("ConversationParticipant", builderConversationParticipant =>
                 {
-                    b.Property<int>("ConversationId")
+                    builderConversationParticipant.Property<int>("ConversationId")
                         .HasColumnType("int")
                         .HasColumnName("conversation_id");
 
-                    b.Property<int>("UserId")
+                    builderConversationParticipant.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
-                    b.Property<DateTime?>("LastMessageReadTime")
+                    builderConversationParticipant.Property<DateTime?>("LastMessageReadTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("last_message_read_time");
 
-                    b.Property<int>("UnreadMessagesCount")
+                    builderConversationParticipant.Property<int>("UnreadMessagesCount")
                         .HasColumnType("int")
                         .HasColumnName("unread_messages_count");
 
-                    b.HasKey("ConversationId", "UserId");
+                    builderConversationParticipant.HasKey("ConversationId", "UserId");
+                    builderConversationParticipant.HasIndex("UserId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("conversation_participants");
+                    builderConversationParticipant.ToTable("conversation_participants");
                 });
 
-            modelBuilder.Entity("Game", b =>
+            modelBuilder.Entity("Game", builderGame =>
                 {
-                    b.Property<int>("Id")
+                    builderGame.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(builderGame.Property<int>("Id"));
 
-                    b.Property<string>("Description")
+                    builderGame.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("description");
 
-                    b.Property<byte[]>("Image")
+                    builderGame.Property<byte[]>("Image")
                         .HasColumnType("varbinary(max)")
                         .HasColumnName("image");
 
-                    b.Property<bool>("IsActive")
+                    builderGame.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnName("is_active");
 
-                    b.Property<int>("MaximumPlayerNumber")
+                    builderGame.Property<int>("MaximumPlayerNumber")
                         .HasColumnType("int")
                         .HasColumnName("maximum_player_number");
 
-                    b.Property<int>("MinimumPlayerNumber")
+                    builderGame.Property<int>("MinimumPlayerNumber")
                         .HasColumnType("int")
                         .HasColumnName("minimum_player_number");
 
-                    b.Property<string>("Name")
+                    builderGame.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("name");
 
-                    b.Property<int>("OwnerId")
+                    builderGame.Property<int>("OwnerId")
                         .HasColumnType("int")
                         .HasColumnName("owner_id");
 
-                    b.Property<decimal>("PricePerDay")
+                    builderGame.Property<decimal>("PricePerDay")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("price");
 
-                    b.HasKey("Id");
+                    builderGame.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    builderGame.HasIndex("OwnerId");
 
-                    b.ToTable("games");
+                    builderGame.ToTable("games");
                 });
 
-            modelBuilder.Entity("Message", b =>
+            modelBuilder.Entity("Message", builderMessage =>
                 {
-                    b.Property<int>("MessageId")
+                    builderMessage.Property<int>("MessageId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(builderMessage.Property<int>("MessageId"));
 
-                    b.Property<int>("ConversationId")
+                    builderMessage.Property<int>("ConversationId")
                         .HasColumnType("int")
                         .HasColumnName("conversation_id");
 
-                    b.Property<string>("MessageCategory")
+                    builderMessage.Property<string>("MessageCategory")
                         .IsRequired()
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
 
-                    b.Property<string>("MessageContentAsString")
+                    builderMessage.Property<string>("MessageContentAsString")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("message_content_as_string");
 
-                    b.Property<int>("MessageReceiverId")
+                    builderMessage.Property<int>("MessageReceiverId")
                         .HasColumnType("int")
                         .HasColumnName("message_receiver_id");
 
-                    b.Property<int>("MessageSenderId")
+                    builderMessage.Property<int>("MessageSenderId")
                         .HasColumnType("int")
                         .HasColumnName("message_sender_id");
 
-                    b.Property<DateTime>("MessageSentTime")
+                    builderMessage.Property<DateTime>("MessageSentTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("message_sent_time");
 
-                    b.HasKey("MessageId");
+                    builderMessage.HasKey("MessageId");
+                    builderMessage.HasIndex("ConversationId");
 
-                    b.HasIndex("ConversationId");
+                    builderMessage.HasIndex("MessageReceiverId");
 
-                    b.HasIndex("MessageReceiverId");
+                    builderMessage.HasIndex("MessageSenderId");
 
-                    b.HasIndex("MessageSenderId");
+                    builderMessage.ToTable("messages");
 
-                    b.ToTable("messages");
+                    builderMessage.HasDiscriminator<string>("MessageCategory").HasValue("Message");
 
-                    b.HasDiscriminator<string>("MessageCategory").HasValue("Message");
-
-                    b.UseTphMappingStrategy();
+                    builderMessage.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("Payment", b =>
+            modelBuilder.Entity("Payment", builderPayment =>
                 {
-                    b.Property<int>("TransactionIdentifier")
+                    builderPayment.Property<int>("TransactionIdentifier")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionIdentifier"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(builderPayment.Property<int>("TransactionIdentifier"));
 
-                    b.Property<int>("ClientId")
+                    builderPayment.Property<int>("ClientId")
                         .HasColumnType("int")
                         .HasColumnName("client_id");
 
-                    b.Property<DateTime?>("DateConfirmedBuyer")
+                    builderPayment.Property<DateTime?>("DateConfirmedBuyer")
                         .HasColumnType("datetime2")
                         .HasColumnName("date_confirmed_buyer");
 
-                    b.Property<DateTime?>("DateConfirmedSeller")
+                    builderPayment.Property<DateTime?>("DateConfirmedSeller")
                         .HasColumnType("datetime2")
                         .HasColumnName("date_confirmed_seller");
 
-                    b.Property<DateTime?>("DateOfTransaction")
+                    builderPayment.Property<DateTime?>("DateOfTransaction")
                         .HasColumnType("datetime2")
                         .HasColumnName("date_of_transaction");
 
-                    b.Property<int>("OwnerId")
+                    builderPayment.Property<int>("OwnerId")
                         .HasColumnType("int")
                         .HasColumnName("owner_id");
 
-                    b.Property<decimal>("PaidAmount")
+                    builderPayment.Property<decimal>("PaidAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("paid_amount");
 
-                    b.Property<string>("PaymentCategory")
+                    builderPayment.Property<string>("PaymentCategory")
                         .IsRequired()
                         .HasMaxLength(8)
                         .HasColumnType("nvarchar(8)");
 
-                    b.Property<string>("PaymentMethod")
+                    builderPayment.Property<string>("PaymentMethod")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("payment_method");
 
-                    b.Property<int>("PaymentState")
+                    builderPayment.Property<int>("PaymentState")
                         .HasColumnType("int")
                         .HasColumnName("payment_state");
 
-                    b.Property<string>("ReceiptFilePath")
+                    builderPayment.Property<string>("ReceiptFilePath")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("receipt_file_path");
 
-                    b.Property<int>("RequestId")
+                    builderPayment.Property<int>("RequestId")
                         .HasColumnType("int")
                         .HasColumnName("request_id");
 
-                    b.HasKey("TransactionIdentifier");
+                    builderPayment.HasKey("TransactionIdentifier");
+                    builderPayment.HasIndex("ClientId");
 
-                    b.HasIndex("ClientId");
+                    builderPayment.HasIndex("OwnerId");
 
-                    b.HasIndex("OwnerId");
+                    builderPayment.HasIndex("RequestId");
 
-                    b.HasIndex("RequestId");
+                    builderPayment.ToTable("payments");
 
-                    b.ToTable("payments");
-
-                    b.HasDiscriminator<string>("PaymentCategory").HasValue("Standard");
-
-                    b.UseTphMappingStrategy();
+                    builderPayment.HasDiscriminator<string>("PaymentCategory").HasValue("Standard");
+                    builderPayment.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("Rental", b =>
+            modelBuilder.Entity("Rental", builderRental =>
                 {
-                    b.Property<int>("RentalId")
+                    builderRental.Property<int>("RentalId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RentalId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(builderRental.Property<int>("RentalId"));
 
-                    b.Property<int>("ClientId")
+                    builderRental.Property<int>("ClientId")
                         .HasColumnType("int")
                         .HasColumnName("client_id");
 
-                    b.Property<DateTime>("EndDate")
+                    builderRental.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("end_date");
 
-                    b.Property<int>("GameId")
+                    builderRental.Property<int>("GameId")
                         .HasColumnType("int")
                         .HasColumnName("game_id");
 
-                    b.Property<int>("OwnerId")
+                    builderRental.Property<int>("OwnerId")
                         .HasColumnType("int")
                         .HasColumnName("owner_id");
 
-                    b.Property<int?>("PaymentTransactionIdentifier")
+                    builderRental.Property<int?>("PaymentTransactionIdentifier")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartDate")
+                    builderRental.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("start_date");
 
-                    b.Property<decimal?>("TotalPrice")
+                    builderRental.Property<decimal?>("TotalPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("total_price");
 
-                    b.HasKey("RentalId");
+                    builderRental.HasKey("RentalId");
 
-                    b.HasIndex("ClientId");
+                    builderRental.HasIndex("ClientId");
 
-                    b.HasIndex("GameId");
+                    builderRental.HasIndex("GameId");
+                    builderRental.HasIndex("OwnerId");
 
-                    b.HasIndex("OwnerId");
+                    builderRental.HasIndex("PaymentTransactionIdentifier");
 
-                    b.HasIndex("PaymentTransactionIdentifier");
-
-                    b.ToTable("rentals");
+                    builderRental.ToTable("rentals");
                 });
 
-            modelBuilder.Entity("User", b =>
+            modelBuilder.Entity("User", builderUser =>
                 {
-                    b.Property<int>("Id")
+                    builderUser.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(builderUser.Property<int>("Id"));
 
-                    b.Property<string>("AvatarUrl")
+                    builderUser.Property<string>("AvatarUrl")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("avatar_url");
 
-                    b.Property<decimal>("Balance")
+                    builderUser.Property<decimal>("Balance")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("balance");
 
-                    b.Property<string>("City")
+                    builderUser.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("city");
 
-                    b.Property<string>("Country")
+                    builderUser.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("country");
 
-                    b.Property<DateTime>("CreatedAt")
+                    builderUser.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("DisplayName")
+                    builderUser.Property<string>("DisplayName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("display_name");
 
-                    b.Property<string>("Email")
+                    builderUser.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("email");
 
-                    b.Property<bool>("IsSuspended")
+                    builderUser.Property<bool>("IsSuspended")
                         .HasColumnType("bit")
                         .HasColumnName("is_suspended");
 
-                    b.Property<string>("PasswordHash")
+                    builderUser.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("password_hash");
 
-                    b.Property<string>("PhoneNumber")
+                    builderUser.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("phone_number");
 
-                    b.Property<string>("Street")
+                    builderUser.Property<string>("Street")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("street");
 
-                    b.Property<string>("StreetNumber")
+                    builderUser.Property<string>("StreetNumber")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("street_number");
 
-                    b.Property<DateTime?>("UpdatedAt")
+                    builderUser.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.Property<string>("Username")
+                    builderUser.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("username");
 
-                    b.HasKey("Id");
+                    builderUser.HasKey("Id");
 
-                    b.ToTable("users");
+                    builderUser.ToTable("users");
                 });
 
-            modelBuilder.Entity("CashAgreementMessage", b =>
+            modelBuilder.Entity("CashAgreementMessage", builderCashAgreementMessage =>
                 {
-                    b.HasBaseType("Message");
+                    builderCashAgreementMessage.HasBaseType("Message");
 
-                    b.Property<int>("CashPaymentId")
+                    builderCashAgreementMessage.Property<int>("CashPaymentId")
                         .HasColumnType("int")
                         .HasColumnName("cash_payment_id");
 
-                    b.Property<bool>("IsCashAgreementAcceptedByBuyer")
+                    builderCashAgreementMessage.Property<bool>("IsCashAgreementAcceptedByBuyer")
                         .HasColumnType("bit")
                         .HasColumnName("is_cash_agreement_accepted_by_buyer");
 
-                    b.Property<bool>("IsCashAgreementAcceptedBySeller")
+                    builderCashAgreementMessage.Property<bool>("IsCashAgreementAcceptedBySeller")
                         .HasColumnType("bit")
                         .HasColumnName("is_cash_agreement_accepted_by_seller");
 
-                    b.Property<bool>("IsCashAgreementResolved")
+                    builderCashAgreementMessage.Property<bool>("IsCashAgreementResolved")
                         .HasColumnType("bit")
                         .HasColumnName("is_cash_agreement_resolved");
 
-                    b.HasIndex("CashPaymentId");
+                    builderCashAgreementMessage.HasIndex("CashPaymentId");
+                    builderCashAgreementMessage.ToTable("messages");
 
-                    b.ToTable("messages");
-
-                    b.HasDiscriminator().HasValue("CashAgreement");
+                    builderCashAgreementMessage.HasDiscriminator().HasValue("CashAgreement");
                 });
 
-            modelBuilder.Entity("ImageMessage", b =>
+            modelBuilder.Entity("ImageMessage", builderImageMessage =>
                 {
-                    b.HasBaseType("Message");
+                    builderImageMessage.HasBaseType("Message");
 
-                    b.Property<string>("MessageImageUrl")
+                    builderImageMessage.Property<string>("MessageImageUrl")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("message_image_url");
 
-                    b.ToTable("messages");
-
-                    b.HasDiscriminator().HasValue("Image");
+                    builderImageMessage.ToTable("messages");
+                    builderImageMessage.HasDiscriminator().HasValue("Image");
                 });
 
-            modelBuilder.Entity("RentalRequestMessage", b =>
+            modelBuilder.Entity("RentalRequestMessage", builderRentalRequestMessage =>
                 {
-                    b.HasBaseType("Message");
+                    builderRentalRequestMessage.HasBaseType("Message");
 
-                    b.Property<bool>("IsRequestAccepted")
+                    builderRentalRequestMessage.Property<bool>("IsRequestAccepted")
                         .HasColumnType("bit")
                         .HasColumnName("is_request_accepted");
 
-                    b.Property<bool>("IsRequestResolved")
+                    builderRentalRequestMessage.Property<bool>("IsRequestResolved")
                         .HasColumnType("bit")
                         .HasColumnName("is_request_resolved");
 
-                    b.Property<int>("RentalRequestId")
+                    builderRentalRequestMessage.Property<int>("RentalRequestId")
                         .HasColumnType("int")
                         .HasColumnName("rental_request_id");
 
-                    b.Property<string>("RequestContent")
+                    builderRentalRequestMessage.Property<string>("RequestContent")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("request_content");
 
-                    b.HasIndex("RentalRequestId");
+                    builderRentalRequestMessage.HasIndex("RentalRequestId");
+                    builderRentalRequestMessage.ToTable("messages");
 
-                    b.ToTable("messages");
-
-                    b.HasDiscriminator().HasValue("RentalRequest");
+                    builderRentalRequestMessage.HasDiscriminator().HasValue("RentalRequest");
                 });
 
-            modelBuilder.Entity("SystemMessage", b =>
+            modelBuilder.Entity("SystemMessage", builderSystemMessage =>
                 {
-                    b.HasBaseType("Message");
+                    builderSystemMessage.HasBaseType("Message");
 
-                    b.Property<string>("MessageContent")
+                    builderSystemMessage.Property<string>("MessageContent")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("message_content");
 
-                    b.ToTable("messages");
-
-                    b.HasDiscriminator().HasValue("System");
+                    builderSystemMessage.ToTable("messages");
+                    builderSystemMessage.HasDiscriminator().HasValue("System");
                 });
 
-            modelBuilder.Entity("TextMessage", b =>
+            modelBuilder.Entity("TextMessage", builderTextMessage =>
                 {
-                    b.HasBaseType("Message");
+                    builderTextMessage.HasBaseType("Message");
 
-                    b.Property<string>("TextMessageContent")
+                    builderTextMessage.Property<string>("TextMessageContent")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("text_message_content");
 
-                    b.ToTable("messages");
-
-                    b.HasDiscriminator().HasValue("Text");
+                    builderTextMessage.ToTable("messages");
+                    builderTextMessage.HasDiscriminator().HasValue("Text");
                 });
 
-            modelBuilder.Entity("HistoryPayment", b =>
+            modelBuilder.Entity("HistoryPayment", builderHistoryPayment =>
                 {
-                    b.HasBaseType("Payment");
+                    builderHistoryPayment.HasBaseType("Payment");
 
-                    b.Property<string>("GameName")
+                    builderHistoryPayment.Property<string>("GameName")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("game_name");
 
-                    b.Property<string>("OwnerName")
+                    builderHistoryPayment.Property<string>("OwnerName")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("owner_name");
 
-                    b.ToTable("payments");
-
-                    b.HasDiscriminator().HasValue("History");
+                    builderHistoryPayment.ToTable("payments");
+                    builderHistoryPayment.HasDiscriminator().HasValue("History");
                 });
 
-            modelBuilder.Entity("ConversationParticipant", b =>
+            modelBuilder.Entity("ConversationParticipant", builderConversationParticipant =>
                 {
-                    b.HasOne("Conversation", "Conversation")
+                    builderConversationParticipant.HasOne("Conversation", "Conversation")
                         .WithMany("Participants")
                         .HasForeignKey("ConversationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("User", "User")
+                    builderConversationParticipant.HasOne("User", "User")
                         .WithMany("Conversations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Conversation");
+                    builderConversationParticipant.Navigation("Conversation");
 
-                    b.Navigation("User");
+                    builderConversationParticipant.Navigation("User");
                 });
 
-            modelBuilder.Entity("Game", b =>
+            modelBuilder.Entity("Game", builderGame =>
                 {
-                    b.HasOne("User", "Owner")
+                    builderGame.HasOne("User", "Owner")
                         .WithMany("OwnedGames")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    builderGame.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("Message", b =>
+            modelBuilder.Entity("Message", builderMessage =>
                 {
-                    b.HasOne("Conversation", "Conversation")
+                    builderMessage.HasOne("Conversation", "Conversation")
                         .WithMany("Messages")
                         .HasForeignKey("ConversationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("User", "Receiver")
+                    builderMessage.HasOne("User", "Receiver")
                         .WithMany()
                         .HasForeignKey("MessageReceiverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("User", "Sender")
+                    builderMessage.HasOne("User", "Sender")
                         .WithMany()
                         .HasForeignKey("MessageSenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Conversation");
+                    builderMessage.Navigation("Conversation");
 
-                    b.Navigation("Receiver");
+                    builderMessage.Navigation("Receiver");
 
-                    b.Navigation("Sender");
+                    builderMessage.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("Payment", b =>
+            modelBuilder.Entity("Payment", builderPayment =>
                 {
-                    b.HasOne("User", "Client")
+                    builderPayment.HasOne("User", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("User", "Owner")
+                    builderPayment.HasOne("User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Rental", "Request")
+                    builderPayment.HasOne("Rental", "Request")
                         .WithMany()
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Client");
+                    builderPayment.Navigation("Client");
 
-                    b.Navigation("Owner");
+                    builderPayment.Navigation("Owner");
 
-                    b.Navigation("Request");
+                    builderPayment.Navigation("Request");
                 });
 
-            modelBuilder.Entity("Rental", b =>
+            modelBuilder.Entity("Rental", builderRental =>
                 {
-                    b.HasOne("User", "Client")
+                    builderRental.HasOne("User", "Client")
                         .WithMany("RentalsAsClient")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Game", "Game")
+                    builderRental.HasOne("Game", "Game")
                         .WithMany("Rentals")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("User", "Owner")
+                    builderRental.HasOne("User", "Owner")
                         .WithMany("RentalsAsOwner")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Payment", "Payment")
+                    builderRental.HasOne("Payment", "Payment")
                         .WithMany()
                         .HasForeignKey("PaymentTransactionIdentifier");
 
-                    b.Navigation("Client");
+                    builderRental.Navigation("Client");
+                    builderRental.Navigation("Game");
 
-                    b.Navigation("Game");
+                    builderRental.Navigation("Owner");
 
-                    b.Navigation("Owner");
-
-                    b.Navigation("Payment");
+                    builderRental.Navigation("Payment");
                 });
 
-            modelBuilder.Entity("CashAgreementMessage", b =>
+            modelBuilder.Entity("CashAgreementMessage", builderCashAgreementMessage =>
                 {
-                    b.HasOne("Payment", "CashPayment")
+                    builderCashAgreementMessage.HasOne("Payment", "CashPayment")
                         .WithMany()
                         .HasForeignKey("CashPaymentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("CashPayment");
+                    builderCashAgreementMessage.Navigation("CashPayment");
                 });
 
-            modelBuilder.Entity("RentalRequestMessage", b =>
+            modelBuilder.Entity("RentalRequestMessage", builderRentalRequestMessage =>
                 {
-                    b.HasOne("Rental", "RentalRequest")
+                    builderRentalRequestMessage.HasOne("Rental", "RentalRequest")
                         .WithMany("Messages")
                         .HasForeignKey("RentalRequestId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("RentalRequest");
+                    builderRentalRequestMessage.Navigation("RentalRequest");
                 });
 
-            modelBuilder.Entity("Conversation", b =>
+            modelBuilder.Entity("Conversation", builderConversation =>
                 {
-                    b.Navigation("Messages");
+                    builderConversation.Navigation("Messages");
 
-                    b.Navigation("Participants");
+                    builderConversation.Navigation("Participants");
                 });
 
-            modelBuilder.Entity("Game", b =>
+            modelBuilder.Entity("Game", builderGame =>
                 {
-                    b.Navigation("Rentals");
+                    builderGame.Navigation("Rentals");
                 });
 
-            modelBuilder.Entity("Rental", b =>
+            modelBuilder.Entity("Rental", builderRental =>
                 {
-                    b.Navigation("Messages");
+                    builderRental.Navigation("Messages");
                 });
 
-            modelBuilder.Entity("User", b =>
+            modelBuilder.Entity("User", builderUser =>
                 {
-                    b.Navigation("Conversations");
+                    builderUser.Navigation("Conversations");
 
-                    b.Navigation("OwnedGames");
+                    builderUser.Navigation("OwnedGames");
+                    builderUser.Navigation("RentalsAsClient");
 
-                    b.Navigation("RentalsAsClient");
-
-                    b.Navigation("RentalsAsOwner");
+                    builderUser.Navigation("RentalsAsOwner");
                 });
 #pragma warning restore 612, 618
         }

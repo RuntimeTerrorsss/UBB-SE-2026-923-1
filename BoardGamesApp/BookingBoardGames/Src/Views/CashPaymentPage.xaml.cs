@@ -22,13 +22,13 @@ namespace BookingBoardGames.Src.Views
             this.InitializeComponent();
         }
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs navigationArgs)
         {
-            base.OnNavigatedTo(e);
+            base.OnNavigatedTo(navigationArgs);
 
             try
             {
-                if (e.Parameter is BookingNavigationArguments booking)
+                if (navigationArgs.Parameter is BookingNavigationArguments booking)
                 {
                     if (booking.ConversationService == null)
                     {
@@ -60,7 +60,7 @@ namespace BookingBoardGames.Src.Views
             }
         }
 
-        private void NavigateToChatButton_Click(object sender, RoutedEventArgs e)
+        private void NavigateToChatButton_Click(object sender, RoutedEventArgs routedArgs)
         {
             if (this.currentApplicationWindow != null)
             {

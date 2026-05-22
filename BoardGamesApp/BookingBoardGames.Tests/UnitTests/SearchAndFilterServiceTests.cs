@@ -48,9 +48,9 @@ namespace BookingBoardGames.Tests.Services
 
             var owner = new User { Id = 10, City = "TestCity" };
 
-            _mockGamesRepository.Setup(r => r.GetGamesByFilter(It.IsAny<FilterCriteria>()))
+            _mockGamesRepository.Setup(mockGamesRepository => mockGamesRepository.GetGamesByFilter(It.IsAny<FilterCriteria>()))
                 .ReturnsAsync(gamesFromRepo);
-            _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync(owner);
+            _mockUsersRepository.Setup(mockUsersRepository => mockUsersRepository.GetGameById(10)).ReturnsAsync(owner);
 
             // Act
             var result = await _service.SearchGamesByFilter(filter);
@@ -61,7 +61,7 @@ namespace BookingBoardGames.Tests.Services
             Assert.Equal("TestCity", result[0].City);
             Assert.Equal("TestCity", result[1].City);
 
-            _mockUsersRepository.Verify(r => r.GetGameById(10), Times.Once);
+            _mockUsersRepository.Verify(mockUsersRepository => mockUsersRepository.GetGameById(10), Times.Once);
         }
 
         [Fact]
@@ -69,7 +69,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             var filter = new FilterCriteria();
-            _mockGamesRepository.Setup(r => r.GetGamesByFilter(It.IsAny<FilterCriteria>()))
+            _mockGamesRepository.Setup(mockGamesRepository => mockGamesRepository.GetGamesByFilter(It.IsAny<FilterCriteria>()))
                 .ThrowsAsync(new Exception("DB Error"));
 
 
@@ -89,8 +89,8 @@ namespace BookingBoardGames.Tests.Services
             var games = new List<Game> { new Game { Id = 1, OwnerId = 10, Name = "Game1" } };
             var owner = new User { Id = 10, City = "Cluj" };
 
-            _mockGamesRepository.Setup(r => r.GetGamesForFeedAvailableTonight(userId)).ReturnsAsync(games);
-            _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync(owner);
+            _mockGamesRepository.Setup(mockGamesRepository => mockGamesRepository.GetGamesForFeedAvailableTonight(userId)).ReturnsAsync(games);
+            _mockUsersRepository.Setup(mockUsersRepository => mockUsersRepository.GetGameById(10)).ReturnsAsync(owner);
 
 
             var result = await _service.GetGamesFeedAvailableTonightByUser(userId);
@@ -107,8 +107,8 @@ namespace BookingBoardGames.Tests.Services
             int userId = 1;
             var games = new List<Game> { new Game { Id = 1, OwnerId = 10, Name = "Game1" } };
 
-            _mockGamesRepository.Setup(r => r.GetGamesForFeedAvailableTonight(userId)).ReturnsAsync(games);
-            _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync((User)null);
+            _mockGamesRepository.Setup(mockGamesRepository => mockGamesRepository.GetGamesForFeedAvailableTonight(userId)).ReturnsAsync(games);
+            _mockUsersRepository.Setup(mockUsersRepository => mockUsersRepository.GetGameById(10)).ReturnsAsync((User)null);
 
 
             var result = await _service.GetGamesFeedAvailableTonightByUser(userId);
@@ -121,7 +121,7 @@ namespace BookingBoardGames.Tests.Services
         public async Task GetGamesFeedAvailableTonightByUser_RepositoryThrows_ThrowsInvalidOperationException()
         {
 
-            _mockGamesRepository.Setup(r => r.GetGamesForFeedAvailableTonight(It.IsAny<int>()))
+            _mockGamesRepository.Setup(mockGamesRepository => mockGamesRepository.GetGamesForFeedAvailableTonight(It.IsAny<int>()))
                 .ThrowsAsync(new Exception("DB Error"));
 
 
@@ -141,8 +141,8 @@ namespace BookingBoardGames.Tests.Services
             var games = new List<Game> { new Game { Id = 1, OwnerId = 10, Name = "Game1" } };
             var owner = new User { Id = 10, City = "Cluj" };
 
-            _mockGamesRepository.Setup(r => r.GetRemainingGamesForFeed(userId)).ReturnsAsync(games);
-            _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync(owner);
+            _mockGamesRepository.Setup(mockGamesRepository => mockGamesRepository.GetRemainingGamesForFeed(userId)).ReturnsAsync(games);
+            _mockUsersRepository.Setup(mockUsersRepository => mockUsersRepository.GetGameById(10)).ReturnsAsync(owner);
 
 
             var result = await _service.GetOtherGamesFeedByUser(userId);
@@ -158,8 +158,8 @@ namespace BookingBoardGames.Tests.Services
             int userId = 1;
             var games = new List<Game> { new Game { Id = 1, OwnerId = 10, Name = "Game1" } };
 
-            _mockGamesRepository.Setup(r => r.GetRemainingGamesForFeed(userId)).ReturnsAsync(games);
-            _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync((User)null);
+            _mockGamesRepository.Setup(mockGamesRepository => mockGamesRepository.GetRemainingGamesForFeed(userId)).ReturnsAsync(games);
+            _mockUsersRepository.Setup(mockUsersRepository => mockUsersRepository.GetGameById(10)).ReturnsAsync((User)null);
 
 
             var result = await _service.GetOtherGamesFeedByUser(userId);
@@ -172,7 +172,7 @@ namespace BookingBoardGames.Tests.Services
         public async Task GetOtherGamesFeedByUser_RepositoryThrows_ThrowsInvalidOperationException()
         {
 
-            _mockGamesRepository.Setup(r => r.GetRemainingGamesForFeed(It.IsAny<int>()))
+            _mockGamesRepository.Setup(mockGamesRepository => mockGamesRepository.GetRemainingGamesForFeed(It.IsAny<int>()))
                 .ThrowsAsync(new Exception("DB Error"));
 
 
@@ -355,9 +355,9 @@ namespace BookingBoardGames.Tests.Services
                 new Game { Id = 4, OwnerId = 10, Name = "Other2" }
             };
 
-            _mockGamesRepository.Setup(r => r.GetGamesForFeedAvailableTonight(userId)).ReturnsAsync(availableGames);
-            _mockGamesRepository.Setup(r => r.GetRemainingGamesForFeed(userId)).ReturnsAsync(otherGames);
-            _mockUsersRepository.Setup(r => r.GetGameById(10)).ReturnsAsync(new User { Id = 10 });
+            _mockGamesRepository.Setup(mockGamesRepository => mockGamesRepository.GetGamesForFeedAvailableTonight(userId)).ReturnsAsync(availableGames);
+            _mockGamesRepository.Setup(mockGamesRepository => mockGamesRepository.GetRemainingGamesForFeed(userId)).ReturnsAsync(otherGames);
+            _mockUsersRepository.Setup(mockUsersRepository => mockUsersRepository.GetGameById(10)).ReturnsAsync(new User { Id = 10 });
 
 
             var (tonight, others, total) = await _service.GetDiscoveryFeedPaged(userId, page: 2, pageSize: 2);

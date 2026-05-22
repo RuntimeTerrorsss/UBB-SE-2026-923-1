@@ -193,7 +193,7 @@ namespace BookingBoardGames.Src.ViewModels
         public ICommand ChatWithOwnerCommand => new RelayCommand(_ =>
         {
             int currentUserId = SessionContext.GetInstance().UserId;
-            OnChatWithOwnerRequested?.Invoke(currentUserId, this.GameAndUserDetails.UserId);
+            this.OnChatWithOwnerRequested?.Invoke(currentUserId, this.GameAndUserDetails.UserId);
         });
 
         /// <summary>

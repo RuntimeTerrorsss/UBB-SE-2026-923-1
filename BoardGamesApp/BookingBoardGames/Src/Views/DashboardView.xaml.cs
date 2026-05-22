@@ -2,10 +2,10 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using BookingBoardGames;
 using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Src.Views.ChatViews;
-using BookingBoardGames;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -19,21 +19,21 @@ namespace BookingBoardGames.Src.Views
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationArgs)
         {
-            base.OnNavigatedTo(e);
-            if (e.Parameter is int userId)
+            base.OnNavigatedTo(navigationArgs);
+            if (navigationArgs.Parameter is int userId)
             {
                 SessionContext.GetInstance().UserId = userId;
             }
         }
 
-        private void PaymentHistoryButton_Click(object sender, RoutedEventArgs e)
+        private void PaymentHistoryButton_Click(object sender, RoutedEventArgs routedArgs)
         {
             this.Frame?.Navigate(typeof(PaymentHistoryView));
         }
 
-        private void ChatButton_Click(object sender, RoutedEventArgs e)
+        private void ChatButton_Click(object sender, RoutedEventArgs routedArgs)
         {
             int currentUserId = SessionContext.GetInstance().UserId;
             var window1 = new Window();
@@ -44,7 +44,7 @@ namespace BookingBoardGames.Src.Views
             window1.Activate();
         }
 
-        private void SeeEmptyChat_Click(object sender, RoutedEventArgs e)
+        private void SeeEmptyChat_Click(object sender, RoutedEventArgs routedArgs)
         {
             var window1 = new Window();
             var frame1 = new Frame();
@@ -53,7 +53,7 @@ namespace BookingBoardGames.Src.Views
             window1.Activate();
         }
 
-        private void BackButton_Click(object sender, RoutedEventArgs e)
+        private void BackButton_Click(object sender, RoutedEventArgs routedArgs)
         {
             this.Frame.Navigate(typeof(DiscoveryView));
         }

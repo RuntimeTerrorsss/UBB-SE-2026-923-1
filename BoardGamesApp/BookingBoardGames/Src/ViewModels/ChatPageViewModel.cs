@@ -69,7 +69,6 @@ public class ChatPageViewModel : ViewModelBase
         var user = await this.userRepository.GetById(this.currentUserId);
         this.CurrentUsername = user?.Username ?? string.Empty;
 
-        // Keep demo users connected: ensure Alice<->Bob conversation exists.
         if (this.currentUserId == MainWindow.loggedInUserAlice || this.currentUserId == MainWindow.loggedInUserBob)
         {
             int otherDemoUserId = this.currentUserId == MainWindow.loggedInUserAlice
@@ -344,11 +343,11 @@ public class ChatPageViewModel : ViewModelBase
                     return;
                 }
 
-                for (int i = 0; i < matchedConversation.MessageList.Count; i++)
+                for (int messageIndex = 0; messageIndex < matchedConversation.MessageList.Count; messageIndex++)
                 {
-                    if (matchedConversation.MessageList[i].Id == updatedMessage.Id)
+                    if (matchedConversation.MessageList[messageIndex].Id == updatedMessage.Id)
                     {
-                        matchedConversation.MessageList[i] = updatedMessage;
+                        matchedConversation.MessageList[messageIndex] = updatedMessage;
                         if (this.ChatModelView.ConversationId == updatedMessage.ConversationId)
                         {
                             this.ChatModelView.LoadConversation(this.LeftPanelModelView.SelectedConversation, matchedConversation.MessageList, noUnreadMessagesCount);

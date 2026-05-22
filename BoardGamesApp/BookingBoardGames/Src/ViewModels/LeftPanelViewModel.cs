@@ -100,28 +100,28 @@ namespace BookingBoardGames.Src.ViewModels
                             conversationItem.DisplayName.Contains(this.SearchText, StringComparison.Ordinal))
                 .ToList();
 
-            for (int i = this.Conversations.Count - 1; i >= 0; i--)
+            for (int conversationIndex = this.Conversations.Count - 1; conversationIndex >= 0; conversationIndex--)
             {
-                if (!filteredConversations.Contains(this.Conversations[i]))
+                if (!filteredConversations.Contains(this.Conversations[conversationIndex]))
                 {
-                    this.Conversations.RemoveAt(i);
+                    this.Conversations.RemoveAt(conversationIndex);
                 }
             }
 
             int notFoundIndex = -1;
 
-            for (int i = 0; i < filteredConversations.Count; i++)
+            for (int filteredConIndex = 0; filteredConIndex < filteredConversations.Count; filteredConIndex++)
             {
-                var filterItem = filteredConversations[i];
+                var filterItem = filteredConversations[filteredConIndex];
                 int currentIndex = this.Conversations.IndexOf(filterItem);
 
                 if (currentIndex == notFoundIndex)
                 {
-                    this.Conversations.Insert(i, filterItem);
+                    this.Conversations.Insert(filteredConIndex, filterItem);
                 }
-                else if (currentIndex != i)
+                else if (currentIndex != filteredConIndex)
                 {
-                    this.Conversations.Move(currentIndex, i);
+                    this.Conversations.Move(currentIndex, filteredConIndex);
                 }
             }
 

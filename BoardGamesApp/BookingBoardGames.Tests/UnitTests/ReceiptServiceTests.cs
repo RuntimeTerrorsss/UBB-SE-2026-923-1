@@ -56,13 +56,13 @@ namespace BookingBoardGames.Tests.Services
 
         private void SetupDefaultMocks()
         {
-            _mockRentalService.Setup(r => r.GetRentalById(It.IsAny<int>()))
+            _mockRentalService.Setup(mockRentalService => mockRentalService.GetRentalById(It.IsAny<int>()))
                 .ReturnsAsync(new Rental { GameId = 1, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(3) });
 
-            _mockGameRepository.Setup(g => g.GetGameById(It.IsAny<int>()))
+            _mockGameRepository.Setup(mockGameRepository => mockGameRepository.GetGameById(It.IsAny<int>()))
                 .ReturnsAsync(new Game { Name = "Test Boardgame" });
 
-            _mockUserRepository.Setup(u => u.GetById(It.IsAny<int>()))
+            _mockUserRepository.Setup(mockUserRepository => mockUserRepository.GetById(It.IsAny<int>()))
                 .ReturnsAsync(new User { Username = "TestUser" });
         }
 
@@ -144,7 +144,7 @@ namespace BookingBoardGames.Tests.Services
             Assert.True(File.Exists(existingPath));
 
 
-            _mockRentalService.Verify(r => r.GetRentalById(It.IsAny<int>()), Times.Once);
+            _mockRentalService.Verify(mockRentalService => mockRentalService.GetRentalById(It.IsAny<int>()), Times.Once);
         }
 
         #endregion
@@ -176,10 +176,10 @@ namespace BookingBoardGames.Tests.Services
 
             Assert.True(File.Exists(generatedPath));
 
-            _mockRentalService.Verify(r => r.GetRentalById(payment.RequestId), Times.Once);
-            _mockGameRepository.Verify(g => g.GetGameById(It.IsAny<int>()), Times.Once);
-            _mockUserRepository.Verify(u => u.GetById(payment.ClientId), Times.Once);
-            _mockUserRepository.Verify(u => u.GetById(payment.OwnerId), Times.Once);
+            _mockRentalService.Verify(mockRentalService => mockRentalService.GetRentalById(payment.RequestId), Times.Once);
+            _mockGameRepository.Verify(mockGameRepository => mockGameRepository.GetGameById(It.IsAny<int>()), Times.Once);
+            _mockUserRepository.Verify(mockUserRepository => mockUserRepository.GetById(payment.ClientId), Times.Once);
+            _mockUserRepository.Verify(mockUserRepository => mockUserRepository.GetById(payment.OwnerId), Times.Once);
         }
 
         [Fact]
@@ -208,7 +208,7 @@ namespace BookingBoardGames.Tests.Services
 
             Assert.True(File.Exists(generatedPath));
 
-            _mockRentalService.Verify(r => r.GetRentalById(payment.RequestId), Times.Once);
+            _mockRentalService.Verify(mockRentalService => mockRentalService.GetRentalById(payment.RequestId), Times.Once);
         }
 
         #endregion

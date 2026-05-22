@@ -33,14 +33,14 @@ namespace BookingBoardGames.Tests.Services
 
             int rentalId = 1;
             var expectedRental = new Rental { GameId = 2 };
-            _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync(expectedRental);
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.GetById(rentalId)).ReturnsAsync(expectedRental);
 
 
             var result = await _rentalService.GetRentalById(rentalId);
 
 
             Assert.Equal(expectedRental, result);
-            _mockRentalRepository.Verify(r => r.GetById(rentalId), Times.Once);
+            _mockRentalRepository.Verify(mockRentalRepository => mockRentalRepository.GetById(rentalId), Times.Once);
         }
 
         #endregion
@@ -52,7 +52,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             int rentalId = 1;
-            _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync((Rental)null);
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.GetById(rentalId)).ReturnsAsync((Rental)null);
 
 
             var result = await _rentalService.GetRentalPrice(rentalId);
@@ -72,8 +72,8 @@ namespace BookingBoardGames.Tests.Services
             decimal pricePerDay = 15m;
             decimal expectedTotalPrice = 45m;
 
-            _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync(rental);
-            _mockGameRepository.Setup(g => g.GetPriceGameById(rental.GameId)).ReturnsAsync(pricePerDay);
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.GetById(rentalId)).ReturnsAsync(rental);
+            _mockGameRepository.Setup(mockGameRepository => mockGameRepository.GetPriceGameById(rental.GameId)).ReturnsAsync(pricePerDay);
 
 
             var result = await _rentalService.GetRentalPrice(rentalId);
@@ -91,7 +91,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             int rentalId = 1;
-            _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync((Rental)null);
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.GetById(rentalId)).ReturnsAsync((Rental)null);
 
 
             var result = await _rentalService.GetGameName(rentalId);
@@ -107,7 +107,7 @@ namespace BookingBoardGames.Tests.Services
             int rentalId = 1;
             var rental = new Rental { GameId = 5 };
 
-            _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync(rental);
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.GetById(rentalId)).ReturnsAsync(rental);
             _mockGameRepository.Setup(g => g.GetGameById(rental.GameId)).ReturnsAsync((Game)null);
 
 
@@ -125,8 +125,8 @@ namespace BookingBoardGames.Tests.Services
             var rental = new Rental { GameId = 5 };
             var game = new Game { Name = "Catan" };
 
-            _mockRentalRepository.Setup(r => r.GetById(rentalId)).ReturnsAsync(rental);
-            _mockGameRepository.Setup(g => g.GetGameById(rental.GameId)).ReturnsAsync(game);
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.GetById(rentalId)).ReturnsAsync(rental);
+            _mockGameRepository.Setup(mockGameRepository => mockGameRepository.GetGameById(rental.GameId)).ReturnsAsync(game);
 
 
             var result = await _rentalService.GetGameName(rentalId);
@@ -149,7 +149,7 @@ namespace BookingBoardGames.Tests.Services
                 new TimeRange(DateTime.UtcNow, DateTime.UtcNow.AddDays(1))
             };
 
-            _mockRentalRepository.Setup(r => r.GetUnavailableTimeRanges(gameId)).ReturnsAsync(expectedRanges);
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.GetUnavailableTimeRanges(gameId)).ReturnsAsync(expectedRanges);
 
 
             var result = await _rentalService.GetUnavailableTimeRanges(gameId);
@@ -175,7 +175,7 @@ namespace BookingBoardGames.Tests.Services
 
 
             Assert.False(result);
-            _mockRentalRepository.Verify(r => r.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>()), Times.Never);
+            _mockRentalRepository.Verify(mockRentalRepository => mockRentalRepository.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>()), Times.Never);
         }
 
         [Theory]
@@ -188,7 +188,7 @@ namespace BookingBoardGames.Tests.Services
             var startDate = DateTime.UtcNow;
             var endDate = startDate.AddDays(1);
 
-            _mockRentalRepository.Setup(r => r.CheckGameAvailability(startDate, endDate, gameId)).ReturnsAsync(repositoryResult);
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.CheckGameAvailability(startDate, endDate, gameId)).ReturnsAsync(repositoryResult);
 
 
             var result = await _rentalService.CheckGameAvailability(gameId, startDate, endDate);
@@ -291,7 +291,7 @@ namespace BookingBoardGames.Tests.Services
             var startDate = DateTime.UtcNow;
             var endDate = startDate.AddDays(1);
 
-            _mockRentalRepository.Setup(r => r.CheckGameAvailability(startDate, endDate, gameId)).ReturnsAsync(false);
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.CheckGameAvailability(startDate, endDate, gameId)).ReturnsAsync(false);
 
 
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
@@ -310,11 +310,10 @@ namespace BookingBoardGames.Tests.Services
             decimal pricePerDay = 10m;
             decimal expectedTotalPrice = 30m;
 
-            _mockRentalRepository.Setup(r => r.CheckGameAvailability(startDate, endDate, gameId)).ReturnsAsync(true);
-            _mockGameRepository.Setup(g => g.GetPriceGameById(gameId)).ReturnsAsync(pricePerDay);
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.CheckGameAvailability(startDate, endDate, gameId)).ReturnsAsync(true);
+            _mockGameRepository.Setup(mockGameRepository => mockGameRepository.GetPriceGameById(gameId)).ReturnsAsync(pricePerDay);
 
-            _mockRentalRepository.Setup(r => r.AddRental(It.IsAny<Rental>())).Returns(Task.CompletedTask);
-
+            _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.AddRental(It.IsAny<Rental>())).Returns(Task.CompletedTask);
 
             var result = await _rentalService.CreateRental(gameId, clientId, ownerId, startDate, endDate);
 
@@ -327,7 +326,7 @@ namespace BookingBoardGames.Tests.Services
             Assert.Equal(endDate, result.EndDate);
             Assert.Equal(expectedTotalPrice, result.TotalPrice);
 
-            _mockRentalRepository.Verify(r => r.AddRental(It.Is<Rental>(ren => ren.TotalPrice == expectedTotalPrice)), Times.Once);
+            _mockRentalRepository.Verify(mockRentalRepository => mockRentalRepository.AddRental(It.Is<Rental>(ren => ren.TotalPrice == expectedTotalPrice)), Times.Once);
         }
 
         #endregion

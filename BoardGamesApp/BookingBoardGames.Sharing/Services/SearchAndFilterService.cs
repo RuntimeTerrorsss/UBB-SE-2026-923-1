@@ -273,7 +273,7 @@ namespace BookingBoardGames.Sharing.Services
 
                     var results = await Task.WhenAll(tasks);
 
-                    filteredGames = results.Where(x => x.IsAvailable).Select(x => x.Game);
+                    filteredGames = results.Where(filteredGame => filteredGame.IsAvailable).Select(filteredGame => filteredGame.Game);
                 }
 
                 return filteredGames.ToArray();

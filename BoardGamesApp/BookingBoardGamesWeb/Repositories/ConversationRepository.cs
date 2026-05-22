@@ -108,7 +108,7 @@ namespace BookingBoardGames.Api.Repositories
         public async Task<Message?> HandleMessageUpdate(Message message)
         {
             var tracked = await this.context.Messages
-                .FirstOrDefaultAsync(m => m.MessageId == message.MessageId);
+                .FirstOrDefaultAsync(trackedMessage => trackedMessage.MessageId == message.MessageId);
 
             if (tracked is null)
             {
@@ -181,7 +181,7 @@ namespace BookingBoardGames.Api.Repositories
         {
             var parent = await this.context.Messages
                 .OfType<RentalRequestMessage>()
-                .FirstOrDefaultAsync(m => m.MessageId == messageIdOfParentRentalRequestMessage);
+                .FirstOrDefaultAsync(parentMessage => parentMessage.MessageId == messageIdOfParentRentalRequestMessage);
 
             if (parent is null)
             {
@@ -204,10 +204,10 @@ namespace BookingBoardGames.Api.Repositories
             await this.context.SaveChangesAsync();
 
             return await this.context.Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Receiver)
-                .Include(m => m.Conversation)
-                .FirstAsync(m => m.MessageId == cashMessage.MessageId);
+                .Include(cashMessage => cashMessage.Sender)
+                .Include(cashMessage => cashMessage.Receiver)
+                .Include(cashMessage => cashMessage.Conversation)
+                .FirstAsync(cashMessage => cashMessage.MessageId == cashMessage.MessageId);
         }
     }
 }

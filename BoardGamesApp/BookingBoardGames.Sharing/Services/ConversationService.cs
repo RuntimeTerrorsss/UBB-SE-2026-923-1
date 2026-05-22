@@ -176,7 +176,7 @@ namespace BookingBoardGames.Sharing.Services
             {
                 if (cachedConv.Messages is IList<Message> collection)
                 {
-                    if (!collection.Any(m => m.MessageId == persisted.MessageId))
+                    if (!collection.Any(message => message.MessageId == persisted.MessageId))
                     {
                         collection.Add(persisted);
                     }
@@ -282,7 +282,7 @@ namespace BookingBoardGames.Sharing.Services
                         {
                             foreach (var fetchedMsg in fetchedConv.Messages)
                             {
-                                var cachedMsg = cachedConv.Messages.FirstOrDefault(m => m.MessageId == fetchedMsg.MessageId);
+                                var cachedMsg = cachedConv.Messages.FirstOrDefault(message => message.MessageId == fetchedMsg.MessageId);
                                 if (cachedMsg == null)
                                 {
                                     // Only notify if we didn't just send this message ourselves.

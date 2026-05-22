@@ -60,7 +60,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 HorizontalAlignment = HorizontalAlignment.Right,
                 FontFamily = (FontFamily)Application.Current.Resources["SymbolThemeFontFamily"],
                 FontSize = smallIconFontSize,
-                Foreground = (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"]
+                Foreground = (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"],
             };
             return this.statusIcon;
         }
@@ -103,7 +103,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 HorizontalAlignment = HorizontalAlignment.Center,
                 FontSize = systemMessageFontSize,
                 Foreground = (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"],
-                TextWrapping = TextWrapping.Wrap
+                TextWrapping = TextWrapping.Wrap,
             };
             foreach (var messagePart in Regex.Split(message.Content, @"(\S+\.pdf)"))
             {
@@ -140,13 +140,13 @@ namespace BookingBoardGames.Src.Views.ChatViews
             {
                 MaxWidth = maximumBubbleWidth,
                 HorizontalAlignment = isMine ? HorizontalAlignment.Right : HorizontalAlignment.Left,
-                Spacing = itemSpacing
+                Spacing = itemSpacing,
             };
 
             var border = new Border
             {
                 Padding = new Thickness(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding),
-                CornerRadius = isMine ? new CornerRadius(curvedCornerRadius, curvedCornerRadius, flatCornerRadius, curvedCornerRadius) : new CornerRadius(curvedCornerRadius, curvedCornerRadius, curvedCornerRadius, flatCornerRadius)
+                CornerRadius = isMine ? new CornerRadius(curvedCornerRadius, curvedCornerRadius, flatCornerRadius, curvedCornerRadius) : new CornerRadius(curvedCornerRadius, curvedCornerRadius, curvedCornerRadius, flatCornerRadius),
             };
 
             var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap };
@@ -206,13 +206,13 @@ namespace BookingBoardGames.Src.Views.ChatViews
             {
                 MaxWidth = maximumImagePanelWidth,
                 HorizontalAlignment = isMine ? HorizontalAlignment.Right : HorizontalAlignment.Left,
-                Spacing = itemSpacing
+                Spacing = itemSpacing,
             };
 
             var outerBorder = new Border
             {
                 Padding = new Thickness(outerPadding),
-                CornerRadius = isMine ? new CornerRadius(curvedCornerRadius, curvedCornerRadius, flatCornerRadius, curvedCornerRadius) : new CornerRadius(curvedCornerRadius, curvedCornerRadius, curvedCornerRadius, flatCornerRadius)
+                CornerRadius = isMine ? new CornerRadius(curvedCornerRadius, curvedCornerRadius, flatCornerRadius, curvedCornerRadius) : new CornerRadius(curvedCornerRadius, curvedCornerRadius, curvedCornerRadius, flatCornerRadius),
             };
 
             if (isMine)
@@ -231,7 +231,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 Width = imagePreviewWidth,
                 Height = imagePreviewHeight,
                 Background = (Brush)Application.Current.Resources["SubtleFillColorSecondaryBrush"],
-                CornerRadius = new CornerRadius(innerCornerRadius)
+                CornerRadius = new CornerRadius(innerCornerRadius),
             };
 
             if (message.ImageUrl != null && message.ImageUrl.Length > 0)
@@ -240,7 +240,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 {
                     Stretch = Stretch.UniformToFill,
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center
+                    VerticalAlignment = VerticalAlignment.Center,
                 };
 
                 try
@@ -283,14 +283,14 @@ namespace BookingBoardGames.Src.Views.ChatViews
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
-                Spacing = elementSpacing
+                Spacing = elementSpacing,
             };
 
             var placeholderIcon = new FontIcon
             {
                 Glyph = "\uEB9F",
                 FontSize = iconFontSize,
-                Foreground = (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"]
+                Foreground = (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"],
             };
 
             var placeholderText = new TextBlock
@@ -298,7 +298,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 Text = "Image",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 FontSize = textFontSize,
-                Foreground = (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"]
+                Foreground = (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"],
             };
 
             placeholderPanel.Children.Add(placeholderIcon);
@@ -330,7 +330,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
                 BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"],
                 BorderThickness = new Thickness(standardBorderThickness),
-                CornerRadius = new CornerRadius(outerCornerRadius)
+                CornerRadius = new CornerRadius(outerCornerRadius),
             };
 
             var stackPanel = new StackPanel { Spacing = panelSpacing };
@@ -341,7 +341,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 HorizontalAlignment = HorizontalAlignment.Center,
                 FontSize = titleFontSize,
                 FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
-                Foreground = (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"]
+                Foreground = (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"],
             };
 
             var bodyTextBlock = new TextBlock
@@ -350,7 +350,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 HorizontalAlignment = HorizontalAlignment.Center,
                 FontSize = contentFontSize,
                 Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-                TextWrapping = TextWrapping.Wrap
+                TextWrapping = TextWrapping.Wrap,
             };
 
             stackPanel.Children.Add(titleTextBlock);
@@ -362,20 +362,20 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Orientation = Orientation.Horizontal,
-                    Spacing = buttonSpacing
+                    Spacing = buttonSpacing,
                 };
 
                 var acceptActionButton = new Button
                 {
                     Content = "Accept",
                     MinWidth = minimumButtonWidth,
-                    Style = (Style)Application.Current.Resources["AccentButtonStyle"]
+                    Style = (Style)Application.Current.Resources["AccentButtonStyle"],
                 };
 
                 var declineActionButton = new Button
                 {
                     Content = "Decline",
-                    MinWidth = minimumButtonWidth
+                    MinWidth = minimumButtonWidth,
                 };
 
                 acceptActionButton.Click += (sender, routedEventArgs) => this.AcceptRequested?.Invoke(this, message.Id);
@@ -393,13 +393,13 @@ namespace BookingBoardGames.Src.Views.ChatViews
                     {
                         HorizontalAlignment = HorizontalAlignment.Center,
                         Orientation = Orientation.Horizontal,
-                        Spacing = buttonSpacing
+                        Spacing = buttonSpacing,
                     };
 
                     var cancelRequestButton = new Button
                     {
                         Content = "Cancel",
-                        MinWidth = minimumButtonWidth
+                        MinWidth = minimumButtonWidth,
                     };
 
                     cancelRequestButton.Click += (sender, routedEventArgs) => this.CancelRequested?.Invoke(this, message.Id);
@@ -413,13 +413,13 @@ namespace BookingBoardGames.Src.Views.ChatViews
                     {
                         HorizontalAlignment = HorizontalAlignment.Center,
                         Orientation = Orientation.Horizontal,
-                        Spacing = buttonSpacing
+                        Spacing = buttonSpacing,
                     };
 
                     var proceedPaymentButton = new Button
                     {
                         Content = "Proceed to payment",
-                        MinWidth = minimumButtonWidth
+                        MinWidth = minimumButtonWidth,
                     };
 
                     proceedPaymentButton.Click += (sender, routedEventArgs) => this.ProceedToPaymentRequested?.Invoke(this, (currentUserId, message.RequestId, message.Id));
@@ -454,7 +454,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
                 BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"],
                 BorderThickness = new Thickness(standardBorderThickness),
-                CornerRadius = new CornerRadius(outerCornerRadius)
+                CornerRadius = new CornerRadius(outerCornerRadius),
             };
 
             var stackPanel = new StackPanel { Spacing = panelSpacing };
@@ -465,7 +465,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 HorizontalAlignment = HorizontalAlignment.Center,
                 FontSize = titleFontSize,
                 FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
-                Foreground = (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"]
+                Foreground = (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"],
             };
 
             var bodyTextBlock = new TextBlock
@@ -474,7 +474,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 HorizontalAlignment = HorizontalAlignment.Center,
                 FontSize = contentFontSize,
                 Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-                TextWrapping = TextWrapping.Wrap
+                TextWrapping = TextWrapping.Wrap,
             };
 
             stackPanel.Children.Add(titleTextBlock);
@@ -489,7 +489,7 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 {
                     Content = isSeller ? "I received the cash payment" : "I received the boardgame",
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    Style = (Style)Application.Current.Resources["AccentButtonStyle"]
+                    Style = (Style)Application.Current.Resources["AccentButtonStyle"],
                 };
                 confirmAgreementButton.Click += (sender, routedEventArgs) => this.AgreementAccepted(this, message.Id);
                 stackPanel.Children.Add(confirmAgreementButton);

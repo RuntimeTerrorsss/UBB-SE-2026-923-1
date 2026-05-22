@@ -98,17 +98,17 @@ namespace BookingBoardGames.Data
             const string targetFolder = "BookingBoardGamesWeb";
             const string settingsFile = "appsettings.json";
 
-            DirectoryInfo? dir = new DirectoryInfo(Directory.GetCurrentDirectory());
-            while (dir != null)
+            DirectoryInfo? directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (directory != null)
             {
-                string candidate = Path.Combine(dir.FullName, targetFolder);
+                string candidate = Path.Combine(directory.FullName, targetFolder);
                 if (Directory.Exists(candidate) &&
                     File.Exists(Path.Combine(candidate, settingsFile)))
                 {
                     return candidate;
                 }
 
-                dir = dir.Parent;
+                directory = directory.Parent;
             }
 
             return null;

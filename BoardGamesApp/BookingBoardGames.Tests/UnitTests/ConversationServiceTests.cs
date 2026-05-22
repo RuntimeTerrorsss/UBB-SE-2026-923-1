@@ -53,7 +53,7 @@ namespace BookingBoardGames.Tests.Services
             _conversationService.Initialize(userId);
 
 
-            _mockNotifier.Verify(n => n.Register(userId, _conversationService), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.Register(userId, _conversationService), Times.Once);
         }
 
         #endregion
@@ -84,8 +84,8 @@ namespace BookingBoardGames.Tests.Services
 
             var mockUser = new User { Id = otherUserId, Username = "RealUser" };
 
-            _mockConversationRepo.Setup(r => r.GetConversationsForUser(currentUserId)).ReturnsAsync(mockConversations);
-            _mockUserRepo.Setup(r => r.GetById(otherUserId)).ReturnsAsync(mockUser);
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.GetConversationsForUser(currentUserId)).ReturnsAsync(mockConversations);
+            _mockUserRepo.Setup(mockUserRepo => mockUserRepo.GetById(otherUserId)).ReturnsAsync(mockUser);
 
 
             var result = await _conversationService.FetchConversations();
@@ -119,8 +119,8 @@ namespace BookingBoardGames.Tests.Services
 
             var systemUser = new User { Id = systemUserId, Username = "System" };
 
-            _mockConversationRepo.Setup(r => r.GetConversationsForUser(currentUserId)).ReturnsAsync(mockConversations);
-            _mockUserRepo.Setup(r => r.GetById(systemUserId)).ReturnsAsync(systemUser);
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.GetConversationsForUser(currentUserId)).ReturnsAsync(mockConversations);
+            _mockUserRepo.Setup(mockUserRepo => mockUserRepo.GetById(systemUserId)).ReturnsAsync(systemUser);
 
 
             var result = await _conversationService.FetchConversations();
@@ -173,7 +173,7 @@ namespace BookingBoardGames.Tests.Services
                 lastRead: new Dictionary<int, DateTime>()
             );
 
-            _mockUserRepo.Setup(r => r.GetById(otherUserId)).ReturnsAsync(new User { Id = otherUserId, Username = "Alice" });
+            _mockUserRepo.Setup(mockUserRepo => mockUserRepo.GetById(otherUserId)).ReturnsAsync(new User { Id = otherUserId, Username = "Alice" });
 
 
             var result = await _conversationService.GetOtherUserNameByConversationDTO(conversationDto);
@@ -201,7 +201,7 @@ namespace BookingBoardGames.Tests.Services
                 lastRead: new Dictionary<int, DateTime>()
             );
 
-            _mockUserRepo.Setup(r => r.GetById(systemUserId)).ReturnsAsync(new User { Id = systemUserId, Username = "System" });
+            _mockUserRepo.Setup(mockUserRepo => mockUserRepo.GetById(systemUserId)).ReturnsAsync(new User { Id = systemUserId, Username = "System" });
 
 
             var result = await _conversationService.GetOtherUserNameByConversationDTO(conversationDto);
@@ -265,15 +265,15 @@ namespace BookingBoardGames.Tests.Services
                 Receiver = null!
             };
 
-            _mockConversationRepo.Setup(r => r.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
-            _mockConversationRepo.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
 
 
             await _conversationService.SendMessage(messageDto);
 
 
-            _mockConversationRepo.Verify(r => r.HandleNewMessage(It.IsAny<Message>()), Times.Once);
-            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IEnumerable<int>>(), persistedMessage), Times.Once);
+            _mockConversationRepo.Verify(mockConvoRepo => mockConvoRepo.HandleNewMessage(It.IsAny<Message>()), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessage(It.IsAny<IEnumerable<int>>(), persistedMessage), Times.Once);
         }
 
         [Fact]
@@ -283,15 +283,15 @@ namespace BookingBoardGames.Tests.Services
             int senderId = 1, receiverId = 2, newConvId = 10;
             var createdConversation = new Conversation { ConversationId = newConvId, Participants = new List<ConversationParticipant>() };
 
-            _mockConversationRepo.Setup(r => r.CreateConversation(senderId, receiverId)).ReturnsAsync(newConvId);
-            _mockConversationRepo.Setup(r => r.GetConversationById(newConvId)).ReturnsAsync(createdConversation);
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.CreateConversation(senderId, receiverId)).ReturnsAsync(newConvId);
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.GetConversationById(newConvId)).ReturnsAsync(createdConversation);
 
 
             var result = await _conversationService.CreateConversation(senderId, receiverId);
 
 
             Assert.Equal(newConvId, result);
-            _mockNotifier.Verify(n => n.NotifyNewConversation(createdConversation), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyNewConversation(createdConversation), Times.Once);
         }
 
         [Fact]
@@ -309,15 +309,15 @@ namespace BookingBoardGames.Tests.Services
                 Receiver = null!
             };
 
-            _mockConversationRepo.Setup(r => r.HandleMessageUpdate(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
-            _mockConversationRepo.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.HandleMessageUpdate(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
 
 
             await _conversationService.UpdateMessage(messageDto);
 
 
-            _mockConversationRepo.Verify(r => r.HandleMessageUpdate(It.IsAny<Message>()), Times.Once);
-            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), persistedMessage), Times.Once);
+            _mockConversationRepo.Verify(mockConvoRepo => mockConvoRepo.HandleMessageUpdate(It.IsAny<Message>()), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), persistedMessage), Times.Once);
         }
 
         [Fact]
@@ -325,13 +325,13 @@ namespace BookingBoardGames.Tests.Services
         {
 
             var messageDto = CreateDummyMessageDto();
-            _mockConversationRepo.Setup(r => r.HandleMessageUpdate(It.IsAny<Message>())).ReturnsAsync((Message)null);
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.HandleMessageUpdate(It.IsAny<Message>())).ReturnsAsync((Message)null);
 
 
             await _conversationService.UpdateMessage(messageDto);
 
 
-            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), It.IsAny<Message>()), Times.Never);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), It.IsAny<Message>()), Times.Never);
         }
 
         #endregion
@@ -357,14 +357,14 @@ namespace BookingBoardGames.Tests.Services
                 lastRead: new Dictionary<int, DateTime>()
             );
 
-            _mockConversationRepo.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { currentUserId, otherUserId });
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { currentUserId, otherUserId });
 
 
             await _conversationService.SendReadReceipt(conversationDto);
 
 
-            _mockConversationRepo.Verify(r => r.HandleReadReceipt(It.Is<ReadReceiptDTO>(rr => rr.ConversationId == 10 && rr.ReceiverId == otherUserId)), Times.Once);
-            _mockNotifier.Verify(n => n.NotifyReadReceipt(It.IsAny<IEnumerable<int>>(), It.IsAny<ReadReceiptDTO>()), Times.Once);
+            _mockConversationRepo.Verify(mockConvoRepo => mockConvoRepo.HandleReadReceipt(It.Is<ReadReceiptDTO>(readReceipt => readReceipt.ConversationId == 10 && readReceipt.ReceiverId == otherUserId)), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyReadReceipt(It.IsAny<IEnumerable<int>>(), It.IsAny<ReadReceiptDTO>()), Times.Once);
         }
 
         [Fact]
@@ -382,15 +382,15 @@ namespace BookingBoardGames.Tests.Services
                 Receiver = null!
             };
 
-            _mockConversationRepo.Setup(r => r.HandleRentalRequestFinalization(messageId)).ReturnsAsync(updatedMessage);
-            _mockConversationRepo.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.HandleRentalRequestFinalization(messageId)).ReturnsAsync(updatedMessage);
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
 
 
             await _conversationService.OnCardPaymentSelected(messageId);
 
 
-            _mockConversationRepo.Verify(r => r.HandleRentalRequestFinalization(messageId), Times.Once);
-            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), updatedMessage), Times.Once);
+            _mockConversationRepo.Verify(mockConvoRepo => mockConvoRepo.HandleRentalRequestFinalization(messageId), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), updatedMessage), Times.Once);
         }
 
         [Fact]
@@ -417,18 +417,18 @@ namespace BookingBoardGames.Tests.Services
                 Receiver = null!
             };
 
-            _mockConversationRepo.Setup(r => r.HandleRentalRequestFinalization(messageId)).ReturnsAsync(updatedMessage);
-            _mockConversationRepo.Setup(r => r.CreateCashAgreementMessage(messageId, paymentId)).ReturnsAsync(createdAgreement);
-            _mockConversationRepo.Setup(r => r.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.HandleRentalRequestFinalization(messageId)).ReturnsAsync(updatedMessage);
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.CreateCashAgreementMessage(messageId, paymentId)).ReturnsAsync(createdAgreement);
+            _mockConversationRepo.Setup(mockConvoRepo => mockConvoRepo.GetParticipantUserIds(It.IsAny<int>())).ReturnsAsync(new List<int> { 1, 2 });
 
 
             await _conversationService.OnCashPaymentSelected(messageId, paymentId);
 
 
-            _mockConversationRepo.Verify(r => r.HandleRentalRequestFinalization(messageId), Times.Once);
-            _mockConversationRepo.Verify(r => r.CreateCashAgreementMessage(messageId, paymentId), Times.Once);
-            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), updatedMessage), Times.Once);
-            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IEnumerable<int>>(), createdAgreement), Times.Once);
+            _mockConversationRepo.Verify(mockConvoRepo => mockConvoRepo.HandleRentalRequestFinalization(messageId), Times.Once);
+            _mockConversationRepo.Verify(mockConvoRepo => mockConvoRepo.CreateCashAgreementMessage(messageId, paymentId), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessageUpdate(It.IsAny<IEnumerable<int>>(), updatedMessage), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessage(It.IsAny<IEnumerable<int>>(), createdAgreement), Times.Once);
         }
 
         #endregion
@@ -577,7 +577,7 @@ namespace BookingBoardGames.Tests.Services
 
             var receipt = new ReadReceiptDTO(1, 1, 2, DateTime.Now);
             bool eventInvoked = false;
-            _conversationService.ActionReadReceiptProcessed += (r) => eventInvoked = true;
+            _conversationService.ActionReadReceiptProcessed += (readReceipt) => eventInvoked = true;
 
 
             _conversationService.OnReadReceiptReceived(receipt);
@@ -819,7 +819,7 @@ namespace BookingBoardGames.Tests.Services
                 Receiver = null!
             };
 
-            _mockRepo.Setup(r => r.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+            _mockRepo.Setup(mockRepo => mockRepo.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
 
             var cachedConv = new Conversation { ConversationId = 10, Messages = new List<Message>() };
             SetCachedConversations(new List<Conversation> { cachedConv });
@@ -830,7 +830,7 @@ namespace BookingBoardGames.Tests.Services
 
             Assert.Single(cachedConv.Messages);
             Assert.Equal(1, cachedConv.Messages.First().MessageId);
-            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), persistedMessage), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), persistedMessage), Times.Once);
         }
 
         [Fact]
@@ -847,7 +847,7 @@ namespace BookingBoardGames.Tests.Services
                 Receiver = null!
             };
 
-            _mockRepo.Setup(r => r.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+            _mockRepo.Setup(mockRepo => mockRepo.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
 
             var existingMessage = new TextMessage
             {
@@ -880,7 +880,7 @@ namespace BookingBoardGames.Tests.Services
                 Receiver = null!
             };
 
-            _mockRepo.Setup(r => r.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+            _mockRepo.Setup(mockRepo => mockRepo.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
 
             var cachedConv = new Conversation { ConversationId = 10, Messages = null };
             SetCachedConversations(new List<Conversation> { cachedConv });
@@ -906,7 +906,7 @@ namespace BookingBoardGames.Tests.Services
                 Receiver = null!
             };
 
-            _mockRepo.Setup(r => r.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
+            _mockRepo.Setup(mockRepo => mockRepo.HandleNewMessage(It.IsAny<Message>())).ReturnsAsync(persistedMessage);
 
             SetCachedConversations(new List<Conversation>());
 
@@ -915,7 +915,7 @@ namespace BookingBoardGames.Tests.Services
 
 
             Assert.Null(exception);
-            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), persistedMessage), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), persistedMessage), Times.Once);
         }
 
         #endregion
@@ -933,7 +933,7 @@ namespace BookingBoardGames.Tests.Services
             await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
 
 
-            _mockNotifier.Verify(n => n.NotifyNewConversation(fetchedConv), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyNewConversation(fetchedConv), Times.Once);
         }
 
         [Fact]
@@ -956,7 +956,7 @@ namespace BookingBoardGames.Tests.Services
             await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
 
 
-            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), fetchedMsg), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), fetchedMsg), Times.Once);
         }
 
         [Fact]
@@ -980,7 +980,7 @@ namespace BookingBoardGames.Tests.Services
             await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
 
 
-            _mockNotifier.Verify(n => n.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), It.IsAny<Message>()), Times.Never);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessage(It.IsAny<IReadOnlyList<int>>(), It.IsAny<Message>()), Times.Never);
         }
 
         [Fact]
@@ -1012,7 +1012,7 @@ namespace BookingBoardGames.Tests.Services
             await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
 
 
-            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IReadOnlyList<int>>(), fetchedMsg), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessageUpdate(It.IsAny<IReadOnlyList<int>>(), fetchedMsg), Times.Once);
         }
 
         [Fact]
@@ -1044,7 +1044,7 @@ namespace BookingBoardGames.Tests.Services
             await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
 
 
-            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IReadOnlyList<int>>(), It.IsAny<Message>()), Times.Never);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessageUpdate(It.IsAny<IReadOnlyList<int>>(), It.IsAny<Message>()), Times.Never);
         }
 
         [Fact]
@@ -1076,7 +1076,7 @@ namespace BookingBoardGames.Tests.Services
             await RunPollerOnceAsync(new List<Conversation> { fetchedConv });
 
 
-            _mockNotifier.Verify(n => n.NotifyMessageUpdate(It.IsAny<IReadOnlyList<int>>(), fetchedMsg), Times.Once);
+            _mockNotifier.Verify(mockNotifier => mockNotifier.NotifyMessageUpdate(It.IsAny<IReadOnlyList<int>>(), fetchedMsg), Times.Once);
         }
 
         [Fact]
@@ -1094,7 +1094,7 @@ namespace BookingBoardGames.Tests.Services
             await (Task)method.Invoke(_service, new object[] { CancellationToken.None });
 
 
-            _mockRepo.Verify(r => r.GetConversationsForUser(It.IsAny<int>()), Times.Exactly(3));
+            _mockRepo.Verify(mockRepo => mockRepo.GetConversationsForUser(It.IsAny<int>()), Times.Exactly(3));
         }
 
         #endregion
@@ -1120,7 +1120,7 @@ namespace BookingBoardGames.Tests.Services
 
         private async Task RunPollerOnceAsync(List<Conversation> fetchedConversations)
         {
-            _mockRepo.SetupSequence(r => r.GetConversationsForUser(It.IsAny<int>()))
+            _mockRepo.SetupSequence(mockRepo => mockRepo.GetConversationsForUser(It.IsAny<int>()))
                      .ReturnsAsync(fetchedConversations)
                      .ThrowsAsync(new TaskCanceledException());
 

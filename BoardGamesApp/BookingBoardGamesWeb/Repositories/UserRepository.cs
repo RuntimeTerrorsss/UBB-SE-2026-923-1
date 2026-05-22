@@ -79,7 +79,7 @@ namespace BookingBoardGames.Api.Repositories
         private async Task<User?> GetByIdentifier(string identifier)
         {
             return await this.context.Users
-                .FirstOrDefaultAsync(u => u.Email == identifier || u.Username == identifier);
+                .FirstOrDefaultAsync(user => user.Email == identifier || user.Username == identifier);
         }
 
         public async Task<User?> Login(string emailOrUsername, string password)

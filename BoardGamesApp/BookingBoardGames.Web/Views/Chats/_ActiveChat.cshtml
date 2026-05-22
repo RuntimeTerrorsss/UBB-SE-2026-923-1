@@ -27,21 +27,21 @@
         }
         else
         {
-            foreach (var msg in Model.MessageList)
+            foreach (var message in Model.MessageList)
             {
-                if (msg.Type == MessageType.MessageSystem)
+                if (message.Type == MessageType.MessageSystem)
                 {
                     <div class="text-center my-3">
                         <span class="badge bg-secondary rounded-pill py-2 px-3 fw-normal shadow-sm" style="opacity: 0.85;">
-                            @msg.Content
+                            @message.Content
                         </span>
                     </div>
                     continue;
                 }
 
-                bool isMine = msg.SenderId == ViewBag.CurrentUserId;
+                bool isMine = message.SenderId == ViewBag.CurrentUserId;
 
-                if (msg.Type == MessageType.MessageRentalRequest)
+                if (message.Type == MessageType.MessageRentalRequest)
                 {
                     <div class="d-flex justify-content-center mb-3">
                         <div class="rental-request-card p-3 rounded-3 shadow-sm bg-white border" style="max-width: 420px; width: 100%;">
@@ -51,40 +51,40 @@
                                 </svg>
                                 <strong>Rental Request</strong>
                             </div>
-                            <p class="text-center text-secondary mb-3 small" style="word-wrap: break-word;">@msg.Content</p>
+                            <p class="text-center text-secondary mb-3 small" style="word-wrap: break-word;">@message.Content</p>
 
-                            @if (!msg.IsResolved && !msg.IsAccepted && !isMine)
+                            @if (!message.IsResolved && !message.IsAccepted && !isMine)
                             {
                                 <div class="d-flex justify-content-center gap-2">
                                     <button type="button" class="btn btn-primary btn-sm rental-accept-btn"
-                                            data-message-id="@msg.Id" data-conversation-id="@Model.Id">Accept</button>
+                                            data-message-id="@message.Id" data-conversation-id="@Model.Id">Accept</button>
                                     <button type="button" class="btn btn-outline-secondary btn-sm rental-decline-btn"
-                                            data-message-id="@msg.Id" data-conversation-id="@Model.Id">Decline</button>
+                                            data-message-id="@message.Id" data-conversation-id="@Model.Id">Decline</button>
                                 </div>
                             }
-                            else if (isMine && !msg.IsResolved && !msg.IsAccepted)
+                            else if (isMine && !message.IsResolved && !message.IsAccepted)
                             {
                                 <div class="text-center">
                                     <span class="badge bg-warning text-dark mb-2 d-block">Awaiting owner response</span>
                                     <button type="button" class="btn btn-outline-danger btn-sm rental-cancel-btn"
-                                            data-message-id="@msg.Id" data-conversation-id="@Model.Id">Cancel request</button>
+                                            data-message-id="@message.Id" data-conversation-id="@Model.Id">Cancel request</button>
                                 </div>
                             }
-                            else if (isMine && msg.IsAccepted && !msg.IsResolved)
+                            else if (isMine && message.IsAccepted && !message.IsResolved)
                             {
                                 <div class="text-center">
                                     <a asp-controller="Rentals" asp-action="Checkout"
-                                       asp-route-rentalId="@msg.RequestId" asp-route-messageId="@msg.Id"
+                                       asp-route-rentalId="@message.RequestId" asp-route-messageId="@message.Id"
                                        class="btn btn-success btn-sm">Proceed to payment</a>
                                 </div>
                             }
-                            else if (msg.IsResolved && !msg.IsAccepted)
+                            else if (message.IsResolved && !message.IsAccepted)
                             {
                                 <div class="text-center">
                                     <span class="badge bg-danger">Declined</span>
                                 </div>
                             }
-                            else if (msg.IsResolved)
+                            else if (message.IsResolved)
                             {
                                 <div class="text-center">
                                     <span class="badge bg-success">Completed</span>
@@ -98,7 +98,7 @@
                 <div class="d-flex mb-3 @(isMine ? "justify-content-end" : "justify-content-start")">
                     <div class="p-2 rounded-3 shadow-sm" style="max-width: 75%; background-color: @(isMine ? "#0078d4" : "#ffffff"); color: @(isMine ? "#ffffff" : "#242424");">
 
-                        @if (msg.Type == MessageType.MessageCashAgreement)
+                        @if (message.Type == MessageType.MessageCashAgreement)
                         {
                             <div class="d-flex align-items-center mb-2 pb-2 border-bottom @(isMine ? "border-light" : "border-secondary")" style="opacity: 0.9;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2" viewBox="0 0 16 16">
@@ -110,23 +110,23 @@
                         }
 
                         @{
-                            var messageImageUrl = MediaUrlHelper.ResolveMessageImageUrl(msg.ImageUrl);
+                            var messageImageUrl = MediaUrlHelper.ResolveMessageImageUrl(message.ImageUrl);
                         }
                         @if (!string.IsNullOrEmpty(messageImageUrl))
                         {
                             <img src="@messageImageUrl" class="img-fluid rounded mb-2 d-block" style="max-height: 240px; max-width: 100%;" alt="Shared image" />
                         }
 
-                        @if (msg.Type != MessageType.MessageImage && !string.IsNullOrWhiteSpace(msg.Content) && msg.Content != "[Image]")
+                        @if (message.Type != MessageType.MessageImage && !string.IsNullOrWhiteSpace(message.Content) && message.Content != "[Image]")
                         {
-                            <div style="word-wrap: break-word;">@msg.Content</div>
+                            <div style="word-wrap: break-word;">@message.Content</div>
                         }
 
                         <div class="text-end mt-1" style="font-size: 0.7rem; opacity: @(isMine ? "0.8" : "0.5");">
                             @{
-                                var sentAt = msg.SentAt.Kind == DateTimeKind.Utc
-                                    ? msg.SentAt.ToLocalTime()
-                                    : msg.SentAt;
+                                var sentAt = message.SentAt.Kind == DateTimeKind.Utc
+                                    ? message.SentAt.ToLocalTime()
+                                    : message.SentAt;
                             }
                             @sentAt.ToString("HH:mm")
                         </div>

@@ -142,8 +142,8 @@ namespace BookingBoardGames.Src.Views
             }
 
             var sorted = selectedDates
-                .Select(d => d.DateTime)
-                .OrderBy(d => d)
+                .Select(date => date.DateTime)
+                .OrderBy(date => date)
                 .ToList();
 
             this.selectedDateStart = sorted[0];

@@ -75,13 +75,13 @@ namespace BookingBoardGames.Src.Views.ChatViews
         private async Task AutoSelectConversationWithUser(int otherUserId)
         {
             var conversations = await this.chatPageViewModel.ConversationService.FetchConversations();
-            var existing = conversations.FirstOrDefault(c =>
-                c.Participants.Any(p => p.UserId == otherUserId));
+            var existing = conversations.FirstOrDefault(conversation =>
+                conversation.Participants.Any(participant => participant.UserId == otherUserId));
 
             if (existing != null)
             {
                 var preview = this.chatPageViewModel.LeftPanelModelView.Conversations
-                    .FirstOrDefault(c => c.ConversationId == existing.Id);
+                    .FirstOrDefault(conversation => conversation.ConversationId == existing.Id);
                 if (preview != null)
                 {
                     this.chatPageViewModel.LeftPanelModelView.SelectedConversation = preview;
@@ -92,13 +92,13 @@ namespace BookingBoardGames.Src.Views.ChatViews
                 await this.chatPageViewModel.ConversationService.CreateConversation(this.currentUserId, otherUserId);
 
                 var updatedConversations = await this.chatPageViewModel.ConversationService.FetchConversations();
-                var newConversation = updatedConversations.FirstOrDefault(c =>
-                    c.Participants.Any(p => p.UserId == otherUserId));
+                var newConversation = updatedConversations.FirstOrDefault(conversation =>
+                    conversation.Participants.Any(participant => participant.UserId == otherUserId));
 
                 if (newConversation != null)
                 {
                     var preview = this.chatPageViewModel.LeftPanelModelView.Conversations
-                        .FirstOrDefault(c => c.ConversationId == newConversation.Id);
+                        .FirstOrDefault(conversation => conversation.ConversationId == newConversation.Id);
                     if (preview != null)
                     {
                         this.chatPageViewModel.LeftPanelModelView.SelectedConversation = preview;

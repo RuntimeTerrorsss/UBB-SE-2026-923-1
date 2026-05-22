@@ -30,7 +30,7 @@ namespace BookingBoardGames.Tests.Services
             _notifier.NotifyMessage(new[] { userId }, message);
 
 
-            mockObserver.Verify(o => o.OnMessageReceived(message), Times.Once);
+            mockObserver.Verify(mockObserver => mockObserver.OnMessageReceived(message), Times.Once);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace BookingBoardGames.Tests.Services
             _notifier.NotifyMessage(new[] { userId }, message);
 
 
-            mockObserver.Verify(o => o.OnMessageReceived(It.IsAny<Message>()), Times.Never);
+            mockObserver.Verify(mockObserver => mockObserver.OnMessageReceived(It.IsAny<Message>()), Times.Never);
         }
 
         [Fact]
@@ -69,9 +69,9 @@ namespace BookingBoardGames.Tests.Services
             _notifier.NotifyMessage(new[] { 1, 3 }, message);
 
 
-            mockObserver1.Verify(o => o.OnMessageReceived(message), Times.Once);
-            mockObserver2.Verify(o => o.OnMessageReceived(It.IsAny<Message>()), Times.Never);
-            mockObserver3.Verify(o => o.OnMessageReceived(message), Times.Once);
+            mockObserver1.Verify(mockObserver => mockObserver.OnMessageReceived(message), Times.Once);
+            mockObserver2.Verify(mockObserver => mockObserver.OnMessageReceived(It.IsAny<Message>()), Times.Never);
+            mockObserver3.Verify(mockObserver => mockObserver.OnMessageReceived(message), Times.Once);
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace BookingBoardGames.Tests.Services
             _notifier.NotifyMessage(new[] { userId, userId, userId }, message);
 
 
-            mockObserver.Verify(o => o.OnMessageReceived(message), Times.Once);
+            mockObserver.Verify(mockObserver => mockObserver.OnMessageReceived(message), Times.Once);
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace BookingBoardGames.Tests.Services
             _notifier.NotifyMessageUpdate(new[] { userId }, message);
 
 
-            mockObserver.Verify(o => o.OnMessageUpdateReceived(message), Times.Once);
+            mockObserver.Verify(mockObserver => mockObserver.OnMessageUpdateReceived(message), Times.Once);
         }
 
         [Fact]
@@ -123,7 +123,7 @@ namespace BookingBoardGames.Tests.Services
             _notifier.NotifyReadReceipt(new[] { userId }, readReceipt);
 
 
-            mockObserver.Verify(o => o.OnReadReceiptReceived(readReceipt), Times.Once);
+            mockObserver.Verify(mockObserver => mockObserver.OnReadReceiptReceived(readReceipt), Times.Once);
         }
 
         [Fact]
@@ -149,8 +149,8 @@ namespace BookingBoardGames.Tests.Services
             _notifier.NotifyNewConversation(conversation);
 
 
-            mockObserver1.Verify(o => o.OnConversationReceived(conversation), Times.Once);
-            mockObserver2.Verify(o => o.OnConversationReceived(conversation), Times.Once);
+            mockObserver1.Verify(mockObserver => mockObserver.OnConversationReceived(conversation), Times.Once);
+            mockObserver2.Verify(mockObserver => mockObserver.OnConversationReceived(conversation), Times.Once);
         }
 
         [Fact]
@@ -168,7 +168,7 @@ namespace BookingBoardGames.Tests.Services
             _notifier.NotifyMessage(new[] { 2 }, message);
 
 
-            mockObserver.Verify(o => o.OnMessageReceived(It.IsAny<Message>()), Times.Never);
+            mockObserver.Verify(mockObserver => mockObserver.OnMessageReceived(It.IsAny<Message>()), Times.Never);
         }
     }
 }

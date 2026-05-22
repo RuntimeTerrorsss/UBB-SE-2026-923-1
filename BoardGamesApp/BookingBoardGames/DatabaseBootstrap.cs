@@ -23,7 +23,7 @@ namespace BookingBoardGames
                 System.Diagnostics.Debug.WriteLine("Applying migrations and checking schema...");
                 context.Database.Migrate();
 
-                if (!context.Users.Any(u => u.Username == "henry_08"))
+                if (!context.Users.Any(user => user.Username == "henry_08"))
                 {
                     System.Diagnostics.Debug.WriteLine("Database is missing Henry. Re-seeding...");
 
@@ -97,7 +97,7 @@ namespace BookingBoardGames
                     context.Conversations.AddRange(conversation1, conversation2);
                     context.SaveChanges();
 
-                    var msgs = new List<Message>
+                    var messages = new List<Message>
                     {
                         new SystemMessage { Conversation = conversation1, Sender = systemUser, Receiver = systemUser, MessageSentTime = new DateTime(2026, 3, 1, 8, 55, 0), MessageContent = "New conversation", MessageContentAsString = "New conversation" },
                         new RentalRequestMessage { Conversation = conversation1, Sender = bob, Receiver = alice, MessageSentTime = new DateTime(2026, 3, 1, 9, 0, 0), RequestContent = "Hey, is Catan available March 1–7?", IsRequestResolved = false, IsRequestAccepted = false, RentalRequest = rental1, MessageContentAsString = "Rental Request" },
@@ -108,7 +108,7 @@ namespace BookingBoardGames
                         new TextMessage { Conversation = conversation2, Sender = carol, Receiver = bob, MessageSentTime = new DateTime(2026, 3, 10, 10, 10, 0), TextMessageContent = "Perfect, thanks a lot!", MessageContentAsString = "Perfect, thanks a lot!" },
                     };
 
-                    context.Messages.AddRange(msgs);
+                    context.Messages.AddRange(messages);
                     context.SaveChanges();
 
                     System.Diagnostics.Debug.WriteLine("Mock Data successfully injected via EF Core!");
@@ -204,17 +204,17 @@ namespace BookingBoardGames
 
         private static string FindProjectRoot(string startPath)
         {
-            DirectoryInfo? dir = new DirectoryInfo(startPath);
+            DirectoryInfo? directory = new DirectoryInfo(startPath);
 
-            while (dir != null)
+            while (directory != null)
             {
-                bool hasCsproj = dir.GetFiles("*.csproj").Length > 0;
+                bool hasCsproj = directory.GetFiles("*.csproj").Length > 0;
                 if (hasCsproj)
                 {
-                    return dir.FullName;
+                    return directory.FullName;
                 }
 
-                dir = dir.Parent;
+                directory = directory.Parent;
             }
 
             throw new DirectoryNotFoundException("Could not locate project root.");

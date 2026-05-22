@@ -38,10 +38,10 @@ namespace BookingBoardGames.Src.Views
         /// <summary>
         /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
         /// </summary>
-        /// <param name="e">Event data that can be examined by overriding code.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        /// <param name="navigationArgs">Event data that can be examined by overriding code.</param>
+        protected override void OnNavigatedTo(NavigationEventArgs navigationArgs)
         {
-            base.OnNavigatedTo(e);
+            base.OnNavigatedTo(navigationArgs);
 
             // Static loggedUserId survives navigation; re-apply session and refresh the switch label
             // (otherwise the button resets to the XAML default and lies about who's active).
@@ -71,9 +71,9 @@ namespace BookingBoardGames.Src.Views
             this.Frame.Navigate(typeof(FilteredSearchView), filter);
         }
 
-        private void Game_Click(object sender, ItemClickEventArgs e)
+        private void Game_Click(object sender, ItemClickEventArgs itemClickedArgs)
         {
-            if (e.ClickedItem is GameDTO game)
+            if (itemClickedArgs.ClickedItem is GameDTO game)
             {
                 this.Frame.Navigate(typeof(GameDetailsView), game.GameId);
             }
@@ -93,12 +93,12 @@ namespace BookingBoardGames.Src.Views
             }
         }
 
-        private void ChatButton_Click(object sender, RoutedEventArgs e)
+        private void ChatButton_Click(object sender, RoutedEventArgs routedArgs)
         {
             this.Frame.Navigate(typeof(ChatPageView), SessionContext.GetInstance().UserId);
         }
 
-        private void DashboardButton_Click(object sender, RoutedEventArgs e)
+        private void DashboardButton_Click(object sender, RoutedEventArgs routedArgs)
         {
             var app = (App)Application.Current;
             this.Frame.Navigate(typeof(DashboardView), SessionContext.GetInstance().UserId);
@@ -111,7 +111,7 @@ namespace BookingBoardGames.Src.Views
                 : "Switch to Bob";
         }
 
-        private void SwitchUserButton_Click(object sender, RoutedEventArgs e)
+        private void SwitchUserButton_Click(object sender, RoutedEventArgs routedArgs)
         {
             if (loggedUserId == MainWindow.loggedInUserAlice)
             {

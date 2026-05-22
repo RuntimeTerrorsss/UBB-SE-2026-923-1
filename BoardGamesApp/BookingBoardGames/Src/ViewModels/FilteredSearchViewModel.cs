@@ -644,7 +644,7 @@ namespace BookingBoardGames.Src.ViewModels
                     "Price: lowest to highest" => SortOption.PriceAscending,
                     "Price: highest to lowest" => SortOption.PriceDescending,
                     "Closest to me" => SortOption.Location,
-                    _ => SortOption.None
+                    _ => SortOption.None,
                 };
 
                 if (this.CurrentFilter.SortOption == SortOption.Location)

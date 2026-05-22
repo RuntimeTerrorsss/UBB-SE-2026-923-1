@@ -36,7 +36,7 @@ namespace BookingBoardGames.Sharing.DTO
 
         public void AddMessageToListDTO(MessageDataTransferObject newMessage)
         {
-            if (this.MessageList.Any(m => m.Id == newMessage.Id))
+            if (this.MessageList.Any(message => message.Id == newMessage.Id))
             {
                 return;
             }

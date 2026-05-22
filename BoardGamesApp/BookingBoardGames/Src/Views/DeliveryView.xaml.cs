@@ -1,10 +1,14 @@
+// <copyright file="DeliveryView.xaml.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using System;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BookingBoardGames.Sharing.Services;
-using BookingBoardGames.Src.Navigation;
 using BookingBoardGames.Sharing.Validators;
+using BookingBoardGames.Src.Navigation;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -28,14 +32,14 @@ namespace BookingBoardGames.Src.Views
 
         public DeliveryView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs navigationArgs)
         {
-            base.OnNavigatedTo(e);
+            base.OnNavigatedTo(navigationArgs);
 
-            var args = ((int UserId, int RequestId, int MessageId, ConversationService ConversationService, Window ToWindow))e.Parameter;
+            var args = ((int UserId, int RequestId, int MessageId, ConversationService ConversationService, Window ToWindow))navigationArgs.Parameter;
 
             this.currentUserId = args.UserId;
             this.requestId = args.RequestId;
@@ -59,7 +63,7 @@ namespace BookingBoardGames.Src.Views
                                       this.deliveryViewModel.CurrentAddress.StreetNumber,
                     BookingMessageIdentifier = this.incomingMessageId,
                     ConversationService = this.conversationService,
-                    CurrentWindow = this.currentWindow
+                    CurrentWindow = this.currentWindow,
                 };
 
                 if (this.CashPaymentRadio.IsChecked == true)
@@ -107,30 +111,30 @@ namespace BookingBoardGames.Src.Views
             }
         }
 
-        private void OnFieldChanged(object sender, TextChangedEventArgs e)
+        private void OnFieldChanged(object sender, TextChangedEventArgs textArgs)
         {
-            if (sender is TextBox tb && tb.Tag is string fieldName)
+            if (sender is TextBox textBox && textBox.Tag is string fieldName)
             {
-                this.deliveryViewModel.OnFieldChange(fieldName, tb.Text);
+                this.deliveryViewModel.OnFieldChange(fieldName, textBox.Text);
             }
         }
 
-        private void OnSaveAddressChecked(object sender, RoutedEventArgs e)
+        private void OnSaveAddressChecked(object sender, RoutedEventArgs routedArgs)
             => this.deliveryViewModel.OnSaveAddressChanged(true);
 
-        private void OnSaveAddressUnchecked(object sender, RoutedEventArgs e)
+        private void OnSaveAddressUnchecked(object sender, RoutedEventArgs routedArgs)
             => this.deliveryViewModel.OnSaveAddressChanged(false);
 
-        private void OnOpenMapClicked(object sender, RoutedEventArgs e)
+        private void OnOpenMapClicked(object sender, RoutedEventArgs routedArgs)
             => _ = this.InitializeMapAsync();
 
-        private void OnCloseMapClicked(object sender, RoutedEventArgs e)
+        private void OnCloseMapClicked(object sender, RoutedEventArgs routedArgs)
             => this.deliveryViewModel.CloseMap();
 
-        private async void OnSubmitClicked(object sender, RoutedEventArgs e)
+        private async void OnSubmitClicked(object sender, RoutedEventArgs routedArgs)
             => await this.deliveryViewModel.SubmitDelivery();
 
-        private async void OnConfirmLocationClicked(object sender, RoutedEventArgs e)
+        private async void OnConfirmLocationClicked(object sender, RoutedEventArgs routedArgs)
             => await this.deliveryViewModel.ConfirmMapLocationAsync(this.pendingLatitude, this.pendingLongitude);
 
         private async Task InitializeMapAsync()
@@ -167,13 +171,13 @@ window.chrome.webview.postMessage(JSON.stringify({ lat: e.latlng.lat, lng: e.lat
 """);
         }
 
-        private void OnMapMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+        private void OnMapMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs messageArgs)
         {
-            var msg = e.TryGetWebMessageAsString();
-            using var doc = JsonDocument.Parse(msg);
+            var message = messageArgs.TryGetWebMessageAsString();
+            using var document = JsonDocument.Parse(message);
 
-            this.pendingLatitude = doc.RootElement.GetProperty("lat").GetDouble();
-            this.pendingLongitude = doc.RootElement.GetProperty("lng").GetDouble();
+            this.pendingLatitude = document.RootElement.GetProperty("lat").GetDouble();
+            this.pendingLongitude = document.RootElement.GetProperty("lng").GetDouble();
         }
     }
 }

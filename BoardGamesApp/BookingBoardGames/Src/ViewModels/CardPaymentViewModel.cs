@@ -322,7 +322,8 @@ namespace BookingBoardGames.Src.ViewModels
                 {
                     if (!this.isPageCurrentlyActive) return;
                     this.NavigateToExitAction?.Invoke();
-                }, null);
+                },
+                null);
         }
 
         private void ResetInactivityTimer()

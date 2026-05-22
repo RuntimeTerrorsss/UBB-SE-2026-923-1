@@ -25,11 +25,11 @@ namespace BookingBoardGames.Src.Views
         /// <summary>
         /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
         /// </summary>
-        /// <param name="e">Event data that can be examined by overriding code.</param>
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        /// <param name="navigationArgs">Event data that can be examined by overriding code.</param>
+        protected async override void OnNavigatedTo(NavigationEventArgs navigationArgs)
         {
-            base.OnNavigatedTo(e);
-            var criteria = e.Parameter as FilterCriteria ?? new FilterCriteria();
+            base.OnNavigatedTo(navigationArgs);
+            var criteria = navigationArgs.Parameter as FilterCriteria ?? new FilterCriteria();
             var viewModel = new FilteredSearchViewModel(App.SearchAndFilterService, App.GlobalGeographicalService);
             viewModel.OnGameSelectedRequest += gameId =>
             {
