@@ -89,14 +89,15 @@ namespace BookingBoardGames.Src.ViewModels
             {
                 isLoading = value;
                 OnPropertyChanged();
+                (RegisterCommand as RelayCommandNoParam)?.RaiseCanExecuteChanged();
             }
         }
 
         public RegisterViewModel(IUserService userService)
         {
             this.userService = userService;
-            RegisterCommand = new RelayCommand(async _ => await RegisterAsync());
-            GoToLoginCommand = new RelayCommand(_ => NavigateToLogin?.Invoke());
+            RegisterCommand = new RelayCommandNoParam(async () => await RegisterAsync(), () => !IsLoading);
+            GoToLoginCommand = new RelayCommandNoParam(() => NavigateToLogin?.Invoke());
         }
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
