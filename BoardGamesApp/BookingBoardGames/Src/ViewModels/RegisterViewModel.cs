@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Src.Commands;
+using Windows.System;
 
 namespace BookingBoardGames.Src.ViewModels
 {
     public class RegisterViewModel : INotifyPropertyChanged
     {
         private readonly IUserService userService;
+        private readonly SessionService sessionService;
 
         private string username = string.Empty;
         private string displayName = string.Empty;
@@ -37,9 +39,12 @@ namespace BookingBoardGames.Src.ViewModels
 
         public event Action? NavigateToLogin;
 
+        public event Action? NavigateToHome;
+
         public ICommand RegisterCommand { get; }
 
         public ICommand GoToLoginCommand { get; }
+        public ICommand GoToHomeCommand { get; }
 
         public string Username
         {
@@ -142,11 +147,13 @@ namespace BookingBoardGames.Src.ViewModels
             set { errorMessage = value; OnPropertyChanged(); }
         }
 
-        public RegisterViewModel(IUserService userService)
+        public RegisterViewModel(IUserService userService, SessionService sessionService)
         {
             this.userService = userService;
+            this.sessionService = sessionService;
             RegisterCommand = new RelayCommandNoParam(async () => await RegisterAsync(), () => !IsLoading);
             GoToLoginCommand = new RelayCommandNoParam(() => NavigateToLogin?.Invoke());
+            GoToHomeCommand = new RelayCommandNoParam(() => NavigateToHome?.Invoke());
         }
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -185,7 +192,9 @@ namespace BookingBoardGames.Src.ViewModels
             }
 
             IsLoading = false;
-            NavigateToLogin?.Invoke();
+            this.sessionService.SetUser(newUser.Id, newUser.Username, newUser.DisplayName);
+
+            NavigateToHome?.Invoke();
         }
 
         private bool ValidateUser()
