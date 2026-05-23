@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Src.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -31,7 +32,11 @@ namespace BookingBoardGames.Src.Views
             InitializeComponent();
             ViewModel = new RegisterViewModel(App.UserService, App.Session);
             ViewModel.NavigateToLogin += () => Frame.Navigate(typeof(LoginView));
-            ViewModel.NavigateToHome += () => Frame.Navigate(typeof(DiscoveryView));
+            ViewModel.NavigateToHome += () =>
+            {
+                DiscoveryView.loggedUserId = SessionContext.GetInstance().UserId;
+                Frame.Navigate(typeof(DiscoveryView));
+            };
             ViewModel.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(ViewModel.IsLoading))

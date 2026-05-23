@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Sharing.Services;
-using BookingBoardGames.Src.Commands;
-using Windows.System;
 
 namespace BookingBoardGames.Src.ViewModels
 {
@@ -151,7 +148,7 @@ namespace BookingBoardGames.Src.ViewModels
         {
             this.userService = userService;
             this.sessionService = sessionService;
-            RegisterCommand = new RelayCommandNoParam(async () => await RegisterAsync(), () => !IsLoading);
+            RegisterCommand = new RelayCommandNoParam(RegisterAsync, () => !IsLoading);
             GoToLoginCommand = new RelayCommandNoParam(() => NavigateToLogin?.Invoke());
             GoToHomeCommand = new RelayCommandNoParam(() => NavigateToHome?.Invoke());
         }
@@ -163,45 +160,88 @@ namespace BookingBoardGames.Src.ViewModels
 
         private async Task RegisterAsync()
         {
-            System.Diagnostics.Debug.WriteLine("clicked register");
             if (!ValidateUser())
             {
                 return;
             }
 
-            IsLoading = true;
-            ErrorMessage = string.Empty;
-
-            var newUser = new User
+            RunOnUiThread(() =>
             {
-                Username = Username.Trim(),
-                DisplayName = DisplayName.Trim(),
-                Email = Email.Trim(),
-                PasswordHash = Password,
-                City = City.Trim(),
-                Country = Country.Trim(),
-            };
+                IsLoading = true;
+                ErrorMessage = string.Empty;
+            });
 
-            var result = await userService.RegisterUserAsync(newUser);
-
-            if (!result)
+            try
             {
-                ErrorMessage = "Registration failed. The username or email may already be taken.";
-                IsLoading = false;
-                return;
+                var username = Username.Trim();
+                var password = Password;
+
+                var newUser = new User
+                {
+                    Username = username,
+                    DisplayName = DisplayName.Trim(),
+                    Email = Email.Trim(),
+                    PasswordHash = password,
+                    City = City.Trim(),
+                    Country = Country.Trim(),
+                };
+
+                var result = await userService.RegisterUserAsync(newUser);
+
+                if (!result)
+                {
+                    RunOnUiThread(() =>
+                        ErrorMessage = "Registration failed. The username or email may already be taken.");
+                    return;
+                }
+
+                var loggedInUser = await userService.LoginAsync(username, password);
+                if (loggedInUser == null)
+                {
+                    RunOnUiThread(() =>
+                        ErrorMessage = "Account created, but automatic sign-in failed. Please sign in manually.");
+                    return;
+                }
+
+                RunOnUiThread(() =>
+                {
+                    sessionService.SetUser(loggedInUser.Id, loggedInUser.Username, loggedInUser.DisplayName);
+                    SessionContext.GetInstance().Populate(loggedInUser);
+                    NavigateToHome?.Invoke();
+                });
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Registration failed: {ex}");
+                RunOnUiThread(() =>
+                    ErrorMessage = "Registration failed. Please check your connection and try again.");
+            }
+            finally
+            {
+                RunOnUiThread(() => IsLoading = false);
+            }
+        }
 
-            IsLoading = false;
-            this.sessionService.SetUser(newUser.Id, newUser.Username, newUser.DisplayName);
-
-            NavigateToHome?.Invoke();
+        private static void RunOnUiThread(Action action)
+        {
+            var dispatcher = ((App)Microsoft.UI.Xaml.Application.Current).Window?.DispatcherQueue;
+            if (dispatcher != null)
+            {
+                dispatcher.TryEnqueue(() => action());
+            }
+            else
+            {
+                action();
+            }
         }
 
         private bool ValidateUser()
         {
             UsernameError = Username.Trim().Length < 3 ? "Username must be at least 3 characters." : string.Empty;
             DisplayNameError = string.IsNullOrWhiteSpace(DisplayName) ? "Display name is required." : string.Empty;
-            EmailError = !Email.Contains('@') ? "Invalid email address." : string.Empty;
+            EmailError = string.IsNullOrWhiteSpace(Email) || !Email.Contains('@')
+                ? "Invalid email address."
+                : string.Empty;
             PasswordError = Password.Length < 6 ? "Password must be at least 6 characters." : string.Empty;
             ConfirmPasswordError = Password != ConfirmPassword ? "Passwords do not match." : string.Empty;
             CityError = string.IsNullOrWhiteSpace(City) ? "City is required." : string.Empty;

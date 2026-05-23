@@ -3,6 +3,8 @@
 // </copyright>
 
 using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace BookingBoardGames.Src.ViewModels
@@ -38,12 +40,19 @@ namespace BookingBoardGames.Src.ViewModels
 
     public class RelayCommandNoParam : ICommand
     {
-        private readonly Action executeAct;
+        private readonly Action? executeAct;
+        private readonly Func<Task>? executeAsyncAct;
         private readonly Func<bool> canExecuteFunc;
 
         public RelayCommandNoParam(Action execute, Func<bool> canExecute = null)
         {
             this.executeAct = execute ?? throw new ArgumentNullException(nameof(execute));
+            this.canExecuteFunc = canExecute;
+        }
+
+        public RelayCommandNoParam(Func<Task> executeAsync, Func<bool> canExecute = null)
+        {
+            this.executeAsyncAct = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
             this.canExecuteFunc = canExecute;
         }
 
@@ -54,7 +63,25 @@ namespace BookingBoardGames.Src.ViewModels
 
         public void Execute(object parameter)
         {
-            this.executeAct();
+            if (this.executeAsyncAct != null)
+            {
+                _ = this.RunAsync(this.executeAsyncAct);
+                return;
+            }
+
+            this.executeAct!();
+        }
+
+        private async Task RunAsync(Func<Task> action)
+        {
+            try
+            {
+                await action().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"RelayCommand async execution failed: {ex}");
+            }
         }
 
         public event EventHandler CanExecuteChanged;
