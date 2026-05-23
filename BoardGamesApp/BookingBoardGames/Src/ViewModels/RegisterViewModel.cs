@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Sharing.Services;
+using BookingBoardGames.Src.Helpers;
 
 namespace BookingBoardGames.Src.ViewModels
 {
@@ -205,8 +205,7 @@ namespace BookingBoardGames.Src.ViewModels
 
                 RunOnUiThread(() =>
                 {
-                    sessionService.SetUser(loggedInUser.Id, loggedInUser.Username, loggedInUser.DisplayName);
-                    SessionContext.GetInstance().Populate(loggedInUser);
+                    AuthSession.SetAuthenticatedUser(loggedInUser, sessionService);
                     NavigateToHome?.Invoke();
                 });
             }

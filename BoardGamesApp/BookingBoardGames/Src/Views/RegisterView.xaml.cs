@@ -32,11 +32,7 @@ namespace BookingBoardGames.Src.Views
             InitializeComponent();
             ViewModel = new RegisterViewModel(App.UserService, App.Session);
             ViewModel.NavigateToLogin += () => Frame.Navigate(typeof(LoginView));
-            ViewModel.NavigateToHome += () =>
-            {
-                DiscoveryView.loggedUserId = SessionContext.GetInstance().UserId;
-                Frame.Navigate(typeof(DiscoveryView));
-            };
+            ViewModel.NavigateToHome += () => Frame.Navigate(typeof(DiscoveryView));
             ViewModel.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(ViewModel.IsLoading))

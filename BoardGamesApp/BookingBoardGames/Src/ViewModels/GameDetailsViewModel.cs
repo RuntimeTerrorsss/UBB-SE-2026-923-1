@@ -192,6 +192,12 @@ namespace BookingBoardGames.Src.ViewModels
         /// </summary>
         public ICommand ChatWithOwnerCommand => new RelayCommand(_ =>
         {
+            if (SessionContext.GetInstance().UserId == UnregisteredUserID)
+            {
+                this.OnMessageRequested?.Invoke("User not logged in. Please log in first.");
+                return;
+            }
+
             int currentUserId = SessionContext.GetInstance().UserId;
             this.OnChatWithOwnerRequested?.Invoke(currentUserId, this.GameAndUserDetails.UserId);
         });
@@ -252,14 +258,6 @@ namespace BookingBoardGames.Src.ViewModels
         {
             try
             {
-                if (SessionContext.GetInstance().UserId == UnregisteredUserID)
-                {
-                    this.OnMessageRequested?.Invoke("User not logged in. Please log in first");
-
-                    // TODO login
-                    return;
-                }
-
                 if (timeRange == null)
                 {
                     this.OnMessageRequested?.Invoke("Please select a valid booking timeRange.");

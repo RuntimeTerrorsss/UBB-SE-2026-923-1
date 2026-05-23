@@ -13,6 +13,7 @@ using BookingBoardGames.Data.Enum;
 using BookingBoardGames.Sharing.DTO;
 using BookingBoardGames.Sharing.Services;
 using BookingBoardGames.Src.Commands;
+using BookingBoardGames.Src.Helpers;
 
 namespace BookingBoardGames.Src.ViewModels
 {
@@ -283,7 +284,9 @@ namespace BookingBoardGames.Src.ViewModels
         {
             try
             {
-                int currentUserId = SessionContext.GetInstance().UserId;
+                int currentUserId = AuthSession.IsLoggedIn
+                    ? SessionContext.GetInstance().UserId
+                    : -1;
 
                 var discoveryFeedResult = await this.searchAndFilterService.GetDiscoveryFeedPaged(currentUserId, this.CurrentPage, ItemsPerPage);
 
@@ -363,7 +366,9 @@ namespace BookingBoardGames.Src.ViewModels
                 this.Filter.SortOption = criteria.SortOption;
                 this.Filter.MaximumPrice = criteria.MaximumPrice;
                 this.Filter.PlayerCount = criteria.PlayerCount;
-                this.Filter.UserId = SessionContext.GetInstance().UserId;
+                this.Filter.UserId = AuthSession.IsLoggedIn
+                    ? SessionContext.GetInstance().UserId
+                    : null;
 
                 this.UpdateAvailabilityRange();
 
