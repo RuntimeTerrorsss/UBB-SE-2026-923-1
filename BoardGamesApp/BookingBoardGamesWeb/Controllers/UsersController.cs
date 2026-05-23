@@ -10,17 +10,17 @@ namespace BookingBoardGames.Api.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _repo;
+        private readonly IUserRepository _userRepository;
 
-        public UsersController(IUserRepository repo)
+        public UsersController(IUserRepository userRepository)
         {
-            _repo = repo;
+            _userRepository = userRepository;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _repo.GetById(id);
+            var user = await _userRepository.GetById(id);
             if (user == null) return NotFound();
             return Ok(user);
         }
@@ -28,20 +28,20 @@ namespace BookingBoardGames.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<User>>> GetAll()
         {
-            return Ok(await _repo.GetAll());
+            return Ok(await _userRepository.GetAll());
         }
 
         [HttpPut("{id}/address")]
         public async Task<ActionResult> SaveAddress(int id, [FromBody] Address address)
         {
-            await _repo.SaveAddress(id, address);
+            await _userRepository.SaveAddress(id, address);
             return NoContent();
         }
 
         [HttpGet("{id}/balance")]
         public async Task<ActionResult<decimal>> GetBalance(int id)
         {
-            var user = await _repo.GetById(id);
+            var user = await _userRepository.GetById(id);
             if (user == null) return NotFound();
             return Ok(user.Balance);
         }
@@ -49,7 +49,7 @@ namespace BookingBoardGames.Api.Controllers
         [HttpPut("{id}/balance")]
         public async Task<ActionResult> UpdateBalance(int id, [FromBody] decimal newBalance)
         {
-            await _repo.UpdateBalance(id, newBalance);
+            await _userRepository.UpdateBalance(id, newBalance);
             return NoContent();
         }
 
@@ -61,7 +61,7 @@ namespace BookingBoardGames.Api.Controllers
                 return BadRequest();
             }
 
-            var user = await _repo.Login(request.EmailOrUsername, request.Password);
+            var user = await _userRepository.Login(request.EmailOrUsername, request.Password);
             if (user == null) return Unauthorized();
 
             return Ok(user);
@@ -77,7 +77,7 @@ namespace BookingBoardGames.Api.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register([FromBody] User newUser)
         {
-            var success = await _repo.Register(newUser);
+            var success = await _userRepository.Register(newUser);
             if (!success)
             {
                 return BadRequest("Registration failed. Username/Email already exists.");

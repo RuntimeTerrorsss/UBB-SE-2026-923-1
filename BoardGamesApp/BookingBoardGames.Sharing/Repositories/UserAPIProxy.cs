@@ -27,9 +27,9 @@ public class UserAPIProxy : IUserRepository
         this.httpClient = httpClient;
     }
 
-    public async Task<User?> GetById(int id)
+    public async Task<User?> GetById(int userId)
     {
-        var response = await this.httpClient.GetAsync($"users/{id}");
+        var response = await this.httpClient.GetAsync($"users/{userId}");
         Debug.WriteLine($"GetById status: {response.StatusCode}");
         if (!response.IsSuccessStatusCode) return null;
         var raw = await response.Content.ReadAsStringAsync();
@@ -38,9 +38,9 @@ public class UserAPIProxy : IUserRepository
         {
             return JsonSerializer.Deserialize<User>(raw, JsonOptions);
         }
-        catch (Exception ex)
+        catch (Exception thrownException)
         {
-            Debug.WriteLine($"GetById DESERIALIZE ERROR: {ex.Message}");
+            Debug.WriteLine($"GetById DESERIALIZE ERROR: {thrownException.Message}");
             return null;
         }
     }

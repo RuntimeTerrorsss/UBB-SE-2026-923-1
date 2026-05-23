@@ -23,9 +23,9 @@ namespace BookingBoardGames.Api.Repositories
             this.context = appContext;
         }
 
-        public async Task<User?> GetById(int id)
+        public async Task<User?> GetById(int userId)
         {
-            return await this.context.Users.FirstOrDefaultAsync(user => user.Id == id);
+            return await this.context.Users.FirstOrDefaultAsync(user => user.Id == userId);
         }
 
         public async Task<User?> GetGameById(int id)

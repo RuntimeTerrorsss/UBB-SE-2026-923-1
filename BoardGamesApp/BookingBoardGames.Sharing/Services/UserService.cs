@@ -16,9 +16,9 @@ namespace BookingBoardGames.Sharing.Services
             _userRepository = userRepository;
         }
 
-        public async Task<User?> GetUserByIdAsync(int id)
+        public async Task<User?> GetUserByIdAsync(int userId)
         {
-            return await _userRepository.GetById(id);
+            return await _userRepository.GetById(userId);
         }
 
         public async Task<List<User>> GetAllUsersAsync()
