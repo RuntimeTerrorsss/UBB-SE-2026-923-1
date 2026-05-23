@@ -377,10 +377,10 @@
     const dayNames = ["Su","Mo","Tu","We","Th","Fr","Sa"];
 
     function isUnavailable(date) {
-        return unavailableRanges.some(r => {
-            const s = parseLocalDate(r.start);
-            const e = parseLocalDate(r.end);
-            return date >= s && date <= e;
+        return unavailableRanges.some(timeRange => {
+            const startDate = parseLocalDate(timeRange.start);
+            const endDate = parseLocalDate(timeRange.end);
+            return date >= startDate && date <= endDate;
         });
     }
 
@@ -402,10 +402,10 @@
         label.textContent = monthNames[currentMonth] + " " + currentYear;
 
         // Day names header
-        dayNames.forEach(d => {
+        dayNames.forEach(day => {
             const cell = document.createElement("div");
             cell.className = "day-name";
-            cell.textContent = d;
+            cell.textContent = day;
             grid.appendChild(cell);
         });
 
@@ -419,10 +419,10 @@
             grid.appendChild(empty);
         }
 
-        for (let d = 1; d <= daysInMonth; d++) {
-            const date = new Date(currentYear, currentMonth, d);
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(currentYear, currentMonth, day);
             const cell = document.createElement("div");
-            cell.textContent = d;
+            cell.textContent = day;
             cell.className = "day-cell";
 
             if (isPast(date)) {
@@ -459,16 +459,16 @@
             }
 
             // Verifică interval
-            let cur = new Date(selectedStart);
-            while (cur <= selectedEnd) {
-                if (isUnavailable(cur)) {
+            let currentDate = new Date(selectedStart);
+            while (currentDate <= selectedEnd) {
+                if (isUnavailable(currentDate)) {
                     selectedStart = null;
                     selectedEnd = null;
                     alert("Selected range includes unavailable dates.");
                     renderCalendar();
                     return;
                 }
-                cur.setDate(cur.getDate() + 1);
+                currentDate.setDate(currentDate.getDate() + 1);
             }
         } else {
             // Avem ambele -> resetăm și începem din nou
