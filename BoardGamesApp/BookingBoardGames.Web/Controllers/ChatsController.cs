@@ -98,7 +98,7 @@ namespace BookingBoardGames.Web.Controllers
             _conversationService.Initialize(currentUserId);
 
             var conversations = await _conversationService.FetchConversations();
-            var conversation = conversations.FirstOrDefault(c => c.Id == conversationId);
+            var conversation = conversations.FirstOrDefault(conversation => conversation.Id == conversationId);
 
             if (conversation == null) return NotFound();
 
@@ -203,8 +203,8 @@ namespace BookingBoardGames.Web.Controllers
             _conversationService.Initialize(userId);
 
             var conversations = await _conversationService.FetchConversations();
-            var conversation = conversations.FirstOrDefault(c => c.Id == conversationId);
-            var message = conversation?.MessageList.FirstOrDefault(m => m.Id == messageId);
+            var conversation = conversations.FirstOrDefault(conversation => conversation.Id == conversationId);
+            var message = conversation?.MessageList.FirstOrDefault(message => message.Id == messageId);
 
             if (message == null || message.Type != MessageType.MessageRentalRequest)
             {
@@ -236,8 +236,8 @@ namespace BookingBoardGames.Web.Controllers
             _conversationService.Initialize(userId);
 
             var conversations = await _conversationService.FetchConversations();
-            var conversation = conversations.FirstOrDefault(c => c.Id == conversationId);
-            var message = conversation?.MessageList.FirstOrDefault(m => m.Id == messageId);
+            var conversation = conversations.FirstOrDefault(conversation => conversation.Id == conversationId);
+            var message = conversation?.MessageList.FirstOrDefault(message => message.Id == messageId);
 
             if (message == null || message.Type != MessageType.MessageRentalRequest)
             {
@@ -288,8 +288,8 @@ namespace BookingBoardGames.Web.Controllers
         private async Task<ConversationParticipant?> GetReceiverParticipantAsync(int conversationId, int senderId)
         {
             var conversations = await _conversationService.FetchConversations();
-            var conversation = conversations.FirstOrDefault(c => c.Id == conversationId);
-            return conversation?.Participants.FirstOrDefault(p => p.UserId != senderId);
+            var conversation = conversations.FirstOrDefault(conversation => conversation.Id == conversationId);
+            return conversation?.Participants.FirstOrDefault(participant => participant.UserId != senderId);
         }
 
         private static MessageDataTransferObject BuildMessageDto(
