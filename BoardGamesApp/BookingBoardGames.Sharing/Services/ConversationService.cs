@@ -171,7 +171,7 @@ namespace BookingBoardGames.Sharing.Services
             recentlySentMessageIds.Add(persisted.MessageId);
 
             // Immediately update the local cache so the poller sees the message as known.
-            var cachedConv = cachedConversations.FirstOrDefault(c => c.ConversationId == persisted.ConversationId);
+            var cachedConv = cachedConversations.FirstOrDefault(conversation => conversation.ConversationId == persisted.ConversationId);
             if (cachedConv != null)
             {
                 if (cachedConv.Messages is IList<Message> collection)
@@ -272,7 +272,7 @@ namespace BookingBoardGames.Sharing.Services
 
                     foreach (var fetchedConv in fetchedConversations)
                     {
-                        var cachedConv = cachedConversations.FirstOrDefault(c => c.ConversationId == fetchedConv.ConversationId);
+                        var cachedConv = cachedConversations.FirstOrDefault(conversation => conversation.ConversationId == fetchedConv.ConversationId);
 
                         if (cachedConv == null)
                         {

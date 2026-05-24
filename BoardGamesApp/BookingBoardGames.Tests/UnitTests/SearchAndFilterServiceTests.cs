@@ -234,7 +234,7 @@ namespace BookingBoardGames.Tests.Services
             };
             var filter = new FilterCriteria { City = "Bucharest" };
 
-            _mockGeographicalService.Setup(g => g.GetCityDetails("Bucharest"))
+            _mockGeographicalService.Setup(service => service.GetCityDetails("Bucharest"))
                 .Returns((false, "Bucharest", 0, 0));
 
 
@@ -279,10 +279,10 @@ namespace BookingBoardGames.Tests.Services
             };
             var filter = new FilterCriteria { City = "Cluj-Napoca", SortOption = SortOption.Location };
 
-            _mockGeographicalService.Setup(g => g.GetCityDetails("Cluj-Napoca"))
+            _mockGeographicalService.Setup(service => service.GetCityDetails("Cluj-Napoca"))
                 .Returns((true, "Cluj-Napoca", 46.77, 23.59));
 
-            _mockGeographicalService.Setup(g => g.GetCityDetails("Constanta"))
+            _mockGeographicalService.Setup(service => service.GetCityDetails("Constanta"))
                 .Returns((true, "Constanta", 44.15, 28.63));
 
 
@@ -306,8 +306,8 @@ namespace BookingBoardGames.Tests.Services
             };
             var filter = new FilterCriteria { AvailabilityRange = new TimeRange(DateTime.Now, DateTime.Now.AddDays(1)) };
 
-            _mockRentalsRepository.Setup(r => r.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), 1)).ReturnsAsync(true);
-            _mockRentalsRepository.Setup(r => r.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), 2)).ReturnsAsync(false);
+            _mockRentalsRepository.Setup(repo => repo.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), 1)).ReturnsAsync(true);
+            _mockRentalsRepository.Setup(repo => repo.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), 2)).ReturnsAsync(false);
 
 
             var result = await _service.ApplyFilters(games, filter);
@@ -324,7 +324,7 @@ namespace BookingBoardGames.Tests.Services
             var games = new[] { new GameDTO() };
             var filter = new FilterCriteria { AvailabilityRange = new TimeRange(DateTime.Now, DateTime.Now) };
 
-            _mockRentalsRepository.Setup(r => r.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>()))
+            _mockRentalsRepository.Setup(repo => repo.CheckGameAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>()))
                 .ThrowsAsync(new Exception("DB Fault"));
 
 

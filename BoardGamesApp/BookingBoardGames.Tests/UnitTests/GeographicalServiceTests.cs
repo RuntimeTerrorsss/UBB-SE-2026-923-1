@@ -281,9 +281,9 @@ namespace BookingBoardGames.Tests.Services
 
 
             var lines = new List<string>();
-            for (int i = 1; i <= 12; i++)
+            for (int index = 1; index <= 12; index++)
             {
-                lines.Add($"Id{i}\tTestCity{i}\tTestCity{i}\t\t46.0\t23.0\tP\t\t\t\t\t\t\t\t6000");
+                lines.Add($"Id{index}\tTestCity{index}\tTestCity{index}\t\t46.0\t23.0\tP\t\t\t\t\t\t\t\t6000");
             }
             SetupTestFile(lines.ToArray());
             var service = await GeographicalService.LoadFromFileAsync();

@@ -1083,7 +1083,7 @@ namespace BookingBoardGames.Tests.Services
         public async Task PollConversationsLoop_GenericException_CaughtAndContinuesLoop()
         {
 
-            _mockRepo.SetupSequence(r => r.GetConversationsForUser(It.IsAny<int>()))
+            _mockRepo.SetupSequence(repo => repo.GetConversationsForUser(It.IsAny<int>()))
                      .ThrowsAsync(new Exception("Database disconnected"))
                      .ReturnsAsync(new List<Conversation>())
                      .ThrowsAsync(new TaskCanceledException());

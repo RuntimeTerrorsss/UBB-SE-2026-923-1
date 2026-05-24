@@ -108,7 +108,7 @@ namespace BookingBoardGames.Tests.Services
             var rental = new Rental { GameId = 5 };
 
             _mockRentalRepository.Setup(mockRentalRepository => mockRentalRepository.GetById(rentalId)).ReturnsAsync(rental);
-            _mockGameRepository.Setup(g => g.GetGameById(rental.GameId)).ReturnsAsync((Game)null);
+            _mockGameRepository.Setup(repo => repo.GetGameById(rental.GameId)).ReturnsAsync((Game)null);
 
 
             var result = await _rentalService.GetGameName(rentalId);

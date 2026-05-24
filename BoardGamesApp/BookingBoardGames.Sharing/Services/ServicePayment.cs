@@ -89,7 +89,7 @@ namespace BookingBoardGames.Sharing.Services
             int currentUserId = SessionContext.GetInstance().UserId;
             IEnumerable<HistoryPayment> payments = await paymentRepository.GetAllPayments();
             payments = FilterPaymentsByCurrentUser(payments);
-            HistoryPayment? existing = payments.FirstOrDefault(p => p.RequestId == rentalId);
+            HistoryPayment? existing = payments.FirstOrDefault(payment => payment.RequestId == rentalId);
 
             if (existing != null)
             {

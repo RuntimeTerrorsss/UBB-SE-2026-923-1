@@ -71,7 +71,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             int paymentId = 1;
-            _mockPaymentRepository.Setup(r => r.GetPaymentByIdentifierAsync(paymentId))
+            _mockPaymentRepository.Setup(repo => repo.GetPaymentByIdentifierAsync(paymentId))
                                   .ReturnsAsync((Payment)null);
 
 

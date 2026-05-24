@@ -179,7 +179,7 @@ namespace BookingBoardGames.Tests.Services
         {
 
             SessionContext.GetInstance().UserId = 1;
-            var payments = Enumerable.Range(1, 15).Select(i => new HistoryPayment { TransactionIdentifier = i, ClientId = 1 }).ToList();
+            var payments = Enumerable.Range(1, 15).Select(index => new HistoryPayment { TransactionIdentifier = index, ClientId = 1 }).ToList();
             _mockPaymentRepository.Setup(mockPaymentRepository => mockPaymentRepository.GetAllPayments()).ReturnsAsync(payments);
 
 
@@ -264,7 +264,7 @@ namespace BookingBoardGames.Tests.Services
 
 
             Assert.Equal("receipts\\no_slash_file.pdf", payment.ReceiptFilePath);
-            _mockReceiptService.Verify(s => s.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
+            _mockReceiptService.Verify(service => service.GenerateReceiptRelativePath(It.IsAny<int>()), Times.Never);
         }
 
         [Fact]
