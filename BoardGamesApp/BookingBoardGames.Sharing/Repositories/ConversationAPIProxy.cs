@@ -167,8 +167,6 @@ namespace BookingBoardGames.Sharing.Repositories
             return resultDto is null ? null : this.MessageDtoToMessage(resultDto);
         }
 
-        // ── Helpers ────────────────────────────────────────────────────────────
-
         private MessageDto MessageToMessageDto(Message message)
         {
             int defaultMissingIdentifier = -1;

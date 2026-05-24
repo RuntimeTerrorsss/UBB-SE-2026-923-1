@@ -24,8 +24,8 @@ builder.Services.AddScoped<IRepositoryPayment, RepositoryPayment>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-builder.Services.AddControllers().AddJsonOptions(x =>
-    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddControllers().AddJsonOptions(jsonoption =>
+    jsonoption.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -41,9 +41,9 @@ using (var scope = app.Services.CreateScope())
         dbContext.Database.Migrate();
         BookingBoardGames.Api.DatabaseSeeder.Seed(dbContext);
     }
-    catch (Exception ex)
+    catch (Exception exception)
     {
-        Console.WriteLine($"An error occurred during migration: {ex.Message}");
+        Console.WriteLine($"An error occurred during migration: {exception .Message}");
     }
 }
 
